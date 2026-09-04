@@ -35,7 +35,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-black text-neutral-100 selection:bg-white/20 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-cyan-500/25 selection:text-cyan-200">
       <Header
         currentView={currentView}
         setCurrentView={setCurrentView}

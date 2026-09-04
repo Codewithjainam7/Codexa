@@ -1,15 +1,15 @@
 "use client";
 
 import React, { memo, useCallback, useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 
 export const GlowingEffect = memo(
   ({
-    blur = 12,
+    blur = 14,
     inactiveZone = 0.01,
     proximity = 64,
-    spread = 40,
-    variant = "emerald",
+    spread = 45,
+    variant = "cyan",
     glow = true,
     className,
     disabled = false,
@@ -70,12 +70,12 @@ export const GlowingEffect = memo(
           className
         )}
       >
-        {/* Crisp Border Glow Tracker (Monochrome White/Silver) */}
+        {/* Crisp Cyber Border Glow Tracker */}
         <div
           className="absolute inset-0 rounded-[inherit] transition-opacity duration-300"
           style={{
             opacity: "var(--glow-opacity)",
-            background: `radial-gradient(var(--spread) circle at var(--glow-x) var(--glow-y), rgba(255, 255, 255, 0.85), rgba(200, 200, 200, 0.4), rgba(100, 100, 100, 0.2), transparent 70%)`,
+            background: `radial-gradient(var(--spread) circle at var(--glow-x) var(--glow-y), rgba(34, 211, 238, 0.9), rgba(99, 102, 241, 0.6), rgba(168, 85, 247, 0.3), transparent 70%)`,
             mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
             WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
             maskComposite: "exclude",
@@ -89,8 +89,8 @@ export const GlowingEffect = memo(
           <div
             className="absolute inset-0 rounded-[inherit] blur-[var(--blur)] transition-opacity duration-300"
             style={{
-              opacity: "calc(var(--glow-opacity) * 0.4)",
-              background: `radial-gradient(calc(var(--spread) * 0.9) circle at var(--glow-x) var(--glow-y), rgba(255, 255, 255, 0.5), rgba(160, 160, 160, 0.2), transparent 70%)`,
+              opacity: "calc(var(--glow-opacity) * 0.45)",
+              background: `radial-gradient(calc(var(--spread) * 0.9) circle at var(--glow-x) var(--glow-y), rgba(34, 211, 238, 0.5), rgba(99, 102, 241, 0.35), transparent 70%)`,
             }}
           />
         )}

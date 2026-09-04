@@ -6,14 +6,14 @@ export const CanvasText = ({
   text = "AI-Generated Code",
   className,
   colors = [
-    "rgba(255, 255, 255, 1)",
-    "rgba(240, 240, 240, 0.9)",
-    "rgba(210, 210, 210, 0.8)",
-    "rgba(180, 180, 180, 0.7)",
-    "rgba(150, 150, 150, 0.6)",
-    "rgba(120, 120, 120, 0.5)",
-    "rgba(90, 90, 90, 0.4)",
-    "rgba(60, 60, 60, 0.3)",
+    "rgba(34, 211, 238, 1)",      // cyan-400
+    "rgba(6, 182, 212, 0.95)",    // cyan-500
+    "rgba(59, 130, 246, 0.9)",    // blue-500
+    "rgba(99, 102, 241, 0.85)",   // indigo-500
+    "rgba(168, 85, 247, 0.8)",    // purple-500
+    "rgba(14, 165, 233, 0.75)",   // sky-500
+    "rgba(45, 212, 191, 0.7)",    // teal-400
+    "rgba(255, 255, 255, 0.9)",   // white flash
   ],
   animationSpeed = 0.5,
 }) => {
@@ -23,7 +23,7 @@ export const CanvasText = ({
   const offsetRef = useRef(0);
 
   const getFont = useCallback((size) => {
-    return `900 ${size}px 'Sora', 'Plus Jakarta Sans', sans-serif`;
+    return `800 ${size}px 'Space Grotesk', 'Inter', sans-serif`;
   }, []);
 
   const drawFrame = useCallback(() => {
@@ -49,7 +49,7 @@ export const CanvasText = ({
     ctx.clearRect(0, 0, w, h);
 
     // Step 1: Draw the text as a solid fill (this becomes the mask)
-    const fontSize = h * 0.75;
+    const fontSize = h * 0.78;
     ctx.font = getFont(fontSize);
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -61,7 +61,7 @@ export const CanvasText = ({
 
     // Step 3: Draw animated diagonal lines that flow through the text
     const lineGap = 6;
-    const lineWidth = 4;
+    const lineWidth = 4.5;
     const totalSpan = lineGap * colors.length;
     offsetRef.current = (offsetRef.current + animationSpeed) % totalSpan;
 
@@ -95,7 +95,7 @@ export const CanvasText = ({
 
   // Measure text to set container width
   const measureRef = useRef(null);
-  const [dims, setDims] = React.useState({ width: 300, height: 80 });
+  const [dims, setDims] = React.useState({ width: 320, height: 80 });
 
   useEffect(() => {
     const measure = () => {
@@ -117,7 +117,7 @@ export const CanvasText = ({
       {/* Hidden text for measurement */}
       <span
         ref={measureRef}
-        className="invisible font-display font-black whitespace-nowrap"
+        className="invisible font-display font-extrabold whitespace-nowrap"
         style={{ fontSize: "inherit", lineHeight: "inherit" }}
         aria-hidden="true"
       >

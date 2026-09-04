@@ -4,11 +4,11 @@
 
 @layer base {
   body {
-    @apply bg-black text-neutral-100 font-sans selection:bg-white/20 selection:text-white antialiased;
+    @apply bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500/25 selection:text-cyan-200 antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  /* Ultra sleek scrollbar */
+  /* Ultra sleek futuristic scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -19,15 +19,15 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #27272a; /* zinc-800 */
+    background: #1e293b;
     border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #52525b; /* zinc-600 */
+    background: #334155;
   }
 
-  /* Custom terminal code scrollbar - hidden by default, visible on hover */
+  /* Custom terminal code scrollbar */
   .code-terminal-scroll {
     scrollbar-width: thin;
     scrollbar-color: #1e293b transparent;
@@ -48,28 +48,19 @@
   }
 
   .code-terminal-scroll::-webkit-scrollbar-thumb:hover {
-    background: #10b981;
+    background: #06b6d4;
   }
 
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+  /* Cyber Glow Utility classes */
+  .glow-border-cyan {
+    box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.25);
   }
 
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+  .glow-border-violet {
+    box-shadow: 0 0 25px -5px rgba(139, 92, 246, 0.25);
   }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #1e293b;
-    border-radius: 9999px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #10b981;
-  }
-
-  /* Android / Dynamic Island Pill Capsule Morph Opening Animation */
+  /* Dynamic Island Pill Capsule Morph Opening Animation */
   @keyframes capsuleOpen {
     0% {
       opacity: 0;
@@ -86,7 +77,6 @@
     }
   }
 
-  /* Android Capsule Closing Animation (Reverse Morph) */
   @keyframes capsuleClose {
     0% {
       opacity: 1;
