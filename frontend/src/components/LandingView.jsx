@@ -6,7 +6,7 @@ import {
   ChevronRight, RefreshCw, EyeOff, Bug, Star, FileSearch, ShieldAlert,
   Sliders, Gauge, Fingerprint, Radio, Play, CheckCircle
 } from "lucide-react";
-import AuroraBackground from "./ui/AuroraBackground";
+import FlickeringGrid from "./ui/FlickeringGrid";
 import GlowingEffect from "./ui/GlowingEffect";
 import { CanvasText } from "./ui/canvas-text";
 
@@ -63,7 +63,19 @@ if stripeKey == "" {
   };
 
   return (
-    <AuroraBackground className="relative py-8 sm:py-14 font-sans bg-transparent">
+    <div className="relative min-h-screen py-8 sm:py-14 font-sans bg-transparent">
+      {/* Magic UI Flickering Grid Background across the landing page */}
+      <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden flex items-center justify-center">
+        <FlickeringGrid
+          className="absolute inset-0 z-0 [mask-image:radial-gradient(900px_circle_at_center,white,transparent)] sm:[mask-image:radial-gradient(1200px_circle_at_center,white,transparent)]"
+          squareSize={4}
+          gridGap={6}
+          color="#60A5FA"
+          maxOpacity={0.5}
+          flickerChance={0.1}
+        />
+      </div>
+
       {/* ========================================================================= */}
       {/* 1. COMPLETELY REDESIGNED HERO SECTION (COMMAND CENTER & LIVE SCANNER)     */}
       {/* ========================================================================= */}
@@ -631,6 +643,6 @@ if stripeKey == "" {
           </div>
         </div>
       </section>
-    </AuroraBackground>
+    </div>
   );
 }

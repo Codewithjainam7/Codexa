@@ -3,7 +3,7 @@ import { Shield, Github, FileCode, Terminal, Lock, ExternalLink, AlertTriangle, 
 
 export default function Footer() {
   return (
-    <footer className="relative border-t border-[#007EA7]/30 bg-[#00171F] pt-16 pb-6 overflow-hidden mt-20 font-sans">
+    <footer className="relative border-t border-[#007EA7]/30 bg-black pt-16 pb-6 overflow-hidden mt-20 font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Main Grid Columns */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12">
@@ -11,7 +11,7 @@ export default function Footer() {
           <div className="md:col-span-4 space-y-4">
             <div className="flex items-center space-x-2.5">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#00A8E8] via-[#007EA7] to-[#003459] p-[1px] flex items-center justify-center shadow-lg shadow-[#00A8E8]/25">
-                <div className="w-full h-full bg-[#00171F] rounded-[10px] flex items-center justify-center">
+                <div className="w-full h-full bg-black rounded-[10px] flex items-center justify-center">
                   <Shield className="w-4 h-4 text-[#00A8E8]" />
                 </div>
               </div>
