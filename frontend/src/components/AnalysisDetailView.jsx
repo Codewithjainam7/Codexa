@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { getAnalysisJob, getFindings } from '../api/client';
-import { CheckCircle, AlertTriangle, XCircle, Clock, Shield, ArrowLeft, RefreshCw, FileText } from 'lucide-react';
+import CodeDiffViewer from './CodeDiffViewer';
+import FindingsFilterBar from './FindingsFilterBar';
+import { CheckCircle, AlertTriangle, XCircle, Clock, Shield, ArrowLeft, RefreshCw, FileText, ExternalLink, HelpCircle } from 'lucide-react';
 
 export default function AnalysisDetailView({ jobId, onBack }) {
   const [job, setJob] = useState(null);
   const [findings, setFindings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [severityFilter, setSeverityFilter] = useState('');
+  const [searchFilter, setSearchFilter] = useState('');
 
   const fetchJobData = async () => {
     try {
@@ -14,11 +18,15 @@ export default function AnalysisDetailView({ jobId, onBack }) {
       setJob(data);
 
       if (data.status === 'COMPLETED' || data.status === 'FAILED') {
-        const fData = await getFindings(jobId);
+        const fData = await getFindings(jobId, {
+          category: categoryFilter,
+          severity: severityFilter,
+          search: searchFilter
+        });
         setFindings(fData.content || []);
       }
     } catch (err) {
-      setError(err.message || 'Failed to load analysis details.');
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -35,7 +43,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
     }, 2000);
 
     return () => clearInterval(interval);
-  }, [jobId, job?.status]);
+  }, [jobId, job?.status, categoryFilter, severityFilter, searchFilter]);
 
   const getVerdictBadge = (verdict) => {
     switch (verdict) {
@@ -50,18 +58,31 @@ export default function AnalysisDetailView({ jobId, onBack }) {
     }
   };
 
+  const getSeverityBadge = (severity) => {
+    switch (severity) {
+      case 'CRITICAL':
+        return <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-rose-500/15 text-rose-400 border border-rose-500/30">CRITICAL</span>;
+      case 'HIGH':
+        return <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-orange-500/15 text-orange-400 border border-orange-500/30">HIGH</span>;
+      case 'MEDIUM':
+        return <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">MEDIUM</span>;
+      default:
+        return <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-blue-500/15 text-blue-400 border border-blue-500/30">LOW</span>;
+    }
+  };
+
   if (loading && !job) {
     return (
       <div className="py-20 text-center space-y-4">
         <RefreshCw className="w-8 h-8 animate-spin text-emerald-400 mx-auto" />
-        <p className="text-slate-400 text-sm">Loading audit job status...</p>
+        <p className="text-slate-400 text-sm">Initializing analysis pipeline...</p>
       </div>
     );
   }
 
   return (
     <div className="max-w-6xl mx-auto py-8 space-y-8">
-      {/* Header */}
+      {/* Top Navigation */}
       <div className="flex items-center justify-between">
         <button
           onClick={onBack}
@@ -72,7 +93,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
         </button>
         <div className="flex items-center space-x-3">
           <a
-            href={`/api/v1/analyses/${jobId}/report?format=html`}
+            href={`http://localhost:8080/api/v1/analyses/${jobId}/report?format=html`}
             target="_blank"
             rel="noreferrer"
             className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-lg flex items-center space-x-1.5 transition-colors"
@@ -83,7 +104,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
         </div>
       </div>
 
-      {/* Overview Card */}
+      {/* Main Scorecard Header */}
       <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
           <div>
@@ -108,7 +129,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
           </div>
         </div>
 
-        {/* Progress bar */}
+        {/* Progress bar during running */}
         {job?.status !== 'COMPLETED' && job?.status !== 'FAILED' && (
           <div className="space-y-2">
             <div className="flex justify-between text-xs font-semibold">
@@ -129,7 +150,12 @@ export default function AnalysisDetailView({ jobId, onBack }) {
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 pt-2">
             <div className="p-4 bg-slate-950/70 border border-slate-800 rounded-xl">
               <div className="text-xs font-medium text-slate-400 uppercase tracking-wider">Overall Score</div>
-              <div className="text-3xl font-black text-emerald-400 mt-1">{job?.overallScore ?? 100}/100</div>
+              <div className={`text-3xl font-black mt-1 ${
+                (job?.overallScore ?? 100) >= 75 ? 'text-emerald-400' :
+                (job?.overallScore ?? 100) >= 50 ? 'text-amber-400' : 'text-rose-400'
+              }`}>
+                {job?.overallScore ?? 100}/100
+              </div>
             </div>
             <div className="p-4 bg-slate-950/70 border border-slate-800 rounded-xl">
               <div className="text-xs font-medium text-slate-400 uppercase tracking-wider">Security (60%)</div>
@@ -147,43 +173,97 @@ export default function AnalysisDetailView({ jobId, onBack }) {
         )}
       </div>
 
-      {/* Findings Section */}
+      {/* Filterable Findings Panel */}
       {job?.status === 'COMPLETED' && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white">Detected Findings ({findings.length})</h3>
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <h3 className="text-lg font-bold text-white">
+              Detected Findings ({findings.length})
+            </h3>
           </div>
 
+          <FindingsFilterBar
+            category={categoryFilter} setCategory={setCategoryFilter}
+            severity={severityFilter} setSeverity={setSeverityFilter}
+            search={searchFilter} setSearch={setSearchFilter}
+          />
+
           {findings.length === 0 ? (
-            <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-8 text-center space-y-2">
+            <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-10 text-center space-y-2">
               <CheckCircle className="w-10 h-10 text-emerald-400 mx-auto" />
-              <p className="text-slate-200 font-semibold">No critical issues detected in this stage.</p>
-              <p className="text-xs text-slate-500">Note: Rules will be expanded in Milestone 4.</p>
+              <p className="text-slate-200 font-semibold">No issues matched the active filter criteria.</p>
+              <p className="text-xs text-slate-500">All scanned AST rules reported clean results.</p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {findings.map((f) => (
-                <div key={f.id} className="bg-slate-900/50 border border-slate-800 rounded-xl p-5 space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                          {f.ruleId}
-                        </span>
-                        <span className="text-sm font-bold text-white">{f.title}</span>
-                      </div>
-                      <p className="text-xs text-slate-400 font-mono">{f.filePath}:{f.startLine}</p>
+                <div key={f.id} className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-4 transition-all hover:border-slate-700">
+                  {/* Finding Title Row */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                        {f.ruleId}
+                      </span>
+                      <h4 className="text-sm font-bold text-white">{f.title}</h4>
                     </div>
-                    <span className="px-2 py-1 text-xs font-bold bg-rose-500/10 text-rose-400 border border-rose-500/30 rounded">
-                      {f.severity}
-                    </span>
+
+                    <div className="flex items-center space-x-2">
+                      {f.requiresManualReview && (
+                        <span className="px-2 py-0.5 text-[10px] font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/20 rounded">
+                          Review Required
+                        </span>
+                      )}
+                      <span className="text-[11px] font-mono text-slate-400">
+                        Priority: {f.priorityScore}
+                      </span>
+                      {getSeverityBadge(f.severity)}
+                    </div>
                   </div>
 
-                  <p className="text-xs text-slate-300">{f.description}</p>
+                  {/* File & OWASP Meta */}
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
+                    <span className="font-mono text-slate-300">
+                      📄 {f.filePath}:{f.startLine}
+                    </span>
+                    {f.owaspMapping && (
+                      <span className="text-emerald-400/90 font-medium">
+                        🛡️ {f.owaspMapping}
+                      </span>
+                    )}
+                  </div>
 
-                  {f.evidenceMasked && (
-                    <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs font-mono text-amber-300 overflow-x-auto">
-                      <code>{f.evidenceMasked}</code>
+                  {/* Explanation & Impact */}
+                  <p className="text-xs text-slate-300 leading-relaxed">{f.description}</p>
+                  {f.impact && (
+                    <div className="p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl text-xs text-slate-400">
+                      <strong className="text-rose-400 font-semibold block mb-0.5">Potential Impact:</strong>
+                      {f.impact}
+                    </div>
+                  )}
+
+                  {/* Before / After Diff Comparison */}
+                  <CodeDiffViewer
+                    originalCode={f.evidenceMasked}
+                    suggestedFix={f.suggestedFix}
+                    ruleId={f.ruleId}
+                  />
+
+                  {/* References & Links */}
+                  {f.references && f.references.length > 0 && (
+                    <div className="pt-2 border-t border-slate-800 flex flex-wrap gap-2 text-[11px]">
+                      <span className="text-slate-500">Security References:</span>
+                      {f.references.map((ref, idx) => (
+                        <a
+                          key={idx}
+                          href={ref}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2 flex items-center space-x-1"
+                        >
+                          <span>OWASP Reference</span>
+                          <ExternalLink className="w-3 h-3 inline" />
+                        </a>
+                      ))}
                     </div>
                   )}
                 </div>
