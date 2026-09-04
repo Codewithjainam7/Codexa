@@ -64,14 +64,14 @@ if stripeKey == "" {
 
   return (
     <div className="relative min-h-screen py-8 sm:py-14 font-sans bg-transparent">
-      {/* Magic UI Flickering Grid Background across the landing page */}
-      <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden flex items-center justify-center">
+      {/* 1. Global Viewport Flickering Grid Background */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <FlickeringGrid
-          className="absolute inset-0 z-0 [mask-image:radial-gradient(900px_circle_at_center,white,transparent)] sm:[mask-image:radial-gradient(1200px_circle_at_center,white,transparent)]"
+          className="w-full h-full"
           squareSize={4}
           gridGap={6}
           color="#60A5FA"
-          maxOpacity={0.5}
+          maxOpacity={0.4}
           flickerChance={0.1}
         />
       </div>
@@ -80,6 +80,20 @@ if stripeKey == "" {
       {/* 1. COMPLETELY REDESIGNED HERO SECTION (COMMAND CENTER & LIVE SCANNER)     */}
       {/* ========================================================================= */}
       <section className="text-center max-w-5xl mx-auto pt-4 sm:pt-10 pb-16 sm:pb-24 px-4 relative z-10">
+        {/* Spotlight Flickering Grid right behind the Hero */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] sm:w-[900px] sm:h-[900px] pointer-events-none -z-10 overflow-hidden opacity-90">
+          <FlickeringGrid
+            className="w-full h-full [mask-image:radial-gradient(450px_circle_at_center,white,transparent)]"
+            squareSize={4}
+            gridGap={6}
+            color="#60A5FA"
+            maxOpacity={0.7}
+            flickerChance={0.15}
+            width={900}
+            height={900}
+          />
+        </div>
+
         {/* Floating Futuristic Status Badge */}
         <div className="inline-flex items-center space-x-3 px-5 py-2.5 rounded-full theme-glass-pill text-[#00A8E8] text-xs font-semibold backdrop-blur-3xl mb-8 transform hover:scale-105 transition-all duration-300 cursor-default shadow-[0_0_25px_rgba(0,168,232,0.25)]">
           <span className="relative flex h-2.5 w-2.5">
