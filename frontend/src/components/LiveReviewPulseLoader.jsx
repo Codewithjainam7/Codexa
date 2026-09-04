@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { 
   Sparkles, ShieldCheck, Cpu, Code2, Binary, 
-  Search, FileCheck2, Zap, Flame, Loader2
+  Search, FileCheck2, Zap, Flame
 } from 'lucide-react';
 import AnimatedBeamPipeline from './AnimatedBeamPipeline';
 import DottedGlowBackground from './ui/DottedGlowBackground';
+import AnimatedCircularProgressBar from './magicui/AnimatedCircularProgressBar';
 
 export default function LiveReviewPulseLoader({ job }) {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
@@ -63,7 +64,7 @@ export default function LiveReviewPulseLoader({ job }) {
         speedScale={1.2}
       />
 
-      {/* Header with Glowing Orbit */}
+      {/* Header with Glowing Orbit & Circular Progress */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-6 border-b border-slate-800">
         <div className="flex items-center space-x-4">
           <div className="relative">
@@ -83,12 +84,18 @@ export default function LiveReviewPulseLoader({ job }) {
           </div>
         </div>
 
-        <div className="flex items-center space-x-3 bg-slate-950/80 px-4 py-2.5 rounded-2xl border border-slate-800">
+        {/* Magic UI Animated Circular Progress Bar */}
+        <div className="flex items-center space-x-3 bg-slate-950/90 px-4 py-2 rounded-2xl border border-slate-800 shadow-inner">
           <div className="text-right">
-            <div className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Progress</div>
-            <div className="text-xl font-black text-emerald-400 font-mono">{job?.progressPercent || 15}%</div>
+            <div className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Scanning</div>
+            <div className="text-xs text-emerald-400 font-mono font-bold">{currentStageName}</div>
           </div>
-          <Loader2 className="w-6 h-6 text-emerald-400 animate-spin" />
+          <AnimatedCircularProgressBar
+            value={job?.progressPercent || 15}
+            gaugePrimaryColor="#10b981"
+            gaugeSecondaryColor="rgba(255, 255, 255, 0.08)"
+            className="size-14 sm:size-16"
+          />
         </div>
       </div>
 
