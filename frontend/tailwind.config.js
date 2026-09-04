@@ -14,11 +14,10 @@ export default {
       colors: {
         theme: {
           white: '#FFFFFF',
-          dark: '#030d0a',           // Deep Obsidian Emerald Black
-          emerald: '#10B981',        // Primary Emerald
-          teal: '#14B8A6',           // Bright Teal
-          mint: '#34D399',           // Mint Green
-          cyan: '#06B6D4',           // Sky Accent
+          ink: '#00171F',          // Ink Black
+          deep: '#003459',         // Deep Space Blue
+          cerulean: '#007EA7',     // Cerulean
+          sky: '#00A8E8',          // Fresh Sky
         },
       },
       animation: {
@@ -26,6 +25,7 @@ export default {
         'float-slow': 'float 6s ease-in-out infinite',
         'float-delayed': 'float 6s ease-in-out 3s infinite',
         'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+        'scan-line': 'scanLine 3s linear infinite',
       },
       keyframes: {
         aurora: {
@@ -44,6 +44,10 @@ export default {
           '0%, 100%': { opacity: '0.6', transform: 'scale(1)' },
           '50%': { opacity: '1', transform: 'scale(1.05)' },
         },
+        scanLine: {
+          '0%': { transform: 'translateY(-100%)' },
+          '100%': { transform: 'translateY(1000%)' },
+        }
       },
     },
   },
