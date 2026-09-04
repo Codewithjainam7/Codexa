@@ -1,141 +1,131 @@
 "use client";
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
 import { cn } from "../../lib/utils";
 
 export const CanvasText = ({
   text = "AI-Generated Code",
   className,
   colors = [
-    "rgba(34, 211, 238, 1)",      // cyan-400
-    "rgba(6, 182, 212, 0.95)",    // cyan-500
-    "rgba(59, 130, 246, 0.9)",    // blue-500
-    "rgba(99, 102, 241, 0.85)",   // indigo-500
-    "rgba(168, 85, 247, 0.8)",    // purple-500
-    "rgba(14, 165, 233, 0.75)",   // sky-500
-    "rgba(45, 212, 191, 0.7)",    // teal-400
-    "rgba(255, 255, 255, 0.9)",   // white flash
+    "rgba(192, 132, 252, 1)",   // purple-400
+    "rgba(168, 85, 247, 0.95)",  // purple-500
+    "rgba(244, 63, 94, 0.9)",    // rose-500
+    "rgba(251, 113, 133, 0.85)", // rose-400
+    "rgba(245, 158, 11, 0.85)",  // amber-500
+    "rgba(99, 102, 241, 0.8)",   // indigo-500
+    "rgba(56, 189, 248, 0.75)",  // sky-400
+    "rgba(255, 255, 255, 0.95)", // white flash
   ],
-  animationSpeed = 0.5,
+  animationSpeed = 0.6,
 }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const animationRef = useRef(null);
   const offsetRef = useRef(0);
+  const [size, setSize] = useState({ width: 0, height: 0 });
 
-  const getFont = useCallback((size) => {
-    return `800 ${size}px 'Space Grotesk', 'Inter', sans-serif`;
+  const updateDimensions = useCallback(() => {
+    if (!containerRef.current || !canvasRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    
+    const w = Math.ceil(rect.width);
+    const h = Math.ceil(rect.height);
+
+    if (w > 0 && h > 0) {
+      canvasRef.current.width = w * dpr;
+      canvasRef.current.height = h * dpr;
+      setSize({ width: w, height: h });
+    }
   }, []);
 
-  const drawFrame = useCallback(() => {
+  useEffect(() => {
+    updateDimensions();
+    window.addEventListener("resize", updateDimensions);
+    const timer = setTimeout(updateDimensions, 100);
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+      clearTimeout(timer);
+    };
+  }, [updateDimensions, text]);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
-    const container = containerRef.current;
-    if (!canvas || !container) return;
+    if (!canvas || size.width === 0 || size.height === 0) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const dpr = window.devicePixelRatio || 1;
-    const rect = container.getBoundingClientRect();
-    
-    // Set canvas size accounting for device pixel ratio
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    ctx.scale(dpr, dpr);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = size.width;
+    const h = size.height;
 
-    const w = rect.width;
-    const h = rect.height;
+    const render = () => {
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, w, h);
 
-    // Clear
-    ctx.clearRect(0, 0, w, h);
+      // Step 1: Draw text as solid mask
+      const fontSize = h * 0.78;
+      ctx.font = `800 ${fontSize}px 'Space Grotesk', -apple-system, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "#ffffff";
+      ctx.fillText(text, w / 2, h / 2 + h * 0.02);
 
-    // Step 1: Draw the text as a solid fill (this becomes the mask)
-    const fontSize = h * 0.78;
-    ctx.font = getFont(fontSize);
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "white";
-    ctx.fillText(text, w / 2, h / 2);
+      // Step 2: Source-in clip operation
+      ctx.globalCompositeOperation = "source-in";
 
-    // Step 2: Use composite operation so subsequent draws only appear INSIDE the text
-    ctx.globalCompositeOperation = "source-in";
+      // Step 3: Flowing animated diagonal lines
+      const lineGap = 7;
+      const lineWidth = 5;
+      const totalSpan = lineGap * colors.length;
+      offsetRef.current = (offsetRef.current + animationSpeed) % totalSpan;
 
-    // Step 3: Draw animated diagonal lines that flow through the text
-    const lineGap = 6;
-    const lineWidth = 4.5;
-    const totalSpan = lineGap * colors.length;
-    offsetRef.current = (offsetRef.current + animationSpeed) % totalSpan;
+      const maxDim = Math.max(w, h) * 2.5;
 
-    const maxDim = Math.max(w, h) * 2;
+      for (let i = -maxDim; i < maxDim; i += lineGap) {
+        const y = i + offsetRef.current;
+        const colorIdx = Math.abs(Math.floor(i / lineGap)) % colors.length;
+        ctx.strokeStyle = colors[colorIdx];
+        ctx.lineWidth = lineWidth;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y - w * 0.45);
+        ctx.stroke();
+      }
 
-    for (let i = -maxDim; i < maxDim; i += lineGap) {
-      const y = i + offsetRef.current;
-      const colorIdx = Math.abs(Math.floor(i / lineGap)) % colors.length;
-      ctx.strokeStyle = colors[colorIdx];
-      ctx.lineWidth = lineWidth;
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(w, y - w * 0.5);
-      ctx.stroke();
-    }
+      ctx.restore();
+      animationRef.current = requestAnimationFrame(render);
+    };
 
-    // Reset composite
-    ctx.globalCompositeOperation = "source-over";
+    animationRef.current = requestAnimationFrame(render);
 
-    animationRef.current = requestAnimationFrame(drawFrame);
-  }, [text, colors, animationSpeed, getFont]);
-
-  useEffect(() => {
-    animationRef.current = requestAnimationFrame(drawFrame);
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [drawFrame]);
-
-  // Measure text to set container width
-  const measureRef = useRef(null);
-  const [dims, setDims] = React.useState({ width: 320, height: 80 });
-
-  useEffect(() => {
-    const measure = () => {
-      const el = measureRef.current;
-      if (el) {
-        const rect = el.getBoundingClientRect();
-        setDims({ width: rect.width + 16, height: rect.height + 8 });
-      }
-    };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, [text]);
+  }, [size, text, colors, animationSpeed]);
 
   return (
     <span
-      className={cn("relative inline-block align-middle", className)}
+      ref={containerRef}
+      className={cn("relative inline-block align-middle select-none", className)}
     >
-      {/* Hidden text for measurement */}
+      {/* Base High-Contrast Visible Text (Ensures text is never invisible) */}
       <span
-        ref={measureRef}
-        className="invisible font-display font-extrabold whitespace-nowrap"
+        className="font-display font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-rose-400 to-amber-300"
         style={{ fontSize: "inherit", lineHeight: "inherit" }}
-        aria-hidden="true"
       >
         {text}
       </span>
 
-      {/* Canvas overlay */}
-      <span
-        ref={containerRef}
-        className="absolute inset-0 overflow-hidden"
-        style={{ width: dims.width, height: dims.height }}
-      >
-        <canvas
-          ref={canvasRef}
-          className="w-full h-full"
-          style={{ width: "100%", height: "100%" }}
-        />
-      </span>
+      {/* Superimposed Animated Canvas on top */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 pointer-events-none w-full h-full"
+        style={{ width: "100%", height: "100%" }}
+      />
     </span>
   );
 };

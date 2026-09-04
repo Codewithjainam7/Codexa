@@ -63,16 +63,16 @@ if stripeKey == "" {
 
   return (
     <AuroraBackground className="relative py-12 sm:py-16 font-sans bg-transparent">
-      {/* 1. HERO SECTION WITH VISIONOS / IOS 26 LIQUID GLASS EFFECTS */}
+      {/* 1. HERO SECTION WITH ROYAL PURPLE & SUNSET CORAL GLASS THEME */}
       <section className="text-center max-w-5xl mx-auto pt-6 sm:pt-12 pb-16 sm:pb-24 px-4 relative z-10">
         {/* Floating VisionOS Glass Chip */}
-        <div className="inline-flex items-center space-x-3 px-5 py-2 rounded-full ios-glass-pill text-cyan-300 text-xs font-semibold backdrop-blur-3xl mb-8 transform hover:scale-105 transition-all cursor-default">
+        <div className="inline-flex items-center space-x-3 px-5 py-2 rounded-full ios-glass-pill text-purple-300 text-xs font-semibold backdrop-blur-3xl mb-8 transform hover:scale-105 transition-all cursor-default">
           <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-400 shadow-[0_0_10px_#22d3ee]" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-400 shadow-[0_0_10px_#f43f5e]" />
           </span>
           <span className="font-display tracking-wide text-slate-200">
-            Nvidia Nemotron 550B <span className="text-cyan-400 font-bold">&bull;</span> Deterministic AST Engine
+            Nvidia Nemotron 550B <span className="text-rose-400 font-bold">&bull;</span> Deterministic AST Engine
           </span>
         </div>
         
@@ -82,19 +82,20 @@ if stripeKey == "" {
           <CanvasText
             text="AI-Generated Code"
             colors={[
-              "rgba(34, 211, 238, 1)",      // cyan-400
-              "rgba(6, 182, 212, 0.95)",    // cyan-500
-              "rgba(59, 130, 246, 0.9)",    // blue-500
-              "rgba(99, 102, 241, 0.85)",   // indigo-500
-              "rgba(168, 85, 247, 0.8)",    // violet-500
-              "rgba(45, 212, 191, 0.75)",   // teal-400
-              "rgba(255, 255, 255, 0.9)",   // white flash
+              "rgba(192, 132, 252, 1)",   // purple-400
+              "rgba(168, 85, 247, 0.95)",  // purple-500
+              "rgba(244, 63, 94, 0.9)",    // rose-500
+              "rgba(251, 113, 133, 0.85)", // rose-400
+              "rgba(245, 158, 11, 0.85)",  // amber-500
+              "rgba(99, 102, 241, 0.8)",   // indigo-500
+              "rgba(56, 189, 248, 0.75)",  // sky-400
+              "rgba(255, 255, 255, 0.95)", // white flash
             ]}
-            animationSpeed={0.5}
+            animationSpeed={0.6}
             className="mx-1 my-1"
           />
           <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-100 via-slate-200 to-slate-400">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-100 via-purple-200 to-rose-200">
             Ready for Production?
           </span>
         </h1>
@@ -104,11 +105,11 @@ if stripeKey == "" {
           Codexa audits AI-generated applications, detects OWASP vulnerabilities &amp; architectural flaws, ranks findings by verified risk, and computes an explainable <strong className="text-white">Production Readiness Score (0–100)</strong>.
         </p>
 
-        {/* Dual iOS 26 Glass Actions */}
+        {/* Dual Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
           <button
             onClick={onStartAnalysis}
-            className="w-full sm:w-auto px-9 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 text-white font-extrabold text-base flex items-center justify-center space-x-3 shadow-[0_15px_35px_rgba(6,182,212,0.4)] hover:shadow-[0_20px_45px_rgba(6,182,212,0.6)] border border-white/25 transition-all transform hover:scale-105 active:scale-95 cursor-pointer font-display tracking-tight"
+            className="w-full sm:w-auto px-9 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-rose-500 to-amber-500 text-white font-extrabold text-base flex items-center justify-center space-x-3 shadow-[0_15px_35px_rgba(244,63,94,0.4)] hover:shadow-[0_20px_45px_rgba(244,63,94,0.6)] border border-white/25 transition-all transform hover:scale-105 active:scale-95 cursor-pointer font-display tracking-tight"
           >
             <span>Start Codebase Audit</span>
             <ArrowRight className="w-5 h-5 text-white" />
@@ -118,18 +119,18 @@ if stripeKey == "" {
             href="https://github.com/Codewithjainam7/Codexa"
             target="_blank"
             rel="noreferrer"
-            className="w-full sm:w-auto px-8 py-4 rounded-2xl ios-glass-pill hover:bg-white/10 text-slate-200 hover:text-white font-semibold text-base transition-all flex items-center justify-center space-x-2.5 shadow-lg backdrop-blur-3xl font-display hover:border-cyan-400/40"
+            className="w-full sm:w-auto px-8 py-4 rounded-2xl ios-glass-pill hover:bg-white/10 text-slate-200 hover:text-white font-semibold text-base transition-all flex items-center justify-center space-x-2.5 shadow-lg backdrop-blur-3xl font-display hover:border-purple-400/40"
           >
-            <GitBranch className="w-4 h-4 text-cyan-400" />
+            <GitBranch className="w-4 h-4 text-purple-400" />
             <span>View GitHub Source</span>
           </a>
         </div>
 
         {/* Floating Telemetry Glass Dock */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">
-          <div className="p-5 rounded-3xl ios-glass-card shadow-xl hover:border-cyan-500/40 transition-all group">
-            <div className="flex items-center space-x-2 text-cyan-400 mb-2">
-              <div className="p-2 rounded-xl bg-cyan-500/15 border border-cyan-500/20">
+          <div className="p-5 rounded-3xl ios-glass-card shadow-xl hover:border-purple-500/40 transition-all group">
+            <div className="flex items-center space-x-2 text-purple-400 mb-2">
+              <div className="p-2 rounded-xl bg-purple-500/15 border border-purple-500/20">
                 <Shield className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
               <span className="text-[11px] text-slate-400 font-mono">AST Engine</span>
@@ -137,9 +138,9 @@ if stripeKey == "" {
             <div className="text-base font-bold text-white font-display">19+ Security Rules</div>
           </div>
 
-          <div className="p-5 rounded-3xl ios-glass-card shadow-xl hover:border-violet-500/40 transition-all group">
-            <div className="flex items-center space-x-2 text-violet-400 mb-2">
-              <div className="p-2 rounded-xl bg-violet-500/15 border border-violet-500/20">
+          <div className="p-5 rounded-3xl ios-glass-card shadow-xl hover:border-rose-500/40 transition-all group">
+            <div className="flex items-center space-x-2 text-rose-400 mb-2">
+              <div className="p-2 rounded-xl bg-rose-500/15 border border-rose-500/20">
                 <Cpu className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
               <span className="text-[11px] text-slate-400 font-mono">AI Cascade</span>
@@ -147,9 +148,9 @@ if stripeKey == "" {
             <div className="text-base font-bold text-white font-display">Nemotron 550B</div>
           </div>
 
-          <div className="p-5 rounded-3xl ios-glass-card shadow-xl hover:border-blue-500/40 transition-all group">
-            <div className="flex items-center space-x-2 text-blue-400 mb-2">
-              <div className="p-2 rounded-xl bg-blue-500/15 border border-blue-500/20">
+          <div className="p-5 rounded-3xl ios-glass-card shadow-xl hover:border-amber-500/40 transition-all group">
+            <div className="flex items-center space-x-2 text-amber-400 mb-2">
+              <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/20">
                 <Zap className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
               <span className="text-[11px] text-slate-400 font-mono">Benchmark</span>
@@ -157,9 +158,9 @@ if stripeKey == "" {
             <div className="text-base font-bold text-slate-200 font-display">&lt; 100ms Parsing</div>
           </div>
 
-          <div className="p-5 rounded-3xl ios-glass-card shadow-xl hover:border-teal-500/40 transition-all group">
-            <div className="flex items-center space-x-2 text-teal-400 mb-2">
-              <div className="p-2 rounded-xl bg-teal-500/15 border border-teal-500/20">
+          <div className="p-5 rounded-3xl ios-glass-card shadow-xl hover:border-indigo-500/40 transition-all group">
+            <div className="flex items-center space-x-2 text-indigo-400 mb-2">
+              <div className="p-2 rounded-xl bg-indigo-500/15 border border-indigo-500/20">
                 <Lock className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
               <span className="text-[11px] text-slate-400 font-mono">Sandboxing</span>
@@ -178,14 +179,14 @@ if stripeKey == "" {
       <section className="max-w-4xl mx-auto py-8 sm:py-16 px-4 relative z-10 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-2">
           <div className="flex items-center space-x-2.5">
-            <div className="p-1.5 rounded-lg bg-cyan-500/20 border border-cyan-400/30">
-              <Terminal className="w-4 h-4 text-cyan-300" />
+            <div className="p-1.5 rounded-lg bg-purple-500/20 border border-purple-400/30">
+              <Terminal className="w-4 h-4 text-purple-300" />
             </div>
             <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-300">
               Interactive Live Remediation Preview
             </h2>
           </div>
-          <span className="w-fit text-[11px] font-mono text-cyan-300 bg-cyan-500/15 px-3 py-1 rounded-full border border-cyan-500/30 backdrop-blur-xl shadow-sm">
+          <span className="w-fit text-[11px] font-mono text-purple-300 bg-purple-500/15 px-3 py-1 rounded-full border border-purple-500/30 backdrop-blur-xl shadow-sm">
             Realtime AST Diff
           </span>
         </div>
@@ -211,7 +212,7 @@ if stripeKey == "" {
                   onClick={() => setActiveCodeTab(tab)}
                   className={`px-3 py-1 rounded-lg text-xs font-mono uppercase font-bold transition-all ${
                     activeCodeTab === tab
-                      ? "bg-cyan-500/30 text-cyan-300 border border-cyan-400/40 shadow-sm"
+                      ? "bg-purple-500/30 text-purple-200 border border-purple-400/40 shadow-sm"
                       : "text-slate-400 hover:text-white"
                   }`}
                 >
@@ -263,10 +264,10 @@ if stripeKey == "" {
           {/* Explanation Footer */}
           <div className="px-5 py-4 bg-white/[0.02] border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-slate-300">
             <span className="flex items-center space-x-2">
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
+              <Sparkles className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
               <span>{codeDemos[activeCodeTab].explanation}</span>
             </span>
-            <span className="text-cyan-400 font-mono font-bold">0 Hallucination</span>
+            <span className="text-purple-400 font-mono font-bold">0 Hallucination</span>
           </div>
         </div>
       </section>
@@ -280,8 +281,8 @@ if stripeKey == "" {
       <section className="max-w-6xl mx-auto py-8 sm:py-16 px-4 relative z-10 space-y-8">
         <div className="flex items-center justify-between px-2">
           <div className="flex items-center space-x-2.5">
-            <div className="p-1.5 rounded-lg bg-cyan-500/20 border border-cyan-400/30">
-              <Sparkles className="w-4 h-4 text-cyan-300" />
+            <div className="p-1.5 rounded-lg bg-purple-500/20 border border-purple-400/30">
+              <Sparkles className="w-4 h-4 text-purple-300" />
             </div>
             <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-300">
               Engine Architecture &amp; Capabilities
@@ -295,9 +296,9 @@ if stripeKey == "" {
           <li className="md:col-span-4 list-none">
             <div className="relative h-full rounded-[30px] ios-glass p-2 sm:p-3 group transition-all">
               <GlowingEffect spread={40} glow={true} disabled={false} proximity={64} inactiveZone={0.01} />
-              <div className="relative flex h-full flex-col justify-between gap-5 rounded-[22px] p-6 bg-slate-900/40 border border-white/10 backdrop-blur-2xl">
+              <div className="relative flex h-full flex-col justify-between gap-5 rounded-[22px] p-6 bg-[#0f0728]/60 border border-white/10 backdrop-blur-2xl">
                 <div className="space-y-3.5">
-                  <div className="w-fit rounded-2xl border border-cyan-500/30 bg-cyan-500/15 p-3 text-cyan-300 shadow-inner">
+                  <div className="w-fit rounded-2xl border border-purple-500/30 bg-purple-500/15 p-3 text-purple-300 shadow-inner">
                     <Lock className="h-5 w-5" />
                   </div>
                   <div>
@@ -309,10 +310,10 @@ if stripeKey == "" {
                 </div>
 
                 <div className="flex flex-wrap gap-1.5 pt-3 border-t border-white/10 text-[10px] font-mono">
-                  <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">SQLi Shield</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30">SQLi Shield</span>
                   <span className="px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-300 border border-rose-500/30">RCE Blocked</span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/30">XSS Sanitizer</span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/30">SSRF Guard</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">XSS Sanitizer</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">SSRF Guard</span>
                 </div>
               </div>
             </div>
@@ -322,7 +323,7 @@ if stripeKey == "" {
           <li className="md:col-span-4 md:row-span-2 list-none">
             <div className="relative h-full rounded-[30px] ios-glass p-2 sm:p-3 group transition-all">
               <GlowingEffect spread={45} glow={true} disabled={false} proximity={64} inactiveZone={0.01} />
-              <div className="relative flex h-full flex-col justify-between gap-5 rounded-[22px] p-6 bg-slate-900/40 border border-white/10 backdrop-blur-2xl">
+              <div className="relative flex h-full flex-col justify-between gap-5 rounded-[22px] p-6 bg-[#0f0728]/60 border border-white/10 backdrop-blur-2xl">
                 <div className="space-y-3.5">
                   <div className="flex items-center justify-between">
                     <div className="w-fit rounded-2xl border border-emerald-500/30 bg-emerald-500/15 p-3 text-emerald-300 shadow-inner">
@@ -363,10 +364,10 @@ if stripeKey == "" {
 
                 <div className="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400 font-mono">
                   <span className="flex items-center space-x-1.5 text-slate-300">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400" />
                     <span>Secret Masking</span>
                   </span>
-                  <span className="text-cyan-400 font-bold">0 Hallucination</span>
+                  <span className="text-purple-400 font-bold">0 Hallucination</span>
                 </div>
               </div>
             </div>
@@ -376,9 +377,9 @@ if stripeKey == "" {
           <li className="md:col-span-4 list-none">
             <div className="relative h-full rounded-[30px] ios-glass p-2 sm:p-3 group transition-all">
               <GlowingEffect spread={40} glow={true} disabled={false} proximity={64} inactiveZone={0.01} />
-              <div className="relative flex h-full flex-col justify-between gap-5 rounded-[22px] p-6 bg-slate-900/40 border border-white/10 backdrop-blur-2xl">
+              <div className="relative flex h-full flex-col justify-between gap-5 rounded-[22px] p-6 bg-[#0f0728]/60 border border-white/10 backdrop-blur-2xl">
                 <div className="space-y-3.5">
-                  <div className="w-fit rounded-2xl border border-violet-500/30 bg-violet-500/15 p-3 text-violet-300 shadow-inner">
+                  <div className="w-fit rounded-2xl border border-rose-500/30 bg-rose-500/15 p-3 text-rose-300 shadow-inner">
                     <Cpu className="h-5 w-5" />
                   </div>
                   <div>
@@ -390,8 +391,8 @@ if stripeKey == "" {
                 </div>
 
                 <div className="flex flex-wrap gap-1.5 pt-3 border-t border-white/10 text-[10px] font-mono">
-                  <span className="px-2.5 py-0.5 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/30">Nemotron 550B</span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">Inkling Small</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">Nemotron 550B</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">Inkling Small</span>
                   <span className="px-2.5 py-0.5 rounded-full bg-white/10 text-slate-300 border border-white/15">AST Graph</span>
                 </div>
               </div>
@@ -402,9 +403,9 @@ if stripeKey == "" {
           <li className="md:col-span-4 list-none">
             <div className="relative h-full rounded-[30px] ios-glass p-2 sm:p-3 group transition-all">
               <GlowingEffect spread={40} glow={true} disabled={false} proximity={64} inactiveZone={0.01} />
-              <div className="relative flex h-full flex-col justify-between gap-5 rounded-[22px] p-6 bg-slate-900/40 border border-white/10 backdrop-blur-2xl">
+              <div className="relative flex h-full flex-col justify-between gap-5 rounded-[22px] p-6 bg-[#0f0728]/60 border border-white/10 backdrop-blur-2xl">
                 <div className="space-y-3.5">
-                  <div className="w-fit rounded-2xl border border-blue-500/30 bg-blue-500/15 p-3 text-blue-300 shadow-inner">
+                  <div className="w-fit rounded-2xl border border-amber-500/30 bg-amber-500/15 p-3 text-amber-300 shadow-inner">
                     <Zap className="h-5 w-5" />
                   </div>
                   <div>
@@ -418,12 +419,12 @@ if stripeKey == "" {
                 <div className="space-y-2.5 pt-3 border-t border-white/10">
                   <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
                     <span>Readiness Weighting</span>
-                    <span className="text-cyan-400 font-bold">100% Deterministic</span>
+                    <span className="text-amber-400 font-bold">100% Deterministic</span>
                   </div>
                   <div className="h-2.5 w-full bg-black/60 rounded-full overflow-hidden flex border border-white/10 p-0.5">
-                    <div className="bg-cyan-400 h-full rounded-full w-[60%]" title="Security 60%" />
-                    <div className="bg-blue-500 h-full rounded-full w-[25%]" title="Quality 25%" />
-                    <div className="bg-violet-500 h-full rounded-full w-[15%]" title="Operations 15%" />
+                    <div className="bg-purple-500 h-full rounded-full w-[60%]" title="Security 60%" />
+                    <div className="bg-rose-500 h-full rounded-full w-[25%]" title="Quality 25%" />
+                    <div className="bg-amber-500 h-full rounded-full w-[15%]" title="Operations 15%" />
                   </div>
                 </div>
               </div>
@@ -434,9 +435,9 @@ if stripeKey == "" {
           <li className="md:col-span-4 list-none">
             <div className="relative h-full rounded-[30px] ios-glass p-2 sm:p-3 group transition-all">
               <GlowingEffect spread={40} glow={true} disabled={false} proximity={64} inactiveZone={0.01} />
-              <div className="relative flex h-full flex-col justify-between gap-5 rounded-[22px] p-6 bg-slate-900/40 border border-white/10 backdrop-blur-2xl">
+              <div className="relative flex h-full flex-col justify-between gap-5 rounded-[22px] p-6 bg-[#0f0728]/60 border border-white/10 backdrop-blur-2xl">
                 <div className="space-y-3.5">
-                  <div className="w-fit rounded-2xl border border-teal-500/30 bg-teal-500/15 p-3 text-teal-300 shadow-inner">
+                  <div className="w-fit rounded-2xl border border-indigo-500/30 bg-indigo-500/15 p-3 text-indigo-300 shadow-inner">
                     <ShieldCheck className="h-5 w-5" />
                   </div>
                   <div>
@@ -449,11 +450,11 @@ if stripeKey == "" {
 
                 <div className="flex items-center justify-between pt-3 border-t border-white/10 text-[10px] font-mono text-slate-400">
                   <span className="flex items-center space-x-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-teal-400" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400" />
                     <span>Zip Slip Block</span>
                   </span>
                   <span className="flex items-center space-x-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-teal-400" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400" />
                     <span>Quota Enforced</span>
                   </span>
                 </div>
@@ -468,11 +469,11 @@ if stripeKey == "" {
         <div className="w-full h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
       </div>
 
-      {/* 4. SCAN PIPELINE ARCHITECTURE (CONTROL CENTER WIDGETS) */}
+      {/* 4. SCAN PIPELINE ARCHITECTURE */}
       <section className="max-w-5xl mx-auto py-8 sm:py-16 px-4 relative z-10 space-y-10">
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center space-x-2 text-xs font-mono text-cyan-300 font-bold uppercase tracking-wider ios-glass-pill px-4 py-1.5 rounded-full">
-            <Layers className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="inline-flex items-center space-x-2 text-xs font-mono text-purple-300 font-bold uppercase tracking-wider ios-glass-pill px-4 py-1.5 rounded-full">
+            <Layers className="w-3.5 h-3.5 text-purple-400" />
             <span>Automated Analysis Pipeline</span>
           </div>
           <h2 className="text-2xl sm:text-4xl font-extrabold font-display text-white">
@@ -482,8 +483,8 @@ if stripeKey == "" {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 pt-2">
           {/* Stage 1 */}
-          <div className="p-6 rounded-[28px] ios-glass-card hover:border-cyan-500/50 transition-all group shadow-xl">
-            <div className="w-10 h-10 rounded-2xl bg-cyan-500/15 border border-cyan-400/30 flex items-center justify-center text-cyan-300 font-bold font-mono text-xs mb-4">
+          <div className="p-6 rounded-[28px] ios-glass-card hover:border-purple-500/50 transition-all group shadow-xl">
+            <div className="w-10 h-10 rounded-2xl bg-purple-500/15 border border-purple-400/30 flex items-center justify-center text-purple-300 font-bold font-mono text-xs mb-4">
               01
             </div>
             <h4 className="text-base font-bold text-white font-display mb-1.5">Sandboxed Ingestion</h4>
@@ -493,8 +494,8 @@ if stripeKey == "" {
           </div>
 
           {/* Stage 2 */}
-          <div className="p-6 rounded-[28px] ios-glass-card hover:border-blue-500/50 transition-all group shadow-xl">
-            <div className="w-10 h-10 rounded-2xl bg-blue-500/15 border border-blue-400/30 flex items-center justify-center text-blue-300 font-bold font-mono text-xs mb-4">
+          <div className="p-6 rounded-[28px] ios-glass-card hover:border-rose-500/50 transition-all group shadow-xl">
+            <div className="w-10 h-10 rounded-2xl bg-rose-500/15 border border-rose-400/30 flex items-center justify-center text-rose-300 font-bold font-mono text-xs mb-4">
               02
             </div>
             <h4 className="text-base font-bold text-white font-display mb-1.5">Deterministic AST Scan</h4>
@@ -504,8 +505,8 @@ if stripeKey == "" {
           </div>
 
           {/* Stage 3 */}
-          <div className="p-6 rounded-[28px] ios-glass-card hover:border-violet-500/50 transition-all group shadow-xl">
-            <div className="w-10 h-10 rounded-2xl bg-violet-500/15 border border-violet-400/30 flex items-center justify-center text-violet-300 font-bold font-mono text-xs mb-4">
+          <div className="p-6 rounded-[28px] ios-glass-card hover:border-amber-500/50 transition-all group shadow-xl">
+            <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-300 font-bold font-mono text-xs mb-4">
               03
             </div>
             <h4 className="text-base font-bold text-white font-display mb-1.5">Neural Cascade</h4>
@@ -515,8 +516,8 @@ if stripeKey == "" {
           </div>
 
           {/* Stage 4 */}
-          <div className="p-6 rounded-[28px] ios-glass-card hover:border-teal-500/50 transition-all group shadow-xl">
-            <div className="w-10 h-10 rounded-2xl bg-teal-500/15 border border-teal-400/30 flex items-center justify-center text-teal-300 font-bold font-mono text-xs mb-4">
+          <div className="p-6 rounded-[28px] ios-glass-card hover:border-indigo-500/50 transition-all group shadow-xl">
+            <div className="w-10 h-10 rounded-2xl bg-indigo-500/15 border border-indigo-400/30 flex items-center justify-center text-indigo-300 font-bold font-mono text-xs mb-4">
               04
             </div>
             <h4 className="text-base font-bold text-white font-display mb-1.5">Readiness Index</h4>
@@ -532,10 +533,10 @@ if stripeKey == "" {
         <div className="w-full h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
       </div>
 
-      {/* 5. BOTTOM CTA VISIONOS LAUNCH BANNER */}
+      {/* 5. BOTTOM CTA LAUNCH BANNER */}
       <section className="max-w-4xl mx-auto py-8 sm:py-16 px-4 relative z-10">
         <div className="relative rounded-[36px] ios-glass p-8 sm:p-14 text-center space-y-6 overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.7)]">
-          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[500px] h-60 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[500px] h-60 bg-rose-500/20 rounded-full blur-3xl pointer-events-none" />
           
           <div className="relative space-y-3">
             <h3 className="text-3xl sm:text-5xl font-extrabold font-display text-white">
@@ -549,7 +550,7 @@ if stripeKey == "" {
           <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={onStartAnalysis}
-              className="w-full sm:w-auto px-9 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 text-white font-extrabold text-sm flex items-center justify-center space-x-2.5 shadow-[0_15px_35px_rgba(6,182,212,0.4)] hover:shadow-[0_20px_45px_rgba(6,182,212,0.6)] border border-white/25 transition-all cursor-pointer font-display transform hover:scale-105 active:scale-95"
+              className="w-full sm:w-auto px-9 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-rose-500 to-amber-500 text-white font-extrabold text-sm flex items-center justify-center space-x-2.5 shadow-[0_15px_35px_rgba(244,63,94,0.4)] hover:shadow-[0_20px_45px_rgba(244,63,94,0.6)] border border-white/25 transition-all cursor-pointer font-display transform hover:scale-105 active:scale-95"
             >
               <span>Launch New Audit</span>
               <ArrowRight className="w-4 h-4 text-white" />
@@ -560,7 +561,7 @@ if stripeKey == "" {
               rel="noreferrer"
               className="w-full sm:w-auto px-8 py-4 rounded-2xl ios-glass-pill hover:bg-white/10 text-slate-200 border border-white/15 text-sm font-semibold transition-all flex items-center justify-center space-x-2 font-display"
             >
-              <GitBranch className="w-4 h-4 text-cyan-400" />
+              <GitBranch className="w-4 h-4 text-purple-400" />
               <span>Star on GitHub</span>
             </a>
           </div>
