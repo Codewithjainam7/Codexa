@@ -91,15 +91,33 @@ export default function AnalysisDetailView({ jobId, onBack }) {
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Overview</span>
         </button>
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2">
           <a
             href={`http://localhost:8080/api/v1/analyses/${jobId}/report?format=html`}
             target="_blank"
             rel="noreferrer"
-            className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-lg flex items-center space-x-1.5 transition-colors"
+            className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-lg flex items-center space-x-1.5 transition-colors border border-slate-700"
           >
             <FileText className="w-3.5 h-3.5" />
-            <span>Export HTML Report</span>
+            <span>Export HTML</span>
+          </a>
+          <a
+            href={`http://localhost:8080/api/v1/analyses/${jobId}/report?format=markdown`}
+            target="_blank"
+            rel="noreferrer"
+            className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-lg flex items-center space-x-1.5 transition-colors border border-slate-700"
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>Export Markdown</span>
+          </a>
+          <a
+            href={`http://localhost:8080/api/v1/analyses/${jobId}/report?format=json`}
+            target="_blank"
+            rel="noreferrer"
+            className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-lg flex items-center space-x-1.5 transition-colors border border-slate-700"
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>Export JSON</span>
           </a>
         </div>
       </div>
