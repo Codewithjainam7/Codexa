@@ -12,7 +12,7 @@ public record CodexaProperties(
 ) {
     @ConstructorBinding
     public CodexaProperties(Limits limits, Staging staging, Ai ai, Security security) {
-        this.limits = limits != null ? limits : new Limits(25, 100, 1000, 15, 5);
+        this.limits = limits != null ? limits : new Limits(250, 500, 5000, 30, 50);
         this.staging = staging != null ? staging : new Staging(".staging", true);
         this.ai = ai != null ? ai : new Ai(true, "openrouter", "", "anthropic/claude-fable-5.1", "nvidia/nemotron-3-ultra-550b-a55b:free", "https://openrouter.ai/api/v1/chat/completions", 30000);
         this.security = security != null ? security : new Security(true, 60);
@@ -30,11 +30,11 @@ public record CodexaProperties(
             int maxSingleFileSizeMb
     ) {
         public Limits {
-            if (maxCompressedSizeMb <= 0) maxCompressedSizeMb = 25;
-            if (maxExtractedSizeMb <= 0) maxExtractedSizeMb = 100;
-            if (maxFileCount <= 0) maxFileCount = 1000;
-            if (maxPathDepth <= 0) maxPathDepth = 15;
-            if (maxSingleFileSizeMb <= 0) maxSingleFileSizeMb = 5;
+            if (maxCompressedSizeMb <= 0) maxCompressedSizeMb = 250;
+            if (maxExtractedSizeMb <= 0) maxExtractedSizeMb = 500;
+            if (maxFileCount <= 0) maxFileCount = 5000;
+            if (maxPathDepth <= 0) maxPathDepth = 30;
+            if (maxSingleFileSizeMb <= 0) maxSingleFileSizeMb = 50;
         }
 
         public long maxCompressedSizeBytes() {

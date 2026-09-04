@@ -5,8 +5,8 @@ spring:
     active: dev
   servlet:
     multipart:
-      max-file-size: 25MB
-      max-request-size: 30MB
+      max-file-size: 250MB
+      max-request-size: 300MB
       enabled: true
 
 server:
@@ -15,11 +15,11 @@ server:
 
 codexa:
   limits:
-    max-compressed-size-mb: 25
-    max-extracted-size-mb: 100
-    max-file-count: 1000
-    max-path-depth: 15
-    max-single-file-size-mb: 5
+    max-compressed-size-mb: 250
+    max-extracted-size-mb: 500
+    max-file-count: 5000
+    max-path-depth: 30
+    max-single-file-size-mb: 50
   staging:
     base-dir: .staging
     cleanup-on-completion: true
