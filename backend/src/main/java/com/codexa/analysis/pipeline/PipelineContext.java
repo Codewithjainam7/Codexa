@@ -14,6 +14,7 @@ public class PipelineContext {
     private final UUID jobId;
     private final Path stagingDirectory;
     private List<Path> sourceFiles = new ArrayList<>();
+    private List<com.codexa.security.ast.ParsedJavaFile> parsedJavaFiles = new ArrayList<>();
     private List<FindingEntity> findings = new ArrayList<>();
     private double securityScore = 100.0;
     private double qualityScore = 100.0;
@@ -43,6 +44,14 @@ public class PipelineContext {
 
     public void setSourceFiles(List<Path> sourceFiles) {
         this.sourceFiles = sourceFiles;
+    }
+
+    public List<com.codexa.security.ast.ParsedJavaFile> getParsedJavaFiles() {
+        return parsedJavaFiles;
+    }
+
+    public void setParsedJavaFiles(List<com.codexa.security.ast.ParsedJavaFile> parsedJavaFiles) {
+        this.parsedJavaFiles = parsedJavaFiles;
     }
 
     public List<FindingEntity> getFindings() {
