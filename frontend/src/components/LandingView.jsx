@@ -1,11 +1,22 @@
 import React from 'react';
 import { Shield, Zap, FileCode, CheckCircle2, Lock, Terminal, ArrowRight } from 'lucide-react';
+import DottedGlowBackground from './ui/DottedGlowBackground';
 
 export default function LandingView({ onStartAnalysis }) {
   return (
-    <div className="space-y-16 py-8">
+    <div className="relative space-y-16 py-8">
+      {/* Background Dotted Matrix for Landing */}
+      <DottedGlowBackground
+        className="opacity-50"
+        gap={20}
+        radius={1.4}
+        colorDarkVar="#1e293b"
+        glowColorDarkVar="#10b981"
+        speedScale={0.8}
+      />
+
       {/* Hero Section */}
-      <section className="text-center max-w-4xl mx-auto space-y-6">
+      <section className="text-center max-w-4xl mx-auto space-y-6 relative z-10">
         <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium">
           <Shield className="w-3.5 h-3.5" />
           <span>Zero-Execution Deterministic SAST + AI Explanations</span>

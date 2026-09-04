@@ -4,6 +4,7 @@ import {
   Search, FileCheck2, Zap, Flame, Loader2
 } from 'lucide-react';
 import AnimatedBeamPipeline from './AnimatedBeamPipeline';
+import DottedGlowBackground from './ui/DottedGlowBackground';
 
 export default function LiveReviewPulseLoader({ job }) {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
@@ -51,7 +52,17 @@ export default function LiveReviewPulseLoader({ job }) {
   ];
 
   return (
-    <div className="bg-slate-900/80 border border-slate-800/90 rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto space-y-8 shadow-2xl backdrop-blur-md">
+    <div className="relative overflow-hidden bg-slate-900/90 border border-slate-800/90 rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto space-y-8 shadow-2xl backdrop-blur-xl">
+      {/* Dotted Glow Background Matrix */}
+      <DottedGlowBackground
+        className="opacity-75"
+        gap={16}
+        radius={1.6}
+        colorDarkVar="#1e293b"
+        glowColorDarkVar="#10b981"
+        speedScale={1.2}
+      />
+
       {/* Header with Glowing Orbit */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-6 border-b border-slate-800">
         <div className="flex items-center space-x-4">
