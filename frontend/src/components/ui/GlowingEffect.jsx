@@ -9,7 +9,7 @@ export const GlowingEffect = memo(
     inactiveZone = 0.01,
     proximity = 64,
     spread = 45,
-    variant = "sky",
+    variant = "emerald",
     glow = true,
     className,
     disabled = false,
@@ -70,12 +70,12 @@ export const GlowingEffect = memo(
           className
         )}
       >
-        {/* Crisp Fresh Sky #00A8E8 & Cerulean #007EA7 Glow Tracker */}
+        {/* Crisp Cyber Emerald #10B981 & Mint #34D399 Glow Tracker */}
         <div
           className="absolute inset-0 rounded-[inherit] transition-opacity duration-300"
           style={{
             opacity: "var(--glow-opacity)",
-            background: `radial-gradient(var(--spread) circle at var(--glow-x) var(--glow-y), rgba(0, 168, 232, 0.95), rgba(0, 126, 167, 0.75), rgba(0, 52, 89, 0.4), transparent 70%)`,
+            background: `radial-gradient(var(--spread) circle at var(--glow-x) var(--glow-y), rgba(16, 185, 129, 0.95), rgba(20, 184, 166, 0.75), rgba(6, 78, 59, 0.4), transparent 70%)`,
             mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
             WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
             maskComposite: "exclude",
@@ -90,7 +90,7 @@ export const GlowingEffect = memo(
             className="absolute inset-0 rounded-[inherit] blur-[var(--blur)] transition-opacity duration-300"
             style={{
               opacity: "calc(var(--glow-opacity) * 0.45)",
-              background: `radial-gradient(calc(var(--spread) * 0.9) circle at var(--glow-x) var(--glow-y), rgba(0, 168, 232, 0.6), rgba(0, 126, 167, 0.4), transparent 70%)`,
+              background: `radial-gradient(calc(var(--spread) * 0.9) circle at var(--glow-x) var(--glow-y), rgba(16, 185, 129, 0.6), rgba(20, 184, 166, 0.4), transparent 70%)`,
             }}
           />
         )}
