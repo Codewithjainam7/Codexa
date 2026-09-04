@@ -131,10 +131,10 @@ export default function LandingView({ onStartAnalysis }) {
                   </div>
                   <div className="space-y-1 text-xs">
                     <div className="text-rose-400/90 bg-rose-950/30 px-2 py-1 rounded border-l-2 border-rose-500 overflow-x-auto truncate">
-                      - const q = &quot;SELECT * FROM u WHERE id=&quot; + id;
+                      {'- const q = "SELECT * FROM u WHERE id=" + id;'}
                     </div>
                     <div className="text-emerald-400 bg-emerald-950/30 px-2 py-1 rounded border-l-2 border-emerald-500 overflow-x-auto truncate">
-                      + const u = await db.user.find({ id });
+                      {'+ const u = await db.user.find({ id });'}
                     </div>
                   </div>
                 </div>
