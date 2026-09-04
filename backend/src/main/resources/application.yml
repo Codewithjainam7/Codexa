@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: codexa-backend
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 30MB
+      enabled: true
+
+server:
+  port: 8080
+  shutdown: graceful
+
+codexa:
+  limits:
+    max-compressed-size-mb: 25
+    max-extracted-size-mb: 100
+    max-file-count: 1000
+    max-path-depth: 15
+    max-single-file-size-mb: 5
+  staging:
+    base-dir: .staging
+    cleanup-on-completion: true
+  ai:
+    enabled: false
+    provider: none
+    model: gemini-1.5-pro
+    timeout-ms: 15000
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always

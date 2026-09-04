@@ -1,0 +1,38 @@
+# Build outputs
+target/
+**/target/
+dist/
+**/dist/
+build/
+**/build/
+
+# Node dependencies
+node_modules/
+**/node_modules/
+.npm/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary analysis staging directories and archives
+.staging/
+**/staging/
+*.zip
+*.tar.gz
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
