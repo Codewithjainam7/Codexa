@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 import {
   Shield, Zap, FileCode, Lock, Cpu, ShieldCheck,
   ArrowRight, Sparkles, Terminal, CheckCircle2, AlertTriangle, Code2, Activity
@@ -20,12 +19,7 @@ export default function LandingView({ onStartAnalysis }) {
   return (
     <AuroraBackground className="relative space-y-16 py-6 sm:py-8 font-sans bg-transparent">
       {/* Hero Section */}
-      <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.6, ease: "easeOut" }}
-        className="text-center max-w-4xl mx-auto space-y-6 relative z-10 pt-2"
-      >
+      <section className="text-center max-w-4xl mx-auto space-y-6 relative z-10 pt-2">
         <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold shadow-sm backdrop-blur-md">
           <Shield className="w-3.5 h-3.5 animate-pulse" />
           <span>Deterministic AST Rules + Nvidia Nemotron 550B Audit</span>
@@ -84,7 +78,7 @@ export default function LandingView({ onStartAnalysis }) {
             <div className="text-sm font-bold text-cyan-300 font-display">Zero Bytecode Exec</div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Rich Aceternity Bento Grid (No Empty Spaces) */}
       <section className="space-y-5 relative z-10">
