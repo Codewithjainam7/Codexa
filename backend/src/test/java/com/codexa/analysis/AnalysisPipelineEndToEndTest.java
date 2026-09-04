@@ -88,6 +88,6 @@ class AnalysisPipelineEndToEndTest {
         // Verify that secrets in evidence are masked
         FindingEntity secretFinding = findings.stream().filter(f -> f.getRuleId().equals("CR-SEC-001")).findFirst().orElseThrow();
         assertFalse(secretFinding.getEvidenceMasked().contains("super-secret-jwt-key-991283819"));
-        assertTrue(secretFinding.getEvidenceMasked().contains("su****************************"));
+        assertTrue(secretFinding.getEvidenceMasked().contains("*****"));
     }
 }

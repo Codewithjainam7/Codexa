@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 public class GitHubIngestionService {
 
     private static final Logger log = LoggerFactory.getLogger(GitHubIngestionService.class);
-    private static final Pattern GITHUB_URL_PATTERN = Pattern.compile("^https:\\/\\/github\\.com\\/([a-zA-Z0-9_.-]+)\\/([a-zA-Z0-9_.-]+?)(?:\\.git)?$");
+    private static final Pattern GITHUB_URL_PATTERN = Pattern.compile("^https:\\/\\/github\\.com\\/([a-zA-Z0-9_.-]+)\\/([a-zA-Z0-9_.-]+?)(?:\\.git)?\\/?$");
 
     private final CodexaProperties properties;
     private final SecureZipExtractor zipExtractor;
@@ -32,6 +32,17 @@ public class GitHubIngestionService {
     }
 
     public record RepoCoordinates(String owner, String repo) {}
+
+    public boolean isValidGitHubUrl(String repoUrl) {
+        if (repoUrl == null || repoUrl.isBlank()) {
+            return false;
+        }
+        return GITHUB_URL_PATTERN.matcher(repoUrl.trim()).matches();
+    }
+
+    public void validateUrl(String repoUrl) {
+        parseCoordinates(repoUrl);
+    }
 
     public RepoCoordinates parseCoordinates(String repoUrl) {
         if (repoUrl == null || repoUrl.isBlank()) {
