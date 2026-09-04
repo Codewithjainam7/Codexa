@@ -28,6 +28,22 @@ export async function submitZip(file) {
   return data;
 }
 
+export async function submitGitHubUrl(repoUrl) {
+  const res = await fetch(`${API_BASE}/analyses/github`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ repoUrl }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || 'Failed to submit GitHub repository URL');
+  }
+  return data;
+}
+
 export async function getAnalysisJob(jobId) {
   const res = await fetch(`${API_BASE}/analyses/${jobId}`);
   if (!res.ok) throw new Error('Failed to fetch analysis job');

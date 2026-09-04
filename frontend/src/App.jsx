@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import LandingView from './components/LandingView';
-import ZipUploadView from './components/ZipUploadView';
+import NewAnalysisView from './components/NewAnalysisView';
 import AnalysisDetailView from './components/AnalysisDetailView';
 import { checkHealth, getLimits } from './api/client';
 
@@ -48,7 +48,7 @@ export default function App() {
         )}
 
         {currentView === 'upload' && (
-          <ZipUploadView
+          <NewAnalysisView
             limits={limits}
             onJobCreated={handleJobCreated}
           />
