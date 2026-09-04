@@ -131,6 +131,26 @@ npm run dev
 
 ---
 
+## 🎨 UI Design System & Cyber Theme
+
+Codexa features a custom modern cyber dark aesthetic with liquid glassmorphism, animated beam telemetry, and an exact 5-color palette:
+
+| Color Code | Palette Name | Role & Usage |
+| :--- | :--- | :--- |
+| `#FFFFFF` | **Pure White** | Primary headings, high-contrast text, crisp status indicators |
+| `#00171F` | **Ink Black** | Deep atmospheric background, canvas backdrop, contrast anchors |
+| `#003459` | **Deep Space Blue** | Glass cards, secondary surfaces, structural dividers |
+| `#007EA7` | **Cerulean** | Mid-tone borders, category badges, secondary interactive states |
+| `#00A8E8` | **Fresh Sky** | Primary neon accent, animated pipeline beams, active glowing borders, CTAs |
+
+### Key UI Features:
+- **Hero Command Center Inspector**: Interactive live code preview featuring real-time telemetry, vulnerability detection indicators, and animated security metrics.
+- **Atmospheric Aurora & Canvas Flow**: Animated dynamic background gradients and canvas text-mask animations using the Fresh Sky/Cerulean spectrum.
+- **Liquid Glassmorphism**: Multi-tier backdrop blur cards (`.theme-glass`, `.theme-glass-card`, `.theme-glass-pill`) with subtle Cerulean rim lighting.
+- **Zero-Latency Telemetry**: Instant feedback tabs, repository preset chips, and animated beam inspection pipeline.
+
+---
+
 ## 📦 Test Fixtures & Demonstrations
 
 Codexa provides 3 realistic reference fixtures in the `fixtures/` directory:
