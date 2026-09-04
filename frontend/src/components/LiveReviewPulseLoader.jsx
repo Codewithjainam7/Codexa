@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { 
   Sparkles, ShieldCheck, Cpu, Code2, Binary, 
-  Search, FileCheck2, Zap, Flame
+  Search, FileCheck2, Zap, Flame, Shield, Activity
 } from 'lucide-react';
 import AnimatedBeamPipeline from './AnimatedBeamPipeline';
 import DottedGlowBackground from './ui/DottedGlowBackground';
@@ -44,7 +44,7 @@ export default function LiveReviewPulseLoader({ job }) {
     'Auditing child_process and command execution patterns...',
     'Analyzing exception handlers and swallowed catch blocks...',
     'Verifying CORS policy headers and allowed origins...',
-    'Generating neural AI remediation patch diffs...',
+    'Generating neural AI remediation patch diffs with Nemotron 550B...',
     'Calculating CVSS weights and impact probabilities...',
     'Masking credential tokens and secret payloads...',
     'Validating production readiness against enterprise baseline...',
@@ -54,13 +54,13 @@ export default function LiveReviewPulseLoader({ job }) {
 
   return (
     <div className="relative overflow-hidden bg-slate-900/90 border border-slate-800/90 rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto space-y-8 shadow-2xl backdrop-blur-xl">
-      {/* Dotted Glow Background Matrix */}
+      {/* Dotted Glow Background Matrix (Cyan Theme) */}
       <DottedGlowBackground
         className="opacity-75"
         gap={16}
         radius={1.6}
         colorDarkVar="#1e293b"
-        glowColorDarkVar="#10b981"
+        glowColorDarkVar="#06b6d4"
         speedScale={1.2}
       />
 
@@ -68,18 +68,18 @@ export default function LiveReviewPulseLoader({ job }) {
       <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-6 border-b border-slate-800">
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/25 animate-pulse">
-              <Sparkles className="w-7 h-7 text-slate-950 animate-spin" style={{ animationDuration: '6s' }} />
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-violet-600 flex items-center justify-center shadow-lg shadow-cyan-500/25 animate-pulse">
+              <Sparkles className="w-7 h-7 text-white animate-spin" style={{ animationDuration: '6s' }} />
             </div>
-            <div className="absolute -inset-1 rounded-2xl bg-emerald-400/20 blur-md -z-10 animate-pulse" />
+            <div className="absolute -inset-1 rounded-2xl bg-cyan-400/20 blur-md -z-10 animate-pulse" />
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-              <h2 className="text-lg font-bold text-white">Live Codebase Audit in Progress</h2>
+              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
+              <h2 className="text-lg font-bold text-white font-display">Live Codebase Audit in Progress</h2>
             </div>
             <p className="text-xs text-slate-400 mt-0.5">
-              Target: <span className="font-mono text-emerald-400">{job?.sourceIdentifier}</span>
+              Target: <span className="font-mono text-cyan-400">{job?.sourceIdentifier}</span>
             </p>
           </div>
         </div>
@@ -88,11 +88,11 @@ export default function LiveReviewPulseLoader({ job }) {
         <div className="flex items-center space-x-3 bg-slate-950/90 px-4 py-2 rounded-2xl border border-slate-800 shadow-inner">
           <div className="text-right">
             <div className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Scanning</div>
-            <div className="text-xs text-emerald-400 font-mono font-bold">{currentStageName}</div>
+            <div className="text-xs text-cyan-400 font-mono font-bold">{currentStageName}</div>
           </div>
           <AnimatedCircularProgressBar
             value={job?.progressPercent || 15}
-            gaugePrimaryColor="#10b981"
+            gaugePrimaryColor="#06b6d4"
             gaugeSecondaryColor="rgba(255, 255, 255, 0.08)"
             className="size-14 sm:size-16"
           />
@@ -103,16 +103,15 @@ export default function LiveReviewPulseLoader({ job }) {
       <div>
         <div className="flex items-center justify-between mb-3 px-1">
           <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             <span>Neural Review Data-Flow Architecture</span>
           </span>
-          <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+          <span className="text-[11px] font-mono text-cyan-400 bg-cyan-500/10 px-2.5 py-0.5 rounded-full border border-cyan-500/20">
             Nvidia Nemotron 550B Engine
           </span>
         </div>
         <AnimatedBeamPipeline currentStage={currentStageName} sourceIdentifier={job?.sourceIdentifier} />
       </div>
-
 
       {/* Modern Stage Stepper */}
       <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
@@ -126,7 +125,7 @@ export default function LiveReviewPulseLoader({ job }) {
               key={st.id} 
               className={`p-3.5 rounded-2xl border transition-all duration-300 flex flex-col justify-between space-y-3 ${
                 isCurrent 
-                  ? 'bg-emerald-950/30 border-emerald-500/50 shadow-lg shadow-emerald-500/10' 
+                  ? 'bg-cyan-950/30 border-cyan-500/50 shadow-lg shadow-cyan-500/15' 
                   : isDone 
                   ? 'bg-slate-950/60 border-slate-800/80 opacity-80' 
                   : 'bg-slate-950/30 border-slate-900 opacity-40'
@@ -135,9 +134,9 @@ export default function LiveReviewPulseLoader({ job }) {
               <div className="flex items-center justify-between">
                 <div className={`w-7 h-7 rounded-xl flex items-center justify-center text-xs font-bold ${
                   isCurrent 
-                    ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/30' 
+                    ? 'bg-gradient-to-tr from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/30' 
                     : isDone 
-                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
+                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' 
                     : 'bg-slate-800 text-slate-500'
                 }`}>
                   <Icon className="w-4 h-4" />
@@ -146,11 +145,11 @@ export default function LiveReviewPulseLoader({ job }) {
               </div>
 
               <div>
-                <div className={`text-xs font-bold leading-tight ${isCurrent ? 'text-emerald-300' : isDone ? 'text-slate-200' : 'text-slate-500'}`}>
+                <div className={`text-xs font-bold leading-tight ${isCurrent ? 'text-cyan-300' : isDone ? 'text-slate-200' : 'text-slate-500'}`}>
                   {st.label}
                 </div>
                 {isCurrent && (
-                  <p className="text-[10px] text-emerald-400/80 mt-1 leading-normal font-medium">
+                  <p className="text-[10px] text-cyan-400/80 mt-1 leading-normal font-medium">
                     {st.desc}
                   </p>
                 )}
@@ -166,14 +165,14 @@ export default function LiveReviewPulseLoader({ job }) {
           <div className="flex items-center space-x-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-rose-500/60 inline-block" />
             <span className="w-2.5 h-2.5 rounded-full bg-amber-500/60 inline-block" />
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/60 inline-block" />
+            <span className="w-2.5 h-2.5 rounded-full bg-cyan-500/60 inline-block" />
             <span className="ml-2 font-medium text-slate-400">Codexa Real-Time Pipeline Stream</span>
           </div>
-          <span className="text-[10px] text-emerald-400 font-bold tracking-wider uppercase">Active Engine</span>
+          <span className="text-[10px] text-cyan-400 font-bold tracking-wider uppercase">Active Engine</span>
         </div>
 
         <div className="space-y-1 text-slate-300 py-1">
-          <div className="flex items-center space-x-2 text-emerald-400">
+          <div className="flex items-center space-x-2 text-cyan-400">
             <span className="animate-pulse">❯</span>
             <span>{terminalLines[pulseLine]}</span>
           </div>

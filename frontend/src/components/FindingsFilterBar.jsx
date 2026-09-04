@@ -32,7 +32,7 @@ export default function FindingsFilterBar({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Filter by title, file, rule ID..."
-          className="w-full pl-10 pr-3.5 py-2 bg-slate-950/90 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30 transition-all font-medium"
+          className="w-full pl-10 pr-3.5 py-2 bg-slate-950/90 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all font-medium"
         />
       </div>
 
