@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,17 +8,25 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-        display: ['"Space Grotesk"', '"Inter"', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', '"Inter"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        display: ['"Plus Jakarta Sans"', '"Inter"', 'sans-serif'],
+        editorial: ['"Space Grotesk"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'Fira Code', 'Consolas', 'monospace'],
       },
       colors: {
-        theme: {
-          white: '#FFFFFF',
-          ink: '#00171F',          // Ink Black
-          deep: '#003459',         // Deep Space Blue
-          cerulean: '#007EA7',     // Cerulean
-          sky: '#00A8E8',          // Fresh Sky
+        brand: {
+          amber: '#F59E0B',
+          ochre: '#D97706',
+          gold: '#FBBF24',
+          charcoal: '#0C0D10',
+          graphite: '#13151A',
+          slate: '#1A1D24',
+          stone: '#F8F7F4',
+          parchment: '#FFFFFF',
+          cobalt: '#3B82F6',
+          indigo: '#6366F1',
+          emerald: '#10B981',
+          rose: '#F43F5E',
         },
       },
       animation: {

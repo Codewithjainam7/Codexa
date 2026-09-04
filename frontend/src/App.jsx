@@ -5,8 +5,9 @@ import LandingView from './components/LandingView';
 import NewAnalysisView from './components/NewAnalysisView';
 import AnalysisDetailView from './components/AnalysisDetailView';
 import { checkHealth, getLimits } from './api/client';
+import { ThemeProvider } from './context/ThemeContext';
 
-export default function App() {
+function MainApp() {
   const [currentView, setCurrentView] = useState('landing');
   const [activeJobId, setActiveJobId] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -35,7 +36,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-black text-slate-100 selection:bg-[#00A8E8]/25 selection:text-[#00A8E8]">
+    <div className="min-h-screen flex flex-col bg-[var(--bg-base)] text-[var(--text-primary)] selection:bg-amber-500/20 selection:text-amber-600 dark:selection:text-amber-200 transition-colors duration-250">
       <Header
         currentView={currentView}
         setCurrentView={setCurrentView}
@@ -64,5 +65,13 @@ export default function App() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <MainApp />
+    </ThemeProvider>
   );
 }
