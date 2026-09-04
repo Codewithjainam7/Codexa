@@ -88,8 +88,8 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
     <div className="max-w-3xl mx-auto py-10 sm:py-14 space-y-10 px-4">
       {/* Header section */}
       <div className="space-y-3 text-left">
-        <div className="inline-flex items-center space-x-2 text-xs font-mono text-purple-300 font-bold uppercase tracking-wider ios-glass-pill px-3.5 py-1.5 rounded-full">
-          <Shield className="w-3.5 h-3.5 text-purple-400" />
+        <div className="inline-flex items-center space-x-2 text-xs font-mono text-[#00A8E8] font-bold uppercase tracking-wider theme-glass-pill px-3.5 py-1.5 rounded-full">
+          <Shield className="w-3.5 h-3.5 text-[#00A8E8]" />
           <span>Zero-Bytecode Security Sandbox</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-extrabold font-display text-white tracking-tight">
@@ -101,12 +101,12 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
       </div>
 
       {/* Mode Switcher Tabs */}
-      <div className="flex p-1.5 rounded-[22px] bg-black/50 border border-white/10 backdrop-blur-2xl shadow-inner">
+      <div className="flex p-1.5 rounded-[22px] bg-[#00171F]/90 border border-[#007EA7]/30 backdrop-blur-2xl shadow-inner">
         <button
           onClick={() => { setActiveTab('github'); setError(null); }}
           className={`flex-1 flex items-center justify-center space-x-2.5 py-3.5 rounded-2xl text-xs sm:text-sm font-bold font-display transition-all duration-300 ${
             activeTab === 'github'
-              ? 'bg-gradient-to-r from-purple-600 via-rose-500 to-amber-500 text-white shadow-[0_8px_25px_rgba(244,63,94,0.35)] border border-white/20'
+              ? 'bg-gradient-to-r from-[#00A8E8] via-[#007EA7] to-[#003459] text-white shadow-[0_8px_25px_rgba(0,168,232,0.4)] border border-white/20'
               : 'text-slate-400 hover:text-white'
           }`}
         >
@@ -118,7 +118,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
           onClick={() => { setActiveTab('zip'); setError(null); }}
           className={`flex-1 flex items-center justify-center space-x-2.5 py-3.5 rounded-2xl text-xs sm:text-sm font-bold font-display transition-all duration-300 ${
             activeTab === 'zip'
-              ? 'bg-gradient-to-r from-purple-600 via-rose-500 to-amber-500 text-white shadow-[0_8px_25px_rgba(244,63,94,0.35)] border border-white/20'
+              ? 'bg-gradient-to-r from-[#00A8E8] via-[#007EA7] to-[#003459] text-white shadow-[0_8px_25px_rgba(0,168,232,0.4)] border border-white/20'
               : 'text-slate-400 hover:text-white'
           }`}
         >
@@ -129,7 +129,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
 
       {/* GitHub URL Tab Container with Glowing Effect */}
       {activeTab === 'github' && (
-        <div className="relative rounded-[32px] ios-glass p-2 md:p-3 shadow-2xl">
+        <div className="relative rounded-[32px] theme-glass p-2 md:p-3 shadow-2xl">
           <GlowingEffect
             spread={40}
             glow={true}
@@ -137,7 +137,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
             proximity={64}
             inactiveZone={0.01}
           />
-          <div className="relative rounded-[24px] bg-[#0f0728]/60 border border-white/10 p-6 sm:p-8 space-y-6 backdrop-blur-2xl">
+          <div className="relative rounded-[24px] bg-[#00171F]/80 border border-[#007EA7]/30 p-6 sm:p-8 space-y-6 backdrop-blur-2xl">
             <form onSubmit={handleGithubSubmit} className="space-y-6">
               <div className="space-y-2.5">
                 <label htmlFor="githubUrlInput" className="block text-xs font-semibold text-slate-300 font-display uppercase tracking-wider">
@@ -154,7 +154,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
                     onChange={(e) => setGithubUrl(e.target.value)}
                     placeholder="https://github.com/owner/repository"
                     disabled={isSubmitting}
-                    className="w-full pl-12 pr-4 py-4 bg-black/50 border border-white/10 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400 transition-all font-mono shadow-inner backdrop-blur-xl"
+                    className="w-full pl-12 pr-4 py-4 bg-black/50 border border-[#007EA7]/30 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#00A8E8]/50 focus:border-[#00A8E8] transition-all font-mono shadow-inner backdrop-blur-xl"
                   />
                 </div>
               </div>
@@ -168,9 +168,9 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
                       key={sample.url}
                       type="button"
                       onClick={() => { setGithubUrl(sample.url); setError(null); }}
-                      className="px-3.5 py-1.5 rounded-xl ios-glass-pill hover:bg-white/10 text-xs text-slate-300 hover:text-purple-300 font-mono transition-all flex items-center space-x-2"
+                      className="px-3.5 py-1.5 rounded-xl theme-glass-pill hover:bg-white/10 text-xs text-slate-300 hover:text-[#00A8E8] font-mono transition-all duration-200 flex items-center space-x-2"
                     >
-                      <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                      <Sparkles className="w-3.5 h-3.5 text-[#00A8E8]" />
                       <span>{sample.name}</span>
                     </button>
                   ))}
@@ -180,7 +180,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
               <button
                 type="submit"
                 disabled={isSubmitting || !githubUrl.trim()}
-                className="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-rose-500 to-amber-500 hover:opacity-95 disabled:opacity-50 text-white text-sm font-extrabold font-display flex items-center justify-center space-x-2.5 shadow-[0_15px_35px_rgba(244,63,94,0.35)] border border-white/20 transition-all cursor-pointer transform hover:scale-[1.01] active:scale-98"
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#00A8E8] via-[#007EA7] to-[#003459] hover:opacity-95 disabled:opacity-50 text-white text-sm font-extrabold font-display flex items-center justify-center space-x-2.5 shadow-[0_15px_35px_rgba(0,168,232,0.45)] border border-white/20 transition-all duration-300 cursor-pointer transform hover:scale-[1.01] active:scale-98"
               >
                 {isSubmitting ? (
                   <>
@@ -201,7 +201,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
 
       {/* ZIP Archive Tab Container with Glowing Effect */}
       {activeTab === 'zip' && (
-        <div className="relative rounded-[32px] ios-glass p-2 md:p-3 shadow-2xl">
+        <div className="relative rounded-[32px] theme-glass p-2 md:p-3 shadow-2xl">
           <GlowingEffect
             spread={40}
             glow={true}
@@ -213,12 +213,12 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
             onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
             onDragLeave={() => setIsDragging(false)}
             onDrop={handleFileDrop}
-            className={`border-2 border-dashed rounded-[24px] p-8 sm:p-12 text-center transition-all ${
+            className={`border-2 border-dashed rounded-[24px] p-8 sm:p-12 text-center transition-all duration-300 ${
               isDragging
-                ? 'border-purple-400 bg-purple-500/15'
+                ? 'border-[#00A8E8] bg-[#00A8E8]/15'
                 : file
-                ? 'border-purple-500/50 bg-black/40'
-                : 'border-white/15 bg-black/30 hover:border-white/30'
+                ? 'border-[#00A8E8]/50 bg-black/40'
+                : 'border-[#007EA7]/40 bg-black/30 hover:border-[#00A8E8]/60'
             }`}
           >
             <input
@@ -231,7 +231,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
             />
 
             <div className="flex flex-col items-center space-y-4">
-              <div className="p-4 bg-purple-500/15 text-purple-300 rounded-2xl border border-purple-400/30 shadow-inner backdrop-blur-xl">
+              <div className="p-4 bg-[#00A8E8]/15 text-[#00A8E8] rounded-2xl border border-[#00A8E8]/30 shadow-inner backdrop-blur-xl">
                 {file ? <FileArchive className="w-10 h-10" /> : <UploadCloud className="w-10 h-10" />}
               </div>
 
@@ -245,7 +245,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
                   <div className="space-y-1.5">
                     <p className="text-sm font-semibold text-white font-display">
                       Drag and drop your project ZIP archive here, or{' '}
-                      <label htmlFor="zipFileInput" className="text-purple-400 hover:text-purple-300 hover:underline cursor-pointer underline-offset-2">
+                      <label htmlFor="zipFileInput" className="text-[#00A8E8] hover:text-[#00A8E8]/80 hover:underline cursor-pointer underline-offset-2">
                         browse files
                       </label>
                     </p>
@@ -265,7 +265,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
                   <button
                     onClick={handleZipSubmit}
                     disabled={isSubmitting}
-                    className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-rose-500 to-amber-500 hover:opacity-95 disabled:opacity-50 text-white text-xs font-bold font-display flex items-center space-x-2 shadow-lg shadow-rose-500/25 border border-white/20 transition-all cursor-pointer active:scale-95"
+                    className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#00A8E8] via-[#007EA7] to-[#003459] hover:opacity-95 disabled:opacity-50 text-white text-xs font-bold font-display flex items-center space-x-2 shadow-lg shadow-[#00A8E8]/30 border border-white/20 transition-all duration-300 cursor-pointer active:scale-95"
                   >
                     {isSubmitting ? (
                       <>
@@ -298,7 +298,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
       )}
 
       {/* Limits and Safety Notice Container with Glowing Effect */}
-      <div className="relative rounded-[32px] ios-glass p-2 md:p-3 shadow-2xl">
+      <div className="relative rounded-[32px] theme-glass p-2 md:p-3 shadow-2xl">
         <GlowingEffect
           spread={40}
           glow={true}
@@ -306,27 +306,27 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
           proximity={64}
           inactiveZone={0.01}
         />
-        <div className="relative rounded-[24px] bg-[#0f0728]/60 border border-white/10 p-6 sm:p-7 space-y-4 backdrop-blur-2xl">
+        <div className="relative rounded-[24px] bg-[#00171F]/80 border border-[#007EA7]/30 p-6 sm:p-7 space-y-4 backdrop-blur-2xl">
           <div className="flex items-center space-x-2 text-xs font-bold text-slate-300 font-display uppercase tracking-wider">
-            <Info className="w-4 h-4 text-purple-400" />
+            <Info className="w-4 h-4 text-[#00A8E8]" />
             <span>Security &amp; Ingestion Limits</span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-            <div className="bg-black/40 p-3.5 rounded-2xl border border-white/10 backdrop-blur-xl">
+            <div className="bg-[#003459]/40 p-3.5 rounded-2xl border border-[#007EA7]/30 backdrop-blur-xl">
               <span className="text-slate-400 block text-[11px]">Max Archive</span>
-              <span className="text-purple-300 font-bold font-mono text-sm">{limits?.maxCompressedSizeMb || 25} MB</span>
+              <span className="text-[#00A8E8] font-bold font-mono text-sm">{limits?.maxCompressedSizeMb || 25} MB</span>
             </div>
-            <div className="bg-black/40 p-3.5 rounded-2xl border border-white/10 backdrop-blur-xl">
+            <div className="bg-[#003459]/40 p-3.5 rounded-2xl border border-[#007EA7]/30 backdrop-blur-xl">
               <span className="text-slate-400 block text-[11px]">Max Extracted</span>
-              <span className="text-purple-300 font-bold font-mono text-sm">{limits?.maxExtractedSizeMb || 100} MB</span>
+              <span className="text-[#00A8E8] font-bold font-mono text-sm">{limits?.maxExtractedSizeMb || 100} MB</span>
             </div>
-            <div className="bg-black/40 p-3.5 rounded-2xl border border-white/10 backdrop-blur-xl">
+            <div className="bg-[#003459]/40 p-3.5 rounded-2xl border border-[#007EA7]/30 backdrop-blur-xl">
               <span className="text-slate-400 block text-[11px]">Max Files</span>
-              <span className="text-purple-300 font-bold font-mono text-sm">{limits?.maxFileCount || 1000} files</span>
+              <span className="text-[#00A8E8] font-bold font-mono text-sm">{limits?.maxFileCount || 1000} files</span>
             </div>
-            <div className="bg-black/40 p-3.5 rounded-2xl border border-white/10 backdrop-blur-xl">
+            <div className="bg-[#003459]/40 p-3.5 rounded-2xl border border-[#007EA7]/30 backdrop-blur-xl">
               <span className="text-slate-400 block text-[11px]">Max Depth</span>
-              <span className="text-purple-300 font-bold font-mono text-sm">{limits?.maxPathDepth || 15} levels</span>
+              <span className="text-[#00A8E8] font-bold font-mono text-sm">{limits?.maxPathDepth || 15} levels</span>
             </div>
           </div>
           <p className="text-xs text-slate-400 leading-relaxed font-sans">

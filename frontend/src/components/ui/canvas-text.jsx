@@ -6,16 +6,15 @@ export const CanvasText = ({
   text = "AI-Generated Code",
   className,
   colors = [
-    "rgba(192, 132, 252, 1)",   // purple-400
-    "rgba(168, 85, 247, 0.95)",  // purple-500
-    "rgba(244, 63, 94, 0.9)",    // rose-500
-    "rgba(251, 113, 133, 0.85)", // rose-400
-    "rgba(245, 158, 11, 0.85)",  // amber-500
-    "rgba(99, 102, 241, 0.8)",   // indigo-500
-    "rgba(56, 189, 248, 0.75)",  // sky-400
-    "rgba(255, 255, 255, 0.95)", // white flash
+    "rgba(0, 168, 232, 1)",      // Fresh Sky #00A8E8
+    "rgba(0, 126, 167, 0.95)",   // Cerulean #007EA7
+    "rgba(255, 255, 255, 0.95)",  // Pure White #FFFFFF
+    "rgba(56, 189, 248, 0.9)",    // Sky Blue
+    "rgba(0, 168, 232, 0.85)",   // Fresh Sky
+    "rgba(0, 126, 167, 0.8)",    // Cerulean
+    "rgba(255, 255, 255, 0.9)",   // White flash
   ],
-  animationSpeed = 0.6,
+  animationSpeed = 0.5,
 }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -76,8 +75,8 @@ export const CanvasText = ({
       ctx.globalCompositeOperation = "source-in";
 
       // Step 3: Flowing animated diagonal lines
-      const lineGap = 7;
-      const lineWidth = 5;
+      const lineGap = 6.5;
+      const lineWidth = 4.5;
       const totalSpan = lineGap * colors.length;
       offsetRef.current = (offsetRef.current + animationSpeed) % totalSpan;
 
@@ -112,15 +111,15 @@ export const CanvasText = ({
       ref={containerRef}
       className={cn("relative inline-block align-middle select-none", className)}
     >
-      {/* Base High-Contrast Visible Text (Ensures text is never invisible) */}
+      {/* High-Contrast Crisp Fallback Gradient Text */}
       <span
-        className="font-display font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-rose-400 to-amber-300"
+        className="font-display font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-[#00A8E8] to-[#007EA7]"
         style={{ fontSize: "inherit", lineHeight: "inherit" }}
       >
         {text}
       </span>
 
-      {/* Superimposed Animated Canvas on top */}
+      {/* Superimposed Animated Canvas */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 pointer-events-none w-full h-full"

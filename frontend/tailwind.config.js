@@ -12,30 +12,20 @@ export default {
         mono: ['"JetBrains Mono"', 'Fira Code', 'Consolas', 'monospace'],
       },
       colors: {
-        brand: {
-          50: '#ecfeff',
-          100: '#cffafe',
-          200: '#a5f3fc',
-          300: '#67e8f9',
-          400: '#22d3ee',
-          500: '#06b6d4',
-          600: '#0891b2',
-          700: '#0e7490',
-          800: '#155e75',
-          900: '#164e63',
-          950: '#083344'
+        theme: {
+          white: '#FFFFFF',
+          ink: '#00171F',          // Ink Black
+          deep: '#003459',         // Deep Space Blue
+          cerulean: '#007EA7',     // Cerulean
+          sky: '#00A8E8',          // Fresh Sky
         },
-        obsidian: {
-          800: '#1e293b',
-          900: '#0f172a',
-          950: '#020617',
-          999: '#010409'
-        }
       },
       animation: {
         aurora: 'aurora 60s linear infinite',
-        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'glow-spin': 'spin 12s linear infinite',
+        'float-slow': 'float 6s ease-in-out infinite',
+        'float-delayed': 'float 6s ease-in-out 3s infinite',
+        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+        'scan-line': 'scanLine 3s linear infinite',
       },
       keyframes: {
         aurora: {
@@ -46,6 +36,18 @@ export default {
             backgroundPosition: '350% 50%, 350% 50%',
           },
         },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-8px)' },
+        },
+        pulseGlow: {
+          '0%, 100%': { opacity: '0.6', transform: 'scale(1)' },
+          '50%': { opacity: '1', transform: 'scale(1.05)' },
+        },
+        scanLine: {
+          '0%': { transform: 'translateY(-100%)' },
+          '100%': { transform: 'translateY(1000%)' },
+        }
       },
     },
   },

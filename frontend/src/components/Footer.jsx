@@ -3,22 +3,22 @@ import { Shield, Github, FileCode, Terminal, Lock, ExternalLink, AlertTriangle, 
 
 export default function Footer() {
   return (
-    <footer className="relative border-t border-white/10 bg-[#06030e] pt-16 pb-6 overflow-hidden mt-20 font-sans">
+    <footer className="relative border-t border-[#007EA7]/30 bg-[#00171F] pt-16 pb-6 overflow-hidden mt-20 font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Main Grid Columns */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12">
           {/* Brand Column (Span 4) */}
           <div className="md:col-span-4 space-y-4">
             <div className="flex items-center space-x-2.5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-purple-500 via-rose-500 to-amber-500 p-[1px] flex items-center justify-center shadow-lg shadow-purple-500/25">
-                <div className="w-full h-full bg-[#0d071e] rounded-[10px] flex items-center justify-center">
-                  <Shield className="w-4 h-4 text-purple-400" />
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#00A8E8] via-[#007EA7] to-[#003459] p-[1px] flex items-center justify-center shadow-lg shadow-[#00A8E8]/25">
+                <div className="w-full h-full bg-[#00171F] rounded-[10px] flex items-center justify-center">
+                  <Shield className="w-4 h-4 text-[#00A8E8]" />
                 </div>
               </div>
               <span className="text-xl font-bold font-display tracking-tight text-white">
                 Codexa
               </span>
-              <span className="text-[10px] font-mono font-bold bg-purple-500/15 text-purple-300 border border-purple-400/25 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-mono font-bold bg-[#00A8E8]/15 text-[#00A8E8] border border-[#00A8E8]/30 px-2 py-0.5 rounded-full">
                 v2.4
               </span>
             </div>
@@ -40,11 +40,11 @@ export default function Footer() {
                 Platform
               </h4>
               <ul className="space-y-2.5 text-slate-400">
-                <li><span className="hover:text-purple-300 cursor-pointer transition-colors">AST Static Engine</span></li>
-                <li><span className="hover:text-purple-300 cursor-pointer transition-colors">Multi-Language SAST</span></li>
-                <li><span className="hover:text-purple-300 cursor-pointer transition-colors">Readiness Index (0–100)</span></li>
-                <li><span className="hover:text-purple-300 cursor-pointer transition-colors">Live Fix Terminal</span></li>
-                <li><span className="hover:text-purple-300 cursor-pointer transition-colors">Zero Bytecode Exec</span></li>
+                <li><span className="hover:text-[#00A8E8] cursor-pointer transition-colors">AST Static Engine</span></li>
+                <li><span className="hover:text-[#00A8E8] cursor-pointer transition-colors">Multi-Language SAST</span></li>
+                <li><span className="hover:text-[#00A8E8] cursor-pointer transition-colors">Readiness Index (0–100)</span></li>
+                <li><span className="hover:text-[#00A8E8] cursor-pointer transition-colors">Live Fix Terminal</span></li>
+                <li><span className="hover:text-[#00A8E8] cursor-pointer transition-colors">Zero Bytecode Exec</span></li>
               </ul>
             </div>
 
@@ -54,11 +54,11 @@ export default function Footer() {
                 AI Models
               </h4>
               <ul className="space-y-2.5 text-slate-400">
-                <li><span className="hover:text-purple-300 cursor-pointer transition-colors">Nemotron 3 Ultra 550B</span></li>
-                <li><span className="hover:text-purple-300 cursor-pointer transition-colors">Nemotron 3.5 Lightning</span></li>
-                <li><span className="hover:text-purple-300 cursor-pointer transition-colors">Inkling Small</span></li>
-                <li><span className="hover:text-purple-300 cursor-pointer transition-colors">Secret Masking Guard</span></li>
-                <li><span className="hover:text-purple-300 cursor-pointer transition-colors">Deterministic Fallback</span></li>
+                <li><span className="hover:text-[#00A8E8] cursor-pointer transition-colors">Nemotron 3 Ultra 550B</span></li>
+                <li><span className="hover:text-[#00A8E8] cursor-pointer transition-colors">Nemotron 3.5 Lightning</span></li>
+                <li><span className="hover:text-[#00A8E8] cursor-pointer transition-colors">Inkling Small</span></li>
+                <li><span className="hover:text-[#00A8E8] cursor-pointer transition-colors">Secret Masking Guard</span></li>
+                <li><span className="hover:text-[#00A8E8] cursor-pointer transition-colors">Deterministic Fallback</span></li>
               </ul>
             </div>
 
@@ -68,11 +68,11 @@ export default function Footer() {
                 Security
               </h4>
               <ul className="space-y-2.5 text-slate-400">
-                <li><span className="hover:text-purple-300 cursor-pointer transition-colors">OWASP Top 10</span></li>
-                <li><span className="hover:text-purple-300 cursor-pointer transition-colors">Zip Slip Protection</span></li>
-                <li><span className="hover:text-purple-300 cursor-pointer transition-colors">Path Traversal Block</span></li>
-                <li><span className="hover:text-purple-300 cursor-pointer transition-colors">SSRF Prevention</span></li>
-                <li><span className="hover:text-purple-300 cursor-pointer transition-colors">ReDoS &amp; PRNG Check</span></li>
+                <li><span className="hover:text-[#00A8E8] cursor-pointer transition-colors">OWASP Top 10</span></li>
+                <li><span className="hover:text-[#00A8E8] cursor-pointer transition-colors">Zip Slip Protection</span></li>
+                <li><span className="hover:text-[#00A8E8] cursor-pointer transition-colors">Path Traversal Block</span></li>
+                <li><span className="hover:text-[#00A8E8] cursor-pointer transition-colors">SSRF Prevention</span></li>
+                <li><span className="hover:text-[#00A8E8] cursor-pointer transition-colors">ReDoS &amp; PRNG Check</span></li>
               </ul>
             </div>
 
@@ -87,7 +87,7 @@ export default function Footer() {
                     href="https://github.com/Codewithjainam7/Codexa"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-purple-300 flex items-center space-x-1.5 transition-colors"
+                    className="hover:text-[#00A8E8] flex items-center space-x-1.5 transition-colors"
                   >
                     <Github className="w-3.5 h-3.5" />
                     <span>GitHub Repo</span>
@@ -98,7 +98,7 @@ export default function Footer() {
                     href="http://localhost:8080/swagger-ui.html"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-purple-300 flex items-center space-x-1.5 transition-colors"
+                    className="hover:text-[#00A8E8] flex items-center space-x-1.5 transition-colors"
                   >
                     <Terminal className="w-3.5 h-3.5" />
                     <span>Swagger API Docs</span>
@@ -109,7 +109,7 @@ export default function Footer() {
                     href="https://openrouter.ai"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-purple-300 flex items-center space-x-1.5 transition-colors"
+                    className="hover:text-[#00A8E8] flex items-center space-x-1.5 transition-colors"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>OpenRouter AI</span>
@@ -120,7 +120,7 @@ export default function Footer() {
                     href="https://owasp.org/www-project-top-ten/"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-purple-300 flex items-center space-x-1.5 transition-colors"
+                    className="hover:text-[#00A8E8] flex items-center space-x-1.5 transition-colors"
                   >
                     <Lock className="w-3.5 h-3.5" />
                     <span>OWASP Standards</span>
@@ -132,17 +132,17 @@ export default function Footer() {
         </div>
 
         {/* Advisory Disclaimer Notice */}
-        <div className="border-t border-white/10 pt-6 pb-2 text-[11px] text-slate-500 leading-relaxed flex items-start space-x-2.5">
-          <AlertTriangle className="w-4 h-4 text-amber-500/80 flex-shrink-0 mt-0.5" />
+        <div className="border-t border-[#007EA7]/20 pt-6 pb-2 text-[11px] text-slate-400 leading-relaxed flex items-start space-x-2.5">
+          <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
           <p>
-            <span className="text-slate-400 font-semibold">Advisory Disclaimer:</span> Codexa is an automated static code review and production-readiness assessment engine. It does not execute untrusted bytecode. Suggested remediations should always be verified and tested prior to production deployment.
+            <span className="text-white font-semibold">Advisory Disclaimer:</span> Codexa is an automated static code review and production-readiness assessment engine. It does not execute untrusted bytecode. Suggested remediations should always be verified and tested prior to production deployment.
           </p>
         </div>
       </div>
 
       {/* Giant Stylized Codexa Watermark Typography at the end of the footer */}
       <div className="w-full select-none pointer-events-none overflow-hidden flex justify-center items-end -mb-4 sm:-mb-8 lg:-mb-12">
-        <span className="font-display font-black tracking-tighter text-6xl sm:text-9xl md:text-[12rem] lg:text-[16rem] text-transparent bg-clip-text bg-gradient-to-b from-purple-500/15 via-rose-500/5 to-transparent leading-none text-center transform translate-y-4">
+        <span className="font-display font-black tracking-tighter text-6xl sm:text-9xl md:text-[12rem] lg:text-[16rem] text-transparent bg-clip-text bg-gradient-to-b from-[#003459]/40 via-[#007EA7]/15 to-transparent leading-none text-center transform translate-y-4">
           Codexa
         </span>
       </div>
