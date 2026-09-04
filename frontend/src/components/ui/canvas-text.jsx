@@ -5,15 +5,7 @@ import { cn } from "../../lib/utils";
 export const CanvasText = ({
   text = "AI-Generated Code",
   className,
-  colors = [
-    "rgba(0, 168, 232, 1)",      // Fresh Sky #00A8E8
-    "rgba(0, 126, 167, 0.95)",   // Cerulean #007EA7
-    "rgba(255, 255, 255, 0.95)",  // Pure White #FFFFFF
-    "rgba(56, 189, 248, 0.9)",    // Sky Blue
-    "rgba(0, 168, 232, 0.85)",   // Fresh Sky
-    "rgba(0, 126, 167, 0.8)",    // Cerulean
-    "rgba(255, 255, 255, 0.9)",   // White flash
-  ],
+  colors,
   animationSpeed = 0.5,
 }) => {
   const canvasRef = useRef(null);
@@ -21,6 +13,18 @@ export const CanvasText = ({
   const animationRef = useRef(null);
   const offsetRef = useRef(0);
   const [size, setSize] = useState({ width: 0, height: 0 });
+
+  // Default theme-aware fallback palette
+  const activeColors = colors && colors.length > 0
+    ? colors
+    : [
+        "rgba(217, 119, 6, 1)",      // Ochre #D97706
+        "rgba(180, 83, 9, 0.95)",    // Deep Amber #B45309
+        "rgba(15, 23, 42, 0.95)",    // Slate 900 #0F172A
+        "rgba(245, 158, 11, 0.9)",   // Amber #F59E0B
+        "rgba(217, 119, 6, 0.85)",
+        "rgba(15, 23, 42, 0.9)",
+      ];
 
   const updateDimensions = useCallback(() => {
     if (!containerRef.current || !canvasRef.current) return;
@@ -40,7 +44,7 @@ export const CanvasText = ({
   useEffect(() => {
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
-    const timer = setTimeout(updateDimensions, 100);
+    const timer = setTimeout(updateDimensions, 80);
     return () => {
       window.removeEventListener("resize", updateDimensions);
       clearTimeout(timer);
@@ -65,7 +69,7 @@ export const CanvasText = ({
 
       // Step 1: Draw text as solid mask
       const fontSize = h * 0.78;
-      ctx.font = `800 ${fontSize}px 'Space Grotesk', -apple-system, sans-serif`;
+      ctx.font = `900 ${fontSize}px 'Space Grotesk', 'Plus Jakarta Sans', -apple-system, sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillStyle = "#ffffff";
@@ -77,15 +81,15 @@ export const CanvasText = ({
       // Step 3: Flowing animated diagonal lines
       const lineGap = 6.5;
       const lineWidth = 4.5;
-      const totalSpan = lineGap * colors.length;
+      const totalSpan = lineGap * activeColors.length;
       offsetRef.current = (offsetRef.current + animationSpeed) % totalSpan;
 
       const maxDim = Math.max(w, h) * 2.5;
 
       for (let i = -maxDim; i < maxDim; i += lineGap) {
         const y = i + offsetRef.current;
-        const colorIdx = Math.abs(Math.floor(i / lineGap)) % colors.length;
-        ctx.strokeStyle = colors[colorIdx];
+        const colorIdx = Math.abs(Math.floor(i / lineGap)) % activeColors.length;
+        ctx.strokeStyle = activeColors[colorIdx];
         ctx.lineWidth = lineWidth;
         ctx.beginPath();
         ctx.moveTo(0, y);
@@ -104,26 +108,28 @@ export const CanvasText = ({
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [size, text, colors, animationSpeed]);
+  }, [size, activeColors, animationSpeed, text]);
 
   return (
     <span
       ref={containerRef}
       className={cn("relative inline-block align-middle select-none", className)}
     >
-      {/* High-Contrast Crisp Fallback Gradient Text */}
+      {/* Hidden text measuring node */}
       <span
-        className="font-display font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-[#00A8E8] to-[#007EA7]"
+        className="invisible font-extrabold font-display whitespace-nowrap block"
         style={{ fontSize: "inherit", lineHeight: "inherit" }}
+        aria-hidden="true"
       >
         {text}
       </span>
 
-      {/* Superimposed Animated Canvas */}
+      {/* Canvas rendering view */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 pointer-events-none w-full h-full"
+        className="absolute inset-0 w-full h-full pointer-events-none"
         style={{ width: "100%", height: "100%" }}
+        aria-label={text}
       />
     </span>
   );

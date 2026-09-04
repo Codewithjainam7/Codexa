@@ -70,16 +70,20 @@ if stripeKey == "" {
   return (
     <div className="relative min-h-screen py-8 sm:py-14 font-sans bg-transparent">
       {/* 1. Viewport Flickering Grid Background */}
-      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden opacity-40 dark:opacity-30">
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden opacity-35 dark:opacity-25">
         <FlickeringGrid
           className="w-full h-full"
           squareSize={4}
           gridGap={6}
           color={isDark ? "#F59E0B" : "#D97706"}
-          maxOpacity={isDark ? 0.25 : 0.18}
+          maxOpacity={isDark ? 0.25 : 0.14}
           flickerChance={0.08}
         />
       </div>
+
+      {/* Ambient background glows for blurmorphism */}
+      <div className="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="fixed bottom-1/4 right-1/4 w-[400px] h-[300px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-[100px] pointer-events-none -z-10" />
 
       {/* ========================================================================= */}
       {/* 1. HERO SECTION (EDITORIAL ASYMMETRIC COMMAND CENTER)                     */}
@@ -95,13 +99,13 @@ if stripeKey == "" {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500 shadow-[0_0_8px_#f59e0b]" />
               </span>
-              <span className="font-mono text-[11px] tracking-wide text-[var(--text-secondary)]">
+              <span className="font-mono text-[11px] tracking-wide text-slate-700 dark:text-slate-300">
                 Deterministic AST Engine <span className="text-amber-500 font-bold mx-1">&bull;</span> Nvidia Nemotron 550B Audit
               </span>
             </div>
             
             {/* Hero Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-extrabold font-display text-[var(--text-primary)] tracking-tight sm:tracking-tighter leading-[1.08]">
+            <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-extrabold font-display text-slate-950 dark:text-white tracking-tight sm:tracking-tighter leading-[1.08]">
               Audit &amp; Secure <br />
               <CanvasText
                 text="AI-Generated Code"
@@ -116,26 +120,26 @@ if stripeKey == "" {
                         "rgba(255, 255, 255, 0.9)",
                       ]
                     : [
-                        "rgba(217, 119, 6, 1)",     // Ochre #D97706
-                        "rgba(180, 83, 9, 0.95)",    // Deep Amber #B45309
-                        "rgba(24, 24, 27, 0.95)",    // Dark Zinc
-                        "rgba(245, 158, 11, 0.9)",   // Amber
-                        "rgba(217, 119, 6, 0.85)",
-                        "rgba(24, 24, 27, 0.9)",
+                        "rgba(180, 83, 9, 1)",      // Deep Amber #B45309
+                        "rgba(217, 119, 6, 0.95)",  // Ochre #D97706
+                        "rgba(15, 23, 42, 0.95)",   // Slate 900 #0F172A
+                        "rgba(146, 64, 14, 0.9)",   // Dark Amber #92400E
+                        "rgba(30, 41, 59, 0.95)",   // Slate 800
+                        "rgba(217, 119, 6, 0.9)",
                       ]
                 }
                 animationSpeed={0.5}
                 className="my-1 inline-block"
               />
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--text-primary)] via-amber-500 to-[var(--text-secondary)]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-950 via-amber-600 to-slate-800 dark:from-white dark:via-amber-400 dark:to-slate-300 font-extrabold">
                 Before Production.
               </span>
             </h1>
 
             {/* Subtitle */}
-            <p className="text-base sm:text-lg text-[var(--text-secondary)] max-w-xl leading-relaxed font-sans font-normal">
-              Codexa inspects AI-generated repositories, detects OWASP vulnerabilities &amp; architectural flaws, ranks findings by verified risk, and computes an explainable <strong className="text-[var(--text-primary)] font-semibold">Production Readiness Score (0–100)</strong>.
+            <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 max-w-xl leading-relaxed font-sans font-normal">
+              Codexa inspects AI-generated repositories, detects OWASP vulnerabilities &amp; architectural flaws, ranks findings by verified risk, and computes an explainable <strong className="text-slate-950 dark:text-white font-semibold">Production Readiness Score (0–100)</strong>.
             </p>
 
             {/* Dual Primary Action Triggers */}
@@ -152,7 +156,7 @@ if stripeKey == "" {
                 href="https://github.com/Codewithjainam7/Codexa"
                 target="_blank"
                 rel="noreferrer"
-                className="cdx-btn-secondary w-full sm:w-auto px-6 py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center space-x-2 font-display"
+                className="cdx-btn-secondary w-full sm:w-auto px-6 py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center space-x-2 font-display text-slate-900 dark:text-white"
               >
                 <GitBranch className="w-4 h-4 text-amber-500" />
                 <span>View GitHub Source</span>
@@ -160,17 +164,17 @@ if stripeKey == "" {
             </div>
 
             {/* Trust Badges */}
-            <div className="pt-4 flex flex-wrap items-center gap-4 text-xs font-mono text-[var(--text-muted)]">
+            <div className="pt-4 flex flex-wrap items-center gap-4 text-xs font-mono text-slate-600 dark:text-slate-400 font-medium">
               <span className="flex items-center space-x-1.5">
-                <Check className="w-3.5 h-3.5 text-emerald-500" />
+                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
                 <span>Zero Bytecode Exec</span>
               </span>
               <span className="flex items-center space-x-1.5">
-                <Check className="w-3.5 h-3.5 text-emerald-500" />
+                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
                 <span>19+ AST Rules</span>
               </span>
               <span className="flex items-center space-x-1.5">
-                <Check className="w-3.5 h-3.5 text-emerald-500" />
+                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
                 <span>&lt; 100ms Parsing</span>
               </span>
             </div>
@@ -178,21 +182,21 @@ if stripeKey == "" {
 
           {/* Right Hero Column: Live Neural AST Command Center Console */}
           <div className="lg:col-span-5 text-left">
-            <div className="cdx-elevated rounded-2xl p-4 sm:p-5 relative overflow-hidden group specular-rim">
+            <div className="cdx-elevated rounded-2xl p-4 sm:p-5 relative overflow-hidden group specular-rim shadow-2xl">
               <div className="flex items-center justify-between pb-3.5 border-b border-[var(--border-subtle)]">
                 <div className="flex items-center space-x-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-                  <span className="ml-2 text-xs font-mono text-[var(--text-primary)] font-bold">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500/90" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500/90" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/90" />
+                  <span className="ml-2 text-xs font-mono text-slate-900 dark:text-white font-bold">
                     Codexa Neural AST Inspector — Live Telemetry
                   </span>
                 </div>
                 <div className="flex items-center space-x-1.5">
-                  <span className="text-[9px] font-mono font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-md border border-amber-500/20">
-                    100% AST AST PARSE
+                  <span className="text-[9px] font-mono font-bold bg-amber-500/15 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-md border border-amber-500/30">
+                    100% AST PARSE
                   </span>
-                  <span className="text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-500/20">
+                  <span className="text-[9px] font-mono font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-500/30">
                     0 BYTECODE EXEC
                   </span>
                 </div>
@@ -201,32 +205,32 @@ if stripeKey == "" {
               <div className="space-y-3 pt-4 font-mono text-xs">
                 {/* Telemetry Stat 1 - Vulnerability Guard */}
                 <div className="p-3.5 rounded-xl cdx-recessed space-y-1">
-                  <div className="text-[11px] text-amber-600 dark:text-amber-400 font-bold flex items-center justify-between">
+                  <div className="text-[11px] text-amber-700 dark:text-amber-400 font-bold flex items-center justify-between">
                     <span>Vulnerability Guard</span>
                     <ShieldCheck className="w-4 h-4 text-amber-500" />
                   </div>
-                  <div className="text-[var(--text-primary)] font-bold text-sm font-sans">19+ OWASP Rules Active</div>
-                  <div className="text-[10px] text-[var(--text-muted)]">SQLi, RCE, SSRF, Deserialization, CSRF</div>
+                  <div className="text-slate-950 dark:text-white font-bold text-sm font-sans">19+ OWASP Rules Active</div>
+                  <div className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">SQLi, RCE, SSRF, Deserialization, CSRF</div>
                 </div>
 
                 {/* Telemetry Stat 2 - Readiness Score */}
                 <div className="p-3.5 rounded-xl cdx-recessed space-y-1">
-                  <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center justify-between">
+                  <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold flex items-center justify-between">
                     <span>Readiness Score</span>
                     <Zap className="w-4 h-4 text-emerald-500" />
                   </div>
-                  <div className="text-[var(--text-primary)] font-bold text-sm font-sans">98.5 / 100 Grade A</div>
-                  <div className="text-[10px] text-[var(--text-muted)]">Security 60% &bull; Quality 25% &bull; Ops 15%</div>
+                  <div className="text-slate-950 dark:text-white font-bold text-sm font-sans">98.5 / 100 Grade A</div>
+                  <div className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">Security 60% &bull; Quality 25% &bull; Ops 15%</div>
                 </div>
 
                 {/* Telemetry Stat 3 - AI Cascader */}
                 <div className="p-3.5 rounded-xl cdx-recessed space-y-1">
-                  <div className="text-[11px] text-blue-600 dark:text-blue-400 font-bold flex items-center justify-between">
+                  <div className="text-[11px] text-blue-700 dark:text-blue-400 font-bold flex items-center justify-between">
                     <span>AI Cascader</span>
                     <Cpu className="w-4 h-4 text-blue-500" />
                   </div>
-                  <div className="text-[var(--text-primary)] font-bold text-sm font-sans">Nvidia Nemotron 550B</div>
-                  <div className="text-[10px] text-[var(--text-muted)]">Contextual patches &amp; zero hallucination</div>
+                  <div className="text-slate-950 dark:text-white font-bold text-sm font-sans">Nvidia Nemotron 550B</div>
+                  <div className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">Contextual patches &amp; zero hallucination</div>
                 </div>
               </div>
             </div>
@@ -240,9 +244,9 @@ if stripeKey == "" {
               <div className="p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
                 <Shield className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
-              <span className="text-[11px] text-[var(--text-muted)] font-mono">AST Engine</span>
+              <span className="text-[11px] text-slate-600 dark:text-slate-400 font-mono font-medium">AST Engine</span>
             </div>
-            <div className="text-sm font-bold text-[var(--text-primary)] font-display">19+ Security Rules</div>
+            <div className="text-sm font-bold text-slate-950 dark:text-white font-display">19+ Security Rules</div>
           </div>
 
           <div className="p-4 rounded-2xl cdx-card hover:border-amber-500/40 transition-all duration-300 group transform hover:-translate-y-1">
@@ -250,9 +254,9 @@ if stripeKey == "" {
               <div className="p-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20">
                 <Cpu className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
-              <span className="text-[11px] text-[var(--text-muted)] font-mono">AI Cascade</span>
+              <span className="text-[11px] text-slate-600 dark:text-slate-400 font-mono font-medium">AI Cascade</span>
             </div>
-            <div className="text-sm font-bold text-[var(--text-primary)] font-display">Nemotron 550B</div>
+            <div className="text-sm font-bold text-slate-950 dark:text-white font-display">Nemotron 550B</div>
           </div>
 
           <div className="p-4 rounded-2xl cdx-card hover:border-amber-500/40 transition-all duration-300 group transform hover:-translate-y-1">
@@ -260,9 +264,9 @@ if stripeKey == "" {
               <div className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                 <Zap className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
-              <span className="text-[11px] text-[var(--text-muted)] font-mono">Benchmark</span>
+              <span className="text-[11px] text-slate-600 dark:text-slate-400 font-mono font-medium">Benchmark</span>
             </div>
-            <div className="text-sm font-bold text-[var(--text-primary)] font-display">&lt; 100ms Parsing</div>
+            <div className="text-sm font-bold text-slate-950 dark:text-white font-display">&lt; 100ms Parsing</div>
           </div>
 
           <div className="p-4 rounded-2xl cdx-card hover:border-amber-500/40 transition-all duration-300 group transform hover:-translate-y-1">
@@ -270,9 +274,9 @@ if stripeKey == "" {
               <div className="p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
                 <Lock className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
-              <span className="text-[11px] text-[var(--text-muted)] font-mono">Sandboxing</span>
+              <span className="text-[11px] text-slate-600 dark:text-slate-400 font-mono font-medium">Sandboxing</span>
             </div>
-            <div className="text-sm font-bold text-[var(--text-primary)] font-display">Zero Bytecode Exec</div>
+            <div className="text-sm font-bold text-slate-950 dark:text-white font-display">Zero Bytecode Exec</div>
           </div>
         </div>
       </section>
@@ -291,24 +295,24 @@ if stripeKey == "" {
             <div className="p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
               <Terminal className="w-4 h-4 text-amber-500" />
             </div>
-            <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--text-primary)]">
+            <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
               Interactive Live Remediation Preview
             </h2>
           </div>
-          <span className="w-fit text-[11px] font-mono text-amber-600 dark:text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20 shadow-sm">
+          <span className="w-fit text-[11px] font-mono text-amber-700 dark:text-amber-400 bg-amber-500/15 px-3 py-1 rounded-full border border-amber-500/30 shadow-sm font-bold">
             Realtime AST Diff
           </span>
         </div>
 
-        {/* Realistic Terminal Shell */}
-        <div className="rounded-2xl cdx-elevated p-1 overflow-hidden specular-rim">
+        {/* Realistic Terminal Shell with Frosted Glass */}
+        <div className="rounded-2xl cdx-elevated p-1 overflow-hidden specular-rim shadow-2xl">
           {/* Window Header */}
           <div className="flex items-center justify-between px-5 py-3.5 bg-[var(--bg-recessed)] border-b border-[var(--border-subtle)]">
             <div className="flex items-center space-x-2">
-              <span className="w-3 h-3 rounded-full bg-rose-500/80 border border-rose-400/40 shadow-sm" />
-              <span className="w-3 h-3 rounded-full bg-amber-500/80 border border-amber-400/40 shadow-sm" />
-              <span className="w-3 h-3 rounded-full bg-emerald-500/80 border border-emerald-400/40 shadow-sm" />
-              <span className="ml-3 text-xs font-mono text-[var(--text-secondary)] font-medium hidden sm:inline">
+              <span className="w-3 h-3 rounded-full bg-rose-500/90 border border-rose-400/40 shadow-sm" />
+              <span className="w-3 h-3 rounded-full bg-amber-500/90 border border-amber-400/40 shadow-sm" />
+              <span className="w-3 h-3 rounded-full bg-emerald-500/90 border border-emerald-400/40 shadow-sm" />
+              <span className="ml-3 text-xs font-mono text-slate-700 dark:text-slate-300 font-semibold hidden sm:inline">
                 {codeDemos[activeCodeTab].title}
               </span>
             </div>
@@ -321,8 +325,8 @@ if stripeKey == "" {
                   onClick={() => setActiveCodeTab(tab)}
                   className={`px-3 py-1 rounded-md text-xs font-mono uppercase font-bold transition-all duration-150 ${
                     activeCodeTab === tab
-                      ? "bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 shadow-sm"
-                      : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                      ? "bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/30 shadow-sm"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white"
                   }`}
                 >
                   {tab}
@@ -334,8 +338,8 @@ if stripeKey == "" {
           {/* Diff Grid */}
           <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
             {/* Before (Vulnerable) */}
-            <div className="space-y-3 rounded-xl bg-rose-500/5 dark:bg-rose-950/20 border border-rose-500/20 p-4">
-              <div className="flex items-center justify-between text-rose-600 dark:text-rose-400 font-bold pb-2 border-b border-rose-500/15">
+            <div className="space-y-3 rounded-xl bg-rose-500/10 dark:bg-rose-950/20 border border-rose-500/25 p-4">
+              <div className="flex items-center justify-between text-rose-700 dark:text-rose-400 font-bold pb-2 border-b border-rose-500/20">
                 <span className="flex items-center space-x-1.5">
                   <AlertTriangle className="w-3.5 h-3.5 text-rose-500" />
                   <span>Vulnerable (Before)</span>
@@ -344,39 +348,39 @@ if stripeKey == "" {
                   {codeDemos[activeCodeTab].severity}
                 </span>
               </div>
-              <pre className="text-rose-700 dark:text-rose-200/90 whitespace-pre-wrap leading-relaxed overflow-x-auto text-[11px] pt-1">
+              <pre className="text-rose-950 dark:text-rose-200 whitespace-pre-wrap leading-relaxed overflow-x-auto text-[11px] pt-1 font-semibold">
                 {codeDemos[activeCodeTab].before}
               </pre>
             </div>
 
             {/* After (Remediated) */}
-            <div className="space-y-3 rounded-xl bg-emerald-500/5 dark:bg-emerald-950/20 border border-emerald-500/20 p-4">
-              <div className="flex items-center justify-between text-emerald-600 dark:text-emerald-400 font-bold pb-2 border-b border-emerald-500/15">
+            <div className="space-y-3 rounded-xl bg-emerald-500/10 dark:bg-emerald-950/20 border border-emerald-500/25 p-4">
+              <div className="flex items-center justify-between text-emerald-700 dark:text-emerald-400 font-bold pb-2 border-b border-emerald-500/20">
                 <span className="flex items-center space-x-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                   <span>Secure (After)</span>
                 </span>
                 <button
                   onClick={() => handleCopy(codeDemos[activeCodeTab].after)}
-                  className="flex items-center space-x-1 text-[10px] text-emerald-700 dark:text-emerald-300 hover:opacity-80 bg-emerald-500/15 px-2.5 py-0.5 rounded-md border border-emerald-500/25 transition-colors cursor-pointer"
+                  className="flex items-center space-x-1 text-[10px] text-emerald-800 dark:text-emerald-300 hover:opacity-80 bg-emerald-500/15 px-2.5 py-0.5 rounded-md border border-emerald-500/25 transition-colors cursor-pointer font-semibold"
                 >
-                  {copied ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+                  {copied ? <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3 h-3" />}
                   <span>{copied ? "Copied" : "Copy Fix"}</span>
                 </button>
               </div>
-              <pre className="text-emerald-800 dark:text-emerald-200/90 whitespace-pre-wrap leading-relaxed overflow-x-auto text-[11px] pt-1">
+              <pre className="text-emerald-950 dark:text-emerald-200 whitespace-pre-wrap leading-relaxed overflow-x-auto text-[11px] pt-1 font-semibold">
                 {codeDemos[activeCodeTab].after}
               </pre>
             </div>
           </div>
 
           {/* Explanation Footer */}
-          <div className="px-5 py-3.5 bg-[var(--bg-recessed)] border-t border-[var(--border-subtle)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-[var(--text-secondary)]">
-            <span className="flex items-center space-x-2">
+          <div className="px-5 py-3.5 bg-[var(--bg-recessed)] border-t border-[var(--border-subtle)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-slate-700 dark:text-slate-300">
+            <span className="flex items-center space-x-2 font-medium">
               <Sparkles className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
               <span>{codeDemos[activeCodeTab].explanation}</span>
             </span>
-            <span className="text-amber-600 dark:text-amber-400 font-mono font-bold text-[11px]">0 Hallucination</span>
+            <span className="text-amber-700 dark:text-amber-400 font-mono font-bold text-[11px]">0 Hallucination</span>
           </div>
         </div>
       </section>
@@ -395,11 +399,11 @@ if stripeKey == "" {
             <div className="p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
               <Sparkles className="w-4 h-4 text-amber-500" />
             </div>
-            <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--text-primary)]">
+            <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
               Engine Architecture &amp; Capabilities
             </h2>
           </div>
-          <span className="text-xs font-mono text-[var(--text-muted)]">5-Layer Security Shield</span>
+          <span className="text-xs font-mono text-slate-600 dark:text-slate-400 font-medium">5-Layer Security Shield</span>
         </div>
 
         <ul className="grid grid-cols-1 md:grid-cols-12 gap-5 auto-rows-fr">
@@ -413,18 +417,18 @@ if stripeKey == "" {
                     <Lock className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-display text-lg font-bold text-[var(--text-primary)]">OWASP Top 10 SAST</h3>
-                    <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed font-normal">
+                    <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">OWASP Top 10 SAST</h3>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
                       Deterministic AST checking for SQL injection, command execution, hardcoded credentials, and deserialization flaws.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap gap-2 pt-4 border-t border-[var(--border-subtle)] text-[11px] font-mono">
-                  <span className="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">SQLi Shield</span>
-                  <span className="px-2.5 py-1 rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">RCE Blocked</span>
-                  <span className="px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">XSS Sanitizer</span>
-                  <span className="px-2.5 py-1 rounded-md bg-[var(--bg-recessed)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">SSRF Guard</span>
+                  <span className="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-medium">SQLi Shield</span>
+                  <span className="px-2.5 py-1 rounded-md bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 font-medium">RCE Blocked</span>
+                  <span className="px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20 font-medium">XSS Sanitizer</span>
+                  <span className="px-2.5 py-1 rounded-md bg-[var(--bg-recessed)] text-slate-700 dark:text-slate-300 border border-[var(--border-subtle)] font-medium">SSRF Guard</span>
                 </div>
               </div>
             </div>
@@ -440,13 +444,13 @@ if stripeKey == "" {
                     <div className="w-fit rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-2.5 text-emerald-500">
                       <FileCode className="h-5 w-5" />
                     </div>
-                    <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">
+                    <span className="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">
                       LIVE PATCHING
                     </span>
                   </div>
                   <div>
-                    <h3 className="font-display text-lg font-bold text-[var(--text-primary)]">Before &amp; After Fix Diffs</h3>
-                    <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed font-normal">
+                    <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Before &amp; After Fix Diffs</h3>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
                       Side-by-side IDE terminal diff comparison with automatic secret masking and copyable secure fixes.
                     </p>
                   </div>
@@ -454,31 +458,31 @@ if stripeKey == "" {
 
                 {/* Mini IDE Terminal Window */}
                 <div className="my-auto rounded-xl cdx-recessed p-3.5 font-mono text-[11px] space-y-2.5 shadow-inner">
-                  <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] text-[10px] text-[var(--text-muted)]">
+                  <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] text-[10px] text-slate-600 dark:text-slate-400">
                     <div className="flex items-center space-x-1.5">
-                      <span className="w-2 h-2 rounded-full bg-rose-500/80" />
-                      <span className="w-2 h-2 rounded-full bg-amber-500/80" />
-                      <span className="w-2 h-2 rounded-full bg-emerald-500/80" />
-                      <span className="ml-1 text-[var(--text-secondary)] font-sans">auth_handler.ts</span>
+                      <span className="w-2 h-2 rounded-full bg-rose-500/90" />
+                      <span className="w-2 h-2 rounded-full bg-amber-500/90" />
+                      <span className="w-2 h-2 rounded-full bg-emerald-500/90" />
+                      <span className="ml-1 text-slate-700 dark:text-slate-300 font-sans font-medium">auth_handler.ts</span>
                     </div>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">Auto-Fixed</span>
+                    <span className="text-emerald-700 dark:text-emerald-400 font-bold">Auto-Fixed</span>
                   </div>
-                  <div className="space-y-1.5 text-xs">
-                    <div className="text-rose-600 dark:text-rose-400 bg-rose-500/10 px-2.5 py-1.5 rounded-lg border-l-2 border-rose-500 overflow-x-auto truncate">
+                  <div className="space-y-1.5 text-xs font-semibold">
+                    <div className="text-rose-800 dark:text-rose-400 bg-rose-500/15 px-2.5 py-1.5 rounded-lg border-l-2 border-rose-500 overflow-x-auto truncate">
                       {'- const q = "SELECT * FROM u WHERE id=" + id;'}
                     </div>
-                    <div className="text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1.5 rounded-lg border-l-2 border-emerald-500 overflow-x-auto truncate">
+                    <div className="text-emerald-800 dark:text-emerald-400 bg-emerald-500/15 px-2.5 py-1.5 rounded-lg border-l-2 border-emerald-500 overflow-x-auto truncate">
                       {'+ const u = await db.user.find({ id });'}
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-3.5 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] text-[var(--text-secondary)] font-mono">
-                  <span className="flex items-center space-x-1.5 text-[var(--text-primary)]">
+                <div className="pt-3.5 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] text-slate-700 dark:text-slate-300 font-mono">
+                  <span className="flex items-center space-x-1.5 text-slate-900 dark:text-white font-medium">
                     <CheckCircle2 className="w-3.5 h-3.5 text-amber-500" />
                     <span>Secret Masking</span>
                   </span>
-                  <span className="text-amber-600 dark:text-amber-400 font-bold">0 Hallucination</span>
+                  <span className="text-amber-700 dark:text-amber-400 font-bold">0 Hallucination</span>
                 </div>
               </div>
             </div>
@@ -494,17 +498,17 @@ if stripeKey == "" {
                     <Cpu className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-display text-lg font-bold text-[var(--text-primary)]">Nvidia Nemotron 550B AI</h3>
-                    <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed font-normal">
+                    <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Nvidia Nemotron 550B AI</h3>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
                       State-of-the-art neural code review cascade generating contextual remediation and deep explanations.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap gap-2 pt-4 border-t border-[var(--border-subtle)] text-[11px] font-mono">
-                  <span className="px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">Nemotron 550B</span>
-                  <span className="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">Inkling Small</span>
-                  <span className="px-2.5 py-1 rounded-md bg-[var(--bg-recessed)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">AST Graph</span>
+                  <span className="px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20 font-medium">Nemotron 550B</span>
+                  <span className="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-medium">Inkling Small</span>
+                  <span className="px-2.5 py-1 rounded-md bg-[var(--bg-recessed)] text-slate-700 dark:text-slate-300 border border-[var(--border-subtle)] font-medium">AST Graph</span>
                 </div>
               </div>
             </div>
@@ -520,17 +524,17 @@ if stripeKey == "" {
                     <Zap className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-display text-lg font-bold text-[var(--text-primary)]">Readiness Score (0–100)</h3>
-                    <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed font-normal">
+                    <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Readiness Score (0–100)</h3>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
                       Mathematical model weighting Security (60%), Quality (25%), and Operations (15%) with failure caps.
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-2.5 pt-4 border-t border-[var(--border-subtle)]">
-                  <div className="flex items-center justify-between text-[10px] font-mono text-[var(--text-muted)]">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-slate-600 dark:text-slate-400 font-medium">
                     <span>Readiness Weighting</span>
-                    <span className="text-amber-600 dark:text-amber-400 font-bold">100% Deterministic</span>
+                    <span className="text-amber-700 dark:text-amber-400 font-bold">100% Deterministic</span>
                   </div>
                   <div className="h-2.5 w-full bg-[var(--bg-recessed)] rounded-full overflow-hidden flex border border-[var(--border-subtle)] p-0.5">
                     <div className="bg-amber-500 h-full rounded-full w-[60%]" title="Security 60%" />
@@ -552,19 +556,19 @@ if stripeKey == "" {
                     <ShieldCheck className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-display text-lg font-bold text-[var(--text-primary)]">Zero-Execution Sandbox</h3>
-                    <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed font-normal">
+                    <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Zero-Execution Sandbox</h3>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
                       Safe archive decompression with Zip Slip protection, bomb size quotas, and zero untrusted bytecode execution.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-[var(--border-subtle)] text-[11px] font-mono text-[var(--text-muted)]">
-                  <span className="flex items-center space-x-1.5 text-emerald-600 dark:text-emerald-400">
+                <div className="flex items-center justify-between pt-4 border-t border-[var(--border-subtle)] text-[11px] font-mono text-slate-600 dark:text-slate-400">
+                  <span className="flex items-center space-x-1.5 text-emerald-700 dark:text-emerald-400 font-bold">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                     <span>Zip Slip Block</span>
                   </span>
-                  <span className="flex items-center space-x-1.5 text-emerald-600 dark:text-emerald-400">
+                  <span className="flex items-center space-x-1.5 text-emerald-700 dark:text-emerald-400 font-bold">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                     <span>Quota Enforced</span>
                   </span>
@@ -585,11 +589,11 @@ if stripeKey == "" {
       {/* ========================================================================= */}
       <section className="max-w-5xl mx-auto py-8 sm:py-14 px-4 relative z-10 space-y-10">
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center space-x-2 text-xs font-mono text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider cdx-pill px-3.5 py-1 rounded-full">
+          <div className="inline-flex items-center space-x-2 text-xs font-mono text-amber-700 dark:text-amber-400 font-bold uppercase tracking-wider cdx-pill px-3.5 py-1 rounded-full">
             <Layers className="w-3.5 h-3.5 text-amber-500" />
             <span>Automated Analysis Pipeline</span>
           </div>
-          <h2 className="text-2xl sm:text-4xl font-extrabold font-display text-[var(--text-primary)] tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-extrabold font-display text-slate-950 dark:text-white tracking-tight">
             How Codexa Audits Your Code
           </h2>
         </div>
@@ -597,44 +601,44 @@ if stripeKey == "" {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
           {/* Stage 1 */}
           <div className="p-5 rounded-2xl cdx-card hover:border-amber-500/40 transition-all duration-300 group">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold font-mono text-xs mb-3.5">
+            <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-700 dark:text-amber-400 font-bold font-mono text-xs mb-3.5">
               01
             </div>
-            <h4 className="text-sm font-bold text-[var(--text-primary)] font-display mb-1">Sandboxed Ingestion</h4>
-            <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-normal">
+            <h4 className="text-sm font-bold text-slate-950 dark:text-white font-display mb-1">Sandboxed Ingestion</h4>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
               Safe extraction of ZIP archives or GitHub repos with Zip Slip, Bomb &amp; Depth verification.
             </p>
           </div>
 
           {/* Stage 2 */}
           <div className="p-5 rounded-2xl cdx-card hover:border-amber-500/40 transition-all duration-300 group">
-            <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold font-mono text-xs mb-3.5">
+            <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-700 dark:text-blue-400 font-bold font-mono text-xs mb-3.5">
               02
             </div>
-            <h4 className="text-sm font-bold text-[var(--text-primary)] font-display mb-1">Deterministic AST Scan</h4>
-            <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-normal">
+            <h4 className="text-sm font-bold text-slate-950 dark:text-white font-display mb-1">Deterministic AST Scan</h4>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
               JavaParser &amp; Multi-Lang regex pattern analyzers detect 19+ critical vulnerability rules.
             </p>
           </div>
 
           {/* Stage 3 */}
           <div className="p-5 rounded-2xl cdx-card hover:border-amber-500/40 transition-all duration-300 group">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold font-mono text-xs mb-3.5">
+            <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-700 dark:text-amber-400 font-bold font-mono text-xs mb-3.5">
               03
             </div>
-            <h4 className="text-sm font-bold text-[var(--text-primary)] font-display mb-1">Neural Cascade</h4>
-            <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-normal">
+            <h4 className="text-sm font-bold text-slate-950 dark:text-white font-display mb-1">Neural Cascade</h4>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
               Nvidia Nemotron 550B generates explainable security insights and context-aware code patches.
             </p>
           </div>
 
           {/* Stage 4 */}
           <div className="p-5 rounded-2xl cdx-card hover:border-amber-500/40 transition-all duration-300 group">
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold font-mono text-xs mb-3.5">
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-700 dark:text-emerald-400 font-bold font-mono text-xs mb-3.5">
               04
             </div>
-            <h4 className="text-sm font-bold text-[var(--text-primary)] font-display mb-1">Readiness Index</h4>
-            <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-normal">
+            <h4 className="text-sm font-bold text-slate-950 dark:text-white font-display mb-1">Readiness Index</h4>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
               Mathematical scoring formula produces clear 0–100 production-readiness rating &amp; report.
             </p>
           </div>
@@ -650,14 +654,14 @@ if stripeKey == "" {
       {/* 5. BOTTOM CTA LAUNCH BANNER                                               */}
       {/* ========================================================================= */}
       <section className="max-w-4xl mx-auto py-8 sm:py-14 px-4 relative z-10">
-        <div className="relative rounded-3xl cdx-elevated p-8 sm:p-12 text-center space-y-6 overflow-hidden specular-rim">
-          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[400px] h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative rounded-3xl cdx-elevated p-8 sm:p-12 text-center space-y-6 overflow-hidden specular-rim shadow-2xl">
+          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[400px] h-48 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
           
           <div className="relative space-y-2.5">
-            <h3 className="text-2xl sm:text-4xl font-extrabold font-display text-[var(--text-primary)] tracking-tight">
+            <h3 className="text-2xl sm:text-4xl font-extrabold font-display text-slate-950 dark:text-white tracking-tight">
               Ready to Audit Your Codebase?
             </h3>
-            <p className="text-sm sm:text-base text-[var(--text-secondary)] max-w-xl mx-auto font-sans leading-relaxed font-normal">
+            <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 max-w-xl mx-auto font-sans leading-relaxed font-normal">
               Scan your repository in seconds. Zero bytecode execution, 100% explainable security and production readiness score.
             </p>
           </div>
@@ -674,7 +678,7 @@ if stripeKey == "" {
               href="https://github.com/Codewithjainam7/Codexa"
               target="_blank"
               rel="noreferrer"
-              className="cdx-btn-secondary w-full sm:w-auto px-7 py-3.5 rounded-xl text-sm font-semibold flex items-center justify-center space-x-2 font-display"
+              className="cdx-btn-secondary w-full sm:w-auto px-7 py-3.5 rounded-xl text-sm font-semibold flex items-center justify-center space-x-2 font-display text-slate-900 dark:text-white"
             >
               <GitBranch className="w-4 h-4 text-amber-500" />
               <span>Star on GitHub</span>
