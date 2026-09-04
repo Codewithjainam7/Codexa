@@ -69,21 +69,24 @@ if stripeKey == "" {
 
   return (
     <div className="relative min-h-screen py-8 sm:py-14 font-sans bg-transparent">
-      {/* 1. Viewport Flickering Grid Background */}
-      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden opacity-35 dark:opacity-25">
+      {/* 1. Viewport Flickering Grid Background Effect */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <FlickeringGrid
           className="w-full h-full"
           squareSize={4}
           gridGap={6}
           color={isDark ? "#F59E0B" : "#D97706"}
-          maxOpacity={isDark ? 0.25 : 0.14}
-          flickerChance={0.08}
+          maxOpacity={isDark ? 0.50 : 0.40}
+          flickerChance={0.14}
         />
+        {/* Soft Radial Ambient Vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(245,158,11,0.12),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(245,158,11,0.2),rgba(0,0,0,0))] pointer-events-none" />
       </div>
 
-      {/* Ambient background glows for blurmorphism */}
-      <div className="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-[120px] pointer-events-none -z-10" />
-      <div className="fixed bottom-1/4 right-1/4 w-[400px] h-[300px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-[100px] pointer-events-none -z-10" />
+      {/* Ambient background light orbs that shine through frosted glass cards */}
+      <div className="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[450px] bg-amber-500/15 dark:bg-amber-500/25 rounded-full blur-[140px] pointer-events-none -z-10" />
+      <div className="fixed bottom-1/3 right-1/4 w-[550px] h-[380px] bg-blue-500/10 dark:bg-blue-500/20 rounded-full blur-[130px] pointer-events-none -z-10" />
+      <div className="fixed top-2/3 left-1/4 w-[480px] h-[320px] bg-emerald-500/10 dark:bg-emerald-500/15 rounded-full blur-[130px] pointer-events-none -z-10" />
 
       {/* ========================================================================= */}
       {/* 1. HERO SECTION (EDITORIAL ASYMMETRIC COMMAND CENTER)                     */}
