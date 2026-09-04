@@ -26,14 +26,13 @@ public class NvidiaNemotronAiClient {
     private static final Logger log = LoggerFactory.getLogger(NvidiaNemotronAiClient.class);
     private static final String DEFAULT_OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
     private static final String DEFAULT_NVIDIA_ENDPOINT = "https://integrate.api.nvidia.com/v1/chat/completions";
-    private static final String DEFAULT_MODEL = "anthropic/claude-fable-5.1";
+    private static final String DEFAULT_MODEL = "nvidia/nemotron-3-ultra-550b-a55b:free";
     private static final List<String> FALLBACK_MODELS = List.of(
-            "nvidia/nemotron-3-super-120b-a12b:free",
-            "cohere/north-mini-code:free",
-            "minimax/minimax-m2.7:free",
+            "nvidia/nemotron-3-ultra-550b-a55b:free",
             "nvidia/nemotron-3.5-lightning:free",
+            "thinkingmachines/inkling-small:free",
             "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
-            "nvidia/nemotron-3-ultra-550b-a55b:free"
+            "nvidia/nemotron-3-super-120b-a12b:free"
     );
 
     private final CodexaProperties properties;
