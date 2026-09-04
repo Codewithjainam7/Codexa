@@ -70,12 +70,12 @@ export const GlowingEffect = memo(
           className
         )}
       >
-        {/* Crisp Border Glow Tracker */}
+        {/* Crisp Border Glow Tracker (Monochrome White/Silver) */}
         <div
           className="absolute inset-0 rounded-[inherit] transition-opacity duration-300"
           style={{
             opacity: "var(--glow-opacity)",
-            background: `radial-gradient(var(--spread) circle at var(--glow-x) var(--glow-y), rgba(16, 185, 129, 0.7), rgba(56, 189, 248, 0.4), rgba(244, 63, 94, 0.2), transparent 70%)`,
+            background: `radial-gradient(var(--spread) circle at var(--glow-x) var(--glow-y), rgba(255, 255, 255, 0.85), rgba(200, 200, 200, 0.4), rgba(100, 100, 100, 0.2), transparent 70%)`,
             mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
             WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
             maskComposite: "exclude",
@@ -90,7 +90,7 @@ export const GlowingEffect = memo(
             className="absolute inset-0 rounded-[inherit] blur-[var(--blur)] transition-opacity duration-300"
             style={{
               opacity: "calc(var(--glow-opacity) * 0.4)",
-              background: `radial-gradient(calc(var(--spread) * 0.9) circle at var(--glow-x) var(--glow-y), rgba(16, 185, 129, 0.45), rgba(6, 182, 212, 0.2), transparent 70%)`,
+              background: `radial-gradient(calc(var(--spread) * 0.9) circle at var(--glow-x) var(--glow-y), rgba(255, 255, 255, 0.5), rgba(160, 160, 160, 0.2), transparent 70%)`,
             }}
           />
         )}

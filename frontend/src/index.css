@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500/30 selection:text-emerald-300 antialiased;
+    @apply bg-black text-neutral-100 font-sans selection:bg-white/20 selection:text-white antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
@@ -19,12 +19,12 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #1e293b; /* slate-800 */
+    background: #27272a; /* zinc-800 */
     border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #334155; /* slate-700 */
+    background: #52525b; /* zinc-600 */
   }
 
   /* Custom terminal code scrollbar - hidden by default, visible on hover */
