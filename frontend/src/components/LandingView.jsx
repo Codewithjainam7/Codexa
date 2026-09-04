@@ -9,9 +9,9 @@ import { CanvasText } from "./ui/canvas-text";
 
 export default function LandingView({ onStartAnalysis }) {
   return (
-    <AuroraBackground className="relative space-y-10 py-1 sm:py-2 font-sans bg-transparent">
+    <AuroraBackground className="relative space-y-10 py-0 font-sans bg-transparent">
       {/* Hero Section - Pulled up with minimal top gap */}
-      <section className="text-center max-w-4xl mx-auto space-y-5 relative z-10 pt-1">
+      <section className="text-center max-w-4xl mx-auto space-y-5 relative z-10 pt-0">
         <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-neutral-900 border border-neutral-700/80 text-neutral-200 text-xs font-semibold shadow-sm backdrop-blur-md">
           <Shield className="w-3.5 h-3.5 text-white" />
           <span>Deterministic AST Rules + Nvidia Nemotron 550B Audit</span>
@@ -21,21 +21,17 @@ export default function LandingView({ onStartAnalysis }) {
           Is Your <br className="sm:hidden" />
           <CanvasText
             text="AI-Generated Code"
-            backgroundClassName="bg-neutral-900/90 border border-neutral-700/80"
             colors={[
               "rgba(255, 255, 255, 1)",
-              "rgba(240, 240, 240, 0.9)",
-              "rgba(210, 210, 210, 0.8)",
-              "rgba(180, 180, 180, 0.7)",
-              "rgba(150, 150, 150, 0.6)",
-              "rgba(120, 120, 120, 0.5)",
-              "rgba(90, 90, 90, 0.4)",
-              "rgba(60, 60, 60, 0.3)",
-              "rgba(40, 40, 40, 0.2)",
-              "rgba(20, 20, 20, 0.1)",
+              "rgba(220, 220, 220, 0.9)",
+              "rgba(180, 180, 180, 0.8)",
+              "rgba(140, 140, 140, 0.7)",
+              "rgba(100, 100, 100, 0.6)",
+              "rgba(70, 70, 70, 0.5)",
+              "rgba(50, 50, 50, 0.4)",
+              "rgba(30, 30, 30, 0.3)",
             ]}
-            lineGap={4}
-            animationDuration={18}
+            animationSpeed={0.6}
             className="mx-1 my-1"
           />
           <br />

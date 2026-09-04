@@ -1,11 +1,10 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import { cn } from "../../lib/utils";
 
 export const CanvasText = ({
   text = "AI-Generated Code",
   className,
-  backgroundClassName = "bg-neutral-900 border border-neutral-700",
   colors = [
     "rgba(255, 255, 255, 1)",
     "rgba(240, 240, 240, 0.9)",
@@ -15,85 +14,127 @@ export const CanvasText = ({
     "rgba(120, 120, 120, 0.5)",
     "rgba(90, 90, 90, 0.4)",
     "rgba(60, 60, 60, 0.3)",
-    "rgba(40, 40, 40, 0.2)",
-    "rgba(20, 20, 20, 0.1)",
   ],
-  lineGap = 4,
-  animationDuration = 20,
+  animationSpeed = 0.5,
 }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
+  const animationRef = useRef(null);
+  const offsetRef = useRef(0);
 
-  useEffect(() => {
+  const getFont = useCallback((size) => {
+    return `900 ${size}px 'Sora', 'Plus Jakarta Sans', sans-serif`;
+  }, []);
+
+  const drawFrame = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animationFrameId;
-    let offset = 0;
-    const speed = (lineGap * colors.length) / (animationDuration * 30);
+    const dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    
+    // Set canvas size accounting for device pixel ratio
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
 
-    const render = () => {
-      const { width, height } = canvas;
-      if (width === 0 || height === 0) {
-        animationFrameId = requestAnimationFrame(render);
-        return;
-      }
-      ctx.clearRect(0, 0, width, height);
+    const w = rect.width;
+    const h = rect.height;
 
-      offset = (offset + speed) % (lineGap * colors.length);
+    // Clear
+    ctx.clearRect(0, 0, w, h);
 
-      const totalLines = Math.ceil((width + height * 2) / lineGap);
-      for (let i = -totalLines; i < totalLines * 2; i++) {
-        const y = i * lineGap + offset;
-        const colorIndex = Math.abs(
-          Math.floor((i + offset) % colors.length)
-        );
-        ctx.strokeStyle = colors[colorIndex] || colors[0];
-        ctx.lineWidth = lineGap * 0.85;
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y + height);
-        ctx.stroke();
-      }
+    // Step 1: Draw the text as a solid fill (this becomes the mask)
+    const fontSize = h * 0.75;
+    ctx.font = getFont(fontSize);
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "white";
+    ctx.fillText(text, w / 2, h / 2);
 
-      animationFrameId = requestAnimationFrame(render);
-    };
+    // Step 2: Use composite operation so subsequent draws only appear INSIDE the text
+    ctx.globalCompositeOperation = "source-in";
 
-    const updateSize = () => {
-      if (containerRef.current && canvas) {
-        const rect = containerRef.current.getBoundingClientRect();
-        canvas.width = Math.max(rect.width, 100);
-        canvas.height = Math.max(rect.height, 30);
-      }
-    };
+    // Step 3: Draw animated diagonal lines that flow through the text
+    const lineGap = 6;
+    const lineWidth = 4;
+    const totalSpan = lineGap * colors.length;
+    offsetRef.current = (offsetRef.current + animationSpeed) % totalSpan;
 
-    updateSize();
-    window.addEventListener("resize", updateSize);
-    render();
+    const maxDim = Math.max(w, h) * 2;
 
+    for (let i = -maxDim; i < maxDim; i += lineGap) {
+      const y = i + offsetRef.current;
+      const colorIdx = Math.abs(Math.floor(i / lineGap)) % colors.length;
+      ctx.strokeStyle = colors[colorIdx];
+      ctx.lineWidth = lineWidth;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y - w * 0.5);
+      ctx.stroke();
+    }
+
+    // Reset composite
+    ctx.globalCompositeOperation = "source-over";
+
+    animationRef.current = requestAnimationFrame(drawFrame);
+  }, [text, colors, animationSpeed, getFont]);
+
+  useEffect(() => {
+    animationRef.current = requestAnimationFrame(drawFrame);
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener("resize", updateSize);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
     };
-  }, [colors, lineGap, animationDuration]);
+  }, [drawFrame]);
+
+  // Measure text to set container width
+  const measureRef = useRef(null);
+  const [dims, setDims] = React.useState({ width: 300, height: 80 });
+
+  useEffect(() => {
+    const measure = () => {
+      const el = measureRef.current;
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        setDims({ width: rect.width + 16, height: rect.height + 8 });
+      }
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [text]);
 
   return (
     <span
-      ref={containerRef}
-      className={cn(
-        "relative inline-flex items-center justify-center overflow-hidden rounded-2xl px-4 py-1 font-extrabold align-middle transition-all shadow-inner",
-        backgroundClassName,
-        className
-      )}
+      className={cn("relative inline-block align-middle", className)}
     >
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 h-full w-full pointer-events-none opacity-40 mix-blend-screen"
-      />
-      <span className="relative z-10 text-white font-display tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]">
+      {/* Hidden text for measurement */}
+      <span
+        ref={measureRef}
+        className="invisible font-display font-black whitespace-nowrap"
+        style={{ fontSize: "inherit", lineHeight: "inherit" }}
+        aria-hidden="true"
+      >
         {text}
+      </span>
+
+      {/* Canvas overlay */}
+      <span
+        ref={containerRef}
+        className="absolute inset-0 overflow-hidden"
+        style={{ width: dims.width, height: dims.height }}
+      >
+        <canvas
+          ref={canvasRef}
+          className="w-full h-full"
+          style={{ width: "100%", height: "100%" }}
+        />
       </span>
     </span>
   );

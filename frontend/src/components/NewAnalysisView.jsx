@@ -96,7 +96,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
           onClick={() => { setActiveTab('github'); setError(null); }}
           className={`flex-1 flex items-center justify-center space-x-2 py-2.5 rounded-xl text-xs font-bold transition-all ${
             activeTab === 'github'
-              ? 'bg-white text-black shadow-md shadow-white/10'
+              ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20'
               : 'text-neutral-400 hover:text-white'
           }`}
         >
@@ -108,7 +108,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
           onClick={() => { setActiveTab('zip'); setError(null); }}
           className={`flex-1 flex items-center justify-center space-x-2 py-2.5 rounded-xl text-xs font-bold transition-all ${
             activeTab === 'zip'
-              ? 'bg-white text-black shadow-md shadow-white/10'
+              ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20'
               : 'text-neutral-400 hover:text-white'
           }`}
         >
@@ -144,7 +144,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
                     onChange={(e) => setGithubUrl(e.target.value)}
                     placeholder="https://github.com/owner/repository"
                     disabled={isSubmitting}
-                    className="w-full pl-11 pr-4 py-3 bg-black border border-neutral-800 rounded-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white transition-all font-mono"
+                    className="w-full pl-11 pr-4 py-3 bg-black border border-neutral-800 rounded-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all font-mono"
                   />
                 </div>
               </div>
@@ -169,7 +169,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
               <button
                 type="submit"
                 disabled={isSubmitting || !githubUrl.trim()}
-                className="w-full py-3.5 rounded-xl bg-white hover:bg-neutral-200 disabled:opacity-50 text-black text-sm font-extrabold flex items-center justify-center space-x-2 shadow-lg shadow-white/10 transition-all cursor-pointer active:scale-98"
+                className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white text-sm font-extrabold flex items-center justify-center space-x-2 shadow-lg shadow-emerald-500/20 transition-all cursor-pointer active:scale-98"
               >
                 {isSubmitting ? (
                   <>
@@ -204,9 +204,9 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
             onDrop={handleFileDrop}
             className={`border-2 border-dashed rounded-2xl p-8 sm:p-10 text-center transition-all ${
               isDragging
-                ? 'border-white bg-white/10'
+                ? 'border-emerald-500 bg-emerald-500/10'
                 : file
-                ? 'border-white/50 bg-neutral-900/60'
+                ? 'border-emerald-500/50 bg-neutral-900/60'
                 : 'border-neutral-800 bg-neutral-900/40 hover:border-neutral-700'
             }`}
           >
@@ -220,7 +220,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
             />
 
             <div className="flex flex-col items-center space-y-4">
-              <div className="p-4 bg-white/10 text-white rounded-2xl border border-white/20 shadow-inner">
+              <div className="p-4 bg-emerald-500/10 text-emerald-400 rounded-2xl border border-emerald-500/20 shadow-inner">
                 {file ? <FileArchive className="w-10 h-10" /> : <UploadCloud className="w-10 h-10" />}
               </div>
 
@@ -254,7 +254,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
                   <button
                     onClick={handleZipSubmit}
                     disabled={isSubmitting}
-                    className="px-6 py-2 rounded-xl bg-white hover:bg-neutral-200 disabled:opacity-50 text-black text-xs font-bold flex items-center space-x-2 shadow-md shadow-white/10 transition-all cursor-pointer active:scale-95"
+                    className="px-6 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white text-xs font-bold flex items-center space-x-2 shadow-md shadow-emerald-500/20 transition-all cursor-pointer active:scale-95"
                   >
                     {isSubmitting ? (
                       <>
@@ -296,7 +296,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
         />
         <div className="relative rounded-2xl bg-neutral-900/60 border border-neutral-800/60 p-5 sm:p-6 space-y-4">
           <div className="flex items-center space-x-2 text-xs font-bold text-neutral-300 uppercase tracking-wider">
-            <Info className="w-4 h-4 text-white" />
+            <Info className="w-4 h-4 text-emerald-400" />
             <span>Security &amp; Ingestion Limits</span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">

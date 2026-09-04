@@ -42,7 +42,7 @@ export default function App() {
         isConnected={isConnected}
       />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-3">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-0">
         {currentView === 'landing' && (
           <LandingView onStartAnalysis={() => setCurrentView('upload')} />
         )}
