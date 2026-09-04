@@ -28,10 +28,12 @@ public class NvidiaNemotronAiClient {
     private static final String DEFAULT_NVIDIA_ENDPOINT = "https://integrate.api.nvidia.com/v1/chat/completions";
     private static final String DEFAULT_MODEL = "anthropic/claude-fable-5.1";
     private static final List<String> FALLBACK_MODELS = List.of(
-            "openrouter/free",
+            "nvidia/nemotron-3-super-120b-a12b:free",
+            "cohere/north-mini-code:free",
+            "minimax/minimax-m2.7:free",
+            "nvidia/nemotron-3.5-lightning:free",
             "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
-            "nvidia/nemotron-3-ultra-550b-a55b:free",
-            "nvidia/nemotron-3.5-lightning:free"
+            "nvidia/nemotron-3-ultra-550b-a55b:free"
     );
 
     private final CodexaProperties properties;
