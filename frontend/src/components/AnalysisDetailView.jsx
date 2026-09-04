@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { getAnalysisJob, getFindings } from '../api/client';
-import CodeDiffViewer from './CodeDiffViewer';
 import FindingsFilterBar from './FindingsFilterBar';
 import FileTreeExplorer from './FileTreeExplorer';
 import LiveReviewPulseLoader from './LiveReviewPulseLoader';
+import CapsuleFindingCard from './CapsuleFindingCard';
 import { 
   CheckCircle, AlertTriangle, XCircle, Clock, Shield, 
   ArrowLeft, RefreshCw, FileText, ExternalLink, HelpCircle,
-  LayoutGrid, ListFilter, Sparkles, FolderTree, Code
+  LayoutGrid, ListFilter, Sparkles, FolderTree, Code, ChevronDown, ChevronUp
 } from 'lucide-react';
 
 export default function AnalysisDetailView({ jobId, onBack }) {
@@ -18,7 +18,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
   const [severityFilter, setSeverityFilter] = useState('');
   const [searchFilter, setSearchFilter] = useState('');
   const [selectedFile, setSelectedFile] = useState('');
-  const [activeFindingId, setActiveFindingId] = useState(null);
+  const [expandAll, setExpandAll] = useState(false);
 
   const fetchJobData = async () => {
     try {
@@ -33,9 +33,6 @@ export default function AnalysisDetailView({ jobId, onBack }) {
         });
         const allFindings = fData.content || [];
         setFindings(allFindings);
-        if (allFindings.length > 0 && !activeFindingId) {
-          setActiveFindingId(allFindings[0].id);
-        }
       }
     } catch (err) {
       console.error(err);
@@ -82,13 +79,13 @@ export default function AnalysisDetailView({ jobId, onBack }) {
   const getSeverityBadge = (severity) => {
     switch (severity) {
       case 'CRITICAL':
-        return <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-sm shadow-rose-500/20">CRITICAL</span>;
+        return <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-sm shadow-rose-500/20">CRITICAL</span>;
       case 'HIGH':
-        return <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-orange-500/20 text-orange-300 border border-orange-500/40 shadow-sm shadow-orange-500/20">HIGH</span>;
+        return <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-orange-500/20 text-orange-300 border border-orange-500/40 shadow-sm shadow-orange-500/20">HIGH</span>;
       case 'MEDIUM':
-        return <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm shadow-amber-500/20">MEDIUM</span>;
+        return <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm shadow-amber-500/20">MEDIUM</span>;
       default:
-        return <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/40">LOW</span>;
+        return <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/40">LOW</span>;
     }
   };
 
@@ -109,7 +106,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <button
           onClick={onBack}
-          className="flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-300 hover:text-white hover:border-slate-700 transition-all shadow-sm"
+          className="flex items-center space-x-2 px-4 py-2 rounded-full bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-300 hover:text-white hover:border-slate-700 transition-all shadow-sm active:scale-95"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Dashboard</span>
@@ -121,7 +118,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
               href={`http://localhost:8080/api/v1/analyses/${jobId}/report?format=html`}
               target="_blank"
               rel="noreferrer"
-              className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-xl flex items-center space-x-1.5 transition-colors border border-slate-800 shadow-sm"
+              className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-full flex items-center space-x-1.5 transition-colors border border-slate-800 shadow-sm"
             >
               <FileText className="w-3.5 h-3.5 text-emerald-400" />
               <span>Export HTML</span>
@@ -130,7 +127,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
               href={`http://localhost:8080/api/v1/analyses/${jobId}/report?format=markdown`}
               target="_blank"
               rel="noreferrer"
-              className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-xl flex items-center space-x-1.5 transition-colors border border-slate-800 shadow-sm"
+              className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-full flex items-center space-x-1.5 transition-colors border border-slate-800 shadow-sm"
             >
               <FileText className="w-3.5 h-3.5 text-teal-400" />
               <span>Export Markdown</span>
@@ -139,7 +136,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
               href={`http://localhost:8080/api/v1/analyses/${jobId}/report?format=json`}
               target="_blank"
               rel="noreferrer"
-              className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-xl flex items-center space-x-1.5 transition-colors border border-slate-800 shadow-sm"
+              className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-full flex items-center space-x-1.5 transition-colors border border-slate-800 shadow-sm"
             >
               <FileText className="w-3.5 h-3.5 text-blue-400" />
               <span>Export JSON</span>
@@ -162,7 +159,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
               <div className="space-y-1">
                 <div className="flex flex-wrap items-center gap-2.5">
                   <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">{job?.sourceIdentifier}</h1>
-                  <span className="text-[11px] px-2.5 py-0.5 bg-slate-800 text-emerald-400 rounded-md uppercase font-mono font-bold border border-slate-700">
+                  <span className="text-[11px] px-3 py-0.5 bg-slate-800 text-emerald-400 rounded-full uppercase font-mono font-bold border border-slate-700">
                     {job?.sourceType}
                   </span>
                 </div>
@@ -171,7 +168,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
 
               <div className="flex flex-wrap items-center gap-3">
                 {job?.verdict && getVerdictBadge(job.verdict)}
-                <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                   COMPLETED
                 </span>
               </div>
@@ -231,7 +228,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
             search={searchFilter} setSearch={setSearchFilter}
           />
 
-          {/* Workspace Layout: Left (File Explorer Tree) | Right (Detailed Findings) */}
+          {/* Workspace Layout: Left (File Explorer Tree) | Right (Capsule Finding Cards) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Left Column: Repository Folder Structure with Severity Color Badges */}
             <div className="lg:col-span-4 sticky top-6">
@@ -242,20 +239,32 @@ export default function AnalysisDetailView({ jobId, onBack }) {
               />
             </div>
 
-            {/* Right Column: Code Findings & AI Remediation Diffs */}
+            {/* Right Column: Interactive Capsule Findings List */}
             <div className="lg:col-span-8 space-y-4">
               <div className="flex items-center justify-between pb-1">
                 <h3 className="text-base font-bold text-white flex items-center space-x-2">
                   <span>Detected Findings</span>
-                  <span className="px-2 py-0.5 rounded-full bg-slate-800 text-xs text-emerald-400 font-mono">
+                  <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-xs text-emerald-400 font-mono font-bold">
                     {filteredFindings.length}
                   </span>
                 </h3>
-                {selectedFile && (
-                  <span className="text-xs text-slate-400 font-mono truncate max-w-xs">
-                    Showing issues for: <strong className="text-emerald-400">{selectedFile}</strong>
-                  </span>
-                )}
+
+                <div className="flex items-center space-x-3">
+                  {selectedFile && (
+                    <span className="text-xs text-slate-400 font-mono truncate max-w-xs">
+                      Filtered: <strong className="text-emerald-400">{selectedFile}</strong>
+                    </span>
+                  )}
+                  {filteredFindings.length > 0 && (
+                    <button
+                      onClick={() => setExpandAll(!expandAll)}
+                      className="text-xs font-semibold text-slate-400 hover:text-emerald-300 flex items-center space-x-1 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 transition-colors"
+                    >
+                      {expandAll ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                      <span>{expandAll ? 'Collapse All Capsules' : 'Expand All Capsules'}</span>
+                    </button>
+                  )}
+                </div>
               </div>
 
               {filteredFindings.length === 0 ? (
@@ -265,86 +274,14 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                   <p className="text-xs text-slate-500">All scanned AST rules and heuristics passed for this selection.</p>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-3.5">
                   {filteredFindings.map((f) => (
-                    <div 
-                      key={f.id} 
-                      className="bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-3xl p-6 sm:p-7 space-y-5 transition-all shadow-md"
-                    >
-                      {/* Finding Title & Severity Badge */}
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div className="flex items-center space-x-2.5">
-                          <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
-                            {f.ruleId}
-                          </span>
-                          <h4 className="text-base font-bold text-white tracking-tight">{f.title}</h4>
-                        </div>
-
-                        <div className="flex items-center space-x-2.5 shrink-0">
-                          {f.requiresManualReview && (
-                            <span className="px-2.5 py-0.5 text-[10px] font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/20 rounded-md">
-                              Review Required
-                            </span>
-                          )}
-                          <span className="text-xs font-mono text-slate-400">
-                            Priority: {f.priorityScore}
-                          </span>
-                          {getSeverityBadge(f.severity)}
-                        </div>
-                      </div>
-
-                      {/* File Path & OWASP Mapping */}
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-400">
-                        <span className="font-mono text-slate-200 bg-slate-950 px-2.5 py-1 rounded-md border border-slate-800">
-                          📄 {f.filePath}:{f.startLine}
-                        </span>
-                        {f.owaspMapping && (
-                          <span className="text-emerald-400 font-medium flex items-center space-x-1">
-                            <span>🛡️</span>
-                            <span>{f.owaspMapping}</span>
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Plain-English Explanation */}
-                      <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/40 p-3.5 rounded-xl border border-slate-800/60">
-                        {f.description}
-                      </p>
-
-                      {/* Potential Risk Impact */}
-                      {f.impact && (
-                        <div className="p-3.5 bg-rose-950/20 border border-rose-500/20 rounded-xl text-xs text-slate-300">
-                          <strong className="text-rose-400 font-bold block mb-1">Potential Security &amp; Operational Impact:</strong>
-                          {f.impact}
-                        </div>
-                      )}
-
-                      {/* Before / After Diff Comparison */}
-                      <CodeDiffViewer
-                        originalCode={f.evidenceMasked}
-                        suggestedFix={f.suggestedFix}
-                        ruleId={f.ruleId}
-                      />
-
-                      {/* References & Links */}
-                      {f.references && f.references.length > 0 && (
-                        <div className="pt-3 border-t border-slate-800 flex flex-wrap gap-2 text-[11px]">
-                          <span className="text-slate-500 font-medium">Security References:</span>
-                          {f.references.map((ref, idx) => (
-                            <a
-                              key={idx}
-                              href={ref}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2 flex items-center space-x-1"
-                            >
-                              <span>OWASP Guideline</span>
-                              <ExternalLink className="w-3 h-3 inline" />
-                            </a>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                    <CapsuleFindingCard
+                      key={f.id}
+                      finding={f}
+                      defaultExpanded={expandAll}
+                      getSeverityBadge={getSeverityBadge}
+                    />
                   ))}
                 </div>
               )}
