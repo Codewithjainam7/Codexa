@@ -6,12 +6,12 @@ export const CanvasText = ({
   text = "AI-Generated Code",
   className,
   colors = [
-    "rgba(52, 211, 153, 1)",      // Emerald-400
-    "rgba(45, 212, 191, 0.95)",   // Teal-400
-    "rgba(255, 255, 255, 0.95)",  // Pure White
-    "rgba(110, 231, 183, 0.9)",   // Mint Green
-    "rgba(16, 185, 129, 0.85)",   // Emerald-500
-    "rgba(20, 184, 166, 0.8)",    // Teal-500
+    "rgba(0, 168, 232, 1)",      // Fresh Sky #00A8E8
+    "rgba(0, 126, 167, 0.95)",   // Cerulean #007EA7
+    "rgba(255, 255, 255, 0.95)",  // Pure White #FFFFFF
+    "rgba(56, 189, 248, 0.9)",    // Sky Blue
+    "rgba(0, 168, 232, 0.85)",   // Fresh Sky
+    "rgba(0, 126, 167, 0.8)",    // Cerulean
     "rgba(255, 255, 255, 0.9)",   // White flash
   ],
   animationSpeed = 0.5,
@@ -113,7 +113,7 @@ export const CanvasText = ({
     >
       {/* High-Contrast Crisp Fallback Gradient Text */}
       <span
-        className="font-display font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-300 to-teal-300"
+        className="font-display font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-[#00A8E8] to-[#007EA7]"
         style={{ fontSize: "inherit", lineHeight: "inherit" }}
       >
         {text}
