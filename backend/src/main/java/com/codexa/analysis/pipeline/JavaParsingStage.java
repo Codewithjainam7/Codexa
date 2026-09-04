@@ -41,8 +41,9 @@ public class JavaParsingStage implements PipelineStage {
 
         List<ParsedJavaFile> parsedFiles = astParserService.parseAll(javaSourceFiles, context.getStagingDirectory());
         context.setParsedJavaFiles(parsedFiles);
-        context.setAnalyzedFiles(parsedFiles.size());
+        int totalSource = context.getSourceFiles() != null ? context.getSourceFiles().size() : parsedFiles.size();
+        context.setAnalyzedFiles(totalSource);
 
-        log.info("Job {} parsed {} Java source files for static AST analysis.", context.getJobId(), parsedFiles.size());
+        log.info("Job {} parsed {} Java source files (total {} source files) for analysis.", context.getJobId(), parsedFiles.size(), totalSource);
     }
 }

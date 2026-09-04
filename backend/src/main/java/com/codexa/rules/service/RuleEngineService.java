@@ -36,6 +36,10 @@ public class RuleEngineService {
             RuleContext ruleContext = new RuleContext(parsedFile, pipelineContext);
 
             for (AnalysisRule rule : rules) {
+                // If it's a universal rule, skip per-file iteration and let it run in repoContext
+                if (rule instanceof com.codexa.rules.universal.UniversalMultiLanguageRule) {
+                    continue;
+                }
                 try {
                     List<RuleFinding> ruleFindings = rule.evaluate(ruleContext);
                     for (RuleFinding rf : ruleFindings) {
@@ -48,6 +52,25 @@ public class RuleEngineService {
                 } catch (Exception e) {
                     log.warn("Rule '{}' threw exception on file '{}': {}", rule.getRuleId(), parsedFile.getRelativePath(), e.getMessage());
                 }
+            }
+        }
+
+        // Evaluate repository-wide rules (multi-language scanner, configs, repo-level audits)
+        RuleContext repoContext = new RuleContext(null, pipelineContext);
+        for (AnalysisRule rule : rules) {
+            try {
+                if (rule instanceof com.codexa.rules.universal.UniversalMultiLanguageRule || parsedFiles.isEmpty()) {
+                    List<RuleFinding> ruleFindings = rule.evaluate(repoContext);
+                    for (RuleFinding rf : ruleFindings) {
+                        String hash = computeDeduplicationHash(rf.ruleId(), rf.filePath(), rf.startLine(), rf.endLine(), rf.evidence());
+                        if (!seenHashes.contains(hash)) {
+                            seenHashes.add(hash);
+                            findings.add(toEntity(rf, hash));
+                        }
+                    }
+                }
+            } catch (Exception ignored) {
+                // Skip rules that require Java AST
             }
         }
 

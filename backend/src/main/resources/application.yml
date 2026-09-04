@@ -24,10 +24,13 @@ codexa:
     base-dir: .staging
     cleanup-on-completion: true
   ai:
-    enabled: false
-    provider: none
-    model: gemini-1.5-pro
-    timeout-ms: 15000
+    enabled: ${CODEXA_AI_ENABLED:true}
+    provider: ${CODEXA_AI_PROVIDER:openrouter}
+    endpoint: ${CODEXA_AI_ENDPOINT:https://openrouter.ai/api/v1/chat/completions}
+    model: ${CODEXA_AI_MODEL:anthropic/claude-fable-5.1}
+    fallback-model: ${CODEXA_AI_FALLBACK_MODEL:nvidia/nemotron-3-ultra-550b-a55b:free}
+    api-key: ${OPENROUTER_API_KEY:${NVIDIA_API_KEY:}}
+    timeout-ms: 30000
 
 springdoc:
   api-docs:

@@ -14,13 +14,14 @@ public record CodexaProperties(
     public CodexaProperties(Limits limits, Staging staging, Ai ai, Security security) {
         this.limits = limits != null ? limits : new Limits(25, 100, 1000, 15, 5);
         this.staging = staging != null ? staging : new Staging(".staging", true);
-        this.ai = ai != null ? ai : new Ai(false, "none", "", "nvidia/llama-3.1-nemotron-70b-instruct", 20000);
+        this.ai = ai != null ? ai : new Ai(true, "openrouter", "", "anthropic/claude-fable-5.1", "nvidia/nemotron-3-ultra-550b-a55b:free", "https://openrouter.ai/api/v1/chat/completions", 30000);
         this.security = security != null ? security : new Security(true, 60);
     }
 
     public CodexaProperties(Limits limits, Staging staging, Ai ai) {
         this(limits, staging, ai, new Security(true, 60));
     }
+
     public record Limits(
             int maxCompressedSizeMb,
             int maxExtractedSizeMb,
@@ -63,12 +64,20 @@ public record CodexaProperties(
             String provider,
             String apiKey,
             String model,
+            String fallbackModel,
+            String endpoint,
             int timeoutMs
     ) {
         public Ai {
-            if (provider == null) provider = "none";
-            if (model == null) model = "nvidia/llama-3.1-nemotron-70b-instruct";
-            if (timeoutMs <= 0) timeoutMs = 20000;
+            if (provider == null) provider = "openrouter";
+            if (model == null || model.isBlank()) model = "anthropic/claude-fable-5.1";
+            if (fallbackModel == null || fallbackModel.isBlank()) fallbackModel = "nvidia/nemotron-3-ultra-550b-a55b:free";
+            if (endpoint == null || endpoint.isBlank()) endpoint = "https://openrouter.ai/api/v1/chat/completions";
+            if (timeoutMs <= 0) timeoutMs = 30000;
+        }
+
+        public Ai(boolean enabled, String provider, String apiKey, String model, int timeoutMs) {
+            this(enabled, provider, apiKey, model, "nvidia/nemotron-3-ultra-550b-a55b:free", "https://openrouter.ai/api/v1/chat/completions", timeoutMs);
         }
     }
 

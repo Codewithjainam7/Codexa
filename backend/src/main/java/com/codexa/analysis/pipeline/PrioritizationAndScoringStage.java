@@ -12,7 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @Component
-@Order(30)
+@Order(40)
 public class PrioritizationAndScoringStage implements PipelineStage {
 
     private static final Logger log = LoggerFactory.getLogger(PrioritizationAndScoringStage.class);
@@ -20,7 +20,10 @@ public class PrioritizationAndScoringStage implements PipelineStage {
     private final IssuePrioritizer prioritizer;
     private final ReadinessScoringEngine scoringEngine;
 
-    public PrioritizationAndScoringStage(IssuePrioritizer prioritizer, ReadinessScoringEngine scoringEngine) {
+    public PrioritizationAndScoringStage(
+            IssuePrioritizer prioritizer,
+            ReadinessScoringEngine scoringEngine
+    ) {
         this.prioritizer = prioritizer;
         this.scoringEngine = scoringEngine;
     }

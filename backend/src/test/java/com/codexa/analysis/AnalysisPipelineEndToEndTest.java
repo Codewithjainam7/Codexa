@@ -20,7 +20,10 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+        "codexa.ai.enabled=false",
+        "spring.main.banner-mode=off"
+})
 class AnalysisPipelineEndToEndTest {
 
     @Autowired
@@ -50,7 +53,6 @@ class AnalysisPipelineEndToEndTest {
 
         assertFalse(javaFiles.isEmpty(), "Fixture must contain Java files");
 
-        UUID jobId = UUID.randomUUID();
         AnalysisJobEntity job = jobService.createJob(com.codexa.analysis.model.SourceType.ZIP, "vulnerable-fixture.zip");
 
         // Run analysis asynchronously
