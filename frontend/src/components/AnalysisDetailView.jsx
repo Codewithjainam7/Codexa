@@ -4,6 +4,7 @@ import FindingsFilterBar from './FindingsFilterBar';
 import FileTreeExplorer from './FileTreeExplorer';
 import LiveReviewPulseLoader from './LiveReviewPulseLoader';
 import ExpandableFindingCards from './ExpandableFindingCards';
+import GlowingEffect from './ui/GlowingEffect';
 import { 
   CheckCircle, AlertTriangle, XCircle, Clock, Shield, 
   ArrowLeft, RefreshCw, FileText, ExternalLink, HelpCircle,
@@ -70,7 +71,6 @@ export default function AnalysisDetailView({ jobId, onBack }) {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchJobData();
@@ -190,73 +190,83 @@ export default function AnalysisDetailView({ jobId, onBack }) {
       {/* Completed Inspection Dashboard */}
       {!isScanning && job?.status === 'COMPLETED' && (
         <>
-          {/* Main Scorecard Banner */}
-          <div className="bg-slate-900/80 border border-slate-800/90 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl backdrop-blur-md">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-800">
-              <div className="space-y-1">
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">{job?.sourceIdentifier}</h1>
-                  <span className="text-[11px] px-3 py-0.5 bg-slate-800 text-emerald-400 rounded-full uppercase font-mono font-bold border border-slate-700">
-                    {job?.sourceType}
+          {/* Main Scorecard Banner with Glowing Effect Container */}
+          <div className="relative rounded-3xl border border-slate-800/90 p-2 md:p-3 bg-slate-950/80 backdrop-blur-xl">
+            <GlowingEffect
+              spread={45}
+              glow={true}
+              disabled={false}
+              proximity={64}
+              inactiveZone={0.01}
+            />
+            <div className="relative bg-slate-900/70 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-6">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-800">
+                <div className="space-y-1">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">{job?.sourceIdentifier}</h1>
+                    <span className="text-[11px] px-3 py-0.5 bg-slate-800 text-emerald-400 rounded-full uppercase font-mono font-bold border border-slate-700">
+                      {job?.sourceType}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 font-mono">Job ID: {jobId} &bull; Total Files: {job?.metrics?.totalFiles || 0}</p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  {job?.verdict && getVerdictBadge(job.verdict)}
+                  <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                    COMPLETED
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 font-mono">Job ID: {jobId} &bull; Total Files: {job?.metrics?.totalFiles || 0}</p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-3">
-                {job?.verdict && getVerdictBadge(job.verdict)}
-                <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                  COMPLETED
-                </span>
-              </div>
-            </div>
+              {/* Score Cards Grid with Ambient Glows */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-5 bg-slate-950/80 border border-slate-800/90 rounded-2xl relative overflow-hidden group hover:border-emerald-500/40 transition-all">
+                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Overall Score</div>
+                  <div className={`text-4xl font-black mt-2 font-mono ${
+                    (job?.overallScore ?? 100) >= 75 ? 'text-emerald-400' :
+                    (job?.overallScore ?? 100) >= 50 ? 'text-amber-400' : 'text-rose-400'
+                  }`}>
+                    {job?.overallScore ?? 100}
+                    <span className="text-base text-slate-500 font-normal">/100</span>
+                  </div>
+                  <div className="mt-2 text-[11px] text-slate-500 font-medium">Production Readiness Index</div>
+                </div>
 
-            {/* Score Cards Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="p-5 bg-slate-950/80 border border-slate-800/90 rounded-2xl relative overflow-hidden">
-                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Overall Score</div>
-                <div className={`text-4xl font-black mt-2 font-mono ${
-                  (job?.overallScore ?? 100) >= 75 ? 'text-emerald-400' :
-                  (job?.overallScore ?? 100) >= 50 ? 'text-amber-400' : 'text-rose-400'
-                }`}>
-                  {job?.overallScore ?? 100}
-                  <span className="text-base text-slate-500 font-normal">/100</span>
+                <div className="p-5 bg-slate-950/80 border border-slate-800/90 rounded-2xl group hover:border-emerald-500/40 transition-all">
+                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Security (60%)</div>
+                  <div className="text-3xl font-black text-slate-100 mt-2 font-mono">
+                    {job?.metrics?.securityScore ?? 100}
+                    <span className="text-base text-slate-500 font-normal">/100</span>
+                  </div>
+                  <div className="mt-2 flex items-center space-x-2 text-[11px] font-mono">
+                    <span className="text-rose-400 font-bold">{job?.metrics?.criticalCount || 0} Critical</span>
+                    <span className="text-slate-600">&bull;</span>
+                    <span className="text-orange-400 font-bold">{job?.metrics?.highCount || 0} High</span>
+                  </div>
                 </div>
-                <div className="mt-2 text-[11px] text-slate-500 font-medium">Production Readiness Index</div>
-              </div>
 
-              <div className="p-5 bg-slate-950/80 border border-slate-800/90 rounded-2xl">
-                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Security (60%)</div>
-                <div className="text-3xl font-black text-slate-100 mt-2 font-mono">
-                  {job?.metrics?.securityScore ?? 100}
-                  <span className="text-base text-slate-500 font-normal">/100</span>
+                <div className="p-5 bg-slate-950/80 border border-slate-800/90 rounded-2xl group hover:border-emerald-500/40 transition-all">
+                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Quality (25%)</div>
+                  <div className="text-3xl font-black text-slate-100 mt-2 font-mono">
+                    {job?.metrics?.qualityScore ?? 100}
+                    <span className="text-base text-slate-500 font-normal">/100</span>
+                  </div>
+                  <div className="mt-2 text-[11px] text-slate-500">AST Code Smells &amp; Error Handling</div>
                 </div>
-                <div className="mt-2 flex items-center space-x-2 text-[11px] font-mono">
-                  <span className="text-rose-400 font-bold">{job?.metrics?.criticalCount || 0} Critical</span>
-                  <span className="text-slate-600">&bull;</span>
-                  <span className="text-orange-400 font-bold">{job?.metrics?.highCount || 0} High</span>
-                </div>
-              </div>
 
-              <div className="p-5 bg-slate-950/80 border border-slate-800/90 rounded-2xl">
-                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Quality (25%)</div>
-                <div className="text-3xl font-black text-slate-100 mt-2 font-mono">
-                  {job?.metrics?.qualityScore ?? 100}
-                  <span className="text-base text-slate-500 font-normal">/100</span>
+                <div className="p-5 bg-slate-950/80 border border-slate-800/90 rounded-2xl group hover:border-emerald-500/40 transition-all">
+                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Operations (15%)</div>
+                  <div className="text-3xl font-black text-slate-100 mt-2 font-mono">
+                    {job?.metrics?.operationsScore ?? 100}
+                    <span className="text-base text-slate-500 font-normal">/100</span>
+                  </div>
+                  <div className="mt-2 text-[11px] text-slate-500">Logging &amp; Deployment Hardening</div>
                 </div>
-                <div className="mt-2 text-[11px] text-slate-500">AST Code Smells &amp; Error Handling</div>
-              </div>
-
-              <div className="p-5 bg-slate-950/80 border border-slate-800/90 rounded-2xl">
-                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Operations (15%)</div>
-                <div className="text-3xl font-black text-slate-100 mt-2 font-mono">
-                  {job?.metrics?.operationsScore ?? 100}
-                  <span className="text-base text-slate-500 font-normal">/100</span>
-                </div>
-                <div className="mt-2 text-[11px] text-slate-500">Logging &amp; Deployment Hardening</div>
               </div>
             </div>
           </div>
+
 
           {/* Filter Bar */}
           <FindingsFilterBar

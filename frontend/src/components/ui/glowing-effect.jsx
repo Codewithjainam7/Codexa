@@ -1,0 +1,104 @@
+"use client";
+
+import React, { memo, useCallback, useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
+
+export const GlowingEffect = memo(
+  ({
+    blur = 12,
+    inactiveZone = 0.01,
+    proximity = 64,
+    spread = 40,
+    variant = "emerald",
+    glow = true,
+    className,
+    disabled = false,
+    borderWidth = 1.5,
+  }) => {
+    const containerRef = useRef(null);
+
+    const handleMove = useCallback(
+      (e) => {
+        if (!containerRef.current || disabled) return;
+
+        const container = containerRef.current;
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (proximity > 0) {
+          const isNear =
+            x >= -proximity &&
+            x <= rect.width + proximity &&
+            y >= -proximity &&
+            y <= rect.height + proximity;
+
+          if (!isNear) {
+            container.style.setProperty("--glow-opacity", "0");
+            return;
+          }
+        }
+
+        container.style.setProperty("--glow-opacity", "1");
+        container.style.setProperty("--glow-x", `${x}px`);
+        container.style.setProperty("--glow-y", `${y}px`);
+      },
+      [disabled, proximity]
+    );
+
+    useEffect(() => {
+      if (disabled) return;
+      window.addEventListener("pointermove", handleMove);
+      return () => {
+        window.removeEventListener("pointermove", handleMove);
+      };
+    }, [handleMove, disabled]);
+
+    return (
+      <div
+        ref={containerRef}
+        style={{
+          "--blur": `${blur}px`,
+          "--spread": `${spread * 5}px`,
+          "--border-width": `${borderWidth}px`,
+          "--glow-opacity": "0.15",
+          "--glow-x": "50%",
+          "--glow-y": "50%",
+        }}
+        className={cn(
+          "pointer-events-none absolute inset-0 rounded-[inherit] overflow-hidden -z-0",
+          className
+        )}
+      >
+        {/* Crisp Border Glow Tracker */}
+        <div
+          className="absolute inset-0 rounded-[inherit] transition-opacity duration-300"
+          style={{
+            opacity: "var(--glow-opacity)",
+            background: `radial-gradient(var(--spread) circle at var(--glow-x) var(--glow-y), rgba(16, 185, 129, 0.7), rgba(56, 189, 248, 0.4), rgba(244, 63, 94, 0.2), transparent 70%)`,
+            mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+            WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+            maskComposite: "exclude",
+            WebkitMaskComposite: "xor",
+            padding: "var(--border-width)",
+          }}
+        />
+
+        {/* Ambient Blur Spillover */}
+        {glow && (
+          <div
+            className="absolute inset-0 rounded-[inherit] blur-[var(--blur)] transition-opacity duration-300"
+            style={{
+              opacity: "calc(var(--glow-opacity) * 0.4)",
+              background: `radial-gradient(calc(var(--spread) * 0.9) circle at var(--glow-x) var(--glow-y), rgba(16, 185, 129, 0.45), rgba(6, 182, 212, 0.2), transparent 70%)`,
+            }}
+          />
+        )}
+      </div>
+    );
+  }
+);
+
+GlowingEffect.displayName = "GlowingEffect";
+
+export default GlowingEffect;
