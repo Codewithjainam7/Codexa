@@ -3,12 +3,21 @@
 import React from "react";
 import {
   Shield, Zap, FileCode, Lock, Cpu, ShieldCheck,
-  ArrowRight, Sparkles, Terminal, CheckCircle2, AlertTriangle, Code2
+  ArrowRight, Sparkles, Terminal, CheckCircle2, AlertTriangle, Code2, Activity
 } from "lucide-react";
 import DottedGlowBackground from "./ui/DottedGlowBackground";
 import GlowingEffect from "./ui/GlowingEffect";
+import { FlipWords } from "./ui/flip-words";
 
 export default function LandingView({ onStartAnalysis }) {
+  const codeTargets = [
+    "AI-Generated Code",
+    "Next.js & React Apps",
+    "Node & Python APIs",
+    "Enterprise Backends",
+    "Cloud Microservices"
+  ];
+
   return (
     <div className="relative space-y-16 py-6 sm:py-8 font-sans">
       {/* Background Dotted Matrix */}
@@ -23,26 +32,31 @@ export default function LandingView({ onStartAnalysis }) {
 
       {/* Hero Section */}
       <section className="text-center max-w-4xl mx-auto space-y-6 relative z-10 pt-2">
-        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold shadow-sm">
-          <Shield className="w-3.5 h-3.5" />
-          <span>Zero-Execution Deterministic SAST + Neural AI Audit</span>
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold shadow-sm backdrop-blur-md">
+          <Shield className="w-3.5 h-3.5 animate-pulse" />
+          <span>Deterministic AST Rules + Nvidia Nemotron 550B Audit</span>
         </div>
         
-        <h1 className="text-4xl sm:text-6xl font-black font-display text-white tracking-tight leading-tight">
-          Is Your AI-Generated Code <br className="hidden sm:inline" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">
+        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold font-display text-white tracking-tight leading-[1.12]">
+          Is Your <br className="sm:hidden" />
+          <FlipWords
+            words={codeTargets}
+            className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 font-extrabold px-1.5 inline-block drop-shadow-[0_0_25px_rgba(52,211,153,0.35)]"
+          />
+          <br />
+          <span className="text-white">
             Ready for Production?
           </span>
         </h1>
 
         <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-          Codexa audits &quot;vibe-coded&quot; applications, detects OWASP vulnerabilities &amp; architectural flaws, ranks findings by real risk, and computes an explainable <strong>Production Readiness Score</strong>.
+          Codexa audits AI-generated applications, detects OWASP vulnerabilities &amp; architectural flaws, ranks findings by real risk, and computes an explainable <strong>Production Readiness Score</strong>.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
           <button
             onClick={onStartAnalysis}
-            className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base flex items-center justify-center space-x-2 shadow-xl shadow-emerald-500/25 transition-all transform hover:-translate-y-0.5 active:scale-95 cursor-pointer"
+            className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base flex items-center justify-center space-x-2 shadow-xl shadow-emerald-500/25 transition-all transform hover:-translate-y-0.5 active:scale-95 cursor-pointer font-display tracking-tight"
           >
             <span>Start Codebase Audit</span>
             <ArrowRight className="w-5 h-5" />
@@ -51,10 +65,30 @@ export default function LandingView({ onStartAnalysis }) {
             href="https://github.com/Codewithjainam7/Codexa"
             target="_blank"
             rel="noreferrer"
-            className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-800 font-semibold text-base transition-colors flex items-center justify-center space-x-2 shadow-lg"
+            className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-800 font-semibold text-base transition-colors flex items-center justify-center space-x-2 shadow-lg font-display"
           >
             <span>View GitHub Source</span>
           </a>
+        </div>
+
+        {/* Quick Capabilities Strip */}
+        <div className="pt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto text-left">
+          <div className="p-3 rounded-2xl bg-slate-950/60 border border-slate-800/80 backdrop-blur-sm">
+            <div className="text-[11px] text-slate-400 font-mono">AST Engine</div>
+            <div className="text-sm font-bold text-white font-display">19+ Security Rules</div>
+          </div>
+          <div className="p-3 rounded-2xl bg-slate-950/60 border border-slate-800/80 backdrop-blur-sm">
+            <div className="text-[11px] text-slate-400 font-mono">AI Models</div>
+            <div className="text-sm font-bold text-emerald-400 font-display">Nemotron 550B</div>
+          </div>
+          <div className="p-3 rounded-2xl bg-slate-950/60 border border-slate-800/80 backdrop-blur-sm">
+            <div className="text-[11px] text-slate-400 font-mono">Benchmark</div>
+            <div className="text-sm font-bold text-teal-300 font-display">&lt; 100ms Parsing</div>
+          </div>
+          <div className="p-3 rounded-2xl bg-slate-950/60 border border-slate-800/80 backdrop-blur-sm">
+            <div className="text-[11px] text-slate-400 font-mono">Sandboxing</div>
+            <div className="text-sm font-bold text-cyan-300 font-display">Zero Bytecode Exec</div>
+          </div>
         </div>
       </section>
 
