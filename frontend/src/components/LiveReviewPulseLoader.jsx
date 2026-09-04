@@ -3,6 +3,7 @@ import {
   Sparkles, ShieldCheck, Cpu, Code2, Binary, 
   Search, FileCheck2, Zap, Flame, Loader2
 } from 'lucide-react';
+import AnimatedBeamPipeline from './AnimatedBeamPipeline';
 
 export default function LiveReviewPulseLoader({ job }) {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
@@ -50,7 +51,7 @@ export default function LiveReviewPulseLoader({ job }) {
   ];
 
   return (
-    <div className="bg-slate-900/80 border border-slate-800/90 rounded-3xl p-8 max-w-4xl mx-auto space-y-8 shadow-2xl backdrop-blur-md">
+    <div className="bg-slate-900/80 border border-slate-800/90 rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto space-y-8 shadow-2xl backdrop-blur-md">
       {/* Header with Glowing Orbit */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-6 border-b border-slate-800">
         <div className="flex items-center space-x-4">
@@ -79,6 +80,21 @@ export default function LiveReviewPulseLoader({ job }) {
           <Loader2 className="w-6 h-6 text-emerald-400 animate-spin" />
         </div>
       </div>
+
+      {/* Magic UI Animated Beam Architecture Pipeline */}
+      <div>
+        <div className="flex items-center justify-between mb-3 px-1">
+          <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Neural Review Data-Flow Architecture</span>
+          </span>
+          <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+            Nvidia Nemotron 550B Engine
+          </span>
+        </div>
+        <AnimatedBeamPipeline currentStage={currentStageName} sourceIdentifier={job?.sourceIdentifier} />
+      </div>
+
 
       {/* Modern Stage Stepper */}
       <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
