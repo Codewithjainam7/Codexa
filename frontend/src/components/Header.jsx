@@ -1,35 +1,15 @@
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { Shield, BookOpen, Github, Plus, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 export default function Header({ currentView, setCurrentView, isConnected }) {
   const { theme, toggleTheme } = useTheme();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const isScrolledRef = useRef(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrolled = window.scrollY > 25;
-      if (scrolled !== isScrolledRef.current) {
-        isScrolledRef.current = scrolled;
-        setIsScrolled(scrolled);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 pointer-events-none flex justify-center px-3 sm:px-6 pt-3 sm:pt-4 transition-all duration-300">
+    <header className="fixed top-0 inset-x-0 z-50 pointer-events-none flex justify-center px-3 sm:px-6 pt-3 sm:pt-4">
       <div 
-        className={`pointer-events-auto flex items-center justify-between gap-3 sm:gap-6 transition-[max-width,padding,background-color,border-color,box-shadow,transform,border-radius] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          isScrolled
-            ? "max-w-5xl w-full h-14 px-4 sm:px-6 rounded-full bg-[var(--bg-card)]/90 backdrop-blur-3xl border border-blue-500/25 shadow-[0_12px_36px_-6px_rgba(0,0,0,0.45),0_0_20px_-2px_rgba(59,130,246,0.18)]"
-            : "max-w-7xl w-full h-16 px-4 sm:px-6 rounded-2xl sm:rounded-3xl bg-[var(--bg-card)]/80 backdrop-blur-2xl border border-[var(--border-subtle)] shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
-        }`}
+        className="pointer-events-auto max-w-7xl w-full h-16 px-4 sm:px-6 rounded-2xl sm:rounded-3xl bg-[var(--bg-card)]/85 backdrop-blur-2xl border border-[var(--border-subtle)] shadow-[0_8px_30px_rgb(0,0,0,0.15)] flex items-center justify-between gap-3 sm:gap-6"
       >
         {/* Left: Brand Logo & Squircle Icon */}
         <div 
