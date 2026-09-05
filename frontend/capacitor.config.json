@@ -1,0 +1,9 @@
+{
+  "appId": "com.codexa.app",
+  "appName": "CODEXA",
+  "webDir": "dist",
+  "server": {
+    "url": "https://codexa-ye85.onrender.com",
+    "cleartext": true
+  }
+}
