@@ -2,6 +2,7 @@ package com.codexa.ai.client;
 
 import com.codexa.ai.model.LlmExplanationResponse;
 import com.codexa.config.CodexaProperties;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -26,13 +27,12 @@ public class NvidiaNemotronAiClient {
     private static final Logger log = LoggerFactory.getLogger(NvidiaNemotronAiClient.class);
     private static final String DEFAULT_OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
     private static final String DEFAULT_NVIDIA_ENDPOINT = "https://integrate.api.nvidia.com/v1/chat/completions";
-    private static final String DEFAULT_MODEL = "nvidia/nemotron-3-ultra-550b-a55b:free";
+    private static final String DEFAULT_MODEL = "google/gemini-2.0-flash-exp:free";
     private static final List<String> FALLBACK_MODELS = List.of(
-            "nvidia/nemotron-3-ultra-550b-a55b:free",
-            "nvidia/nemotron-3.5-lightning:free",
-            "thinkingmachines/inkling-small:free",
+            "google/gemini-2.0-flash-exp:free",
+            "meta-llama/llama-3.3-70b-instruct:free",
             "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
-            "nvidia/nemotron-3-super-120b-a12b:free"
+            "mistralai/mistral-small-24b-instruct-2501:free"
     );
 
     private final CodexaProperties properties;
@@ -41,9 +41,12 @@ public class NvidiaNemotronAiClient {
 
     public NvidiaNemotronAiClient(CodexaProperties properties, ObjectMapper objectMapper) {
         this.properties = properties;
-        this.objectMapper = objectMapper;
+        this.objectMapper = objectMapper.copy()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
+                .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
         this.httpClient = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(15))
+                .connectTimeout(Duration.ofSeconds(4))
                 .build();
     }
 
@@ -51,7 +54,6 @@ public class NvidiaNemotronAiClient {
         String apiKey = getApiKey();
         boolean hasKey = apiKey != null && !apiKey.isBlank() && !apiKey.contains("placeholder");
         boolean isEnabled = (properties.ai() != null && properties.ai().enabled()) || hasKey;
-        log.info("Codexa AI configuration check: enabled={}, hasKey={}", isEnabled, hasKey);
         return isEnabled && hasKey;
     }
 
@@ -85,64 +87,56 @@ public class NvidiaNemotronAiClient {
         for (CodeSnippet snippet : snippets) {
             if (count++ >= 4) break;
             String safeContent = snippet.content();
-            if (safeContent.length() > 1000) {
-                safeContent = safeContent.substring(0, 1000) + "\n// ... [truncated for review context]";
+            if (safeContent.length() > 800) {
+                safeContent = safeContent.substring(0, 800) + "\n// ... [truncated]";
             }
             codeContext.append("\n--- FILE: ").append(snippet.filePath()).append(" ---\n")
                     .append(safeContent).append("\n");
         }
 
         String prompt = """
-                You are a principal application security engineer and code reviewer.
-                Analyze the following multi-language codebase (TypeScript, JavaScript, Python, Java, etc.) for security vulnerabilities, OWASP Top 10 risks, secret exposure, broken access control, XSS, insecure configs, missing error handling, and production readiness defects.
+                You are a principal application security engineer.
+                Analyze the following codebase for security vulnerabilities (SQLi, XSS, RCE, Secrets, Broken Access Control) and production readiness defects.
                 
                 Codebase Files:
                 %s
                 
-                Return JSON only in this exact format:
+                Return a valid JSON object ONLY with the following structure:
                 {
                   "findings": [
                     {
-                      "ruleId": "CR-SEC-001 or CR-XSS-001 or CR-AUTH-001 or CR-QUAL-001 etc",
-                      "category": "SECURITY or QUALITY or OPERATIONS",
-                      "severity": "CRITICAL or HIGH or MEDIUM or LOW",
-                      "confidence": "HIGH or MEDIUM",
-                      "title": "Clear issue title",
-                      "description": "Plain-English explanation of why this is dangerous or bad practice",
-                      "impact": "Concrete impact on production systems or users",
-                      "remediation": "How to fix it properly",
-                      "owaspMapping": "OWASP category e.g. A03:2021-Injection",
-                      "filePath": "exact relative path of the file",
-                      "startLine": 10,
-                      "endLine": 15,
-                      "evidenceMasked": "exact vulnerable snippet",
-                      "suggestedFix": "fixed code snippet",
-                      "priorityScore": 0.8
+                      "ruleId": "CR-SEC-001",
+                      "category": "SECURITY",
+                      "severity": "HIGH",
+                      "confidence": "HIGH",
+                      "title": "Short title",
+                      "description": "Clear explanation",
+                      "impact": "Security impact",
+                      "remediation": "How to fix",
+                      "owaspMapping": "A03:2021-Injection",
+                      "filePath": "path/to/file",
+                      "startLine": 1,
+                      "endLine": 1,
+                      "evidenceMasked": "code line",
+                      "suggestedFix": "fixed code",
+                      "priorityScore": 0.85
                     }
                   ]
                 }
-                
-                Do not invent files that do not exist in the prompt. Return valid JSON only.
                 """.formatted(codeContext.toString());
 
         String apiKey = getApiKey();
         String endpoint = determineEndpoint(apiKey);
-        List<String> modelsToTry = new ArrayList<>();
-        String primaryModel = properties.ai().model() != null && !properties.ai().model().isBlank()
-                ? properties.ai().model()
-                : DEFAULT_MODEL;
-        modelsToTry.add(primaryModel);
-        modelsToTry.addAll(FALLBACK_MODELS);
+        List<String> modelsToTry = new ArrayList<>(FALLBACK_MODELS);
 
         for (String model : modelsToTry) {
             try {
-                log.info("Executing AI Code Review using model: {}", model);
                 Map<String, Object> requestBody = Map.of(
                         "model", model,
                         "temperature", 0.1,
-                        "max_tokens", 2500,
+                        "max_tokens", 1024,
                         "messages", List.of(
-                                Map.of("role", "system", "content", "You are an expert static security auditor. Return JSON only with a 'findings' array."),
+                                Map.of("role", "system", "content", "You are an expert SAST security engineer. Return JSON only."),
                                 Map.of("role", "user", "content", prompt)
                         )
                 );
@@ -163,10 +157,10 @@ public class NvidiaNemotronAiClient {
                                         f.path("category").asText("SECURITY"),
                                         f.path("severity").asText("MEDIUM"),
                                         f.path("confidence").asText("HIGH"),
-                                        f.path("title").asText("Security or Code Quality Finding"),
+                                        f.path("title").asText("Security Finding"),
                                         f.path("description").asText(""),
-                                        f.path("impact").asText("Potential security vulnerability or code defect."),
-                                        f.path("remediation").asText("Apply the suggested remediation."),
+                                        f.path("impact").asText("Potential security vulnerability."),
+                                        f.path("remediation").asText("Apply secure coding best practices."),
                                         f.path("owaspMapping").asText("A05:2021-Security Misconfiguration"),
                                         f.path("filePath").asText(snippets.get(0).filePath()),
                                         f.path("startLine").asInt(1),
@@ -176,15 +170,13 @@ public class NvidiaNemotronAiClient {
                                         f.path("priorityScore").asDouble(0.7)
                                 ));
                             }
-                            log.info("AI Code Review identified {} multi-language findings with model {}", list.size(), model);
+                            log.info("AI Code Review identified {} findings with model {}", list.size(), model);
                             return list;
                         }
                     }
-                } else {
-                    log.warn("Model {} returned HTTP {}", model, response.statusCode());
                 }
             } catch (Exception e) {
-                log.warn("Model {} failed ({}), trying next fallback...", model, e.getMessage());
+                log.debug("Model {} failed ({})", model, e.getMessage());
             }
         }
 
@@ -210,21 +202,16 @@ public class NvidiaNemotronAiClient {
 
         String apiKey = getApiKey();
         String endpoint = determineEndpoint(apiKey);
-        List<String> modelsToTry = new ArrayList<>();
-        String primaryModel = properties.ai().model() != null && !properties.ai().model().isBlank()
-                ? properties.ai().model()
-                : DEFAULT_MODEL;
-        modelsToTry.add(primaryModel);
-        modelsToTry.addAll(FALLBACK_MODELS);
+        List<String> modelsToTry = List.of(DEFAULT_MODEL, "meta-llama/llama-3.3-70b-instruct:free");
 
         for (String model : modelsToTry) {
             try {
                 Map<String, Object> requestBody = Map.of(
                         "model", model,
-                        "temperature", 0.2,
-                        "max_tokens", 1024,
+                        "temperature", 0.1,
+                        "max_tokens", 800,
                         "messages", List.of(
-                                Map.of("role", "system", "content", "You are an application-security reviewer. Explain only the supplied finding. Return JSON only: {title, explanation, impact, remediation, suggestedFix, assumptions, references}. Do not invent CVEs, line numbers, dependencies, or vulnerabilities. If context is insufficient, say requires_manual_review=true."),
+                                Map.of("role", "system", "content", "You are an application security reviewer. Return JSON only: {title, explanation, impact, remediation, suggestedFix, assumptions, references}."),
                                 Map.of("role", "user", "content", prompt)
                         )
                 );
@@ -241,6 +228,7 @@ public class NvidiaNemotronAiClient {
                 }
             } catch (Exception e) {
                 log.debug("Explain finding model {} failed: {}", model, e.getMessage());
+                break; // Fallback directly to fast deterministic template on first fail
             }
         }
 
@@ -249,12 +237,11 @@ public class NvidiaNemotronAiClient {
 
     private HttpResponse<String> sendChatRequest(String endpoint, String apiKey, Map<String, Object> requestBody) throws Exception {
         String requestJson = objectMapper.writeValueAsString(requestBody);
-        int timeoutMs = properties.ai() != null && properties.ai().timeoutMs() > 0 ? Math.min(properties.ai().timeoutMs(), 20000) : 20000;
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(endpoint))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
-                .timeout(Duration.ofMillis(timeoutMs))
+                .timeout(Duration.ofSeconds(4))
                 .POST(HttpRequest.BodyPublishers.ofString(requestJson));
 
         if (endpoint.contains("openrouter.ai")) {
@@ -268,6 +255,16 @@ public class NvidiaNemotronAiClient {
     private String cleanJsonString(String input) {
         if (input == null) return "{}";
         String content = input.trim();
+        if (content.startsWith("```json")) {
+            content = content.substring(7);
+        } else if (content.startsWith("```")) {
+            content = content.substring(3);
+        }
+        if (content.endsWith("```")) {
+            content = content.substring(0, content.length() - 3);
+        }
+        content = content.trim();
+
         int firstBrace = content.indexOf('{');
         int lastBrace = content.lastIndexOf('}');
         if (firstBrace != -1 && lastBrace != -1 && lastBrace > firstBrace) {
@@ -309,17 +306,15 @@ public class NvidiaNemotronAiClient {
     private String buildPrompt(String ruleId, String category, String severity, String confidence,
                                String filePath, int startLine, int endLine, String evidence, String remediation) {
         return """
-                You are an application-security reviewer. Explain only the supplied finding.
+                Explain this security finding as JSON: {title, explanation, impact, remediation, suggestedFix, assumptions, references}.
                 Rule: %s
                 Category: %s
                 Severity: %s
                 Confidence: %s
                 File: %s
                 Lines: %d-%d
-                Masked evidence: %s
-                Known remediation: %s
-                Return JSON only: {title, explanation, impact, remediation, suggestedFix, assumptions, references}.
-                Do not invent CVEs, line numbers, dependencies, or vulnerabilities. If context is insufficient, say requires_manual_review=true.
+                Evidence: %s
+                Remediation: %s
                 """.formatted(ruleId, category, severity, confidence, filePath, startLine, endLine, evidence, remediation);
     }
 }
