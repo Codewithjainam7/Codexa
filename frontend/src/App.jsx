@@ -106,7 +106,7 @@ function MainApp() {
         </div>
 
         {/* 3. Main Content Area with Bottom Bar clearance on Mobile */}
-        <div className="flex-1 relative flex flex-col pt-16 sm:pt-24 pb-20 md:pb-0">
+        <div className="flex-1 relative flex flex-col pt-16 sm:pt-24 pb-24 md:pb-0">
           <main className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-0 relative z-10">
             <AnimatePresence mode="wait">
               {currentView === 'landing' && (
