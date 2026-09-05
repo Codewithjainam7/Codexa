@@ -6,7 +6,7 @@ import LandingView from './components/LandingView';
 import NewAnalysisView from './components/NewAnalysisView';
 import AnalysisDetailView from './components/AnalysisDetailView';
 import { checkHealth, getLimits } from './api/client';
-import { useTheme } from './context/ThemeContext';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import FlickeringGrid from './components/ui/FlickeringGrid';
 import BackgroundRippleEffect from './components/ui/BackgroundRippleEffect';
 
