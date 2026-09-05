@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { 
   ShieldCheck, Cpu, Code2, Binary, 
-  Search, FileCheck2, Zap, Flame, Shield, Activity, Layers
+  Search, FileCheck2, Zap, Flame, Shield, Activity, Layers,
+  ChevronRight
 } from 'lucide-react';
 import AnimatedBeamPipeline from './AnimatedBeamPipeline';
 import DottedGlowBackground from './ui/DottedGlowBackground';
@@ -57,8 +58,11 @@ export default function LiveReviewPulseLoader({ job }) {
     'Almost ready! Finalizing analysis report...'
   ];
 
+  const activeStage = stages[activeStepIndex] || stages[0];
+  const ActiveIcon = activeStage.icon;
+
   return (
-    <div className="relative overflow-hidden cdx-glass-card rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto space-y-8 shadow-2xl backdrop-blur-2xl border border-[var(--border-glass)]">
+    <div className="relative overflow-hidden cdx-glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-8 max-w-4xl mx-auto space-y-4 sm:space-y-6 shadow-xl backdrop-blur-2xl border border-[var(--border-glass)]">
       {/* Dotted Glow Background Matrix (Adaptive Theme) */}
       <DottedGlowBackground
         className="opacity-70 dark:opacity-50"
@@ -71,43 +75,45 @@ export default function LiveReviewPulseLoader({ job }) {
         speedScale={1.2}
       />
 
-      {/* Header with Glowing Orbit & Circular Progress */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-6 border-b border-[var(--border-subtle)] relative z-10">
-        <div className="flex items-center space-x-4">
-          <div className="relative">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/25 animate-pulse">
-              <ShieldCheck className="w-7 h-7 text-white dark:text-slate-950" />
+      {/* Header with Glowing Orbit & Circular Progress (Mobile Optimized) */}
+      <div className="flex items-center justify-between gap-3 pb-3 sm:pb-6 border-b border-[var(--border-subtle)] relative z-10">
+        <div className="flex items-center space-x-2.5 sm:space-x-4 min-w-0">
+          <div className="relative shrink-0">
+            <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-blue-500 flex items-center justify-center shadow-md sm:shadow-lg shadow-blue-500/25 animate-pulse">
+              <ShieldCheck className="w-5 h-5 sm:w-7 sm:h-7 text-white dark:text-slate-950" />
             </div>
-            <div className="absolute -inset-1 rounded-2xl bg-blue-400/20 blur-md -z-10 animate-pulse" />
+            <div className="absolute -inset-1 rounded-xl sm:rounded-2xl bg-blue-400/20 blur-sm -z-10 animate-pulse" />
           </div>
-          <div className="text-left">
-            <div className="flex items-center space-x-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-ping" />
-              <h2 className="text-lg font-bold text-slate-950 dark:text-white font-display">Live Codebase Audit in Progress</h2>
+          <div className="text-left min-w-0">
+            <div className="flex items-center space-x-1.5 sm:space-x-2">
+              <span className="w-2 h-2 rounded-full bg-blue-500 animate-ping shrink-0" />
+              <h2 className="text-xs sm:text-lg font-bold text-slate-950 dark:text-white font-display truncate">
+                Audit in Progress
+              </h2>
             </div>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-              Target: <span className="font-mono text-blue-600 dark:text-blue-400 font-semibold">{job?.sourceIdentifier || 'Codebase Repository'}</span>
+            <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate font-mono">
+              <span className="text-blue-600 dark:text-blue-400 font-semibold">{job?.sourceIdentifier || 'Codebase'}</span>
             </p>
           </div>
         </div>
 
-        {/* Magic UI Animated Circular Progress Bar */}
-        <div className="flex items-center space-x-3 cdx-recessed px-4 py-2 rounded-2xl border border-[var(--border-subtle)] shadow-inner">
-          <div className="text-right">
-            <div className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Scanning</div>
-            <div className="text-xs text-blue-600 dark:text-blue-400 font-mono font-bold">{currentStageName}</div>
+        {/* Animated Circular Progress Bar (Compact on Mobile) */}
+        <div className="flex items-center space-x-2 sm:space-x-3 cdx-recessed px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl border border-[var(--border-subtle)] shrink-0">
+          <div className="text-right hidden xs:block">
+            <div className="text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-wider font-bold">Scanning</div>
+            <div className="text-[10px] sm:text-xs text-blue-600 dark:text-blue-400 font-mono font-bold truncate max-w-[90px]">{currentStageName}</div>
           </div>
           <AnimatedCircularProgressBar
             value={job?.progressPercent || 15}
             gaugePrimaryColor={isDark ? "#3B82F6" : "#2563EB"}
             gaugeSecondaryColor={isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)"}
-            className="size-14 sm:size-16"
+            className="size-9 sm:size-14"
           />
         </div>
       </div>
 
-      {/* Magic UI Animated Beam Architecture Pipeline */}
-      <div className="relative z-10 space-y-3">
+      {/* Magic UI Animated Beam Architecture Pipeline (Desktop/Tablet Only) */}
+      <div className="hidden sm:block relative z-10 space-y-3">
         <div className="flex items-center justify-between px-1">
           <span className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center space-x-2">
             <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
@@ -120,8 +126,39 @@ export default function LiveReviewPulseLoader({ job }) {
         <AnimatedBeamPipeline currentStage={currentStageName} sourceIdentifier={job?.sourceIdentifier} />
       </div>
 
-      {/* Modern Stage Stepper */}
-      <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 relative z-10 text-left">
+      {/* MOBILE COMPACT ACTIVE STAGE CARD (<640px) */}
+      <div className="sm:hidden relative z-10 space-y-2.5">
+        {/* Step Indicator Progress Bar */}
+        <div className="flex items-center justify-between px-1 text-[10px] font-mono font-bold text-slate-500">
+          <span>STAGE {activeStepIndex + 1} OF 5</span>
+          <span className="text-blue-500 font-semibold">{job?.progressPercent || 15}% COMPLETE</span>
+        </div>
+        
+        <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-blue-500 transition-all duration-500 rounded-full shadow-[0_0_8px_#3b82f6]"
+            style={{ width: `${Math.max(15, job?.progressPercent || ((activeStepIndex + 1) * 20))}%` }}
+          />
+        </div>
+
+        {/* Current Active Step Highlight Card */}
+        <div className="p-3 rounded-xl bg-blue-500/15 border border-blue-500/40 shadow-sm flex items-start space-x-3 text-left">
+          <div className="w-8 h-8 rounded-lg bg-blue-500 text-white flex items-center justify-center shrink-0 shadow-sm shadow-blue-500/30 mt-0.5">
+            <ActiveIcon className="w-4 h-4" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="text-xs font-bold font-display text-blue-600 dark:text-blue-400 truncate">
+              {activeStage.label}
+            </div>
+            <p className="text-[10px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug">
+              {activeStage.desc}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* DESKTOP STAGE STEPPER (>=640px) */}
+      <div className="hidden sm:grid grid-cols-5 gap-3 relative z-10 text-left">
         {stages.map((st, i) => {
           const Icon = st.icon;
           const isDone = i < activeStepIndex;
@@ -172,25 +209,25 @@ export default function LiveReviewPulseLoader({ job }) {
         })}
       </div>
 
-      {/* Simulated Live Scan Activity Terminal */}
-      <div className="cdx-recessed border border-[var(--border-subtle)] rounded-2xl p-4 font-mono text-xs text-slate-600 dark:text-slate-400 space-y-2 relative z-10 text-left">
-        <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] text-[11px] text-slate-500">
+      {/* Live Scan Activity Terminal Stream (Compact on Mobile) */}
+      <div className="cdx-recessed border border-[var(--border-subtle)] rounded-xl sm:rounded-2xl p-3 sm:p-4 font-mono text-xs text-slate-600 dark:text-slate-400 space-y-1.5 sm:space-y-2 relative z-10 text-left">
+        <div className="flex items-center justify-between pb-1.5 sm:pb-2 border-b border-[var(--border-subtle)] text-[10px] sm:text-[11px] text-slate-500">
           <div className="flex items-center space-x-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block" />
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block" />
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
-            <span className="ml-2 font-semibold text-slate-700 dark:text-slate-300">Codexa Real-Time Pipeline Stream</span>
+            <span className="w-2 h-2 rounded-full bg-rose-500/80 inline-block" />
+            <span className="w-2 h-2 rounded-full bg-amber-500/80 inline-block" />
+            <span className="w-2 h-2 rounded-full bg-emerald-500/80 inline-block" />
+            <span className="ml-1 sm:ml-2 font-semibold text-slate-700 dark:text-slate-300 truncate">Live Scan Stream</span>
           </div>
-          <span className="text-[10px] text-blue-600 dark:text-blue-400 font-bold tracking-wider uppercase">Active Engine</span>
+          <span className="text-[9px] sm:text-[10px] text-blue-600 dark:text-blue-400 font-bold tracking-wider uppercase">Active Engine</span>
         </div>
 
-        <div className="space-y-1 text-slate-700 dark:text-slate-300 py-1">
-          <div className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 font-semibold">
-            <span className="animate-pulse font-bold">❯</span>
-            <span>{terminalLines[pulseLine]}</span>
+        <div className="space-y-1 text-slate-700 dark:text-slate-300 py-0.5">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 text-blue-600 dark:text-blue-400 font-semibold text-[11px] sm:text-xs">
+            <span className="animate-pulse font-bold shrink-0">❯</span>
+            <span className="truncate">{terminalLines[pulseLine]}</span>
           </div>
-          <div className="text-[11px] text-slate-500 pl-4">
-            Stage: <span className="text-slate-700 dark:text-slate-300 font-semibold">{currentStageName}</span> &bull; Active Workers: <span className="text-slate-700 dark:text-slate-300">4 Core AST Threads</span>
+          <div className="text-[10px] sm:text-[11px] text-slate-500 pl-3.5 sm:pl-4 truncate">
+            Stage: <span className="text-slate-700 dark:text-slate-300 font-semibold">{currentStageName}</span> &bull; 4 Core AST Workers
           </div>
         </div>
       </div>
