@@ -161,30 +161,30 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
       </div>
 
       {/* Mode Switcher Tabs */}
-      <div className="flex p-1.5 rounded-2xl cdx-glass-card border border-[var(--border-subtle)]">
+      <div className="flex flex-col sm:flex-row p-1.5 rounded-2xl cdx-glass-card border border-[var(--border-subtle)] gap-1">
         <button
           onClick={() => { if (!isSubmitting) { setActiveTab('github'); setError(null); } }}
           disabled={isSubmitting}
-          className={`flex-1 flex items-center justify-center space-x-2.5 py-3 rounded-xl text-xs sm:text-sm font-bold font-display transition-all duration-200 ${
+          className={`flex-1 flex items-center justify-center space-x-2 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold font-display transition-all duration-200 cursor-pointer ${
             activeTab === 'github'
               ? 'bg-[var(--accent-glow)] text-[var(--accent-primary)] border border-[var(--accent-border)] shadow-sm'
               : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
           }`}
         >
-          <Github className="w-4 h-4" />
-          <span>Public GitHub Repository</span>
+          <Github className="w-4 h-4 shrink-0" />
+          <span>GitHub Repository</span>
         </button>
 
         <button
           onClick={() => { if (!isSubmitting) { setActiveTab('zip'); setError(null); } }}
           disabled={isSubmitting}
-          className={`flex-1 flex items-center justify-center space-x-2.5 py-3 rounded-xl text-xs sm:text-sm font-bold font-display transition-all duration-200 ${
+          className={`flex-1 flex items-center justify-center space-x-2 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold font-display transition-all duration-200 cursor-pointer ${
             activeTab === 'zip'
               ? 'bg-[var(--accent-glow)] text-[var(--accent-primary)] border border-[var(--accent-border)] shadow-sm'
               : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
           }`}
         >
-          <FileArchive className="w-4 h-4" />
+          <FileArchive className="w-4 h-4 shrink-0" />
           <span>ZIP Archive Upload</span>
         </button>
       </div>

@@ -220,48 +220,48 @@ export default function AnalysisDetailView({ jobId, onBack }) {
               </div>
 
               {/* Score Cards Grid with Ambient Glows */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-5 cdx-card rounded-2xl relative overflow-hidden group hover:border-blue-500/40 hover:-translate-y-0.5 transition-all">
-                  <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Overall Score</div>
-                  <div className={`text-4xl font-black mt-2 font-mono ${
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div className="p-3.5 sm:p-5 cdx-card rounded-2xl relative overflow-hidden group hover:border-blue-500/40 transition-all">
+                  <div className="text-[10px] sm:text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Overall Score</div>
+                  <div className={`text-2xl sm:text-4xl font-black mt-1 sm:mt-2 font-mono ${
                     (job?.overallScore ?? 100) >= 75 ? 'text-emerald-600 dark:text-emerald-400' :
                     (job?.overallScore ?? 100) >= 50 ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400'
                   }`}>
                     {job?.overallScore ?? 100}
-                    <span className="text-base text-[var(--text-muted)] font-normal">/100</span>
+                    <span className="text-xs sm:text-base text-[var(--text-muted)] font-normal">/100</span>
                   </div>
-                  <div className="mt-2 text-[11px] text-[var(--text-muted)] font-medium">Production Readiness Index</div>
+                  <div className="mt-1 sm:mt-2 text-[10px] sm:text-[11px] text-[var(--text-muted)] font-medium truncate">Readiness Index</div>
                 </div>
 
-                <div className="p-5 cdx-card rounded-2xl group hover:border-blue-500/40 hover:-translate-y-0.5 transition-all">
-                  <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Security (60%)</div>
-                  <div className="text-3xl font-black text-[var(--text-primary)] mt-2 font-mono">
+                <div className="p-3.5 sm:p-5 cdx-card rounded-2xl group hover:border-blue-500/40 transition-all">
+                  <div className="text-[10px] sm:text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Security (60%)</div>
+                  <div className="text-2xl sm:text-3xl font-black text-[var(--text-primary)] mt-1 sm:mt-2 font-mono">
                     {job?.metrics?.securityScore ?? 100}
-                    <span className="text-base text-[var(--text-muted)] font-normal">/100</span>
+                    <span className="text-xs sm:text-base text-[var(--text-muted)] font-normal">/100</span>
                   </div>
-                  <div className="mt-2 flex items-center space-x-2 text-[11px] font-mono">
-                    <span className="text-rose-600 dark:text-rose-400 font-bold">{job?.metrics?.criticalCount || 0} Critical</span>
+                  <div className="mt-1 sm:mt-2 flex flex-wrap items-center gap-1 text-[10px] sm:text-[11px] font-mono">
+                    <span className="text-rose-600 dark:text-rose-400 font-bold">{job?.metrics?.criticalCount || 0} Crit</span>
                     <span className="text-[var(--text-muted)]">&bull;</span>
                     <span className="text-orange-600 dark:text-orange-400 font-bold">{job?.metrics?.highCount || 0} High</span>
                   </div>
                 </div>
 
-                <div className="p-5 cdx-card rounded-2xl group hover:border-blue-500/40 hover:-translate-y-0.5 transition-all">
-                  <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Quality (25%)</div>
-                  <div className="text-3xl font-black text-[var(--text-primary)] mt-2 font-mono">
+                <div className="p-3.5 sm:p-5 cdx-card rounded-2xl group hover:border-blue-500/40 transition-all">
+                  <div className="text-[10px] sm:text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Quality (25%)</div>
+                  <div className="text-2xl sm:text-3xl font-black text-[var(--text-primary)] mt-1 sm:mt-2 font-mono">
                     {job?.metrics?.qualityScore ?? 100}
-                    <span className="text-base text-[var(--text-muted)] font-normal">/100</span>
+                    <span className="text-xs sm:text-base text-[var(--text-muted)] font-normal">/100</span>
                   </div>
-                  <div className="mt-2 text-[11px] text-[var(--text-muted)]">AST Code Smells &amp; Error Handling</div>
+                  <div className="mt-1 sm:mt-2 text-[10px] sm:text-[11px] text-[var(--text-muted)] truncate">AST Code Smells</div>
                 </div>
 
-                <div className="p-5 cdx-card rounded-2xl group hover:border-blue-500/40 hover:-translate-y-0.5 transition-all">
-                  <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Operations (15%)</div>
-                  <div className="text-3xl font-black text-[var(--text-primary)] mt-2 font-mono">
+                <div className="p-3.5 sm:p-5 cdx-card rounded-2xl group hover:border-blue-500/40 transition-all">
+                  <div className="text-[10px] sm:text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Ops (15%)</div>
+                  <div className="text-2xl sm:text-3xl font-black text-[var(--text-primary)] mt-1 sm:mt-2 font-mono">
                     {job?.metrics?.operationsScore ?? 100}
-                    <span className="text-base text-[var(--text-muted)] font-normal">/100</span>
+                    <span className="text-xs sm:text-base text-[var(--text-muted)] font-normal">/100</span>
                   </div>
-                  <div className="mt-2 text-[11px] text-[var(--text-muted)]">Logging &amp; Deployment Hardening</div>
+                  <div className="mt-1 sm:mt-2 text-[10px] sm:text-[11px] text-[var(--text-muted)] truncate">Hardening</div>
                 </div>
               </div>
             </div>

@@ -90,14 +90,14 @@ export function ExpandableFindingCards({ findings = [], getSeverityBadge }) {
               key={f.id}
               className={"rounded-2xl cdx-glass-card border " + getSeverityBorder(f.severity) + " transition-all duration-200 overflow-hidden shadow-lg"}
             >
-              {/* Header Pill Row (Clickable) */}
+              {/* Header Pill Row (Clickable & Touch-Friendly) */}
               <div
                 onClick={() => toggleExpand(f.id)}
-                className="flex items-center justify-between p-4 cursor-pointer select-none hover:bg-blue-500/5 transition-colors"
+                className="flex items-center justify-between p-3 sm:p-4 cursor-pointer select-none hover:bg-blue-500/5 transition-colors gap-2"
               >
-                <div className="flex items-center space-x-3 min-w-0 pr-3">
-                  <span className={"w-2.5 h-2.5 rounded-full shrink-0 " + getSeverityDot(f.severity)} />
-                  <span className="text-[11px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20 shrink-0">
+                <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 pr-1 sm:pr-3">
+                  <span className={"w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full shrink-0 " + getSeverityDot(f.severity)} />
+                  <span className="text-[10px] sm:text-[11px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2 sm:px-2.5 py-0.5 rounded-full border border-blue-500/20 shrink-0">
                     {f.ruleId}
                   </span>
                   <h4 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] truncate hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
@@ -105,13 +105,15 @@ export function ExpandableFindingCards({ findings = [], getSeverityBadge }) {
                   </h4>
                 </div>
 
-                <div className="flex items-center space-x-3 shrink-0">
-                  <span className="hidden sm:inline-block font-mono text-[11px] text-[var(--text-muted)] truncate max-w-[180px]">
+                <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
+                  <span className="hidden md:inline-block font-mono text-[11px] text-[var(--text-muted)] truncate max-w-[180px]">
                     📄 {f.filePath?.split("/").pop()}:{f.startLine}
                   </span>
-                  {getSeverityBadge(f.severity)}
-                  <div className={"w-6 h-6 rounded-full cdx-recessed flex items-center justify-center text-[var(--text-muted)] transition-transform duration-200 " + (isExpanded ? "rotate-180 text-blue-600 dark:text-blue-400 bg-blue-500/10" : "")}>
-                    <ChevronDown className="w-3.5 h-3.5" />
+                  <div className="shrink-0 scale-90 sm:scale-100">
+                    {getSeverityBadge(f.severity)}
+                  </div>
+                  <div className={"w-5 h-5 sm:w-6 sm:h-6 rounded-full cdx-recessed flex items-center justify-center text-[var(--text-muted)] transition-transform duration-200 shrink-0 " + (isExpanded ? "rotate-180 text-blue-600 dark:text-blue-400 bg-blue-500/10" : "")}>
+                    <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   </div>
                 </div>
               </div>

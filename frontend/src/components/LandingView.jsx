@@ -88,7 +88,7 @@ if stripeKey == "" {
             </div>
             
             {/* Hero Main Headline - 100% visible, crisp, vibrant gradient */}
-            <h1 className="text-4xl sm:text-6xl lg:text-[68px] font-black font-display text-slate-950 dark:text-white tracking-tight sm:tracking-tighter leading-[1.05]">
+            <h1 className="text-3xl sm:text-5xl lg:text-[64px] font-black font-display text-slate-950 dark:text-white tracking-tight sm:tracking-tighter leading-[1.08]">
               Audit &amp; Secure <br />
               <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 dark:from-blue-400 dark:via-sky-300 dark:to-indigo-400 drop-shadow-sm">
                 AI-Generated Code
@@ -99,7 +99,7 @@ if stripeKey == "" {
             </h1>
 
             {/* Subtitle */}
-            <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 max-w-xl leading-relaxed font-sans font-normal">
+            <p className="text-sm sm:text-lg text-slate-700 dark:text-slate-300 max-w-xl leading-relaxed font-sans font-normal">
               Codexa inspects AI-generated repositories, detects OWASP vulnerabilities &amp; architectural flaws, ranks findings by verified risk, and computes an explainable <strong className="text-slate-950 dark:text-white font-semibold">Production Readiness Score (0–100)</strong>.
             </p>
 
