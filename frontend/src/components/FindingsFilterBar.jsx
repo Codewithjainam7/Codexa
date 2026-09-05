@@ -23,10 +23,10 @@ export default function FindingsFilterBar({
   ];
 
   return (
-    <div className="cdx-glass-card rounded-2xl p-3 sm:p-4 flex flex-col md:flex-row gap-3 sm:gap-4 items-center justify-between shadow-xl relative z-30">
+    <div className="cdx-glass-card rounded-2xl p-3 sm:p-4 flex flex-col md:flex-row gap-3 sm:gap-4 items-stretch md:items-center justify-between shadow-xl relative z-30">
       {/* Search Input */}
-      <div className="relative w-full md:w-80">
-        <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2" />
+      <div className="relative w-full md:w-72 lg:w-80 flex-1">
+        <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
         <input
           type="text"
           value={search}
@@ -36,14 +36,15 @@ export default function FindingsFilterBar({
         />
       </div>
 
-      {/* Category & Severity Custom Dropdowns (Clean side-by-side on mobile) */}
-      <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3 w-full md:w-auto">
+      {/* Category & Severity Custom Dropdowns (Clean 2-column grid on mobile, inline flex on desktop) */}
+      <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-3 w-full md:w-auto shrink-0">
         <CustomSelect
           label="Category"
           value={category}
           onChange={setCategory}
           options={categoryOptions}
           icon={Filter}
+          align="left"
         />
 
         <CustomSelect
@@ -52,6 +53,7 @@ export default function FindingsFilterBar({
           onChange={setSeverity}
           options={severityOptions}
           icon={AlertTriangle}
+          align="right"
         />
       </div>
     </div>

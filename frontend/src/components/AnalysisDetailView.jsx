@@ -138,7 +138,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-2 sm:px-6 py-4 sm:py-8 space-y-4 sm:space-y-6 overflow-hidden">
+    <div className="max-w-7xl mx-auto px-2 sm:px-6 py-4 sm:py-8 space-y-4 sm:space-y-6">
       {/* Top Navigation & Report Exporters */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
         <button
