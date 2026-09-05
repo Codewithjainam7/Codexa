@@ -17,10 +17,10 @@ const NodeCircle = forwardRef(({ className, children, label, active, completed }
         className={cn(
           "relative flex size-12 sm:size-14 items-center justify-center rounded-2xl border-2 transition-all duration-500",
           active 
-            ? "border-amber-500 bg-amber-500/15 text-amber-600 dark:text-amber-400 shadow-[0_0_25px_rgba(245,158,11,0.4)] scale-110"
+            ? "border-blue-500 bg-blue-500/15 text-blue-600 dark:text-blue-400 shadow-[0_0_25px_rgba(59,130,246,0.4)] scale-110"
             : completed
             ? "border-emerald-500/60 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
-            : "border-[var(--border-subtle)] bg-[var(--bg-recessed)] text-slate-500 hover:border-amber-500/30",
+            : "border-[var(--border-subtle)] bg-[var(--bg-recessed)] text-slate-500 hover:border-blue-500/30",
           className
         )}
       >
@@ -34,7 +34,7 @@ const NodeCircle = forwardRef(({ className, children, label, active, completed }
       {label && (
         <span className={cn(
           "text-[10px] font-mono tracking-tight text-center max-w-[90px] truncate leading-tight font-medium transition-colors",
-          active ? "text-amber-700 dark:text-amber-400 font-bold" : completed ? "text-slate-700 dark:text-slate-300" : "text-slate-500"
+          active ? "text-blue-700 dark:text-blue-400 font-bold" : completed ? "text-slate-700 dark:text-slate-300" : "text-slate-500"
         )}>
           {label}
         </span>
@@ -80,7 +80,7 @@ export function AnimatedBeamPipeline({ currentStage = "INGESTION", sourceIdentif
       className="relative flex w-full max-w-3xl mx-auto items-center justify-between p-6 sm:p-10 rounded-3xl cdx-elevated border border-[var(--border-subtle)] shadow-2xl overflow-hidden backdrop-blur-2xl"
     >
       {/* Background Decorative Ambient Radial Gradients */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -top-24 -left-24 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* 1. Left Column: Ingestion & Input Nodes */}
@@ -130,7 +130,7 @@ export function AnimatedBeamPipeline({ currentStage = "INGESTION", sourceIdentif
             </div>
           </div>
         </div>
-        <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400 mt-2.5 tracking-tight text-center">
+        <span className="text-xs font-mono font-bold text-blue-600 dark:text-blue-400 mt-2.5 tracking-tight text-center">
           Neural Core
         </span>
       </div>
@@ -181,9 +181,9 @@ export function AnimatedBeamPipeline({ currentStage = "INGESTION", sourceIdentif
         toRef={centerHubRef}
         curvature={-20}
         duration={2.5}
-        gradientStartColor="#F59E0B"
-        gradientStopColor="#D97706"
-        pathColor={isDark ? "rgba(245, 158, 11, 0.15)" : "rgba(217, 119, 6, 0.15)"}
+        gradientStartColor="#3B82F6"
+        gradientStopColor="#2563EB"
+        pathColor={isDark ? "rgba(59, 130, 246, 0.15)" : "rgba(37, 99, 235, 0.15)"}
       />
       <AnimatedBeam
         containerRef={containerRef}
@@ -191,9 +191,9 @@ export function AnimatedBeamPipeline({ currentStage = "INGESTION", sourceIdentif
         toRef={centerHubRef}
         curvature={0}
         duration={2.5}
-        gradientStartColor="#F59E0B"
-        gradientStopColor="#D97706"
-        pathColor={isDark ? "rgba(245, 158, 11, 0.15)" : "rgba(217, 119, 6, 0.15)"}
+        gradientStartColor="#3B82F6"
+        gradientStopColor="#2563EB"
+        pathColor={isDark ? "rgba(59, 130, 246, 0.15)" : "rgba(37, 99, 235, 0.15)"}
       />
       <AnimatedBeam
         containerRef={containerRef}
@@ -201,9 +201,9 @@ export function AnimatedBeamPipeline({ currentStage = "INGESTION", sourceIdentif
         toRef={centerHubRef}
         curvature={20}
         duration={2.5}
-        gradientStartColor="#F59E0B"
-        gradientStopColor="#D97706"
-        pathColor={isDark ? "rgba(245, 158, 11, 0.15)" : "rgba(217, 119, 6, 0.15)"}
+        gradientStartColor="#3B82F6"
+        gradientStopColor="#2563EB"
+        pathColor={isDark ? "rgba(59, 130, 246, 0.15)" : "rgba(37, 99, 235, 0.15)"}
       />
 
       {/* Animated Beams: Center Hub -> Output Nodes */}
@@ -213,9 +213,9 @@ export function AnimatedBeamPipeline({ currentStage = "INGESTION", sourceIdentif
         toRef={out1Ref}
         curvature={-30}
         duration={2.5}
-        gradientStartColor="#F59E0B"
-        gradientStopColor="#D97706"
-        pathColor={isDark ? "rgba(245, 158, 11, 0.15)" : "rgba(217, 119, 6, 0.15)"}
+        gradientStartColor="#3B82F6"
+        gradientStopColor="#2563EB"
+        pathColor={isDark ? "rgba(59, 130, 246, 0.15)" : "rgba(37, 99, 235, 0.15)"}
       />
       <AnimatedBeam
         containerRef={containerRef}
@@ -223,9 +223,9 @@ export function AnimatedBeamPipeline({ currentStage = "INGESTION", sourceIdentif
         toRef={out2Ref}
         curvature={-10}
         duration={2.5}
-        gradientStartColor="#F59E0B"
-        gradientStopColor="#D97706"
-        pathColor={isDark ? "rgba(245, 158, 11, 0.15)" : "rgba(217, 119, 6, 0.15)"}
+        gradientStartColor="#3B82F6"
+        gradientStopColor="#2563EB"
+        pathColor={isDark ? "rgba(59, 130, 246, 0.15)" : "rgba(37, 99, 235, 0.15)"}
       />
       <AnimatedBeam
         containerRef={containerRef}
@@ -233,9 +233,9 @@ export function AnimatedBeamPipeline({ currentStage = "INGESTION", sourceIdentif
         toRef={out3Ref}
         curvature={10}
         duration={2.5}
-        gradientStartColor="#F59E0B"
-        gradientStopColor="#D97706"
-        pathColor={isDark ? "rgba(245, 158, 11, 0.15)" : "rgba(217, 119, 6, 0.15)"}
+        gradientStartColor="#3B82F6"
+        gradientStopColor="#2563EB"
+        pathColor={isDark ? "rgba(59, 130, 246, 0.15)" : "rgba(37, 99, 235, 0.15)"}
       />
       <AnimatedBeam
         containerRef={containerRef}
@@ -243,9 +243,9 @@ export function AnimatedBeamPipeline({ currentStage = "INGESTION", sourceIdentif
         toRef={out4Ref}
         curvature={30}
         duration={2.5}
-        gradientStartColor="#F59E0B"
-        gradientStopColor="#D97706"
-        pathColor={isDark ? "rgba(245, 158, 11, 0.15)" : "rgba(217, 119, 6, 0.15)"}
+        gradientStartColor="#3B82F6"
+        gradientStopColor="#2563EB"
+        pathColor={isDark ? "rgba(59, 130, 246, 0.15)" : "rgba(37, 99, 235, 0.15)"}
       />
     </div>
   );

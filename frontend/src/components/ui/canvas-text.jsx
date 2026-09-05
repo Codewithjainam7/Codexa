@@ -18,11 +18,11 @@ export const CanvasText = ({
   const activeColors = colors && colors.length > 0
     ? colors
     : [
-        "rgba(217, 119, 6, 1)",      // Ochre #D97706
-        "rgba(180, 83, 9, 0.95)",    // Deep Amber #B45309
+        "rgba(37, 99, 235, 1)",      // Ochre #D97706
+        "rgba(29, 78, 216, 0.95)",    // Deep Amber #B45309
         "rgba(15, 23, 42, 0.95)",    // Slate 900 #0F172A
-        "rgba(245, 158, 11, 0.9)",   // Amber #F59E0B
-        "rgba(217, 119, 6, 0.85)",
+        "rgba(59, 130, 246, 0.9)",   // Amber #F59E0B
+        "rgba(96, 165, 250, 0.85)",
         "rgba(15, 23, 42, 0.9)",
       ];
 

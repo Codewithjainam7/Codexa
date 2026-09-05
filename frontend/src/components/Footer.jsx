@@ -11,15 +11,15 @@ export default function Footer() {
           {/* Brand Column (Span 4) */}
           <div className="md:col-span-4 space-y-4">
             <div className="flex items-center space-x-2.5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-400 via-amber-500 to-amber-700 p-[1px] flex items-center justify-center shadow-md">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-500 via-indigo-600 to-blue-700 p-[1px] flex items-center justify-center shadow-md">
                 <div className="w-full h-full bg-[var(--bg-card)] rounded-[10px] flex items-center justify-center">
-                  <Shield className="w-4 h-4 text-amber-500" />
+                  <Shield className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
               <span className="text-xl font-bold font-display tracking-tight text-[var(--text-primary)]">
                 Codexa
               </span>
-              <span className="text-[10px] font-mono font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-mono font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full">
                 v2.4
               </span>
             </div>
@@ -41,11 +41,11 @@ export default function Footer() {
                 Platform
               </h4>
               <ul className="space-y-2.5 text-[var(--text-secondary)]">
-                <li><span className="hover:text-amber-500 cursor-pointer transition-colors">AST Static Engine</span></li>
-                <li><span className="hover:text-amber-500 cursor-pointer transition-colors">Multi-Language SAST</span></li>
-                <li><span className="hover:text-amber-500 cursor-pointer transition-colors">Readiness Index (0–100)</span></li>
-                <li><span className="hover:text-amber-500 cursor-pointer transition-colors">Live Fix Terminal</span></li>
-                <li><span className="hover:text-amber-500 cursor-pointer transition-colors">Zero Bytecode Exec</span></li>
+                <li><span className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">AST Static Engine</span></li>
+                <li><span className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">Multi-Language SAST</span></li>
+                <li><span className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">Readiness Index (0–100)</span></li>
+                <li><span className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">Live Fix Terminal</span></li>
+                <li><span className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">Zero Bytecode Exec</span></li>
               </ul>
             </div>
 
@@ -55,11 +55,11 @@ export default function Footer() {
                 AI Models
               </h4>
               <ul className="space-y-2.5 text-[var(--text-secondary)]">
-                <li><span className="hover:text-amber-500 cursor-pointer transition-colors">Nemotron 3 Ultra 550B</span></li>
-                <li><span className="hover:text-amber-500 cursor-pointer transition-colors">Nemotron 3.5 Lightning</span></li>
-                <li><span className="hover:text-amber-500 cursor-pointer transition-colors">Inkling Small</span></li>
-                <li><span className="hover:text-amber-500 cursor-pointer transition-colors">Secret Masking Guard</span></li>
-                <li><span className="hover:text-amber-500 cursor-pointer transition-colors">Deterministic Fallback</span></li>
+                <li><span className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">Nemotron 3 Ultra 550B</span></li>
+                <li><span className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">Nemotron 3.5 Lightning</span></li>
+                <li><span className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">Inkling Small</span></li>
+                <li><span className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">Secret Masking Guard</span></li>
+                <li><span className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">Deterministic Fallback</span></li>
               </ul>
             </div>
 
@@ -69,11 +69,11 @@ export default function Footer() {
                 Security
               </h4>
               <ul className="space-y-2.5 text-[var(--text-secondary)]">
-                <li><span className="hover:text-amber-500 cursor-pointer transition-colors">OWASP Top 10</span></li>
-                <li><span className="hover:text-amber-500 cursor-pointer transition-colors">Zip Slip Protection</span></li>
-                <li><span className="hover:text-amber-500 cursor-pointer transition-colors">Path Traversal Block</span></li>
-                <li><span className="hover:text-amber-500 cursor-pointer transition-colors">SSRF Prevention</span></li>
-                <li><span className="hover:text-amber-500 cursor-pointer transition-colors">ReDoS &amp; PRNG Check</span></li>
+                <li><span className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">OWASP Top 10</span></li>
+                <li><span className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">Zip Slip Protection</span></li>
+                <li><span className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">Path Traversal Block</span></li>
+                <li><span className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">SSRF Prevention</span></li>
+                <li><span className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">ReDoS &amp; PRNG Check</span></li>
               </ul>
             </div>
 
@@ -88,7 +88,7 @@ export default function Footer() {
                     href="https://github.com/Codewithjainam7/Codexa"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-amber-500 flex items-center space-x-1.5 transition-colors"
+                    className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center space-x-1.5 transition-colors"
                   >
                     <Github className="w-3.5 h-3.5" />
                     <span>GitHub Repo</span>
@@ -99,7 +99,7 @@ export default function Footer() {
                     href="http://localhost:8080/swagger-ui.html"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-amber-500 flex items-center space-x-1.5 transition-colors"
+                    className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center space-x-1.5 transition-colors"
                   >
                     <Terminal className="w-3.5 h-3.5" />
                     <span>Swagger API Docs</span>
@@ -110,7 +110,7 @@ export default function Footer() {
                     href="https://openrouter.ai"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-amber-500 flex items-center space-x-1.5 transition-colors"
+                    className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center space-x-1.5 transition-colors"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>OpenRouter AI</span>
@@ -121,7 +121,7 @@ export default function Footer() {
                     href="https://owasp.org/www-project-top-ten/"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-amber-500 flex items-center space-x-1.5 transition-colors"
+                    className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center space-x-1.5 transition-colors"
                   >
                     <Lock className="w-3.5 h-3.5" />
                     <span>OWASP Standards</span>
@@ -134,7 +134,7 @@ export default function Footer() {
 
         {/* Advisory Disclaimer Notice */}
         <div className="border-t border-[var(--border-subtle)] pt-6 pb-2 text-[11px] text-[var(--text-muted)] leading-relaxed flex items-start space-x-2.5">
-          <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+          <AlertTriangle className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
           <p>
             <span className="text-[var(--text-primary)] font-semibold">Advisory Disclaimer:</span> Codexa is an automated static code review and production-readiness assessment engine. It does not execute untrusted bytecode. Suggested remediations should always be verified and tested prior to production deployment.
           </p>

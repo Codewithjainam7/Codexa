@@ -65,9 +65,9 @@ export default function LiveReviewPulseLoader({ job }) {
         gap={16}
         radius={1.6}
         colorDarkVar="#292524"
-        glowColorDarkVar="#F59E0B"
+        glowColorDarkVar="#3B82F6"
         colorLightVar="#E2E8F0"
-        glowColorLightVar="#D97706"
+        glowColorLightVar="#2563EB"
         speedScale={1.2}
       />
 
@@ -75,18 +75,18 @@ export default function LiveReviewPulseLoader({ job }) {
       <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-6 border-b border-[var(--border-subtle)] relative z-10">
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 via-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/25 animate-pulse">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/25 animate-pulse">
               <Sparkles className="w-7 h-7 text-white dark:text-slate-950 animate-spin" style={{ animationDuration: '6s' }} />
             </div>
-            <div className="absolute -inset-1 rounded-2xl bg-amber-400/20 blur-md -z-10 animate-pulse" />
+            <div className="absolute -inset-1 rounded-2xl bg-blue-400/20 blur-md -z-10 animate-pulse" />
           </div>
           <div className="text-left">
             <div className="flex items-center space-x-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping" />
+              <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-ping" />
               <h2 className="text-lg font-bold text-slate-950 dark:text-white font-display">Live Codebase Audit in Progress</h2>
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-              Target: <span className="font-mono text-amber-600 dark:text-amber-400 font-semibold">{job?.sourceIdentifier || 'Codebase Repository'}</span>
+              Target: <span className="font-mono text-blue-600 dark:text-blue-400 font-semibold">{job?.sourceIdentifier || 'Codebase Repository'}</span>
             </p>
           </div>
         </div>
@@ -95,11 +95,11 @@ export default function LiveReviewPulseLoader({ job }) {
         <div className="flex items-center space-x-3 cdx-recessed px-4 py-2 rounded-2xl border border-[var(--border-subtle)] shadow-inner">
           <div className="text-right">
             <div className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Scanning</div>
-            <div className="text-xs text-amber-600 dark:text-amber-400 font-mono font-bold">{currentStageName}</div>
+            <div className="text-xs text-blue-600 dark:text-blue-400 font-mono font-bold">{currentStageName}</div>
           </div>
           <AnimatedCircularProgressBar
             value={job?.progressPercent || 15}
-            gaugePrimaryColor={isDark ? "#F59E0B" : "#D97706"}
+            gaugePrimaryColor={isDark ? "#3B82F6" : "#2563EB"}
             gaugeSecondaryColor={isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)"}
             className="size-14 sm:size-16"
           />
@@ -110,10 +110,10 @@ export default function LiveReviewPulseLoader({ job }) {
       <div className="relative z-10 space-y-3">
         <div className="flex items-center justify-between px-1">
           <span className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
             <span>Neural Review Data-Flow Architecture</span>
           </span>
-          <span className="text-[11px] font-mono text-amber-700 dark:text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-semibold">
+          <span className="text-[11px] font-mono text-blue-700 dark:text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20 font-semibold">
             Nvidia Nemotron 550B Engine
           </span>
         </div>
@@ -132,7 +132,7 @@ export default function LiveReviewPulseLoader({ job }) {
               key={st.id} 
               className={`p-3.5 rounded-2xl border transition-all duration-300 flex flex-col justify-between space-y-3 ${
                 isCurrent 
-                  ? 'bg-amber-500/15 border-amber-500/50 shadow-lg shadow-amber-500/15' 
+                  ? 'bg-blue-500/15 border-blue-500/50 shadow-lg shadow-blue-500/15' 
                   : isDone 
                   ? 'bg-emerald-500/10 border-emerald-500/30' 
                   : 'cdx-recessed opacity-60 border-[var(--border-subtle)]'
@@ -141,7 +141,7 @@ export default function LiveReviewPulseLoader({ job }) {
               <div className="flex items-center justify-between">
                 <div className={`w-7 h-7 rounded-xl flex items-center justify-center text-xs font-bold ${
                   isCurrent 
-                    ? 'bg-gradient-to-tr from-amber-500 to-amber-600 text-slate-950 shadow-md shadow-amber-500/30' 
+                    ? 'bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/30' 
                     : isDone 
                     ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30' 
                     : 'bg-black/10 dark:bg-white/10 text-slate-400'
@@ -154,7 +154,7 @@ export default function LiveReviewPulseLoader({ job }) {
               <div>
                 <div className={`text-xs font-bold leading-tight ${
                   isCurrent 
-                    ? 'text-amber-700 dark:text-amber-400' 
+                    ? 'text-blue-700 dark:text-blue-400' 
                     : isDone 
                     ? 'text-emerald-700 dark:text-emerald-400' 
                     : 'text-slate-600 dark:text-slate-400'
@@ -162,7 +162,7 @@ export default function LiveReviewPulseLoader({ job }) {
                   {st.label}
                 </div>
                 {isCurrent && (
-                  <p className="text-[10px] text-amber-700/90 dark:text-amber-300/90 mt-1 leading-normal font-medium">
+                  <p className="text-[10px] text-blue-700/90 dark:text-blue-300/90 mt-1 leading-normal font-medium">
                     {st.desc}
                   </p>
                 )}
@@ -181,11 +181,11 @@ export default function LiveReviewPulseLoader({ job }) {
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
             <span className="ml-2 font-semibold text-slate-700 dark:text-slate-300">Codexa Real-Time Pipeline Stream</span>
           </div>
-          <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold tracking-wider uppercase">Active Engine</span>
+          <span className="text-[10px] text-blue-600 dark:text-blue-400 font-bold tracking-wider uppercase">Active Engine</span>
         </div>
 
         <div className="space-y-1 text-slate-700 dark:text-slate-300 py-1">
-          <div className="flex items-center space-x-2 text-amber-600 dark:text-amber-400 font-semibold">
+          <div className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 font-semibold">
             <span className="animate-pulse font-bold">❯</span>
             <span>{terminalLines[pulseLine]}</span>
           </div>

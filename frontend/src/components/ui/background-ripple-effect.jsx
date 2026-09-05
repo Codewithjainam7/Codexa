@@ -49,9 +49,9 @@ export default function BackgroundRippleEffect({
     return () => window.removeEventListener("pointerdown", handleClick);
   }, [interactive]);
 
-  const amberBorder = isDark ? "rgba(245, 158, 11, 0.22)" : "rgba(217, 119, 6, 0.20)";
-  const amberGlow = isDark ? "rgba(245, 158, 11, 0.08)" : "rgba(217, 119, 6, 0.06)";
-  const outerBorder = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(15, 23, 42, 0.08)";
+  const blueBorder = isDark ? "rgba(59, 130, 246, 0.25)" : "rgba(37, 99, 235, 0.20)";
+  const blueGlow = isDark ? "rgba(59, 130, 246, 0.09)" : "rgba(37, 99, 235, 0.06)";
+  const outerBorder = isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(15, 23, 42, 0.06)";
 
   return (
     <div
@@ -82,20 +82,20 @@ export default function BackgroundRippleEffect({
                   height: `${size}px`,
                   left: "0px",
                   top: "0px",
-                  borderColor: isHighlightRing ? amberBorder : outerBorder,
-                  background: isHighlightRing ? `radial-gradient(circle, ${amberGlow} 0%, transparent 70%)` : "transparent",
+                  borderColor: isHighlightRing ? blueBorder : outerBorder,
+                  background: isHighlightRing ? `radial-gradient(circle, ${blueGlow} 0%, transparent 70%)` : "transparent",
                   opacity: opacity,
                   animationDelay: delay,
                   animationDuration: duration,
                   boxShadow: isHighlightRing && i < 3 
-                    ? (isDark ? "0 0 35px -5px rgba(245, 158, 11, 0.15)" : "0 0 25px -5px rgba(217, 119, 6, 0.10)")
+                    ? (isDark ? "0 0 35px -5px rgba(59, 130, 246, 0.18)" : "0 0 25px -5px rgba(37, 99, 235, 0.12)")
                     : "none",
                 }}
               />
             );
           })}
 
-          {/* Central Pulsing Amber Core */}
+          {/* Central Pulsing Electric Blue Core */}
           <div
             className="absolute rounded-full transform -translate-x-1/2 -translate-y-1/2 animate-pulse"
             style={{
@@ -104,8 +104,8 @@ export default function BackgroundRippleEffect({
               left: "0px",
               top: "0px",
               background: isDark
-                ? "radial-gradient(circle, rgba(245, 158, 11, 0.32) 0%, rgba(217, 119, 6, 0.10) 50%, transparent 80%)"
-                : "radial-gradient(circle, rgba(217, 119, 6, 0.26) 0%, rgba(245, 158, 11, 0.08) 50%, transparent 80%)",
+                ? "radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, rgba(37, 99, 235, 0.12) 50%, transparent 80%)"
+                : "radial-gradient(circle, rgba(37, 99, 235, 0.28) 0%, rgba(59, 130, 246, 0.08) 50%, transparent 80%)",
               filter: "blur(16px)",
             }}
           />

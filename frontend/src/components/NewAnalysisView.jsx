@@ -258,7 +258,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
                     </div>
                     <div className="w-full h-2 bg-[var(--bg-base)] rounded-full overflow-hidden border border-[var(--border-subtle)] p-0.5">
                       <div
-                        className="bg-gradient-to-r from-amber-500 to-amber-600 h-full rounded-full transition-all duration-300 ease-out"
+                        className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 h-full rounded-full transition-all duration-300 ease-out"
                         style={{ width: `${Math.min(stagingProgress, 100)}%` }}
                       />
                     </div>
@@ -386,7 +386,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
                 </div>
                 <div className="w-full h-2 bg-[var(--bg-base)] rounded-full overflow-hidden border border-[var(--border-subtle)] p-0.5">
                   <div
-                    className="bg-gradient-to-r from-amber-500 to-amber-600 h-full rounded-full transition-all duration-300 ease-out"
+                    className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 h-full rounded-full transition-all duration-300 ease-out"
                     style={{ width: `${Math.min(stagingProgress, 100)}%` }}
                   />
                 </div>

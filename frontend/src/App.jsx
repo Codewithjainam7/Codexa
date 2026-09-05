@@ -38,7 +38,7 @@ function MainApp() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--bg-base)] text-[var(--text-primary)] selection:bg-amber-500/20 selection:text-amber-600 dark:selection:text-amber-200 transition-colors duration-250 relative overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-[var(--bg-base)] text-[var(--text-primary)] selection:bg-blue-500/20 selection:text-blue-600 dark:selection:text-blue-300 transition-colors duration-250 relative overflow-x-hidden">
       <Header
         currentView={currentView}
         setCurrentView={setCurrentView}
