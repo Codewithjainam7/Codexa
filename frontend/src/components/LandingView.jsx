@@ -77,13 +77,13 @@ if stripeKey == "" {
           {/* Left Hero Column: Commanding Value Prop & CTAs */}
           <div className="lg:col-span-7 space-y-6 text-left">
             {/* Status Beacon Badge */}
-            <div className="inline-flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full cdx-pill text-xs font-semibold">
-              <span className="relative flex h-2 w-2">
+            <div className="inline-flex items-center space-x-2 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full cdx-pill text-xs font-semibold max-w-full">
+              <span className="relative flex h-2 w-2 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600 dark:bg-blue-400 shadow-[0_0_10px_#3b82f6]" />
               </span>
-              <span className="font-mono text-[11px] tracking-wide text-slate-700 dark:text-slate-300">
-                Deterministic AST Engine <span className="text-blue-600 dark:text-blue-400 font-bold mx-1">&bull;</span> Nvidia Nemotron 550B Audit
+              <span className="font-mono text-[10px] sm:text-[11px] tracking-wide text-slate-700 dark:text-slate-300 truncate">
+                Deterministic AST Engine <span className="text-blue-600 dark:text-blue-400 font-bold mx-1">&bull;</span> <span className="hidden sm:inline">Nvidia Nemotron 550B Audit</span><span className="sm:hidden">Nemotron 550B</span>
               </span>
             </div>
             

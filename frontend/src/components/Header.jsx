@@ -39,11 +39,11 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
 
           {/* Right Navigation & Actions */}
           <nav className="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
-            {/* Segmented View Switcher Capsule */}
-            <div className="flex items-center p-0.5 sm:p-1 bg-[var(--bg-recessed)] border border-[var(--border-subtle)] rounded-xl shrink-0">
+            {/* Segmented View Switcher Capsule (Desktop / Tablet) */}
+            <div className="hidden md:flex items-center p-0.5 sm:p-1 bg-[var(--bg-recessed)] border border-[var(--border-subtle)] rounded-xl shrink-0">
               <button
                 onClick={() => { setCurrentView('landing'); setMobileMenuOpen(false); }}
-                className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold font-display transition-all duration-150 whitespace-nowrap shrink-0 cursor-pointer ${
+                className={`px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold font-display transition-all duration-150 whitespace-nowrap shrink-0 cursor-pointer ${
                   currentView === 'landing'
                     ? 'bg-[var(--bg-card)] text-[var(--text-primary)] shadow-sm border border-[var(--border-subtle)]'
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
@@ -53,7 +53,7 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
               </button>
               <button
                 onClick={() => { setCurrentView('upload'); setMobileMenuOpen(false); }}
-                className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold font-display transition-all duration-150 flex items-center space-x-1 whitespace-nowrap shrink-0 cursor-pointer ${
+                className={`px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold font-display transition-all duration-150 flex items-center space-x-1.5 whitespace-nowrap shrink-0 cursor-pointer ${
                   currentView === 'upload'
                     ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30 shadow-sm'
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
@@ -132,37 +132,63 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
               className="md:hidden w-7 h-7 flex items-center justify-center rounded-xl bg-[var(--bg-recessed)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer shrink-0"
               aria-label="Toggle mobile menu"
             >
-              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              {mobileMenuOpen ? <X className="w-4 h-4 text-blue-500" /> : <Menu className="w-4 h-4" />}
             </button>
           </nav>
         </div>
 
         {/* Mobile Dropdown Drawer Container */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-[var(--border-subtle)] px-4 py-3 space-y-2.5 bg-[var(--bg-card)]/95 backdrop-blur-2xl rounded-b-2xl animate-fade-in">
-            <div className="flex items-center justify-between text-xs py-1 border-b border-[var(--border-subtle)]">
-              <span className="text-[var(--text-muted)] font-mono text-[10px]">Backend Health</span>
+          <div className="md:hidden border-t border-[var(--border-subtle)] px-4 py-3.5 space-y-3 bg-[var(--bg-card)]/95 backdrop-blur-2xl rounded-b-2xl animate-fade-in">
+            {/* View Switcher Capsule on Mobile Drawer */}
+            <div className="flex items-center p-1 bg-[var(--bg-recessed)] border border-[var(--border-subtle)] rounded-xl">
+              <button
+                onClick={() => { setCurrentView('landing'); setMobileMenuOpen(false); }}
+                className={`flex-1 py-2 rounded-lg text-xs font-semibold font-display transition-all text-center cursor-pointer ${
+                  currentView === 'landing'
+                    ? 'bg-[var(--bg-card)] text-[var(--text-primary)] shadow-sm border border-[var(--border-subtle)]'
+                    : 'text-[var(--text-secondary)]'
+                }`}
+              >
+                Overview Dashboard
+              </button>
+              <button
+                onClick={() => { setCurrentView('upload'); setMobileMenuOpen(false); }}
+                className={`flex-1 py-2 rounded-lg text-xs font-semibold font-display transition-all text-center cursor-pointer ${
+                  currentView === 'upload'
+                    ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30 shadow-sm'
+                    : 'text-[var(--text-secondary)]'
+                }`}
+              >
+                Codebase Audit
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between text-xs py-1.5 border-b border-t border-[var(--border-subtle)]">
+              <span className="text-[var(--text-muted)] font-mono text-[10px]">Backend Security Engine</span>
               <span className="flex items-center space-x-1.5 text-[10px] font-mono font-bold">
                 <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 shadow-[0_0_6px_#10b981]' : 'bg-rose-500'}`} />
-                <span className={isConnected ? 'text-emerald-400' : 'text-rose-400'}>{isConnected ? 'CONNECTED' : 'DISCONNECTED'}</span>
+                <span className={isConnected ? 'text-emerald-400' : 'text-rose-400'}>{isConnected ? 'API ONLINE' : 'DISCONNECTED'}</span>
               </span>
             </div>
+
             <a
               href="http://localhost:8080/swagger-ui.html"
               target="_blank"
               rel="noreferrer"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center space-x-2 px-3 py-2 rounded-xl bg-[var(--bg-recessed)] text-xs font-semibold text-[var(--text-primary)] border border-[var(--border-subtle)]"
+              className="flex items-center space-x-2 px-3.5 py-2.5 rounded-xl bg-[var(--bg-recessed)] text-xs font-semibold text-[var(--text-primary)] border border-[var(--border-subtle)] hover:bg-[var(--bg-card)] transition-colors"
             >
               <BookOpen className="w-4 h-4 text-blue-500" />
               <span>Swagger API Documentation</span>
             </a>
+
             <a
               href="https://github.com/Codewithjainam7/Codexa"
               target="_blank"
               rel="noreferrer"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center space-x-2 px-3 py-2 rounded-xl bg-[var(--bg-recessed)] text-xs font-semibold text-[var(--text-primary)] border border-[var(--border-subtle)]"
+              className="flex items-center space-x-2 px-3.5 py-2.5 rounded-xl bg-[var(--bg-recessed)] text-xs font-semibold text-[var(--text-primary)] border border-[var(--border-subtle)] hover:bg-[var(--bg-card)] transition-colors"
             >
               <Github className="w-4 h-4 text-[var(--text-secondary)]" />
               <span>View GitHub Source Repository</span>
