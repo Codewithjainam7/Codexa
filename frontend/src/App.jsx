@@ -39,47 +39,48 @@ function MainApp() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg-base)] text-[var(--text-primary)] selection:bg-amber-500/20 selection:text-amber-600 dark:selection:text-amber-200 transition-colors duration-250 relative overflow-x-hidden">
-      {/* Background Ripple Waves Across Entire Site (Behind All Views, Excluded From Footer) */}
-      <BackgroundRippleEffect
-        numCircles={9}
-        mainCircleSize={260}
-        mainCircleOpacity={0.28}
-        interactive={true}
-        focalPoints={[
-          { x: "50%", y: "220px", size: 320, scale: 1.2 },
-          { x: "88%", y: "450px", size: 240, scale: 0.9 },
-          { x: "10%", y: "780px", size: 260, scale: 1.0 },
-          { x: "75%", y: "1350px", size: 280, scale: 1.1 },
-          { x: "20%", y: "1950px", size: 260, scale: 0.95 }
-        ]}
-      />
-
       <Header
         currentView={currentView}
         setCurrentView={setCurrentView}
         isConnected={isConnected}
       />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-0 relative z-10">
-        {currentView === 'landing' && (
-          <LandingView onStartAnalysis={() => setCurrentView('upload')} />
-        )}
+      {/* Main Content Area with Background Ripple Effects - Strictly Confined Above Footer */}
+      <div className="flex-1 relative overflow-hidden flex flex-col">
+        <BackgroundRippleEffect
+          numCircles={8}
+          mainCircleSize={240}
+          mainCircleOpacity={0.24}
+          interactive={true}
+          focalPoints={[
+            { x: "50%", y: "220px", size: 300, scale: 1.15 },
+            { x: "85%", y: "450px", size: 220, scale: 0.9 },
+            { x: "12%", y: "750px", size: 240, scale: 1.0 }
+          ]}
+        />
 
-        {currentView === 'upload' && (
-          <NewAnalysisView
-            limits={limits}
-            onJobCreated={handleJobCreated}
-          />
-        )}
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-0 relative z-10">
+          {currentView === 'landing' && (
+            <LandingView onStartAnalysis={() => setCurrentView('upload')} />
+          )}
 
-        {currentView === 'analysis' && activeJobId && (
-          <AnalysisDetailView
-            jobId={activeJobId}
-            onBack={() => setCurrentView('landing')}
-          />
-        )}
-      </main>
+          {currentView === 'upload' && (
+            <NewAnalysisView
+              limits={limits}
+              onJobCreated={handleJobCreated}
+            />
+          )}
 
+          {currentView === 'analysis' && activeJobId && (
+            <AnalysisDetailView
+              jobId={activeJobId}
+              onBack={() => setCurrentView('landing')}
+            />
+          )}
+        </main>
+      </div>
+
+      {/* Footer has completely solid, opaque background with high z-index - NO ripples here */}
       <Footer />
     </div>
   );

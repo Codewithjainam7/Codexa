@@ -86,17 +86,16 @@ if stripeKey == "" {
 
       {/* Ambient background ripple waves with multi-focal centers */}
       <BackgroundRippleEffect
-        numCircles={10}
-        mainCircleSize={280}
-        mainCircleOpacity={isDark ? 0.35 : 0.28}
+        numCircles={9}
+        mainCircleSize={260}
+        mainCircleOpacity={isDark ? 0.32 : 0.24}
         interactive={true}
         focalPoints={[
-          { x: "50%", y: "16%", size: 340, scale: 1.25 },
+          { x: "50%", y: "14%", size: 320, scale: 1.2 },
           { x: "84%", y: "24%", size: 240, scale: 0.9 },
-          { x: "16%", y: "42%", size: 280, scale: 1.1 },
-          { x: "50%", y: "62%", size: 320, scale: 1.15 },
-          { x: "82%", y: "78%", size: 260, scale: 1.0 },
-          { x: "50%", y: "92%", size: 300, scale: 1.2 }
+          { x: "16%", y: "42%", size: 260, scale: 1.0 },
+          { x: "50%", y: "60%", size: 300, scale: 1.1 },
+          { x: "80%", y: "75%", size: 240, scale: 0.95 }
         ]}
       />
 
