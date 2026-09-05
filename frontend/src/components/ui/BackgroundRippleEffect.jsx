@@ -9,11 +9,21 @@ export default function BackgroundRippleEffect({
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [ripples, setRipples] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef(null);
-  const lastMoveRef = useRef(0);
 
   useEffect(() => {
-    if (!interactive) return;
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    // Skip interactive touch ripple listeners on mobile for lag-free performance
+    if (!interactive || isMobile) return;
 
     const addRippleAt = (clientX, clientY, isClick = false) => {
       const rect = containerRef.current?.getBoundingClientRect();
@@ -29,7 +39,7 @@ export default function BackgroundRippleEffect({
         duration: isClick ? 1800 : 1400,
       };
 
-      setRipples((prev) => [...prev.slice(-8), newRipple]);
+      setRipples((prev) => [...prev.slice(-4), newRipple]);
 
       setTimeout(() => {
         setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
@@ -46,10 +56,13 @@ export default function BackgroundRippleEffect({
     return () => {
       window.removeEventListener("pointerdown", handlePointerDown);
     };
-  }, [interactive, isDark]);
+  }, [interactive, isDark, isMobile]);
 
-  // Ambient fluid focal wave ripples
-  const ambientWaves = [
+  // Static lightweight ambient waves on mobile
+  const ambientWaves = isMobile ? [
+    { x: "50%", y: "20%", scale: 1.0 },
+    { x: "50%", y: "70%", scale: 1.1 }
+  ] : [
     { x: "30%", y: "25%", delay: "0s", duration: "7s", scale: 1.2 },
     { x: "70%", y: "45%", delay: "2.5s", duration: "8s", scale: 1.0 },
     { x: "20%", y: "75%", delay: "4s", duration: "7.5s", scale: 1.1 },
@@ -70,23 +83,23 @@ export default function BackgroundRippleEffect({
           style={{ left: wave.x, top: wave.y }}
         >
           <div
-            className="rounded-full animate-fluid-ripple"
+            className={`rounded-full ${isMobile ? "" : "animate-fluid-ripple"}`}
             style={{
-              width: `${380 * wave.scale}px`,
-              height: `${380 * wave.scale}px`,
+              width: `${300 * wave.scale}px`,
+              height: `${300 * wave.scale}px`,
               background: isDark
-                ? "radial-gradient(circle, rgba(59, 130, 246, 0.16) 0%, rgba(37, 99, 235, 0.05) 50%, transparent 75%)"
-                : "radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, rgba(59, 130, 246, 0.03) 50%, transparent 75%)",
-              animationDelay: wave.delay,
-              animationDuration: wave.duration,
-              filter: "blur(8px)",
+                ? "radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(37, 99, 235, 0.03) 50%, transparent 75%)"
+                : "radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, rgba(59, 130, 246, 0.02) 50%, transparent 75%)",
+              animationDelay: wave.delay || "0s",
+              animationDuration: wave.duration || "0s",
+              filter: "blur(6px)",
             }}
           />
         </div>
       ))}
 
-      {/* Dynamic Cursor & Click Water Wave Ripples */}
-      {ripples.map((ripple) => (
+      {/* Dynamic Cursor & Click Water Wave Ripples (Desktop Only) */}
+      {!isMobile && ripples.map((ripple) => (
         <div
           key={ripple.id}
           className="absolute pointer-events-none transform -translate-x-1/2 -translate-y-1/2"
