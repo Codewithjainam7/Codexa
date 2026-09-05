@@ -49,7 +49,7 @@ function MainApp() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg-base)] text-[var(--text-primary)] selection:bg-blue-500/20 selection:text-blue-600 dark:selection:text-blue-300 transition-colors duration-250 relative overflow-x-hidden">
-      {/* 1. Global Viewport Full-Screen Flickering Grid (100% edge-to-edge) */}
+      {/* 1. Global Viewport Full-Screen Flickering Grid & Ripple Effect (100% edge-to-edge) */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <FlickeringGrid
           className="w-full h-full"
@@ -59,6 +59,20 @@ function MainApp() {
           maxOpacity={isDark ? 0.28 : 0.20}
           flickerChance={0.14}
         />
+
+        {/* Global Sonar Radar & Wave Ripples */}
+        <BackgroundRippleEffect
+          numCircles={8}
+          mainCircleSize={280}
+          interactive={true}
+          focalPoints={[
+            { x: "50%", y: "260px", size: 340, scale: 1.25 },
+            { x: "85%", y: "520px", size: 240, scale: 0.95 },
+            { x: "12%", y: "860px", size: 260, scale: 1.05 },
+            { x: "70%", y: "1350px", size: 280, scale: 1.0 }
+          ]}
+        />
+
         {/* Soft Radial Ambient Vignette */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(37,99,235,0.06),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(59,130,246,0.10),rgba(0,0,0,0))] pointer-events-none" />
 
@@ -74,20 +88,8 @@ function MainApp() {
         isConnected={isConnected}
       />
 
-      {/* Main Content Area with Background Ripple Effects - Strictly Confined Above Footer */}
-      <div className="flex-1 relative overflow-hidden flex flex-col pt-24">
-        <BackgroundRippleEffect
-          numCircles={8}
-          mainCircleSize={240}
-          mainCircleOpacity={isDark ? 0.14 : 0.10}
-          interactive={true}
-          focalPoints={[
-            { x: "50%", y: "220px", size: 300, scale: 1.15 },
-            { x: "85%", y: "450px", size: 220, scale: 0.9 },
-            { x: "12%", y: "750px", size: 240, scale: 1.0 }
-          ]}
-        />
-
+      {/* Main Content Area - Strictly Confined Above Footer */}
+      <div className="flex-1 relative flex flex-col pt-20 sm:pt-24">
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-0 relative z-10">
           <AnimatePresence mode="wait">
             {currentView === 'landing' && (

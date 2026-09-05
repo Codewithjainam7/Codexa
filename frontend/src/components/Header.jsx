@@ -1,46 +1,45 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Shield, BookOpen, Github, Plus, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 export default function Header({ currentView, setCurrentView, isConnected }) {
   const { theme, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
+  const isScrolledRef = useRef(false);
 
   useEffect(() => {
-    let ticking = false;
     const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setIsScrolled(window.scrollY > 20);
-          ticking = false;
-        });
-        ticking = true;
+      const scrolled = window.scrollY > 25;
+      if (scrolled !== isScrolledRef.current) {
+        isScrolledRef.current = scrolled;
+        setIsScrolled(scrolled);
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 pointer-events-none flex justify-center px-3 sm:px-6 transition-all duration-300">
+    <header className="fixed top-0 inset-x-0 z-50 pointer-events-none flex justify-center px-3 sm:px-6 pt-3 sm:pt-4 transition-all duration-300">
       <div 
-        className={`pointer-events-auto transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center justify-between gap-3 sm:gap-4 will-change-[transform,max-width,height,padding] ${
+        className={`pointer-events-auto flex items-center justify-between gap-3 sm:gap-6 transition-[max-width,padding,background-color,border-color,box-shadow,transform,border-radius] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           isScrolled
-            ? "mt-2.5 max-w-4xl w-full h-14 px-4 sm:px-6 rounded-full cdx-glass-card shadow-2xl scale-[0.99] border border-[var(--border-glass)] backdrop-blur-3xl"
-            : "mt-3.5 max-w-7xl w-full h-16 px-4 sm:px-6 rounded-2xl sm:rounded-3xl cdx-glass-card shadow-xl border border-[var(--border-glass)] backdrop-blur-2xl"
+            ? "max-w-5xl w-full h-14 px-4 sm:px-6 rounded-full bg-[var(--bg-card)]/90 backdrop-blur-3xl border border-blue-500/25 shadow-[0_12px_36px_-6px_rgba(0,0,0,0.45),0_0_20px_-2px_rgba(59,130,246,0.18)]"
+            : "max-w-7xl w-full h-16 px-4 sm:px-6 rounded-2xl sm:rounded-3xl bg-[var(--bg-card)]/80 backdrop-blur-2xl border border-[var(--border-subtle)] shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
         }`}
       >
-        {/* Brand Logo & Squircle Icon */}
+        {/* Left: Brand Logo & Squircle Icon */}
         <div 
           className="flex items-center space-x-3 cursor-pointer group select-none shrink-0" 
           onClick={() => setCurrentView('landing')}
         >
-          <div className="relative">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-blue-700 p-[1.5px] shadow-md transition-all duration-300 group-hover:scale-105">
+          <div className="relative shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-blue-700 p-[1.5px] shadow-md shadow-blue-500/20 transition-transform duration-300 group-hover:scale-105">
               <div className="w-full h-full bg-[var(--bg-card)] rounded-[10px] flex items-center justify-center">
-                <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400 transition-transform duration-300" />
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 dark:text-blue-400 transition-transform duration-300" />
               </div>
             </div>
             <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-[var(--bg-card)] flex items-center justify-center">
@@ -48,30 +47,23 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
             </div>
           </div>
 
-          <div>
-            <div className="flex items-center space-x-2">
-              <span className="text-sm sm:text-base font-extrabold font-display tracking-tight text-[var(--text-primary)] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                CODEXA
-              </span>
-              <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold tracking-wider uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 rounded-md">
-                v2.4
-              </span>
-            </div>
-            <p className={`text-[10px] text-[var(--text-muted)] font-sans hidden lg:block tracking-wide transition-all duration-300 overflow-hidden ${
-              isScrolled ? 'opacity-0 max-h-0' : 'opacity-100 max-h-4'
-            }`}>
-              Deterministic AST &amp; Neural Security Auditor
-            </p>
+          <div className="shrink-0 flex items-center space-x-2">
+            <span className="text-sm sm:text-base font-extrabold font-display tracking-tight text-[var(--text-primary)] group-hover:text-blue-500 transition-colors whitespace-nowrap">
+              CODEXA
+            </span>
+            <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold tracking-wider uppercase bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/25 rounded-md whitespace-nowrap">
+              v2.4
+            </span>
           </div>
         </div>
 
-        {/* Center & Right Navigation Actions */}
-        <nav className="flex items-center space-x-2 sm:space-x-3">
+        {/* Right Navigation & Actions */}
+        <nav className="flex items-center space-x-2 sm:space-x-3 shrink-0">
           {/* Segmented View Switcher Capsule */}
-          <div className="flex items-center p-1 bg-[var(--bg-recessed)] border border-[var(--border-subtle)] rounded-xl">
+          <div className="flex items-center p-0.5 sm:p-1 bg-[var(--bg-recessed)] border border-[var(--border-subtle)] rounded-xl shrink-0">
             <button
               onClick={() => setCurrentView('landing')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold font-display transition-all duration-150 ${
+              className={`px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold font-display transition-all duration-150 whitespace-nowrap shrink-0 cursor-pointer ${
                 currentView === 'landing'
                   ? 'bg-[var(--bg-card)] text-[var(--text-primary)] shadow-sm border border-[var(--border-subtle)]'
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
@@ -81,9 +73,9 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
             </button>
             <button
               onClick={() => setCurrentView('upload')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold font-display transition-all duration-150 flex items-center space-x-1.5 ${
+              className={`px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold font-display transition-all duration-150 flex items-center space-x-1.5 whitespace-nowrap shrink-0 cursor-pointer ${
                 currentView === 'upload'
-                  ? 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30 shadow-sm'
+                  ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30 shadow-sm'
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
@@ -96,9 +88,9 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
             href="http://localhost:8080/swagger-ui.html"
             target="_blank"
             rel="noreferrer"
-            className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[var(--bg-recessed)] hover:bg-[var(--bg-card)] border border-[var(--border-subtle)] text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all"
+            className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[var(--bg-recessed)] hover:bg-[var(--bg-card)] border border-[var(--border-subtle)] text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all whitespace-nowrap shrink-0"
           >
-            <BookOpen className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            <BookOpen className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400 shrink-0" />
             <span>API</span>
           </a>
 
@@ -107,9 +99,9 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
             href="https://github.com/Codewithjainam7/Codexa"
             target="_blank"
             rel="noreferrer"
-            className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[var(--bg-recessed)] hover:bg-[var(--bg-card)] border border-[var(--border-subtle)] text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all"
+            className="hidden lg:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[var(--bg-recessed)] hover:bg-[var(--bg-card)] border border-[var(--border-subtle)] text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all whitespace-nowrap shrink-0"
           >
-            <Github className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+            <Github className="w-3.5 h-3.5 text-[var(--text-secondary)] shrink-0" />
             <span>GitHub</span>
           </a>
 
@@ -117,7 +109,7 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
           <button
             onClick={toggleTheme}
             aria-label="Toggle light and dark theme"
-            className="p-2 rounded-xl bg-[var(--bg-recessed)] hover:bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-primary)] hover:text-blue-600 dark:hover:text-blue-400 transition-all cursor-pointer"
+            className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-[var(--bg-recessed)] hover:bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-primary)] hover:text-blue-500 transition-all cursor-pointer shrink-0"
           >
             {theme === 'dark' ? (
               <Sun className="w-4 h-4 text-blue-400" />
@@ -126,18 +118,18 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
             )}
           </button>
 
-          {/* Primary Action Button (New Audit) */}
+          {/* Primary Action Button (New Audit) - Fixed No Wrap & Proper Proportions */}
           <button
             onClick={() => setCurrentView('upload')}
-            className="cdx-btn-primary px-3.5 sm:px-4 py-2 rounded-xl font-display font-bold text-xs flex items-center space-x-1.5 cursor-pointer"
+            className="cdx-btn-primary h-8 sm:h-9 px-3.5 sm:px-4 rounded-xl font-display font-bold text-xs flex items-center space-x-1.5 cursor-pointer shrink-0 whitespace-nowrap shadow-md shadow-blue-500/25"
           >
-            <Plus className="w-3.5 h-3.5 stroke-[3]" />
-            <span className="tracking-tight">New Audit</span>
+            <Plus className="w-3.5 h-3.5 stroke-[3] shrink-0" />
+            <span className="tracking-tight whitespace-nowrap">New Audit</span>
           </button>
 
           {/* Realtime Backend Status Beacon */}
-          <div className="pl-1 sm:pl-2 flex items-center space-x-2 text-xs border-l border-[var(--border-subtle)]">
-            <span className="relative flex h-2.5 w-2.5">
+          <div className="pl-1 sm:pl-2 flex items-center space-x-2 text-xs border-l border-[var(--border-subtle)] shrink-0">
+            <span className="relative flex h-2.5 w-2.5 shrink-0">
               {isConnected && (
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               )}
@@ -149,8 +141,8 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
                 }`}
               />
             </span>
-            <span className="text-[10px] font-mono text-[var(--text-muted)] hidden xl:inline">
-              {isConnected ? 'API ONLINE' : 'DISCONNECTED'}
+            <span className="text-[10px] font-mono text-[var(--text-muted)] hidden sm:inline whitespace-nowrap shrink-0">
+              {isConnected ? 'API ONLINE' : 'OFFLINE'}
             </span>
           </div>
         </nav>

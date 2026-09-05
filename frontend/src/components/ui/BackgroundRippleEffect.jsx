@@ -4,15 +4,14 @@ import { useTheme } from "../../context/ThemeContext";
 
 export default function BackgroundRippleEffect({
   className = "",
-  numCircles = 7,
-  mainCircleSize = 220,
-  mainCircleOpacity = 0.15,
+  numCircles = 8,
+  mainCircleSize = 260,
   interactive = true,
   focalPoints = [
-    { x: "50%", y: "24%", size: 280, scale: 1.15 },
-    { x: "85%", y: "15%", size: 180, scale: 0.85 },
-    { x: "12%", y: "65%", size: 220, scale: 0.95 },
-    { x: "65%", y: "82%", size: 200, scale: 0.9 }
+    { x: "50%", y: "220px", size: 320, scale: 1.2 },
+    { x: "85%", y: "480px", size: 240, scale: 0.95 },
+    { x: "15%", y: "820px", size: 260, scale: 1.05 },
+    { x: "70%", y: "1350px", size: 280, scale: 1.0 }
   ]
 }) {
   const { theme } = useTheme();
@@ -25,7 +24,7 @@ export default function BackgroundRippleEffect({
 
     const handleClick = (e) => {
       const target = e.target;
-      if (target.closest("footer")) return;
+      if (target && target.closest && target.closest("footer")) return;
 
       const rect = containerRef.current?.getBoundingClientRect();
       const x = rect ? e.clientX - rect.left : e.clientX;
@@ -37,20 +36,16 @@ export default function BackgroundRippleEffect({
         y,
       };
 
-      setClickRipples((prev) => [...prev.slice(-4), newRipple]);
+      setClickRipples((prev) => [...prev.slice(-6), newRipple]);
 
       setTimeout(() => {
         setClickRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
-      }, 1500);
+      }, 1600);
     };
 
     window.addEventListener("pointerdown", handleClick, { passive: true });
     return () => window.removeEventListener("pointerdown", handleClick);
   }, [interactive]);
-
-  const blueBorder = isDark ? "rgba(59, 130, 246, 0.12)" : "rgba(37, 99, 235, 0.09)";
-  const blueGlow = isDark ? "rgba(59, 130, 246, 0.03)" : "rgba(37, 99, 235, 0.02)";
-  const outerBorder = isDark ? "rgba(255, 255, 255, 0.04)" : "rgba(15, 23, 42, 0.04)";
 
   return (
     <div
@@ -58,7 +53,7 @@ export default function BackgroundRippleEffect({
       className={`absolute inset-0 pointer-events-none overflow-hidden select-none -z-10 ${className}`}
       aria-hidden="true"
     >
-      {/* Background Focal Ripple Systems */}
+      {/* Background Focal Sonar Ripple Systems */}
       {focalPoints.map((focal, fIdx) => (
         <div
           key={fIdx}
@@ -66,11 +61,30 @@ export default function BackgroundRippleEffect({
           style={{ left: focal.x, top: focal.y }}
         >
           {Array.from({ length: numCircles }).map((_, i) => {
-            const size = (focal.size || mainCircleSize) + i * 85 * (focal.scale || 1);
-            const opacity = Math.max(0.02, mainCircleOpacity - i * 0.02);
-            const delay = `${i * 0.35}s`;
-            const duration = `${5.0 + i * 0.4}s`;
-            const isHighlightRing = i % 2 === 0;
+            const size = (focal.size || mainCircleSize) + i * 95 * (focal.scale || 1);
+            const delay = `${i * 0.4}s`;
+            const duration = `${6.0 + i * 0.5}s`;
+            const isHighlight = i % 2 === 0;
+
+            const borderColor = isDark
+              ? (isHighlight 
+                  ? (i === 0 ? "rgba(96, 165, 250, 0.55)" : "rgba(59, 130, 246, 0.38)")
+                  : "rgba(59, 130, 246, 0.18)")
+              : (isHighlight
+                  ? (i === 0 ? "rgba(37, 99, 235, 0.45)" : "rgba(37, 99, 235, 0.30)")
+                  : "rgba(37, 99, 235, 0.14)");
+
+            const glowBg = isHighlight
+              ? (isDark
+                  ? `radial-gradient(circle, rgba(59, 130, 246, ${Math.max(0.02, 0.08 - i * 0.01)}) 0%, transparent 70%)`
+                  : `radial-gradient(circle, rgba(37, 99, 235, ${Math.max(0.015, 0.05 - i * 0.008)}) 0%, transparent 70%)`)
+              : "transparent";
+
+            const shadowGlow = isHighlight && i < 3
+              ? (isDark
+                  ? "0 0 28px -4px rgba(59, 130, 246, 0.22)"
+                  : "0 0 20px -4px rgba(37, 99, 235, 0.12)")
+              : "none";
 
             return (
               <div
@@ -81,14 +95,11 @@ export default function BackgroundRippleEffect({
                   height: `${size}px`,
                   left: "0px",
                   top: "0px",
-                  borderColor: isHighlightRing ? blueBorder : outerBorder,
-                  background: isHighlightRing ? `radial-gradient(circle, ${blueGlow} 0%, transparent 70%)` : "transparent",
-                  opacity: opacity,
+                  borderColor: borderColor,
+                  background: glowBg,
                   animationDelay: delay,
                   animationDuration: duration,
-                  boxShadow: isHighlightRing && i < 2 
-                    ? (isDark ? "0 0 25px -5px rgba(59, 130, 246, 0.08)" : "0 0 20px -5px rgba(37, 99, 235, 0.05)")
-                    : "none",
+                  boxShadow: shadowGlow,
                 }}
               />
             );
@@ -98,20 +109,20 @@ export default function BackgroundRippleEffect({
           <div
             className="absolute rounded-full transform -translate-x-1/2 -translate-y-1/2 animate-pulse"
             style={{
-              width: `${(focal.size || mainCircleSize) * 0.45}px`,
-              height: `${(focal.size || mainCircleSize) * 0.45}px`,
+              width: `${(focal.size || mainCircleSize) * 0.5}px`,
+              height: `${(focal.size || mainCircleSize) * 0.5}px`,
               left: "0px",
               top: "0px",
               background: isDark
-                ? "radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.04) 50%, transparent 80%)"
-                : "radial-gradient(circle, rgba(37, 99, 235, 0.10) 0%, rgba(59, 130, 246, 0.03) 50%, transparent 80%)",
-              filter: "blur(18px)",
+                ? "radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, rgba(37, 99, 235, 0.08) 50%, transparent 80%)"
+                : "radial-gradient(circle, rgba(37, 99, 235, 0.18) 0%, rgba(59, 130, 246, 0.05) 50%, transparent 80%)",
+              filter: "blur(20px)",
             }}
           />
         </div>
       ))}
 
-      {/* Dynamic User Interaction Click Waves */}
+      {/* Dynamic User Click Waves */}
       {clickRipples.map((ripple) => (
         <div
           key={ripple.id}
