@@ -91,8 +91,8 @@ if stripeKey == "" {
       {/* ========================================================================= */}
       {/* 1. HERO SECTION (EDITORIAL ASYMMETRIC COMMAND CENTER)                     */}
       {/* ========================================================================= */}
-      <section className="pt-6 sm:pt-12 pb-16 sm:pb-24 px-4 relative z-10">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+      <section className="pt-6 sm:pt-10 pb-12 sm:pb-18 px-4 relative z-10">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
           
           {/* Left Hero Column: Commanding Value Prop & CTAs */}
           <div className="lg:col-span-7 space-y-6 text-left">
@@ -100,42 +100,20 @@ if stripeKey == "" {
             <div className="inline-flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full cdx-pill text-xs font-semibold">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500 shadow-[0_0_8px_#f59e0b]" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500 shadow-[0_0_10px_#f59e0b]" />
               </span>
               <span className="font-mono text-[11px] tracking-wide text-slate-700 dark:text-slate-300">
                 Deterministic AST Engine <span className="text-amber-500 font-bold mx-1">&bull;</span> Nvidia Nemotron 550B Audit
               </span>
             </div>
             
-            {/* Hero Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-extrabold font-display text-slate-950 dark:text-white tracking-tight sm:tracking-tighter leading-[1.08]">
+            {/* Hero Main Headline - 100% visible, crisp, vibrant gradient */}
+            <h1 className="text-4xl sm:text-6xl lg:text-[68px] font-black font-display text-slate-950 dark:text-white tracking-tight sm:tracking-tighter leading-[1.05]">
               Audit &amp; Secure <br />
-              <CanvasText
-                text="AI-Generated Code"
-                colors={
-                  isDark
-                    ? [
-                        "rgba(251, 191, 36, 1)",   // Gold #FBBF24
-                        "rgba(245, 158, 11, 0.95)", // Amber #F59E0B
-                        "rgba(255, 255, 255, 0.95)", // White
-                        "rgba(217, 119, 6, 0.9)",   // Ochre #D97706
-                        "rgba(251, 191, 36, 0.85)", // Gold
-                        "rgba(255, 255, 255, 0.9)",
-                      ]
-                    : [
-                        "rgba(180, 83, 9, 1)",      // Deep Amber #B45309
-                        "rgba(217, 119, 6, 0.95)",  // Ochre #D97706
-                        "rgba(15, 23, 42, 0.95)",   // Slate 900 #0F172A
-                        "rgba(146, 64, 14, 0.9)",   // Dark Amber #92400E
-                        "rgba(30, 41, 59, 0.95)",   // Slate 800
-                        "rgba(217, 119, 6, 0.9)",
-                      ]
-                }
-                animationSpeed={0.5}
-                className="my-1 inline-block"
-              />
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-950 via-amber-600 to-slate-800 dark:from-white dark:via-amber-400 dark:to-slate-300 font-extrabold">
+              <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 dark:from-amber-400 dark:via-yellow-300 dark:to-amber-500 drop-shadow-sm">
+                AI-Generated Code
+              </span> <br />
+              <span className="text-slate-900 dark:text-slate-100">
                 Before Production.
               </span>
             </h1>
@@ -149,7 +127,7 @@ if stripeKey == "" {
             <div className="flex flex-col sm:flex-row items-center gap-3.5 pt-2">
               <button
                 onClick={onStartAnalysis}
-                className="cdx-btn-primary w-full sm:w-auto px-7 py-3.5 rounded-xl font-display font-bold text-sm flex items-center justify-center space-x-2.5 cursor-pointer"
+                className="cdx-btn-primary w-full sm:w-auto px-7 py-3.5 rounded-xl font-display font-bold text-sm flex items-center justify-center space-x-2.5 cursor-pointer shadow-lg shadow-amber-500/20"
               >
                 <span>Start Codebase Audit</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
@@ -167,7 +145,7 @@ if stripeKey == "" {
             </div>
 
             {/* Trust Badges */}
-            <div className="pt-4 flex flex-wrap items-center gap-4 text-xs font-mono text-slate-600 dark:text-slate-400 font-medium">
+            <div className="pt-3 flex flex-wrap items-center gap-4 text-xs font-mono text-slate-600 dark:text-slate-400 font-medium">
               <span className="flex items-center space-x-1.5">
                 <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
                 <span>Zero Bytecode Exec</span>
@@ -185,14 +163,15 @@ if stripeKey == "" {
 
           {/* Right Hero Column: Live Neural AST Command Center Console */}
           <div className="lg:col-span-5 text-left">
-            <div className="cdx-elevated rounded-2xl p-4 sm:p-5 relative overflow-hidden group specular-rim shadow-2xl">
+            <div className="cdx-elevated rounded-2xl p-5 relative overflow-hidden group specular-rim shadow-2xl space-y-4">
+              {/* Terminal Window Chrome */}
               <div className="flex items-center justify-between pb-3.5 border-b border-[var(--border-subtle)]">
                 <div className="flex items-center space-x-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-rose-500/90" />
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-500/90" />
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/90" />
                   <span className="ml-2 text-xs font-mono text-slate-900 dark:text-white font-bold">
-                    Codexa Neural AST Inspector — Live Telemetry
+                    Codexa Neural AST Inspector
                   </span>
                 </div>
                 <div className="flex items-center space-x-1.5">
@@ -200,39 +179,58 @@ if stripeKey == "" {
                     100% AST PARSE
                   </span>
                   <span className="text-[9px] font-mono font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-500/30">
-                    0 BYTECODE EXEC
+                    0 BYTECODE
                   </span>
                 </div>
               </div>
 
-              <div className="space-y-3 pt-4 font-mono text-xs">
+              {/* Active Telemetry Cards with Realtime Visual Delight */}
+              <div className="space-y-3 font-mono text-xs">
                 {/* Telemetry Stat 1 - Vulnerability Guard */}
-                <div className="p-3.5 rounded-xl cdx-recessed space-y-1">
+                <div className="p-3.5 rounded-xl cdx-recessed space-y-1.5 border border-[var(--border-subtle)] transition-all hover:border-amber-500/30">
                   <div className="text-[11px] text-amber-700 dark:text-amber-400 font-bold flex items-center justify-between">
-                    <span>Vulnerability Guard</span>
+                    <span className="flex items-center space-x-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                      <span>Vulnerability Guard</span>
+                    </span>
                     <ShieldCheck className="w-4 h-4 text-amber-500" />
                   </div>
-                  <div className="text-slate-950 dark:text-white font-bold text-sm font-sans">19+ OWASP Rules Active</div>
+                  <div className="text-slate-950 dark:text-white font-bold text-sm font-sans flex items-center justify-between">
+                    <span>19+ OWASP Rules Active</span>
+                    <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">Enforced</span>
+                  </div>
                   <div className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">SQLi, RCE, SSRF, Deserialization, CSRF</div>
                 </div>
 
                 {/* Telemetry Stat 2 - Readiness Score */}
-                <div className="p-3.5 rounded-xl cdx-recessed space-y-1">
+                <div className="p-3.5 rounded-xl cdx-recessed space-y-1.5 border border-[var(--border-subtle)] transition-all hover:border-emerald-500/30">
                   <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold flex items-center justify-between">
-                    <span>Readiness Score</span>
+                    <span className="flex items-center space-x-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span>Readiness Score</span>
+                    </span>
                     <Zap className="w-4 h-4 text-emerald-500" />
                   </div>
-                  <div className="text-slate-950 dark:text-white font-bold text-sm font-sans">98.5 / 100 Grade A</div>
+                  <div className="text-slate-950 dark:text-white font-bold text-sm font-sans flex items-center justify-between">
+                    <span>98.5 / 100 Grade A</span>
+                    <span className="text-[10px] font-mono text-amber-700 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">Verified</span>
+                  </div>
                   <div className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">Security 60% &bull; Quality 25% &bull; Ops 15%</div>
                 </div>
 
                 {/* Telemetry Stat 3 - AI Cascader */}
-                <div className="p-3.5 rounded-xl cdx-recessed space-y-1">
+                <div className="p-3.5 rounded-xl cdx-recessed space-y-1.5 border border-[var(--border-subtle)] transition-all hover:border-blue-500/30">
                   <div className="text-[11px] text-blue-700 dark:text-blue-400 font-bold flex items-center justify-between">
-                    <span>AI Cascader</span>
+                    <span className="flex items-center space-x-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                      <span>AI Cascader</span>
+                    </span>
                     <Cpu className="w-4 h-4 text-blue-500" />
                   </div>
-                  <div className="text-slate-950 dark:text-white font-bold text-sm font-sans">Nvidia Nemotron 550B</div>
+                  <div className="text-slate-950 dark:text-white font-bold text-sm font-sans flex items-center justify-between">
+                    <span>Nvidia Nemotron 550B</span>
+                    <span className="text-[10px] font-mono text-blue-700 dark:text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">&lt; 85ms</span>
+                  </div>
                   <div className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">Contextual patches &amp; zero hallucination</div>
                 </div>
               </div>
@@ -242,7 +240,7 @@ if stripeKey == "" {
 
         {/* Floating Telemetry Metric Dock (4 Cards) */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-5xl mx-auto mt-12 text-left">
-          <div className="p-4 rounded-2xl cdx-card hover:border-amber-500/40 transition-all duration-300 group transform hover:-translate-y-1">
+          <div className="p-4 rounded-2xl cdx-card hover:border-amber-500/40 transition-all duration-300 group transform hover:-translate-y-1 shadow-md">
             <div className="flex items-center space-x-2 text-amber-500 mb-1.5">
               <div className="p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
                 <Shield className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -252,7 +250,7 @@ if stripeKey == "" {
             <div className="text-sm font-bold text-slate-950 dark:text-white font-display">19+ Security Rules</div>
           </div>
 
-          <div className="p-4 rounded-2xl cdx-card hover:border-amber-500/40 transition-all duration-300 group transform hover:-translate-y-1">
+          <div className="p-4 rounded-2xl cdx-card hover:border-amber-500/40 transition-all duration-300 group transform hover:-translate-y-1 shadow-md">
             <div className="flex items-center space-x-2 text-blue-500 mb-1.5">
               <div className="p-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20">
                 <Cpu className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -262,7 +260,7 @@ if stripeKey == "" {
             <div className="text-sm font-bold text-slate-950 dark:text-white font-display">Nemotron 550B</div>
           </div>
 
-          <div className="p-4 rounded-2xl cdx-card hover:border-amber-500/40 transition-all duration-300 group transform hover:-translate-y-1">
+          <div className="p-4 rounded-2xl cdx-card hover:border-amber-500/40 transition-all duration-300 group transform hover:-translate-y-1 shadow-md">
             <div className="flex items-center space-x-2 text-emerald-500 mb-1.5">
               <div className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                 <Zap className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -272,7 +270,7 @@ if stripeKey == "" {
             <div className="text-sm font-bold text-slate-950 dark:text-white font-display">&lt; 100ms Parsing</div>
           </div>
 
-          <div className="p-4 rounded-2xl cdx-card hover:border-amber-500/40 transition-all duration-300 group transform hover:-translate-y-1">
+          <div className="p-4 rounded-2xl cdx-card hover:border-amber-500/40 transition-all duration-300 group transform hover:-translate-y-1 shadow-md">
             <div className="flex items-center space-x-2 text-amber-500 mb-1.5">
               <div className="p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
                 <Lock className="w-4 h-4 group-hover:scale-110 transition-transform" />
