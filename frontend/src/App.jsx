@@ -8,6 +8,7 @@ import AnalysisDetailView from './components/AnalysisDetailView';
 import { checkHealth, getLimits } from './api/client';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import FlickeringGrid from './components/ui/FlickeringGrid';
+import BackgroundRippleEffect from './components/ui/BackgroundRippleEffect';
 
 function MainApp() {
   const { theme } = useTheme();
@@ -47,9 +48,9 @@ function MainApp() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--bg-base)] text-[var(--text-primary)] selection:bg-blue-500/20 selection:text-blue-600 dark:selection:text-blue-300 transition-colors duration-250 relative overflow-x-hidden">
-      {/* 1. Global Viewport Full-Screen Base Background (100% edge-to-edge) */}
-      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+    <div className="min-h-screen flex flex-col text-[var(--text-primary)] selection:bg-blue-500/20 selection:text-blue-600 dark:selection:text-blue-300 transition-colors duration-250 relative overflow-x-hidden">
+      {/* 1. Global Viewport Full-Screen Base Background & Ripple Effect (z-0, 100% edge-to-edge) */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         {/* Solid Base Background Surface */}
         <div className="absolute inset-0 bg-[var(--bg-base)]" />
 
@@ -62,6 +63,9 @@ function MainApp() {
           maxOpacity={isDark ? 0.28 : 0.20}
           flickerChance={0.14}
         />
+
+        {/* Dynamic Water Ripple Effect */}
+        <BackgroundRippleEffect interactive={true} />
 
         {/* Soft Radial Ambient Vignette */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(37,99,235,0.06),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(59,130,246,0.12),rgba(0,0,0,0))] pointer-events-none" />
