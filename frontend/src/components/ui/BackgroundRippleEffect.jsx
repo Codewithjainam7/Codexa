@@ -50,7 +50,7 @@ export default function BackgroundRippleEffect({
   return (
     <div
       ref={containerRef}
-      className={`absolute inset-0 pointer-events-none overflow-hidden select-none -z-10 ${className}`}
+      className={`absolute inset-0 pointer-events-none overflow-hidden select-none ${className}`}
       aria-hidden="true"
     >
       {/* Background Focal Sonar Ripple Systems */}
