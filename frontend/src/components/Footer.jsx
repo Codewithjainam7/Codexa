@@ -12,8 +12,8 @@ export default function Footer() {
           <div className="md:col-span-4 space-y-4">
             <div className="flex items-center space-x-2.5">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-500 via-indigo-600 to-blue-700 p-[1px] flex items-center justify-center shadow-md">
-                <div className="w-full h-full bg-[var(--bg-card)] rounded-[10px] flex items-center justify-center">
-                  <Shield className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <div className="w-full h-full bg-[var(--bg-card)] rounded-[10px] flex items-center justify-center overflow-hidden p-0.5">
+                  <img src="/logo.png" alt="Codexa Logo" className="w-full h-full object-contain" />
                 </div>
               </div>
               <span className="text-xl font-bold font-display tracking-tight text-[var(--text-primary)]">

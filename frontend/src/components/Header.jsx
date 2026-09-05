@@ -20,8 +20,8 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
             >
               <div className="relative shrink-0">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-blue-700 p-[1.5px] shadow-md shadow-blue-500/20 transition-transform duration-300 group-hover:scale-105">
-                  <div className="w-full h-full bg-[var(--bg-card)] rounded-[10px] flex items-center justify-center">
-                    <Shield className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-blue-500 dark:text-blue-400 transition-transform duration-300" />
+                  <div className="w-full h-full bg-[var(--bg-card)] rounded-[10px] flex items-center justify-center overflow-hidden p-0.5">
+                    <img src="/logo.png" alt="CODEXA Logo" className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" />
                   </div>
                 </div>
                 <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-blue-500 rounded-full border-2 border-[var(--bg-card)] flex items-center justify-center">

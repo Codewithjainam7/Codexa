@@ -54,9 +54,9 @@ function MainApp() {
         {/* Solid Base Background Surface */}
         <div className="absolute inset-0 bg-[var(--bg-base)]" />
 
-        {/* Flickering Grid Pattern */}
+        {/* Flickering Grid Pattern (Desktop only for clean mobile background) */}
         <FlickeringGrid
-          className="w-full h-full opacity-80"
+          className="w-full h-full opacity-80 hidden md:block"
           squareSize={4}
           gridGap={6}
           color={isDark ? "#3B82F6" : "#2563EB"}
@@ -64,11 +64,11 @@ function MainApp() {
           flickerChance={0.14}
         />
 
-        {/* Dynamic Water Ripple Effect */}
-        <BackgroundRippleEffect interactive={true} />
+        {/* Dynamic Water Ripple Effect (Desktop only) */}
+        <BackgroundRippleEffect className="hidden md:block" interactive={true} />
 
-        {/* Soft Radial Ambient Vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(37,99,235,0.06),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(59,130,246,0.12),rgba(0,0,0,0))] pointer-events-none" />
+        {/* Soft Radial Ambient Vignette (Desktop only) */}
+        <div className="hidden md:block absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(37,99,235,0.06),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(59,130,246,0.12),rgba(0,0,0,0))] pointer-events-none" />
 
         {/* Ambient background light orbs (Desktop only for max mobile performance) */}
         <div className="hidden md:block absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[500px] bg-blue-600/12 dark:bg-blue-600/20 rounded-full blur-[140px] pointer-events-none" />

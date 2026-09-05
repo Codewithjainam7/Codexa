@@ -67,8 +67,8 @@ export default function MobileSidebar({ isOpen, onClose, currentView, setCurrent
                 onClick={() => handleNav('landing')}
               >
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-blue-700 p-[1.5px] shadow-md shadow-blue-500/20">
-                  <div className="w-full h-full bg-[var(--bg-card)] rounded-[10px] flex items-center justify-center">
-                    <Shield className="w-4 h-4 text-blue-500 dark:text-blue-400" />
+                  <div className="w-full h-full bg-[var(--bg-card)] rounded-[10px] flex items-center justify-center overflow-hidden p-0.5">
+                    <img src="/logo.png" alt="CODEXA Logo" className="w-full h-full object-contain" />
                   </div>
                 </div>
                 <div className="flex flex-col">
