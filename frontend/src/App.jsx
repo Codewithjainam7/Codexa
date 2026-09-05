@@ -46,7 +46,7 @@ function MainApp() {
       />
 
       {/* Main Content Area with Background Ripple Effects - Strictly Confined Above Footer */}
-      <div className="flex-1 relative overflow-hidden flex flex-col">
+      <div className="flex-1 relative overflow-hidden flex flex-col pt-20">
         <BackgroundRippleEffect
           numCircles={8}
           mainCircleSize={240}

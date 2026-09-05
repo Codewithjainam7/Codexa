@@ -7,8 +7,8 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="sticky top-3 z-50 w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto transition-all duration-300">
-      <div className="cdx-elevated rounded-2xl h-16 px-4 sm:px-6 flex items-center justify-between gap-4 transition-all duration-200">
+    <header className="fixed top-0 inset-x-0 z-50 w-full bg-[var(--bg-base)]/85 backdrop-blur-2xl border-b border-[var(--border-subtle)] shadow-sm transition-all duration-300">
+      <div className="max-w-7xl mx-auto h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
         {/* Brand Logo & Squircle Icon */}
         <div 
           className="flex items-center space-x-3 cursor-pointer group select-none" 

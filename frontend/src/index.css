@@ -4,27 +4,27 @@
 
 @layer base {
   :root {
-    --bg-base: #F8FAFC;
-    --bg-card: rgba(255, 255, 255, 0.70);
-    --bg-card-hover: rgba(255, 255, 255, 0.88);
-    --bg-elevated: rgba(255, 255, 255, 0.80);
-    --bg-recessed: rgba(241, 245, 249, 0.65);
-    --bg-glass: rgba(255, 255, 255, 0.60);
-    --text-primary: #0F172A;
-    --text-secondary: #334155;
-    --text-muted: #64748B;
-    --border-subtle: rgba(15, 23, 42, 0.08);
-    --border-medium: rgba(37, 99, 235, 0.20);
-    --border-glass: rgba(255, 255, 255, 0.85);
+    --bg-base: #F1F5F9;
+    --bg-card: rgba(255, 255, 255, 0.92);
+    --bg-card-hover: #FFFFFF;
+    --bg-elevated: #FFFFFF;
+    --bg-recessed: #E2E8F0;
+    --bg-glass: rgba(255, 255, 255, 0.88);
+    --text-primary: #090D16;
+    --text-secondary: #1E293B;
+    --text-muted: #475569;
+    --border-subtle: rgba(15, 23, 42, 0.12);
+    --border-medium: rgba(37, 99, 235, 0.30);
+    --border-glass: rgba(15, 23, 42, 0.10);
     --accent-primary: #2563EB;
     --accent-hover: #1D4ED8;
-    --accent-subtle: rgba(37, 99, 235, 0.08);
+    --accent-subtle: rgba(37, 99, 235, 0.10);
     --accent-glow: rgba(37, 99, 235, 0.18);
-    --accent-border: rgba(37, 99, 235, 0.35);
-    --accent-text: #1E40AF;
-    --shadow-card: 0 20px 40px -15px rgba(15, 23, 42, 0.07), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
-    --shadow-elevated: 0 24px 48px -12px rgba(37, 99, 235, 0.12), inset 0 1px 1px rgba(255, 255, 255, 1);
-    --shadow-glass: 0 20px 50px -10px rgba(37, 99, 235, 0.10), inset 0 1px 2px 0 rgba(255, 255, 255, 1), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+    --accent-border: rgba(37, 99, 235, 0.40);
+    --accent-text: #1D4ED8;
+    --shadow-card: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.08);
+    --shadow-elevated: 0 20px 40px -10px rgba(37, 99, 235, 0.14), 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.08);
+    --shadow-glass: 0 14px 32px -6px rgba(15, 23, 42, 0.09), 0 2px 4px 0 rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.08);
   }
 
   .dark {
