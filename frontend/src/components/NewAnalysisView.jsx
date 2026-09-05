@@ -8,13 +8,20 @@ import {
 import { submitZip, submitGitHubUrl } from '../api/client';
 import GlowingEffect from './ui/GlowingEffect';
 
-export default function NewAnalysisView({ limits, onJobCreated }) {
+export default function NewAnalysisView({ limits, onJobCreated, initialGithubUrl = '' }) {
   const [activeTab, setActiveTab] = useState('github');
   const [file, setFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [githubUrl, setGithubUrl] = useState('');
+  const [githubUrl, setGithubUrl] = useState(initialGithubUrl || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (initialGithubUrl) {
+      setGithubUrl(initialGithubUrl);
+      setActiveTab('github');
+    }
+  }, [initialGithubUrl]);
 
   // Dynamic Live Staging Telemetry
   const [stagingProgress, setStagingProgress] = useState(15);

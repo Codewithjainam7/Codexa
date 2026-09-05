@@ -1,42 +1,92 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ShieldCheck, Plus, ArrowRight, Zap, 
   Lock, Cpu, FileCode2, Activity, CheckCircle2, ChevronRight,
-  UploadCloud, Terminal, ShieldAlert, Sparkles
+  UploadCloud, Terminal, ShieldAlert, Sparkles, GitBranch
 } from 'lucide-react';
+import { getActiveAvatar } from '../lib/avatars';
 
 export default function MobileHomeView({ onStartAnalysis, onViewResults, activeJobId, isConnected }) {
+  const [avatar, setAvatar] = useState(getActiveAvatar());
+
+  useEffect(() => {
+    const handleAvatarChange = () => setAvatar(getActiveAvatar());
+    window.addEventListener('codexa_avatar_updated', handleAvatarChange);
+    return () => window.removeEventListener('codexa_avatar_updated', handleAvatarChange);
+  }, []);
+
+  const AvatarIcon = avatar.icon;
+
+  const quickSamples = [
+    { name: 'Juice Shop', tag: 'OWASP / Node', url: 'https://github.com/juice-shop/juice-shop' },
+    { name: 'Spring PetClinic', tag: 'Enterprise Java', url: 'https://github.com/spring-projects/spring-petclinic' },
+    { name: 'FastAPI App', tag: 'Python API', url: 'https://github.com/nsidnev/fastapi-realworld-example-app' }
+  ];
+
   return (
     <div className="space-y-4 pb-6 pt-1 text-left select-none">
-      {/* 1. Header Brand & Connection Bar */}
+      {/* 1. Developer Profile & Engine Status Header */}
       <div className="p-3.5 rounded-2xl bg-[#0D121F] border border-slate-800 shadow-sm flex items-center justify-between">
         <div className="flex items-center space-x-2.5">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-blue-700 p-[1.5px] shadow-sm">
+          <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${avatar.color} p-[1.5px] shadow-sm`}>
             <div className="w-full h-full bg-[#070A12] rounded-[10px] flex items-center justify-center p-0.5 overflow-hidden">
-              <img src="/logo.png" alt="CODEXA" className="w-full h-full object-contain" />
+              <AvatarIcon className={`w-4 h-4 ${avatar.text}`} />
             </div>
           </div>
           <div>
             <div className="flex items-center space-x-1.5">
-              <h2 className="text-sm font-black font-display text-white tracking-tight">
-                CODEXA
+              <h2 className="text-xs font-bold font-display text-white tracking-tight">
+                {avatar.name}
               </h2>
               <span className="px-1.5 py-0.2 text-[8px] font-mono font-bold uppercase bg-blue-500/15 text-blue-400 border border-blue-500/30 rounded">
-                v2.4
+                {avatar.role}
               </span>
             </div>
             <p className="text-[10px] text-slate-400 font-mono">
-              AST &amp; Neural Security Platform
+              CODEXA Mobile Engine &bull; v2.4
             </p>
           </div>
         </div>
 
-        <div className="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-[10px] font-mono font-bold">
+        <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-[10px] font-mono font-bold">
           <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 shadow-[0_0_6px_#10b981]' : 'bg-rose-500'}`} />
           <span className={isConnected ? 'text-emerald-400' : 'text-rose-400'}>
             {isConnected ? 'LIVE' : 'OFFLINE'}
           </span>
+        </div>
+      </div>
+
+      {/* 1-Tap Quick Sample Repositories (Ultra Convenient for Mobile!) */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between px-1">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+            1-Tap Quick Audits
+          </span>
+          <span className="text-[9px] font-mono text-blue-400 font-semibold">
+            Tap to Load
+          </span>
+        </div>
+
+        <div className="grid grid-cols-3 gap-1.5">
+          {quickSamples.map((sample) => (
+            <button
+              key={sample.name}
+              type="button"
+              onClick={() => onStartAnalysis(sample.url)}
+              className="p-2 rounded-xl bg-[#0D121F] hover:bg-slate-900 border border-slate-800 hover:border-blue-500/40 text-left transition-all active:scale-95 cursor-pointer flex flex-col justify-between"
+            >
+              <div className="flex items-center space-x-1 text-blue-400 mb-1">
+                <GitBranch className="w-3 h-3 shrink-0" />
+                <span className="text-[10.5px] font-bold font-display text-white truncate">
+                  {sample.name}
+                </span>
+              </div>
+              <span className="text-[8.5px] font-mono text-slate-400 truncate">
+                {sample.tag}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 

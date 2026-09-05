@@ -1,10 +1,20 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sun, Moon, Plus } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { getActiveAvatar } from '../lib/avatars';
 
 export default function MobileTopBar({ currentView, setCurrentView, isConnected }) {
   const { theme, toggleTheme } = useTheme();
+  const [avatar, setAvatar] = useState(getActiveAvatar());
+
+  useEffect(() => {
+    const handleAvatarChange = () => setAvatar(getActiveAvatar());
+    window.addEventListener('codexa_avatar_updated', handleAvatarChange);
+    return () => window.removeEventListener('codexa_avatar_updated', handleAvatarChange);
+  }, []);
+
+  const AvatarIcon = avatar.icon;
 
   const getScreenTitle = () => {
     switch (currentView) {
@@ -20,7 +30,7 @@ export default function MobileTopBar({ currentView, setCurrentView, isConnected 
   };
 
   return (
-    <header className="fixed top-0 inset-x-0 z-40 md:hidden bg-[var(--bg-card)]/95 backdrop-blur-xl border-b border-[var(--border-subtle)] px-4 h-14 flex items-center justify-between shadow-sm select-none">
+    <header className="fixed top-0 inset-x-0 z-40 md:hidden bg-[var(--bg-card)]/95 backdrop-blur-xl border-b border-[var(--border-subtle)] px-3.5 h-14 flex items-center justify-between shadow-sm select-none">
       {/* Left: Brand Logo & Title */}
       <div
         className="flex items-center space-x-2.5 cursor-pointer active:scale-95 transition-transform"
@@ -42,13 +52,13 @@ export default function MobileTopBar({ currentView, setCurrentView, isConnected 
         </div>
       </div>
 
-      {/* Right Actions: Theme Toggle + Connection Beacon */}
+      {/* Right Actions: Quick Audit + Theme Toggle + User Avatar + Connection Beacon */}
       <div className="flex items-center space-x-2">
         {/* Quick New Audit Button if not on upload view */}
         {currentView !== 'upload' && (
           <button
             onClick={() => setCurrentView('upload')}
-            className="cdx-btn-primary h-7 px-2.5 rounded-lg text-[11px] font-bold font-display flex items-center space-x-1 shadow-sm shadow-blue-500/20 active:scale-95 transition-transform"
+            className="cdx-btn-primary h-7 px-2.5 rounded-lg text-[11px] font-bold font-display flex items-center space-x-1 shadow-sm shadow-blue-500/20 active:scale-95 transition-transform cursor-pointer"
           >
             <Plus className="w-3 h-3 stroke-[3]" />
             <span>Audit</span>
@@ -59,7 +69,7 @@ export default function MobileTopBar({ currentView, setCurrentView, isConnected 
         <button
           onClick={toggleTheme}
           aria-label="Toggle theme"
-          className="w-7 h-7 flex items-center justify-center rounded-lg bg-[var(--bg-recessed)] border border-[var(--border-subtle)] text-[var(--text-secondary)] active:scale-90 transition-transform"
+          className="w-7 h-7 flex items-center justify-center rounded-lg bg-[var(--bg-recessed)] border border-[var(--border-subtle)] text-[var(--text-secondary)] active:scale-90 transition-transform cursor-pointer"
         >
           {theme === 'dark' ? (
             <Sun className="w-3.5 h-3.5 text-blue-400" />
@@ -68,21 +78,18 @@ export default function MobileTopBar({ currentView, setCurrentView, isConnected 
           )}
         </button>
 
-        {/* Connection status beacon */}
-        <div className="flex items-center pl-1">
-          <span className="relative flex h-2 w-2">
-            {isConnected && (
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-            )}
-            <span
-              className={`relative inline-flex rounded-full h-2 w-2 ${
-                isConnected
-                  ? 'bg-emerald-500 shadow-[0_0_6px_#10b981]'
-                  : 'bg-rose-500 shadow-[0_0_6px_#ef4444]'
-              }`}
-            />
-          </span>
-        </div>
+        {/* Active Tech Avatar (Direct link to Settings) */}
+        <button
+          onClick={() => setCurrentView('settings')}
+          aria-label="User Settings"
+          className={`w-7 h-7 rounded-lg p-[1px] bg-gradient-to-br ${avatar.color} shadow-sm active:scale-90 transition-transform cursor-pointer relative group`}
+        >
+          <div className="w-full h-full bg-[#070A12] rounded-[7px] flex items-center justify-center">
+            <AvatarIcon className={`w-3.5 h-3.5 ${avatar.text}`} />
+          </div>
+          {/* Subtle online pulse ring */}
+          <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 border border-[#070A12]" />
+        </button>
       </div>
     </header>
   );

@@ -23,6 +23,14 @@ function MainApp() {
   const [activeJobId, setActiveJobId] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [limits, setLimits] = useState(null);
+  const [prefillGithubUrl, setPrefillGithubUrl] = useState('');
+
+  const handleStartAnalysis = (url) => {
+    if (typeof url === 'string' && url) {
+      setPrefillGithubUrl(url);
+    }
+    setCurrentView('upload');
+  };
 
   useEffect(() => {
     const initApp = async () => {
@@ -120,7 +128,7 @@ function MainApp() {
                   {/* Mobile Native Home Dashboard (<768px) */}
                   <div className="md:hidden">
                     <MobileHomeView
-                      onStartAnalysis={() => setCurrentView('upload')}
+                      onStartAnalysis={handleStartAnalysis}
                       onViewResults={() => setCurrentView('analysis')}
                       activeJobId={activeJobId}
                       isConnected={isConnected}
@@ -129,7 +137,7 @@ function MainApp() {
 
                   {/* Desktop Editorial Landing Page (>=768px) */}
                   <div className="hidden md:block">
-                    <LandingView onStartAnalysis={() => setCurrentView('upload')} />
+                    <LandingView onStartAnalysis={handleStartAnalysis} />
                   </div>
                 </motion.div>
               )}
@@ -145,6 +153,7 @@ function MainApp() {
                   <NewAnalysisView
                     limits={limits}
                     onJobCreated={handleJobCreated}
+                    initialGithubUrl={prefillGithubUrl}
                   />
                 </motion.div>
               )}
