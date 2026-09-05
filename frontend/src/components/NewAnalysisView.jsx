@@ -161,7 +161,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
       </div>
 
       {/* Mode Switcher Tabs */}
-      <div className="flex p-1.5 rounded-2xl cdx-card border border-[var(--border-subtle)]">
+      <div className="flex p-1.5 rounded-2xl cdx-glass-card border border-[var(--border-subtle)]">
         <button
           onClick={() => { if (!isSubmitting) { setActiveTab('github'); setError(null); } }}
           disabled={isSubmitting}
@@ -191,7 +191,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
 
       {/* GitHub URL Tab Container */}
       {activeTab === 'github' && (
-        <div className="relative rounded-2xl cdx-elevated p-1.5 shadow-2xl">
+        <div className="relative rounded-3xl cdx-glass-card p-6 sm:p-8 shadow-2xl space-y-6">
           <GlowingEffect
             spread={40}
             glow={true}
@@ -199,7 +199,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
             proximity={64}
             inactiveZone={0.01}
           />
-          <div className="relative rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] p-6 sm:p-8 space-y-6">
+          <div className="relative z-10 space-y-6">
             <form onSubmit={handleGithubSubmit} className="space-y-6">
               <div className="space-y-2.5">
                 <label htmlFor="githubUrlInput" className="block text-xs font-semibold text-[var(--text-secondary)] font-display uppercase tracking-wider">
@@ -301,7 +301,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
 
       {/* ZIP Archive Tab Container */}
       {activeTab === 'zip' && (
-        <div className="relative rounded-2xl cdx-elevated p-1.5 shadow-2xl">
+        <div className="relative rounded-3xl cdx-glass-card p-6 sm:p-8 shadow-2xl space-y-6">
           <GlowingEffect
             spread={40}
             glow={true}
@@ -313,12 +313,12 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
             onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
             onDragLeave={() => setIsDragging(false)}
             onDrop={handleFileDrop}
-            className={`border-2 border-dashed rounded-xl p-8 sm:p-12 text-center transition-all duration-200 ${
+            className={`relative z-10 border-2 border-dashed rounded-2xl p-8 sm:p-12 text-center transition-all duration-200 ${
               isDragging
                 ? 'border-[var(--accent-primary)] bg-[var(--accent-glow)]'
                 : file
-                ? 'border-[var(--accent-border)] bg-[var(--bg-card)]'
-                : 'border-[var(--border-medium)] bg-[var(--bg-card)] hover:border-[var(--accent-border)]'
+                ? 'border-[var(--accent-border)] bg-[var(--bg-recessed)]'
+                : 'border-[var(--border-medium)] bg-[var(--bg-recessed)] hover:border-[var(--accent-border)]'
             }`}
           >
             <input

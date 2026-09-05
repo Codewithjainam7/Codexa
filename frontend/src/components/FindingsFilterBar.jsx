@@ -23,16 +23,16 @@ export default function FindingsFilterBar({
   ];
 
   return (
-    <div className="bg-slate-900/80 border border-slate-800/90 rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-center justify-between shadow-lg backdrop-blur-md">
+    <div className="cdx-glass-card rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-center justify-between shadow-xl">
       {/* Search Input */}
       <div className="relative w-full md:w-80">
-        <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+        <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2" />
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Filter by title, file, rule ID..."
-          className="w-full pl-10 pr-3.5 py-2 bg-slate-950/90 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all font-medium"
+          className="w-full pl-10 pr-3.5 py-2.5 bg-[var(--bg-recessed)] border border-[var(--border-subtle)] rounded-xl text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/30 transition-all font-medium"
         />
       </div>
 

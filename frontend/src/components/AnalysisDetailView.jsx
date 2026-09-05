@@ -191,7 +191,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
       {!isScanning && job?.status === 'COMPLETED' && (
         <>
           {/* Main Scorecard Banner with Glowing Effect Container */}
-          <div className="relative rounded-3xl border border-slate-800/90 p-2 md:p-3 bg-slate-950/80 backdrop-blur-xl">
+          <div className="relative rounded-3xl cdx-glass-card p-6 sm:p-8 space-y-6 shadow-2xl">
             <GlowingEffect
               spread={45}
               glow={true}
@@ -199,21 +199,21 @@ export default function AnalysisDetailView({ jobId, onBack }) {
               proximity={64}
               inactiveZone={0.01}
             />
-            <div className="relative bg-slate-900/70 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-6">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-800">
+            <div className="relative z-10 space-y-6">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-[var(--border-subtle)]">
                 <div className="space-y-1">
                   <div className="flex flex-wrap items-center gap-2.5">
-                    <h1 className="text-xl sm:text-2xl font-black text-white font-display tracking-tight">{job?.sourceIdentifier}</h1>
-                    <span className="text-[11px] px-3 py-0.5 bg-blue-500/10 text-blue-300 rounded-full uppercase font-mono font-bold border border-blue-500/30">
+                    <h1 className="text-xl sm:text-2xl font-black text-[var(--text-primary)] font-display tracking-tight">{job?.sourceIdentifier}</h1>
+                    <span className="text-[11px] px-3 py-0.5 bg-blue-500/10 text-blue-700 dark:text-blue-300 rounded-full uppercase font-mono font-bold border border-blue-500/30">
                       {job?.sourceType}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 font-mono">Job ID: {jobId} &bull; Total Files: {job?.metrics?.totalFiles || 0}</p>
+                  <p className="text-xs text-[var(--text-muted)] font-mono">Job ID: {jobId} &bull; Total Files: {job?.metrics?.totalFiles || 0}</p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">
                   {job?.verdict && getVerdictBadge(job.verdict)}
-                  <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/10 text-blue-300 border border-blue-500/30">
+                  <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/30">
                     COMPLETED
                   </span>
                 </div>
@@ -221,47 +221,47 @@ export default function AnalysisDetailView({ jobId, onBack }) {
 
               {/* Score Cards Grid with Ambient Glows */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-5 bg-slate-950/80 border border-slate-800/90 rounded-2xl relative overflow-hidden group hover:border-blue-500/40 transition-all">
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider font-display">Overall Score</div>
+                <div className="p-5 cdx-card rounded-2xl relative overflow-hidden group hover:border-blue-500/40 hover:-translate-y-0.5 transition-all">
+                  <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Overall Score</div>
                   <div className={`text-4xl font-black mt-2 font-mono ${
-                    (job?.overallScore ?? 100) >= 75 ? 'text-emerald-400' :
-                    (job?.overallScore ?? 100) >= 50 ? 'text-amber-400' : 'text-rose-400'
+                    (job?.overallScore ?? 100) >= 75 ? 'text-emerald-600 dark:text-emerald-400' :
+                    (job?.overallScore ?? 100) >= 50 ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400'
                   }`}>
                     {job?.overallScore ?? 100}
-                    <span className="text-base text-slate-500 font-normal">/100</span>
+                    <span className="text-base text-[var(--text-muted)] font-normal">/100</span>
                   </div>
-                  <div className="mt-2 text-[11px] text-slate-500 font-medium">Production Readiness Index</div>
+                  <div className="mt-2 text-[11px] text-[var(--text-muted)] font-medium">Production Readiness Index</div>
                 </div>
 
-                <div className="p-5 bg-slate-950/80 border border-slate-800/90 rounded-2xl group hover:border-blue-500/40 transition-all">
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider font-display">Security (60%)</div>
-                  <div className="text-3xl font-black text-slate-100 mt-2 font-mono">
+                <div className="p-5 cdx-card rounded-2xl group hover:border-blue-500/40 hover:-translate-y-0.5 transition-all">
+                  <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Security (60%)</div>
+                  <div className="text-3xl font-black text-[var(--text-primary)] mt-2 font-mono">
                     {job?.metrics?.securityScore ?? 100}
-                    <span className="text-base text-slate-500 font-normal">/100</span>
+                    <span className="text-base text-[var(--text-muted)] font-normal">/100</span>
                   </div>
                   <div className="mt-2 flex items-center space-x-2 text-[11px] font-mono">
-                    <span className="text-rose-400 font-bold">{job?.metrics?.criticalCount || 0} Critical</span>
-                    <span className="text-slate-600">&bull;</span>
-                    <span className="text-orange-400 font-bold">{job?.metrics?.highCount || 0} High</span>
+                    <span className="text-rose-600 dark:text-rose-400 font-bold">{job?.metrics?.criticalCount || 0} Critical</span>
+                    <span className="text-[var(--text-muted)]">&bull;</span>
+                    <span className="text-orange-600 dark:text-orange-400 font-bold">{job?.metrics?.highCount || 0} High</span>
                   </div>
                 </div>
 
-                <div className="p-5 bg-slate-950/80 border border-slate-800/90 rounded-2xl group hover:border-blue-500/40 transition-all">
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider font-display">Quality (25%)</div>
-                  <div className="text-3xl font-black text-slate-100 mt-2 font-mono">
+                <div className="p-5 cdx-card rounded-2xl group hover:border-blue-500/40 hover:-translate-y-0.5 transition-all">
+                  <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Quality (25%)</div>
+                  <div className="text-3xl font-black text-[var(--text-primary)] mt-2 font-mono">
                     {job?.metrics?.qualityScore ?? 100}
-                    <span className="text-base text-slate-500 font-normal">/100</span>
+                    <span className="text-base text-[var(--text-muted)] font-normal">/100</span>
                   </div>
-                  <div className="mt-2 text-[11px] text-slate-500">AST Code Smells &amp; Error Handling</div>
+                  <div className="mt-2 text-[11px] text-[var(--text-muted)]">AST Code Smells &amp; Error Handling</div>
                 </div>
 
-                <div className="p-5 bg-slate-950/80 border border-slate-800/90 rounded-2xl group hover:border-blue-500/40 transition-all">
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider font-display">Operations (15%)</div>
-                  <div className="text-3xl font-black text-slate-100 mt-2 font-mono">
+                <div className="p-5 cdx-card rounded-2xl group hover:border-blue-500/40 hover:-translate-y-0.5 transition-all">
+                  <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Operations (15%)</div>
+                  <div className="text-3xl font-black text-[var(--text-primary)] mt-2 font-mono">
                     {job?.metrics?.operationsScore ?? 100}
-                    <span className="text-base text-slate-500 font-normal">/100</span>
+                    <span className="text-base text-[var(--text-muted)] font-normal">/100</span>
                   </div>
-                  <div className="mt-2 text-[11px] text-slate-500">Logging &amp; Deployment Hardening</div>
+                  <div className="mt-2 text-[11px] text-[var(--text-muted)]">Logging &amp; Deployment Hardening</div>
                 </div>
               </div>
             </div>

@@ -426,138 +426,130 @@ if stripeKey == "" {
         <ul className="grid grid-cols-1 md:grid-cols-12 gap-5 auto-rows-fr">
           {/* Card 1: OWASP Top 10 Security (Span 7) - Flagship Feature */}
           <li className="md:col-span-7 list-none">
-            <div className="relative h-full rounded-2xl cdx-card p-2 group transition-all duration-300">
+            <div className="relative h-full rounded-3xl cdx-glass-card p-6 sm:p-7 flex flex-col justify-between gap-5 group transition-all duration-300 hover:-translate-y-1">
               <GlowingEffect spread={40} glow={true} disabled={false} proximity={64} inactiveZone={0.01} />
-              <div className="relative flex h-full flex-col justify-between gap-5 rounded-xl p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)]">
-                <div className="space-y-3.5">
-                  <div className="w-fit rounded-xl border border-blue-500/20 bg-blue-500/10 p-2.5 text-blue-600 dark:text-blue-400">
-                    <Lock className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">OWASP Top 10 SAST</h3>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
-                      Deterministic AST checking for SQL injection, command execution, hardcoded credentials, and deserialization flaws.
-                    </p>
-                  </div>
+              <div className="relative z-10 space-y-3.5">
+                <div className="w-fit rounded-xl border border-blue-500/30 bg-blue-500/10 p-2.5 text-blue-600 dark:text-blue-400 shadow-sm">
+                  <Lock className="h-5 w-5" />
                 </div>
+                <div>
+                  <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">OWASP Top 10 SAST</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
+                    Deterministic AST checking for SQL injection, command execution, hardcoded credentials, and deserialization flaws.
+                  </p>
+                </div>
+              </div>
 
-                <div className="flex flex-wrap gap-2 pt-4 border-t border-[var(--border-subtle)] text-[11px] font-mono">
-                  <span className="px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20 font-medium">SQLi Shield</span>
-                  <span className="px-2.5 py-1 rounded-md bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 font-medium">RCE Blocked</span>
-                  <span className="px-2.5 py-1 rounded-md bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20 font-medium">XSS Sanitizer</span>
-                  <span className="px-2.5 py-1 rounded-md bg-[var(--bg-recessed)] text-slate-700 dark:text-slate-300 border border-[var(--border-subtle)] font-medium">SSRF Guard</span>
-                </div>
+              <div className="relative z-10 flex flex-wrap gap-2 pt-4 border-t border-[var(--border-subtle)] text-[11px] font-mono">
+                <span className="px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20 font-medium">SQLi Shield</span>
+                <span className="px-2.5 py-1 rounded-md bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 font-medium">RCE Blocked</span>
+                <span className="px-2.5 py-1 rounded-md bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20 font-medium">XSS Sanitizer</span>
+                <span className="px-2.5 py-1 rounded-md bg-[var(--bg-recessed)] text-slate-700 dark:text-slate-300 border border-[var(--border-subtle)] font-medium">SSRF Guard</span>
               </div>
             </div>
           </li>
 
           {/* Card 2: Center Tall Code Diff Mockup (Span 5, Row Span 2) */}
           <li className="md:col-span-5 md:row-span-2 list-none">
-            <div className="relative h-full rounded-2xl cdx-card p-2 group transition-all duration-300">
+            <div className="relative h-full rounded-3xl cdx-glass-card p-6 sm:p-7 flex flex-col justify-between gap-5 group transition-all duration-300 hover:-translate-y-1">
               <GlowingEffect spread={45} glow={true} disabled={false} proximity={64} inactiveZone={0.01} />
-              <div className="relative flex h-full flex-col justify-between gap-5 rounded-xl p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)]">
-                <div className="space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <div className="w-fit rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-2.5 text-emerald-500">
-                      <FileCode className="h-5 w-5" />
-                    </div>
-                    <span className="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">
-                      LIVE PATCHING
-                    </span>
+              <div className="relative z-10 space-y-3.5">
+                <div className="flex items-center justify-between">
+                  <div className="w-fit rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-2.5 text-emerald-500 shadow-sm">
+                    <FileCode className="h-5 w-5" />
                   </div>
-                  <div>
-                    <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Before &amp; After Fix Diffs</h3>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
-                      Side-by-side IDE terminal diff comparison with automatic secret masking and copyable secure fixes.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Mini IDE Terminal Window */}
-                <div className="my-auto rounded-xl cdx-recessed p-3.5 font-mono text-[11px] space-y-2.5 shadow-inner">
-                  <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] text-[10px] text-slate-600 dark:text-slate-400">
-                    <div className="flex items-center space-x-1.5">
-                      <span className="w-2 h-2 rounded-full bg-rose-500/90" />
-                      <span className="w-2 h-2 rounded-full bg-amber-500/90" />
-                      <span className="w-2 h-2 rounded-full bg-emerald-500/90" />
-                      <span className="ml-1 text-slate-700 dark:text-slate-300 font-sans font-medium">auth_handler.ts</span>
-                    </div>
-                    <span className="text-emerald-700 dark:text-emerald-400 font-bold">Auto-Fixed</span>
-                  </div>
-                  <div className="space-y-1.5 text-xs font-semibold">
-                    <div className="text-rose-800 dark:text-rose-400 bg-rose-500/15 px-2.5 py-1.5 rounded-lg border-l-2 border-rose-500 overflow-x-auto truncate">
-                      {'- const q = "SELECT * FROM u WHERE id=" + id;'}
-                    </div>
-                    <div className="text-emerald-800 dark:text-emerald-400 bg-emerald-500/15 px-2.5 py-1.5 rounded-lg border-l-2 border-emerald-500 overflow-x-auto truncate">
-                      {'+ const u = await db.user.find({ id });'}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-3.5 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] text-slate-700 dark:text-slate-300 font-mono">
-                  <span className="flex items-center space-x-1.5 text-slate-900 dark:text-white font-medium">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                    <span>Secret Masking</span>
+                  <span className="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">
+                    LIVE PATCHING
                   </span>
-                  <span className="text-blue-700 dark:text-blue-400 font-bold">0 Hallucination</span>
                 </div>
+                <div>
+                  <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Before &amp; After Fix Diffs</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
+                    Side-by-side IDE terminal diff comparison with automatic secret masking and copyable secure fixes.
+                  </p>
+                </div>
+              </div>
+
+              {/* Mini IDE Terminal Window */}
+              <div className="relative z-10 my-auto rounded-xl cdx-recessed p-3.5 font-mono text-[11px] space-y-2.5 shadow-inner">
+                <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] text-[10px] text-slate-600 dark:text-slate-400">
+                  <div className="flex items-center space-x-1.5">
+                    <span className="w-2 h-2 rounded-full bg-rose-500/90" />
+                    <span className="w-2 h-2 rounded-full bg-amber-500/90" />
+                    <span className="w-2 h-2 rounded-full bg-emerald-500/90" />
+                    <span className="ml-1 text-slate-700 dark:text-slate-300 font-sans font-medium">auth_handler.ts</span>
+                  </div>
+                  <span className="text-emerald-700 dark:text-emerald-400 font-bold">Auto-Fixed</span>
+                </div>
+                <div className="space-y-1.5 text-xs font-semibold">
+                  <div className="text-rose-800 dark:text-rose-400 bg-rose-500/15 px-2.5 py-1.5 rounded-lg border-l-2 border-rose-500 overflow-x-auto truncate">
+                    {'- const q = "SELECT * FROM u WHERE id=" + id;'}
+                  </div>
+                  <div className="text-emerald-800 dark:text-emerald-400 bg-emerald-500/15 px-2.5 py-1.5 rounded-lg border-l-2 border-emerald-500 overflow-x-auto truncate">
+                    {'+ const u = await db.user.find({ id });'}
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative z-10 pt-3.5 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] text-slate-700 dark:text-slate-300 font-mono">
+                <span className="flex items-center space-x-1.5 text-slate-900 dark:text-white font-medium">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  <span>Secret Masking</span>
+                </span>
+                <span className="text-blue-700 dark:text-blue-400 font-bold">0 Hallucination</span>
               </div>
             </div>
           </li>
 
           {/* Card 3: Nvidia Nemotron 550B AI (Span 7) */}
           <li className="md:col-span-7 list-none">
-            <div className="relative h-full rounded-2xl cdx-card p-2 group transition-all duration-300">
+            <div className="relative h-full rounded-3xl cdx-glass-card p-6 sm:p-7 flex flex-col justify-between gap-5 group transition-all duration-300 hover:-translate-y-1">
               <GlowingEffect spread={40} glow={true} disabled={false} proximity={64} inactiveZone={0.01} />
-              <div className="relative flex h-full flex-col justify-between gap-5 rounded-xl p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)]">
-                <div className="space-y-3.5">
-                  <div className="w-fit rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-2.5 text-indigo-600 dark:text-indigo-400">
-                    <Cpu className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Nvidia Nemotron 550B AI</h3>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
-                      State-of-the-art neural code review cascade generating contextual remediation and deep explanations.
-                    </p>
-                  </div>
+              <div className="relative z-10 space-y-3.5">
+                <div className="w-fit rounded-xl border border-indigo-500/30 bg-indigo-500/10 p-2.5 text-indigo-600 dark:text-indigo-400 shadow-sm">
+                  <Cpu className="h-5 w-5" />
                 </div>
+                <div>
+                  <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Nvidia Nemotron 550B AI</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
+                    State-of-the-art neural code review cascade generating contextual remediation and deep explanations.
+                  </p>
+                </div>
+              </div>
 
-                <div className="flex flex-wrap gap-2 pt-4 border-t border-[var(--border-subtle)] text-[11px] font-mono">
-                  <span className="px-2.5 py-1 rounded-md bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20 font-medium">Nemotron 550B</span>
-                  <span className="px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20 font-medium">Inkling Small</span>
-                  <span className="px-2.5 py-1 rounded-md bg-[var(--bg-recessed)] text-slate-700 dark:text-slate-300 border border-[var(--border-subtle)] font-medium">AST Graph</span>
-                </div>
+              <div className="relative z-10 flex flex-wrap gap-2 pt-4 border-t border-[var(--border-subtle)] text-[11px] font-mono">
+                <span className="px-2.5 py-1 rounded-md bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20 font-medium">Nemotron 550B</span>
+                <span className="px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20 font-medium">Inkling Small</span>
+                <span className="px-2.5 py-1 rounded-md bg-[var(--bg-recessed)] text-slate-700 dark:text-slate-300 border border-[var(--border-subtle)] font-medium">AST Graph</span>
               </div>
             </div>
           </li>
 
           {/* Card 4: Production Readiness Index (Span 6) */}
           <li className="md:col-span-6 list-none">
-            <div className="relative h-full rounded-2xl cdx-card p-2 group transition-all duration-300">
+            <div className="relative h-full rounded-3xl cdx-glass-card p-6 sm:p-7 flex flex-col justify-between gap-5 group transition-all duration-300 hover:-translate-y-1">
               <GlowingEffect spread={40} glow={true} disabled={false} proximity={64} inactiveZone={0.01} />
-              <div className="relative flex h-full flex-col justify-between gap-5 rounded-xl p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)]">
-                <div className="space-y-3.5">
-                  <div className="w-fit rounded-xl border border-blue-500/20 bg-blue-500/10 p-2.5 text-blue-600 dark:text-blue-400">
-                    <Zap className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Readiness Score (0–100)</h3>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
-                      Mathematical model weighting Security (60%), Quality (25%), and Operations (15%) with failure caps.
-                    </p>
-                  </div>
+              <div className="relative z-10 space-y-3.5">
+                <div className="w-fit rounded-xl border border-blue-500/30 bg-blue-500/10 p-2.5 text-blue-600 dark:text-blue-400 shadow-sm">
+                  <Zap className="h-5 w-5" />
                 </div>
+                <div>
+                  <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Readiness Score (0–100)</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
+                    Mathematical model weighting Security (60%), Quality (25%), and Operations (15%) with failure caps.
+                  </p>
+                </div>
+              </div>
 
-                <div className="space-y-2.5 pt-4 border-t border-[var(--border-subtle)]">
-                  <div className="flex items-center justify-between text-[10px] font-mono text-slate-600 dark:text-slate-400 font-medium">
-                    <span>Readiness Weighting</span>
-                    <span className="text-blue-700 dark:text-blue-400 font-bold">100% Deterministic</span>
-                  </div>
-                  <div className="h-2.5 w-full bg-[var(--bg-recessed)] rounded-full overflow-hidden flex border border-[var(--border-subtle)] p-0.5">
-                    <div className="bg-blue-600 h-full rounded-full w-[60%]" title="Security 60%" />
-                    <div className="bg-indigo-500 h-full rounded-full w-[25%]" title="Quality 25%" />
-                    <div className="bg-slate-400 h-full rounded-full w-[15%]" title="Operations 15%" />
-                  </div>
+              <div className="relative z-10 space-y-2.5 pt-4 border-t border-[var(--border-subtle)]">
+                <div className="flex items-center justify-between text-[10px] font-mono text-slate-600 dark:text-slate-400 font-medium">
+                  <span>Readiness Weighting</span>
+                  <span className="text-blue-700 dark:text-blue-400 font-bold">100% Deterministic</span>
+                </div>
+                <div className="h-2.5 w-full bg-[var(--bg-recessed)] rounded-full overflow-hidden flex border border-[var(--border-subtle)] p-0.5">
+                  <div className="bg-blue-600 h-full rounded-full w-[60%]" title="Security 60%" />
+                  <div className="bg-indigo-500 h-full rounded-full w-[25%]" title="Quality 25%" />
+                  <div className="bg-slate-400 h-full rounded-full w-[15%]" title="Operations 15%" />
                 </div>
               </div>
             </div>
@@ -565,31 +557,29 @@ if stripeKey == "" {
 
           {/* Card 5: Zero-Execution Sandboxing (Span 6) */}
           <li className="md:col-span-6 list-none">
-            <div className="relative h-full rounded-2xl cdx-card p-2 group transition-all duration-300">
+            <div className="relative h-full rounded-3xl cdx-glass-card p-6 sm:p-7 flex flex-col justify-between gap-5 group transition-all duration-300 hover:-translate-y-1">
               <GlowingEffect spread={40} glow={true} disabled={false} proximity={64} inactiveZone={0.01} />
-              <div className="relative flex h-full flex-col justify-between gap-5 rounded-xl p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)]">
-                <div className="space-y-3.5">
-                  <div className="w-fit rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-2.5 text-emerald-500">
-                    <ShieldCheck className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Zero-Execution Sandbox</h3>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
-                      Safe archive decompression with Zip Slip protection, bomb size quotas, and zero untrusted bytecode execution.
-                    </p>
-                  </div>
+              <div className="relative z-10 space-y-3.5">
+                <div className="w-fit rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-2.5 text-emerald-500 shadow-sm">
+                  <ShieldCheck className="h-5 w-5" />
                 </div>
+                <div>
+                  <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Zero-Execution Sandbox</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
+                    Safe archive decompression with Zip Slip protection, bomb size quotas, and zero untrusted bytecode execution.
+                  </p>
+                </div>
+              </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-[var(--border-subtle)] text-[11px] font-mono text-slate-600 dark:text-slate-400">
-                  <span className="flex items-center space-x-1.5 text-emerald-700 dark:text-emerald-400 font-bold">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                    <span>Zip Slip Block</span>
-                  </span>
-                  <span className="flex items-center space-x-1.5 text-emerald-700 dark:text-emerald-400 font-bold">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                    <span>Quota Enforced</span>
-                  </span>
-                </div>
+              <div className="relative z-10 flex items-center justify-between pt-4 border-t border-[var(--border-subtle)] text-[11px] font-mono text-slate-600 dark:text-slate-400">
+                <span className="flex items-center space-x-1.5 text-emerald-700 dark:text-emerald-400 font-bold">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>Zip Slip Block</span>
+                </span>
+                <span className="flex items-center space-x-1.5 text-emerald-700 dark:text-emerald-400 font-bold">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>Quota Enforced</span>
+                </span>
               </div>
             </div>
           </li>
@@ -617,7 +607,7 @@ if stripeKey == "" {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
           {/* Stage 1 */}
-          <div className="p-5 rounded-2xl cdx-card hover:border-blue-500/40 transition-all duration-300 group">
+          <div className="p-5 rounded-2xl cdx-glass-card hover:border-blue-500/40 hover:-translate-y-1 transition-all duration-300 group">
             <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-700 dark:text-blue-400 font-bold font-mono text-xs mb-3.5">
               01
             </div>
@@ -628,7 +618,7 @@ if stripeKey == "" {
           </div>
 
           {/* Stage 2 */}
-          <div className="p-5 rounded-2xl cdx-card hover:border-blue-500/40 transition-all duration-300 group">
+          <div className="p-5 rounded-2xl cdx-glass-card hover:border-blue-500/40 hover:-translate-y-1 transition-all duration-300 group">
             <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-700 dark:text-indigo-400 font-bold font-mono text-xs mb-3.5">
               02
             </div>
@@ -639,7 +629,7 @@ if stripeKey == "" {
           </div>
 
           {/* Stage 3 */}
-          <div className="p-5 rounded-2xl cdx-card hover:border-blue-500/40 transition-all duration-300 group">
+          <div className="p-5 rounded-2xl cdx-glass-card hover:border-blue-500/40 hover:-translate-y-1 transition-all duration-300 group">
             <div className="w-8 h-8 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-700 dark:text-sky-400 font-bold font-mono text-xs mb-3.5">
               03
             </div>
@@ -650,7 +640,7 @@ if stripeKey == "" {
           </div>
 
           {/* Stage 4 */}
-          <div className="p-5 rounded-2xl cdx-card hover:border-blue-500/40 transition-all duration-300 group">
+          <div className="p-5 rounded-2xl cdx-glass-card hover:border-blue-500/40 hover:-translate-y-1 transition-all duration-300 group">
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-700 dark:text-emerald-400 font-bold font-mono text-xs mb-3.5">
               04
             </div>
@@ -671,7 +661,7 @@ if stripeKey == "" {
       {/* 5. BOTTOM CTA LAUNCH BANNER                                               */}
       {/* ========================================================================= */}
       <section className="max-w-4xl mx-auto py-8 sm:py-14 px-4 relative z-10">
-        <div className="relative rounded-3xl cdx-elevated p-8 sm:p-12 text-center space-y-6 overflow-hidden specular-rim shadow-2xl">
+        <div className="relative rounded-3xl cdx-glass-card p-8 sm:p-12 text-center space-y-6 overflow-hidden specular-rim shadow-2xl">
           <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[400px] h-48 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
           
           <div className="relative space-y-2.5">

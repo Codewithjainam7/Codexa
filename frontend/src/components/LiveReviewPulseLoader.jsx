@@ -58,7 +58,7 @@ export default function LiveReviewPulseLoader({ job }) {
   ];
 
   return (
-    <div className="relative overflow-hidden cdx-card rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto space-y-8 shadow-2xl backdrop-blur-2xl border border-[var(--border-subtle)]">
+    <div className="relative overflow-hidden cdx-glass-card rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto space-y-8 shadow-2xl backdrop-blur-2xl border border-[var(--border-glass)]">
       {/* Dotted Glow Background Matrix (Adaptive Theme) */}
       <DottedGlowBackground
         className="opacity-70 dark:opacity-50"

@@ -88,29 +88,29 @@ export function ExpandableFindingCards({ findings = [], getSeverityBadge }) {
           return (
             <div
               key={f.id}
-              className={"rounded-2xl bg-slate-900/90 border " + getSeverityBorder(f.severity) + " transition-all duration-200 overflow-hidden shadow-lg backdrop-blur-md"}
+              className={"rounded-2xl cdx-glass-card border " + getSeverityBorder(f.severity) + " transition-all duration-200 overflow-hidden shadow-lg"}
             >
               {/* Header Pill Row (Clickable) */}
               <div
                 onClick={() => toggleExpand(f.id)}
-                className="flex items-center justify-between p-4 cursor-pointer select-none hover:bg-slate-800/40 transition-colors"
+                className="flex items-center justify-between p-4 cursor-pointer select-none hover:bg-blue-500/5 transition-colors"
               >
                 <div className="flex items-center space-x-3 min-w-0 pr-3">
                   <span className={"w-2.5 h-2.5 rounded-full shrink-0 " + getSeverityDot(f.severity)} />
-                  <span className="text-[11px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
+                  <span className="text-[11px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20 shrink-0">
                     {f.ruleId}
                   </span>
-                  <h4 className="text-xs sm:text-sm font-bold text-white truncate hover:text-emerald-300 transition-colors">
+                  <h4 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] truncate hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                     {f.title}
                   </h4>
                 </div>
 
                 <div className="flex items-center space-x-3 shrink-0">
-                  <span className="hidden sm:inline-block font-mono text-[11px] text-slate-400 truncate max-w-[180px]">
+                  <span className="hidden sm:inline-block font-mono text-[11px] text-[var(--text-muted)] truncate max-w-[180px]">
                     📄 {f.filePath?.split("/").pop()}:{f.startLine}
                   </span>
                   {getSeverityBadge(f.severity)}
-                  <div className={"w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 transition-transform duration-200 " + (isExpanded ? "rotate-180 text-emerald-400 bg-slate-700" : "")}>
+                  <div className={"w-6 h-6 rounded-full cdx-recessed flex items-center justify-center text-[var(--text-muted)] transition-transform duration-200 " + (isExpanded ? "rotate-180 text-blue-600 dark:text-blue-400 bg-blue-500/10" : "")}>
                     <ChevronDown className="w-3.5 h-3.5" />
                   </div>
                 </div>
@@ -124,28 +124,28 @@ export function ExpandableFindingCards({ findings = [], getSeverityBadge }) {
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.25, ease: "easeInOut" }}
-                    className="overflow-hidden border-t border-slate-800/80"
+                    className="overflow-hidden border-t border-[var(--border-subtle)]"
                   >
-                    <div className="p-5 sm:p-6 space-y-4 bg-slate-950/40">
+                    <div className="p-5 sm:p-6 space-y-4 bg-[var(--bg-recessed)]/50 backdrop-blur-md">
                       {/* Meta Tags */}
                       <div className="flex flex-wrap items-center gap-2 text-xs">
-                        <span className="font-mono text-slate-200 bg-slate-950 px-3 py-1 rounded-full border border-slate-800 flex items-center space-x-1.5">
-                          <FileCode className="w-3.5 h-3.5 text-slate-400" />
+                        <span className="font-mono text-[var(--text-secondary)] cdx-pill px-3 py-1 rounded-full border border-[var(--border-subtle)] flex items-center space-x-1.5">
+                          <FileCode className="w-3.5 h-3.5 text-[var(--text-muted)]" />
                           <span>{f.filePath}:{f.startLine}</span>
                         </span>
                         {f.owaspMapping && (
-                          <span className="text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full font-medium flex items-center space-x-1.5">
+                          <span className="text-blue-700 dark:text-blue-400 bg-blue-500/10 border border-blue-500/20 px-3 py-1 rounded-full font-medium flex items-center space-x-1.5">
                             <ShieldCheck className="w-3.5 h-3.5" />
                             <span>{f.owaspMapping}</span>
                           </span>
                         )}
                         {f.requiresManualReview && (
-                          <span className="px-3 py-1 text-[10px] font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/20 rounded-full">
+                          <span className="px-3 py-1 text-[10px] font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20 rounded-full">
                             Review Required
                           </span>
                         )}
-                        <span className="text-xs font-mono text-slate-500 ml-auto">
-                          Priority Weight: <strong className="text-slate-200">{f.priorityScore}</strong>
+                        <span className="text-xs font-mono text-[var(--text-muted)] ml-auto">
+                          Priority Weight: <strong className="text-[var(--text-primary)]">{f.priorityScore}</strong>
                         </span>
                       </div>
 

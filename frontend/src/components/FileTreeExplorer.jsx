@@ -197,16 +197,16 @@ export default function FileTreeExplorer({ findings = [], selectedFile, onSelect
   };
 
   return (
-    <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 space-y-3 flex flex-col h-full">
-      <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+    <div className="cdx-glass-card rounded-2xl p-4 space-y-3 flex flex-col h-full shadow-xl">
+      <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)]">
         <div className="flex items-center space-x-2">
-          <Folder className="w-4 h-4 text-emerald-400" />
-          <h3 className="text-xs font-bold uppercase tracking-wider text-white">Repository Files</h3>
+          <Folder className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+          <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">Repository Files</h3>
         </div>
         {selectedFile && (
           <button
             onClick={() => onSelectFile('')}
-            className="text-[10px] text-emerald-400 hover:text-emerald-300 underline font-medium"
+            className="text-[10px] text-blue-600 dark:text-blue-400 hover:underline font-medium"
           >
             Clear Filter
           </button>
@@ -215,27 +215,27 @@ export default function FileTreeExplorer({ findings = [], selectedFile, onSelect
 
       {/* Quick Search */}
       <div className="relative">
-        <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2" />
+        <Search className="w-3.5 h-3.5 text-[var(--text-muted)] absolute left-2.5 top-1/2 -translate-y-1/2" />
         <input
           type="text"
           value={fileSearch}
           onChange={(e) => setFileSearch(e.target.value)}
           placeholder="Filter files..."
-          className="w-full pl-8 pr-2.5 py-1 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+          className="w-full pl-8 pr-2.5 py-1.5 bg-[var(--bg-recessed)] border border-[var(--border-subtle)] rounded-lg text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)]"
         />
       </div>
 
       {/* File Tree List */}
       <div className="overflow-y-auto max-h-[500px] space-y-0.5 pr-1 custom-scrollbar">
         {findings.length === 0 ? (
-          <div className="text-center py-6 text-xs text-slate-500">No source files with issues</div>
+          <div className="text-center py-6 text-xs text-[var(--text-muted)]">No source files with issues</div>
         ) : (
           renderNode(treeData)
         )}
       </div>
 
       {/* Severity Legend */}
-      <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-mono">
+      <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between text-[10px] text-[var(--text-muted)] font-mono">
         <span className="flex items-center space-x-1">
           <span className="w-2 h-2 rounded-full bg-rose-500" />
           <span>Critical</span>
