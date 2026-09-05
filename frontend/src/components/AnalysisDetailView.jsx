@@ -20,41 +20,41 @@ export default function AnalysisDetailView({ jobId, onBack }) {
   const [searchFilter, setSearchFilter] = useState('');
   const [selectedFile, setSelectedFile] = useState('');
   
-  // Guarantee minimum 6.5s of live animated scan for user visual delight
-  const [minLoadingDone, setMinLoadingDone] = useState(false);
-  const [simulatedProgress, setSimulatedProgress] = useState(15);
-  const [simulatedStage, setSimulatedStage] = useState('INGESTION');
+  // Live animated progress state
+  const [liveProgress, setLiveProgress] = useState(25);
+  const [liveStage, setLiveStage] = useState('INGESTION');
 
+  // Smooth micro-step progress updater while scanning
   useEffect(() => {
-    const stageTimeline = [
-      { stage: 'INGESTION', percent: 20, delay: 0 },
-      { stage: 'JAVA_AST_PARSING', percent: 45, delay: 1300 },
-      { stage: 'SECURITY_AND_QUALITY_RULES', percent: 70, delay: 2800 },
-      { stage: 'AI_EXPLANATION_AND_REMEDIATION', percent: 90, delay: 4400 },
-      { stage: 'PRIORITIZATION_AND_SCORING', percent: 100, delay: 5800 }
-    ];
-
-    const timeouts = stageTimeline.map(item => 
-      setTimeout(() => {
-        setSimulatedStage(item.stage);
-        setSimulatedProgress(item.percent);
-      }, item.delay)
-    );
-
-    const minTimer = setTimeout(() => {
-      setMinLoadingDone(true);
-    }, 6500);
-
-    return () => {
-      timeouts.forEach(clearTimeout);
-      clearTimeout(minTimer);
-    };
-  }, [jobId]);
+    if (!job || (job.status !== 'COMPLETED' && job.status !== 'FAILED')) {
+      const interval = setInterval(() => {
+        setLiveProgress(prev => {
+          const target = job?.progressPercent || 30;
+          if (prev < target) {
+            return Math.min(prev + 3, target);
+          } else if (prev < 95) {
+            return Math.min(prev + 0.3, 96);
+          }
+          return prev;
+        });
+      }, 150);
+      return () => clearInterval(interval);
+    } else if (job.status === 'COMPLETED') {
+      setLiveProgress(100);
+    }
+  }, [job?.status, job?.progressPercent]);
 
   const fetchJobData = async () => {
     try {
       const data = await getAnalysisJob(jobId);
       setJob(data);
+
+      if (data.progressStage) {
+        setLiveStage(data.progressStage);
+      }
+      if (data.progressPercent) {
+        setLiveProgress(prev => Math.max(prev, data.progressPercent));
+      }
 
       if (data.status === 'COMPLETED' || data.status === 'FAILED') {
         const fData = await getFindings(jobId, {
@@ -80,7 +80,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
       } else {
         fetchJobData();
       }
-    }, 1800);
+    }, 650);
 
     return () => clearInterval(interval);
   }, [jobId, job?.status, categoryFilter, severityFilter, searchFilter]);
@@ -129,12 +129,12 @@ export default function AnalysisDetailView({ jobId, onBack }) {
     );
   }
 
-  const isScanning = !job || !minLoadingDone || (job.status !== 'COMPLETED' && job.status !== 'FAILED');
+  const isScanning = !job || (job.status !== 'COMPLETED' && job.status !== 'FAILED');
   const displayJob = {
     ...job,
     sourceIdentifier: job?.sourceIdentifier || 'Target Repository',
-    progressStage: (!minLoadingDone && job?.status === 'COMPLETED') ? simulatedStage : (job?.progressStage || simulatedStage),
-    progressPercent: (!minLoadingDone && job?.status === 'COMPLETED') ? simulatedProgress : (job?.progressPercent || simulatedProgress)
+    progressStage: job?.progressStage || liveStage,
+    progressPercent: job?.status === 'COMPLETED' ? 100 : Math.round(liveProgress)
   };
 
   return (

@@ -50,13 +50,15 @@ public class AIExplanationStage implements PipelineStage {
     public void execute(PipelineContext context) {
         log.info("Executing AI Explanation & Multi-Language Review stage for jobId={}", context.getJobId());
 
-        // 1. Enrich existing deterministic findings
-        for (FindingEntity finding : context.getFindings()) {
-            try {
-                aiExplanationService.enrichFinding(finding);
-            } catch (Exception e) {
-                log.warn("Failed to enrich finding {} with AI explanation: {}", finding.getRuleId(), e.getMessage());
-            }
+        // 1. Enrich existing deterministic findings in parallel for maximum performance
+        if (context.getFindings() != null && !context.getFindings().isEmpty()) {
+            context.getFindings().parallelStream().forEach(finding -> {
+                try {
+                    aiExplanationService.enrichFinding(finding);
+                } catch (Exception e) {
+                    log.warn("Failed to enrich finding {} with AI explanation: {}", finding.getRuleId(), e.getMessage());
+                }
+            });
         }
 
         // 2. Perform Multi-Language Holistic AI Review (TypeScript, JS, Python, Fullstack)

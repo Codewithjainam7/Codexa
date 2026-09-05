@@ -44,23 +44,26 @@ public class AnalysisOrchestrator {
         context.setTotalFiles(sourceFiles != null ? sourceFiles.size() : 0);
 
         try {
-            // Stage: EXTRACTING / PREPARING
-            jobService.updateProgress(jobId, JobStatus.EXTRACTING, "EXTRACTING", 20);
+            // Stage: INGESTION / PREPARING
+            jobService.updateProgress(jobId, JobStatus.EXTRACTING, "INGESTION", 20);
 
             // Execute all configured pipeline stages
-            int totalStages = Math.max(stages.size(), 1);
-            int current = 0;
-
             for (PipelineStage stage : stages) {
-                current++;
-                int percent = 20 + (int) (((double) current / totalStages) * 60);
-                jobService.updateProgress(jobId, JobStatus.SCANNING, stage.getStageName(), percent);
-                log.debug("Executing pipeline stage [{}] for jobId={}", stage.getStageName(), jobId);
+                String stageName = stage.getStageName();
+                int percent = switch (stageName) {
+                    case "JAVA_AST_PARSING" -> 40;
+                    case "SECURITY_AND_QUALITY_RULES" -> 65;
+                    case "AI_EXPLANATION_AND_REMEDIATION" -> 85;
+                    case "PRIORITIZATION_AND_SCORING" -> 95;
+                    default -> 70;
+                };
+                jobService.updateProgress(jobId, JobStatus.SCANNING, stageName, percent);
+                log.debug("Executing pipeline stage [{}] for jobId={}", stageName, jobId);
                 stage.execute(context);
             }
 
             // Stage: COMPLETING & SCORING
-            jobService.updateProgress(jobId, JobStatus.PRIORITIZING, "SCORING", 90);
+            jobService.updateProgress(jobId, JobStatus.PRIORITIZING, "PRIORITIZATION_AND_SCORING", 98);
 
             long durationMs = System.currentTimeMillis() - startTime;
             jobService.completeJob(

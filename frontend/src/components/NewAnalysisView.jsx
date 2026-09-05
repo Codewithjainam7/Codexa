@@ -22,8 +22,8 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   useEffect(() => {
-    let interval;
     let timerInterval;
+    let progressInterval;
 
     if (isSubmitting) {
       setElapsedSeconds(0);
@@ -34,23 +34,40 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
         setElapsedSeconds(prev => prev + 1);
       }, 1000);
 
-      const timeline = [
-        { progress: 35, text: 'Streaming repository archive into ephemeral UUID sandbox...', delay: 1800 },
-        { progress: 65, text: 'Decompressing archive with Zip-Slip & Zip-Bomb defenses...', delay: 4500 },
-        { progress: 85, text: 'Validating file quotas & AST parsing bounds...', delay: 8500 },
-        { progress: 95, text: 'Staging complete. Launching deterministic AST analysis pipeline...', delay: 14000 }
-      ];
+      // Smooth non-linear progress ticker that constantly makes visible forward progress
+      progressInterval = setInterval(() => {
+        setStagingProgress(prev => {
+          let next;
+          if (prev < 40) {
+            next = prev + 2.5;
+          } else if (prev < 65) {
+            next = prev + 1.8;
+          } else if (prev < 82) {
+            next = prev + 1.2;
+          } else if (prev < 94) {
+            next = prev + 0.6;
+          } else {
+            next = Math.min(prev + 0.2, 98);
+          }
 
-      const timeouts = timeline.map(item =>
-        setTimeout(() => {
-          setStagingProgress(item.progress);
-          setStagingStepText(item.text);
-        }, item.delay)
-      );
+          // Dynamically update status text based on active progress
+          if (next >= 85) {
+            setStagingStepText('Finalizing staging & launching deterministic AST pipeline...');
+          } else if (next >= 68) {
+            setStagingStepText('Validating file quotas & AST parsing bounds...');
+          } else if (next >= 42) {
+            setStagingStepText('Decompressing archive with Zip-Slip & safety validation...');
+          } else if (next >= 22) {
+            setStagingStepText('Streaming repository archive into ephemeral UUID sandbox...');
+          }
+
+          return Math.round(next * 10) / 10;
+        });
+      }, 180);
 
       return () => {
         clearInterval(timerInterval);
-        timeouts.forEach(clearTimeout);
+        clearInterval(progressInterval);
       };
     } else {
       setStagingProgress(0);
@@ -237,12 +254,12 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between text-[11px] font-mono text-[var(--text-secondary)]">
                       <span className="truncate pr-2">{stagingStepText}</span>
-                      <span className="text-[var(--accent-primary)] font-bold">{stagingProgress}%</span>
+                      <span className="text-[var(--accent-primary)] font-bold">{Math.round(stagingProgress)}%</span>
                     </div>
                     <div className="w-full h-2 bg-[var(--bg-base)] rounded-full overflow-hidden border border-[var(--border-subtle)] p-0.5">
                       <div
-                        className="bg-gradient-to-r from-amber-500 to-amber-600 h-full rounded-full transition-all duration-500 ease-out"
-                        style={{ width: `${stagingProgress}%` }}
+                        className="bg-gradient-to-r from-amber-500 to-amber-600 h-full rounded-full transition-all duration-300 ease-out"
+                        style={{ width: `${Math.min(stagingProgress, 100)}%` }}
                       />
                     </div>
                   </div>
@@ -365,12 +382,12 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-[11px] font-mono text-[var(--text-secondary)]">
                   <span className="truncate pr-2">{stagingStepText}</span>
-                  <span className="text-[var(--accent-primary)] font-bold">{stagingProgress}%</span>
+                  <span className="text-[var(--accent-primary)] font-bold">{Math.round(stagingProgress)}%</span>
                 </div>
                 <div className="w-full h-2 bg-[var(--bg-base)] rounded-full overflow-hidden border border-[var(--border-subtle)] p-0.5">
                   <div
-                    className="bg-gradient-to-r from-amber-500 to-amber-600 h-full rounded-full transition-all duration-500 ease-out"
-                    style={{ width: `${stagingProgress}%` }}
+                    className="bg-gradient-to-r from-amber-500 to-amber-600 h-full rounded-full transition-all duration-300 ease-out"
+                    style={{ width: `${Math.min(stagingProgress, 100)}%` }}
                   />
                 </div>
               </div>
