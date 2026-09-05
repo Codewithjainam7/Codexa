@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import LandingView from './components/LandingView';
+import MobileHomeView from './components/MobileHomeView';
 import NewAnalysisView from './components/NewAnalysisView';
 import AnalysisDetailView from './components/AnalysisDetailView';
 import BottomNav from './components/BottomNav';
@@ -46,10 +47,10 @@ function MainApp() {
   };
 
   const pageTransition = {
-    initial: { opacity: 0, y: 12 },
+    initial: { opacity: 0, y: 10 },
     animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -12 },
-    transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] }
+    exit: { opacity: 0, y: -10 },
+    transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] }
   };
 
   return (
@@ -106,7 +107,7 @@ function MainApp() {
 
         {/* 3. Main Content Area with Bottom Bar clearance on Mobile */}
         <div className="flex-1 relative flex flex-col pt-16 sm:pt-24 pb-20 md:pb-0">
-          <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-0 relative z-10">
+          <main className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-0 relative z-10">
             <AnimatePresence mode="wait">
               {currentView === 'landing' && (
                 <motion.div
@@ -116,7 +117,20 @@ function MainApp() {
                   exit={pageTransition.exit}
                   transition={pageTransition.transition}
                 >
-                  <LandingView onStartAnalysis={() => setCurrentView('upload')} />
+                  {/* Mobile Native Home Dashboard (<768px) */}
+                  <div className="md:hidden">
+                    <MobileHomeView
+                      onStartAnalysis={() => setCurrentView('upload')}
+                      onViewResults={() => setCurrentView('analysis')}
+                      activeJobId={activeJobId}
+                      isConnected={isConnected}
+                    />
+                  </div>
+
+                  {/* Desktop Editorial Landing Page (>=768px) */}
+                  <div className="hidden md:block">
+                    <LandingView onStartAnalysis={() => setCurrentView('upload')} />
+                  </div>
                 </motion.div>
               )}
 
