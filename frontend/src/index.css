@@ -29,17 +29,17 @@
 
   .dark {
     --bg-base: #07090E;
-    --bg-card: rgba(11, 16, 28, 0.58);
-    --bg-card-hover: rgba(18, 26, 45, 0.72);
-    --bg-elevated: rgba(15, 22, 38, 0.68);
-    --bg-recessed: rgba(8, 12, 22, 0.62);
-    --bg-glass: rgba(10, 15, 28, 0.52);
+    --bg-card: rgba(13, 19, 33, 0.86);
+    --bg-card-hover: rgba(18, 27, 46, 0.92);
+    --bg-elevated: rgba(16, 24, 42, 0.90);
+    --bg-recessed: rgba(9, 13, 23, 0.80);
+    --bg-glass: rgba(12, 18, 32, 0.85);
     --text-primary: #F8FAFC;
     --text-secondary: #CBD5E1;
     --text-muted: #94A3B8;
-    --border-subtle: rgba(255, 255, 255, 0.09);
-    --border-medium: rgba(59, 130, 246, 0.30);
-    --border-glass: rgba(255, 255, 255, 0.14);
+    --border-subtle: rgba(255, 255, 255, 0.10);
+    --border-medium: rgba(59, 130, 246, 0.35);
+    --border-glass: rgba(255, 255, 255, 0.16);
     --accent-primary: #3B82F6;
     --accent-hover: #60A5FA;
     --accent-subtle: rgba(59, 130, 246, 0.12);

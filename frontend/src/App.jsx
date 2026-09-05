@@ -6,11 +6,13 @@ import LandingView from './components/LandingView';
 import NewAnalysisView from './components/NewAnalysisView';
 import AnalysisDetailView from './components/AnalysisDetailView';
 import { checkHealth, getLimits } from './api/client';
-import { ThemeProvider } from './context/ThemeContext';
-
+import { useTheme } from './context/ThemeContext';
+import FlickeringGrid from './components/ui/FlickeringGrid';
 import BackgroundRippleEffect from './components/ui/BackgroundRippleEffect';
 
 function MainApp() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [currentView, setCurrentView] = useState('landing');
   const [activeJobId, setActiveJobId] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -39,14 +41,33 @@ function MainApp() {
   };
 
   const pageTransition = {
-    initial: { opacity: 0, y: 18, filter: "blur(4px)" },
-    animate: { opacity: 1, y: 0, filter: "blur(0px)" },
-    exit: { opacity: 0, y: -18, filter: "blur(4px)" },
-    transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }
+    initial: { opacity: 0, y: 16 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -16 },
+    transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] }
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg-base)] text-[var(--text-primary)] selection:bg-blue-500/20 selection:text-blue-600 dark:selection:text-blue-300 transition-colors duration-250 relative overflow-x-hidden">
+      {/* 1. Global Viewport Full-Screen Flickering Grid (100% edge-to-edge) */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+        <FlickeringGrid
+          className="w-full h-full"
+          squareSize={4}
+          gridGap={6}
+          color={isDark ? "#3B82F6" : "#2563EB"}
+          maxOpacity={isDark ? 0.28 : 0.20}
+          flickerChance={0.14}
+        />
+        {/* Soft Radial Ambient Vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(37,99,235,0.06),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(59,130,246,0.10),rgba(0,0,0,0))] pointer-events-none" />
+
+        {/* Ambient background light orbs */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[500px] bg-blue-600/10 dark:bg-blue-600/16 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-1/3 right-1/4 w-[600px] h-[400px] bg-indigo-600/8 dark:bg-indigo-600/12 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute top-2/3 left-1/4 w-[500px] h-[350px] bg-sky-500/6 dark:bg-sky-500/10 rounded-full blur-[130px] pointer-events-none" />
+      </div>
+
       <Header
         currentView={currentView}
         setCurrentView={setCurrentView}
@@ -54,11 +75,11 @@ function MainApp() {
       />
 
       {/* Main Content Area with Background Ripple Effects - Strictly Confined Above Footer */}
-      <div className="flex-1 relative overflow-hidden flex flex-col pt-20">
+      <div className="flex-1 relative overflow-hidden flex flex-col pt-24">
         <BackgroundRippleEffect
           numCircles={8}
           mainCircleSize={240}
-          mainCircleOpacity={0.12}
+          mainCircleOpacity={isDark ? 0.14 : 0.10}
           interactive={true}
           focalPoints={[
             { x: "50%", y: "220px", size: 300, scale: 1.15 },

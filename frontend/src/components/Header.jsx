@@ -8,11 +8,14 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      if (window.scrollY > 25) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
@@ -23,9 +26,9 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
   return (
     <header className="fixed top-0 inset-x-0 z-50 pointer-events-none flex justify-center px-3 sm:px-6 transition-all duration-300">
       <div 
-        className={`pointer-events-auto transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center justify-between gap-3 sm:gap-4 ${
+        className={`pointer-events-auto transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center justify-between gap-3 sm:gap-4 will-change-[transform,max-width,height,padding] ${
           isScrolled
-            ? "mt-2.5 max-w-4xl w-full h-14 px-4 sm:px-6 rounded-full cdx-glass-card shadow-2xl scale-[0.98] border border-[var(--border-glass)] backdrop-blur-3xl"
+            ? "mt-2.5 max-w-4xl w-full h-14 px-4 sm:px-6 rounded-full cdx-glass-card shadow-2xl scale-[0.99] border border-[var(--border-glass)] backdrop-blur-3xl"
             : "mt-3.5 max-w-7xl w-full h-16 px-4 sm:px-6 rounded-2xl sm:rounded-3xl cdx-glass-card shadow-xl border border-[var(--border-glass)] backdrop-blur-2xl"
         }`}
       >
@@ -54,11 +57,11 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
                 v2.4
               </span>
             </div>
-            {!isScrolled && (
-              <p className="text-[10px] text-[var(--text-muted)] font-sans hidden lg:block tracking-wide">
-                Deterministic AST &amp; Neural Security Auditor
-              </p>
-            )}
+            <p className={`text-[10px] text-[var(--text-muted)] font-sans hidden lg:block tracking-wide transition-all duration-300 overflow-hidden ${
+              isScrolled ? 'opacity-0 max-h-0' : 'opacity-100 max-h-4'
+            }`}>
+              Deterministic AST &amp; Neural Security Auditor
+            </p>
           </div>
         </div>
 
