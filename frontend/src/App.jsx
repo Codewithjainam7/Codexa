@@ -8,7 +8,6 @@ import AnalysisDetailView from './components/AnalysisDetailView';
 import { checkHealth, getLimits } from './api/client';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import FlickeringGrid from './components/ui/FlickeringGrid';
-import BackgroundRippleEffect from './components/ui/BackgroundRippleEffect';
 
 function MainApp() {
   const { theme } = useTheme();
@@ -48,9 +47,9 @@ function MainApp() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col text-[var(--text-primary)] selection:bg-blue-500/20 selection:text-blue-600 dark:selection:text-blue-300 transition-colors duration-250 relative overflow-x-hidden">
-      {/* 1. Global Viewport Full-Screen Base Background & Ripple Effect (z-0, 100% edge-to-edge) */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-[var(--bg-base)] text-[var(--text-primary)] selection:bg-blue-500/20 selection:text-blue-600 dark:selection:text-blue-300 transition-colors duration-250 relative overflow-x-hidden">
+      {/* 1. Global Viewport Full-Screen Base Background (100% edge-to-edge) */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         {/* Solid Base Background Surface */}
         <div className="absolute inset-0 bg-[var(--bg-base)]" />
 
@@ -60,21 +59,8 @@ function MainApp() {
           squareSize={4}
           gridGap={6}
           color={isDark ? "#3B82F6" : "#2563EB"}
-          maxOpacity={isDark ? 0.32 : 0.24}
+          maxOpacity={isDark ? 0.28 : 0.20}
           flickerChance={0.14}
-        />
-
-        {/* Global Sonar Radar & Wave Ripples */}
-        <BackgroundRippleEffect
-          numCircles={8}
-          mainCircleSize={280}
-          interactive={true}
-          focalPoints={[
-            { x: "50%", y: "260px", size: 340, scale: 1.25 },
-            { x: "85%", y: "520px", size: 240, scale: 0.95 },
-            { x: "12%", y: "860px", size: 260, scale: 1.05 },
-            { x: "70%", y: "1350px", size: 280, scale: 1.0 }
-          ]}
         />
 
         {/* Soft Radial Ambient Vignette */}
