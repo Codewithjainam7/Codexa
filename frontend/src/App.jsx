@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import LandingView from './components/LandingView';
@@ -37,6 +38,13 @@ function MainApp() {
     setCurrentView('analysis');
   };
 
+  const pageTransition = {
+    initial: { opacity: 0, y: 18, filter: "blur(4px)" },
+    animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+    exit: { opacity: 0, y: -18, filter: "blur(4px)" },
+    transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg-base)] text-[var(--text-primary)] selection:bg-blue-500/20 selection:text-blue-600 dark:selection:text-blue-300 transition-colors duration-250 relative overflow-x-hidden">
       <Header
@@ -60,23 +68,49 @@ function MainApp() {
         />
 
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-0 relative z-10">
-          {currentView === 'landing' && (
-            <LandingView onStartAnalysis={() => setCurrentView('upload')} />
-          )}
+          <AnimatePresence mode="wait">
+            {currentView === 'landing' && (
+              <motion.div
+                key="landing-view"
+                initial={pageTransition.initial}
+                animate={pageTransition.animate}
+                exit={pageTransition.exit}
+                transition={pageTransition.transition}
+              >
+                <LandingView onStartAnalysis={() => setCurrentView('upload')} />
+              </motion.div>
+            )}
 
-          {currentView === 'upload' && (
-            <NewAnalysisView
-              limits={limits}
-              onJobCreated={handleJobCreated}
-            />
-          )}
+            {currentView === 'upload' && (
+              <motion.div
+                key="upload-view"
+                initial={pageTransition.initial}
+                animate={pageTransition.animate}
+                exit={pageTransition.exit}
+                transition={pageTransition.transition}
+              >
+                <NewAnalysisView
+                  limits={limits}
+                  onJobCreated={handleJobCreated}
+                />
+              </motion.div>
+            )}
 
-          {currentView === 'analysis' && activeJobId && (
-            <AnalysisDetailView
-              jobId={activeJobId}
-              onBack={() => setCurrentView('landing')}
-            />
-          )}
+            {currentView === 'analysis' && activeJobId && (
+              <motion.div
+                key={`analysis-view-${activeJobId}`}
+                initial={pageTransition.initial}
+                animate={pageTransition.animate}
+                exit={pageTransition.exit}
+                transition={pageTransition.transition}
+              >
+                <AnalysisDetailView
+                  jobId={activeJobId}
+                  onBack={() => setCurrentView('landing')}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </main>
       </div>
 

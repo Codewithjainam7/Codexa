@@ -1,42 +1,64 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Shield, BookOpen, Github, Plus, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 export default function Header({ currentView, setCurrentView, isConnected }) {
   const { theme, toggleTheme } = useTheme();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 25) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 w-full bg-[var(--bg-base)]/85 backdrop-blur-2xl border-b border-[var(--border-subtle)] shadow-sm transition-all duration-300">
-      <div className="max-w-7xl mx-auto h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+    <header className="fixed top-0 inset-x-0 z-50 pointer-events-none flex justify-center px-3 sm:px-6 transition-all duration-300">
+      <div 
+        className={`pointer-events-auto transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center justify-between gap-3 sm:gap-4 ${
+          isScrolled
+            ? "mt-2.5 max-w-4xl w-full h-14 px-4 sm:px-6 rounded-full cdx-glass-card shadow-2xl scale-[0.98] border border-[var(--border-glass)] backdrop-blur-3xl"
+            : "mt-3.5 max-w-7xl w-full h-16 px-4 sm:px-6 rounded-2xl sm:rounded-3xl cdx-glass-card shadow-xl border border-[var(--border-glass)] backdrop-blur-2xl"
+        }`}
+      >
         {/* Brand Logo & Squircle Icon */}
         <div 
-          className="flex items-center space-x-3 cursor-pointer group select-none" 
+          className="flex items-center space-x-3 cursor-pointer group select-none shrink-0" 
           onClick={() => setCurrentView('landing')}
         >
           <div className="relative">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-blue-700 p-[1.5px] shadow-md transition-all duration-300 group-hover:scale-105">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-blue-700 p-[1.5px] shadow-md transition-all duration-300 group-hover:scale-105">
               <div className="w-full h-full bg-[var(--bg-card)] rounded-[10px] flex items-center justify-center">
-                <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400 transition-transform duration-300" />
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400 transition-transform duration-300" />
               </div>
             </div>
-            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-blue-500 rounded-full border-2 border-[var(--bg-card)] flex items-center justify-center">
+            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-[var(--bg-card)] flex items-center justify-center">
               <span className="w-1 h-1 bg-white rounded-full animate-ping" />
             </div>
           </div>
 
           <div>
             <div className="flex items-center space-x-2">
-              <span className="text-base sm:text-lg font-extrabold font-display tracking-tight text-[var(--text-primary)] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+              <span className="text-sm sm:text-base font-extrabold font-display tracking-tight text-[var(--text-primary)] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                 CODEXA
               </span>
-              <span className="px-2 py-0.5 text-[9px] font-mono font-bold tracking-wider uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 rounded-md">
+              <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold tracking-wider uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 rounded-md">
                 v2.4
               </span>
             </div>
-            <p className="text-[10px] text-[var(--text-muted)] font-sans hidden md:block tracking-wide">
-              Deterministic AST &amp; Neural Security Auditor
-            </p>
+            {!isScrolled && (
+              <p className="text-[10px] text-[var(--text-muted)] font-sans hidden lg:block tracking-wide">
+                Deterministic AST &amp; Neural Security Auditor
+              </p>
+            )}
           </div>
         </div>
 
