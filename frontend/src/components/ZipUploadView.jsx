@@ -62,7 +62,12 @@ export default function ZipUploadView({ limits, onJobCreated }) {
         onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleFileDrop}
-        className={`border-2 border-dashed rounded-2xl p-10 text-center transition-all ${
+        onClick={(e) => {
+          if (!isUploading) {
+            document.getElementById('zipFileInput')?.click();
+          }
+        }}
+        className={`border-2 border-dashed rounded-2xl p-10 text-center transition-all cursor-pointer select-none ${
           isDragging
             ? 'border-emerald-500 bg-emerald-500/10'
             : file
@@ -79,7 +84,7 @@ export default function ZipUploadView({ limits, onJobCreated }) {
           disabled={isUploading}
         />
 
-        <div className="flex flex-col items-center space-y-4">
+        <div className="flex flex-col items-center space-y-4 pointer-events-none">
           <div className="p-4 bg-emerald-500/10 text-emerald-400 rounded-2xl">
             {file ? <FileArchive className="w-10 h-10" /> : <UploadCloud className="w-10 h-10" />}
           </div>
@@ -89,14 +94,15 @@ export default function ZipUploadView({ limits, onJobCreated }) {
               <div className="space-y-1">
                 <p className="font-semibold text-white">{file.name}</p>
                 <p className="text-xs text-slate-400">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>
+                <p className="text-xs text-emerald-400 font-medium mt-1">Click anywhere to change file</p>
               </div>
             ) : (
               <div className="space-y-1">
                 <p className="text-sm font-semibold text-white">
                   Drag and drop your project ZIP here, or{' '}
-                  <label htmlFor="zipFileInput" className="text-emerald-400 hover:text-emerald-300 cursor-pointer underline underline-offset-2">
+                  <span className="text-emerald-400 underline underline-offset-2">
                     browse files
-                  </label>
+                  </span>
                 </p>
                 <p className="text-xs text-slate-500">Supports Spring Boot &amp; Java project archives</p>
               </div>
@@ -104,13 +110,17 @@ export default function ZipUploadView({ limits, onJobCreated }) {
           </div>
 
           {file && (
-            <div className="flex items-center gap-3 pt-2">
-              <label
-                htmlFor="zipFileInput"
+            <div className="flex items-center gap-3 pt-2 pointer-events-auto">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFile(null);
+                }}
                 className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 cursor-pointer transition-colors"
               >
-                Change File
-              </label>
+                Remove File
+              </button>
               <button
                 onClick={handleUpload}
                 disabled={isUploading}

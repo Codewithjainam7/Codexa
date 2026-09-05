@@ -313,7 +313,12 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
             onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
             onDragLeave={() => setIsDragging(false)}
             onDrop={handleFileDrop}
-            className={`relative z-10 border-2 border-dashed rounded-2xl p-8 sm:p-12 text-center transition-all duration-200 ${
+            onClick={(e) => {
+              if (!isSubmitting) {
+                document.getElementById('zipFileInput')?.click();
+              }
+            }}
+            className={`relative z-10 border-2 border-dashed rounded-2xl p-8 sm:p-12 text-center transition-all duration-200 cursor-pointer select-none ${
               isDragging
                 ? 'border-[var(--accent-primary)] bg-[var(--accent-glow)]'
                 : file
@@ -330,7 +335,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
               disabled={isSubmitting}
             />
 
-            <div className="flex flex-col items-center space-y-4">
+            <div className="flex flex-col items-center space-y-4 pointer-events-none">
               <div className="p-3.5 bg-[var(--accent-glow)] text-[var(--accent-primary)] rounded-xl border border-[var(--accent-border)] shadow-inner">
                 {file ? <FileArchive className="w-8 h-8" /> : <UploadCloud className="w-8 h-8" />}
               </div>
@@ -340,14 +345,15 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
                   <div className="space-y-1">
                     <p className="font-semibold text-[var(--text-primary)] font-display text-sm">{file.name}</p>
                     <p className="text-xs text-[var(--text-muted)] font-mono">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>
+                    <p className="text-[11px] text-[var(--accent-primary)] font-semibold mt-1">Click anywhere to choose a different file</p>
                   </div>
                 ) : (
                   <div className="space-y-1.5">
                     <p className="text-sm font-semibold text-[var(--text-primary)] font-display">
                       Drag and drop your project ZIP archive here, or{' '}
-                      <label htmlFor="zipFileInput" className="text-[var(--accent-primary)] hover:underline cursor-pointer underline-offset-2">
+                      <span className="text-[var(--accent-primary)] underline underline-offset-2">
                         browse files
-                      </label>
+                      </span>
                     </p>
                     <p className="text-xs text-[var(--text-muted)] font-mono">
                       Maximum archive size: 250 MB &bull; ZIP files only
@@ -359,9 +365,12 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
               {file && (
                 <button
                   type="button"
-                  onClick={() => setFile(null)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFile(null);
+                  }}
                   disabled={isSubmitting}
-                  className="text-xs text-[var(--text-muted)] hover:text-rose-500 font-mono transition-colors"
+                  className="pointer-events-auto text-xs text-[var(--text-muted)] hover:text-rose-500 font-mono transition-colors cursor-pointer"
                 >
                   Remove selected archive
                 </button>
