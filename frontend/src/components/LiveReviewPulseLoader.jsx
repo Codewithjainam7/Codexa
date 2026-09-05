@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from 'react';
 import { 
   Sparkles, ShieldCheck, Cpu, Code2, Binary, 
@@ -6,8 +8,11 @@ import {
 import AnimatedBeamPipeline from './AnimatedBeamPipeline';
 import DottedGlowBackground from './ui/DottedGlowBackground';
 import AnimatedCircularProgressBar from './magicui/AnimatedCircularProgressBar';
+import { useTheme } from '../context/ThemeContext';
 
 export default function LiveReviewPulseLoader({ job }) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const [pulseLine, setPulseLine] = useState(0);
 
@@ -53,60 +58,62 @@ export default function LiveReviewPulseLoader({ job }) {
   ];
 
   return (
-    <div className="relative overflow-hidden bg-slate-900/90 border border-slate-800/90 rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto space-y-8 shadow-2xl backdrop-blur-xl">
-      {/* Dotted Glow Background Matrix (Cyan Theme) */}
+    <div className="relative overflow-hidden cdx-card rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto space-y-8 shadow-2xl backdrop-blur-2xl border border-[var(--border-subtle)]">
+      {/* Dotted Glow Background Matrix (Adaptive Theme) */}
       <DottedGlowBackground
-        className="opacity-75"
+        className="opacity-70 dark:opacity-50"
         gap={16}
         radius={1.6}
-        colorDarkVar="#1e293b"
-        glowColorDarkVar="#06b6d4"
+        colorDarkVar="#292524"
+        glowColorDarkVar="#F59E0B"
+        colorLightVar="#E2E8F0"
+        glowColorLightVar="#D97706"
         speedScale={1.2}
       />
 
       {/* Header with Glowing Orbit & Circular Progress */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-6 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-6 border-b border-[var(--border-subtle)] relative z-10">
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-violet-600 flex items-center justify-center shadow-lg shadow-cyan-500/25 animate-pulse">
-              <Sparkles className="w-7 h-7 text-white animate-spin" style={{ animationDuration: '6s' }} />
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 via-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/25 animate-pulse">
+              <Sparkles className="w-7 h-7 text-white dark:text-slate-950 animate-spin" style={{ animationDuration: '6s' }} />
             </div>
-            <div className="absolute -inset-1 rounded-2xl bg-cyan-400/20 blur-md -z-10 animate-pulse" />
+            <div className="absolute -inset-1 rounded-2xl bg-amber-400/20 blur-md -z-10 animate-pulse" />
           </div>
-          <div>
+          <div className="text-left">
             <div className="flex items-center space-x-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
-              <h2 className="text-lg font-bold text-white font-display">Live Codebase Audit in Progress</h2>
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping" />
+              <h2 className="text-lg font-bold text-slate-950 dark:text-white font-display">Live Codebase Audit in Progress</h2>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Target: <span className="font-mono text-cyan-400">{job?.sourceIdentifier}</span>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+              Target: <span className="font-mono text-amber-600 dark:text-amber-400 font-semibold">{job?.sourceIdentifier || 'Codebase Repository'}</span>
             </p>
           </div>
         </div>
 
         {/* Magic UI Animated Circular Progress Bar */}
-        <div className="flex items-center space-x-3 bg-slate-950/90 px-4 py-2 rounded-2xl border border-slate-800 shadow-inner">
+        <div className="flex items-center space-x-3 cdx-recessed px-4 py-2 rounded-2xl border border-[var(--border-subtle)] shadow-inner">
           <div className="text-right">
             <div className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Scanning</div>
-            <div className="text-xs text-cyan-400 font-mono font-bold">{currentStageName}</div>
+            <div className="text-xs text-amber-600 dark:text-amber-400 font-mono font-bold">{currentStageName}</div>
           </div>
           <AnimatedCircularProgressBar
             value={job?.progressPercent || 15}
-            gaugePrimaryColor="#06b6d4"
-            gaugeSecondaryColor="rgba(255, 255, 255, 0.08)"
+            gaugePrimaryColor={isDark ? "#F59E0B" : "#D97706"}
+            gaugeSecondaryColor={isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)"}
             className="size-14 sm:size-16"
           />
         </div>
       </div>
 
       {/* Magic UI Animated Beam Architecture Pipeline */}
-      <div>
-        <div className="flex items-center justify-between mb-3 px-1">
-          <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+      <div className="relative z-10 space-y-3">
+        <div className="flex items-center justify-between px-1">
+          <span className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
             <span>Neural Review Data-Flow Architecture</span>
           </span>
-          <span className="text-[11px] font-mono text-cyan-400 bg-cyan-500/10 px-2.5 py-0.5 rounded-full border border-cyan-500/20">
+          <span className="text-[11px] font-mono text-amber-700 dark:text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-semibold">
             Nvidia Nemotron 550B Engine
           </span>
         </div>
@@ -114,7 +121,7 @@ export default function LiveReviewPulseLoader({ job }) {
       </div>
 
       {/* Modern Stage Stepper */}
-      <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 relative z-10 text-left">
         {stages.map((st, i) => {
           const Icon = st.icon;
           const isDone = i < activeStepIndex;
@@ -125,19 +132,19 @@ export default function LiveReviewPulseLoader({ job }) {
               key={st.id} 
               className={`p-3.5 rounded-2xl border transition-all duration-300 flex flex-col justify-between space-y-3 ${
                 isCurrent 
-                  ? 'bg-cyan-950/30 border-cyan-500/50 shadow-lg shadow-cyan-500/15' 
+                  ? 'bg-amber-500/15 border-amber-500/50 shadow-lg shadow-amber-500/15' 
                   : isDone 
-                  ? 'bg-slate-950/60 border-slate-800/80 opacity-80' 
-                  : 'bg-slate-950/30 border-slate-900 opacity-40'
+                  ? 'bg-emerald-500/10 border-emerald-500/30' 
+                  : 'cdx-recessed opacity-60 border-[var(--border-subtle)]'
               }`}
             >
               <div className="flex items-center justify-between">
                 <div className={`w-7 h-7 rounded-xl flex items-center justify-center text-xs font-bold ${
                   isCurrent 
-                    ? 'bg-gradient-to-tr from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/30' 
+                    ? 'bg-gradient-to-tr from-amber-500 to-amber-600 text-slate-950 shadow-md shadow-amber-500/30' 
                     : isDone 
-                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' 
-                    : 'bg-slate-800 text-slate-500'
+                    ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30' 
+                    : 'bg-black/10 dark:bg-white/10 text-slate-400'
                 }`}>
                   <Icon className="w-4 h-4" />
                 </div>
@@ -145,11 +152,17 @@ export default function LiveReviewPulseLoader({ job }) {
               </div>
 
               <div>
-                <div className={`text-xs font-bold leading-tight ${isCurrent ? 'text-cyan-300' : isDone ? 'text-slate-200' : 'text-slate-500'}`}>
+                <div className={`text-xs font-bold leading-tight ${
+                  isCurrent 
+                    ? 'text-amber-700 dark:text-amber-400' 
+                    : isDone 
+                    ? 'text-emerald-700 dark:text-emerald-400' 
+                    : 'text-slate-600 dark:text-slate-400'
+                }`}>
                   {st.label}
                 </div>
                 {isCurrent && (
-                  <p className="text-[10px] text-cyan-400/80 mt-1 leading-normal font-medium">
+                  <p className="text-[10px] text-amber-700/90 dark:text-amber-300/90 mt-1 leading-normal font-medium">
                     {st.desc}
                   </p>
                 )}
@@ -160,24 +173,24 @@ export default function LiveReviewPulseLoader({ job }) {
       </div>
 
       {/* Simulated Live Scan Activity Terminal */}
-      <div className="bg-slate-950 border border-slate-800/80 rounded-2xl p-4 font-mono text-xs text-slate-400 space-y-2">
-        <div className="flex items-center justify-between pb-2 border-b border-slate-800/60 text-[11px] text-slate-500">
+      <div className="cdx-recessed border border-[var(--border-subtle)] rounded-2xl p-4 font-mono text-xs text-slate-600 dark:text-slate-400 space-y-2 relative z-10 text-left">
+        <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] text-[11px] text-slate-500">
           <div className="flex items-center space-x-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500/60 inline-block" />
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500/60 inline-block" />
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-500/60 inline-block" />
-            <span className="ml-2 font-medium text-slate-400">Codexa Real-Time Pipeline Stream</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block" />
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block" />
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
+            <span className="ml-2 font-semibold text-slate-700 dark:text-slate-300">Codexa Real-Time Pipeline Stream</span>
           </div>
-          <span className="text-[10px] text-cyan-400 font-bold tracking-wider uppercase">Active Engine</span>
+          <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold tracking-wider uppercase">Active Engine</span>
         </div>
 
-        <div className="space-y-1 text-slate-300 py-1">
-          <div className="flex items-center space-x-2 text-cyan-400">
-            <span className="animate-pulse">❯</span>
+        <div className="space-y-1 text-slate-700 dark:text-slate-300 py-1">
+          <div className="flex items-center space-x-2 text-amber-600 dark:text-amber-400 font-semibold">
+            <span className="animate-pulse font-bold">❯</span>
             <span>{terminalLines[pulseLine]}</span>
           </div>
           <div className="text-[11px] text-slate-500 pl-4">
-            Stage: <span className="text-slate-400">{currentStageName}</span> &bull; Active Workers: <span className="text-slate-400">4 Core AST Threads</span>
+            Stage: <span className="text-slate-700 dark:text-slate-300 font-semibold">{currentStageName}</span> &bull; Active Workers: <span className="text-slate-700 dark:text-slate-300">4 Core AST Threads</span>
           </div>
         </div>
       </div>
