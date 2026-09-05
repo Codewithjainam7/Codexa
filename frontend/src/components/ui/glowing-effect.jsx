@@ -47,12 +47,9 @@ export const GlowingEffect = memo(
     );
 
     useEffect(() => {
-      if (disabled) return;
-      window.addEventListener("pointermove", handleMove);
-      return () => {
-        window.removeEventListener("pointermove", handleMove);
-      };
-    }, [handleMove, disabled]);
+      // Cursor movement glow disabled as requested
+      return () => {};
+    }, []);
 
     return (
       <div

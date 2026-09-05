@@ -42,21 +42,9 @@ export default function BackgroundRippleEffect({
       addRippleAt(e.clientX, e.clientY, true);
     };
 
-    const handlePointerMove = (e) => {
-      const now = Date.now();
-      if (now - lastMoveRef.current > 180) {
-        lastMoveRef.current = now;
-        const target = e.target;
-        if (target && target.closest && target.closest("footer")) return;
-        addRippleAt(e.clientX, e.clientY, false);
-      }
-    };
-
     window.addEventListener("pointerdown", handlePointerDown, { passive: true });
-    window.addEventListener("pointermove", handlePointerMove, { passive: true });
     return () => {
       window.removeEventListener("pointerdown", handlePointerDown);
-      window.removeEventListener("pointermove", handlePointerMove);
     };
   }, [interactive, isDark]);
 
