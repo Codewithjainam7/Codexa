@@ -23,7 +23,7 @@ export default function FindingsFilterBar({
   ];
 
   return (
-    <div className="cdx-glass-card rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-center justify-between shadow-xl relative z-30">
+    <div className="cdx-glass-card rounded-2xl p-3 sm:p-4 flex flex-col md:flex-row gap-3 sm:gap-4 items-center justify-between shadow-xl relative z-30">
       {/* Search Input */}
       <div className="relative w-full md:w-80">
         <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -32,12 +32,12 @@ export default function FindingsFilterBar({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Filter by title, file, rule ID..."
-          className="w-full pl-10 pr-3.5 py-2.5 bg-[var(--bg-recessed)] border border-[var(--border-subtle)] rounded-xl text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/30 transition-all font-medium"
+          className="w-full pl-10 pr-3.5 py-2 sm:py-2.5 bg-[var(--bg-recessed)] border border-[var(--border-subtle)] rounded-xl text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/30 transition-all font-medium"
         />
       </div>
 
-      {/* Category & Severity Custom Dropdowns */}
-      <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
+      {/* Category & Severity Custom Dropdowns (Clean side-by-side on mobile) */}
+      <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3 w-full md:w-auto">
         <CustomSelect
           label="Category"
           value={category}

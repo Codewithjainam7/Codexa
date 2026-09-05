@@ -1,179 +1,189 @@
 "use client";
 import React from 'react';
 import { 
-  ShieldCheck, PlusCircle, ArrowRight, Zap, 
+  ShieldCheck, Plus, ArrowRight, Zap, 
   Lock, Cpu, FileCode2, Activity, CheckCircle2, ChevronRight,
-  UploadCloud, Sparkles
+  UploadCloud, Terminal, ShieldAlert, Sparkles
 } from 'lucide-react';
 
 export default function MobileHomeView({ onStartAnalysis, onViewResults, activeJobId, isConnected }) {
   return (
     <div className="space-y-4 pb-6 pt-1 text-left select-none">
-      {/* 1. App Header Greeting Card */}
-      <div className="cdx-glass-card rounded-2xl p-4 border border-[var(--border-subtle)] relative overflow-hidden shadow-sm">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-blue-700 p-[1.5px] shadow-sm">
-              <div className="w-full h-full bg-[var(--bg-card)] rounded-[10px] flex items-center justify-center p-1 overflow-hidden">
-                <img src="/logo.png" alt="CODEXA" className="w-full h-full object-contain" />
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center space-x-1.5">
-                <h2 className="text-base font-black font-display text-[var(--text-primary)] tracking-tight">
-                  CODEXA Mobile
-                </h2>
-                <span className="px-1.5 py-0.5 text-[8px] font-mono font-bold uppercase bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/25 rounded-md">
-                  v2.4
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-500 font-mono mt-0.5">
-                AI Code Security & Audit Console
-              </p>
+      {/* 1. Header Brand & Connection Bar */}
+      <div className="p-3.5 rounded-2xl bg-[#0D121F] border border-slate-800 shadow-sm flex items-center justify-between">
+        <div className="flex items-center space-x-2.5">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-blue-700 p-[1.5px] shadow-sm">
+            <div className="w-full h-full bg-[#070A12] rounded-[10px] flex items-center justify-center p-0.5 overflow-hidden">
+              <img src="/logo.png" alt="CODEXA" className="w-full h-full object-contain" />
             </div>
           </div>
-
-          <div className="flex items-center space-x-1 px-2 py-1 rounded-full bg-[var(--bg-recessed)] border border-[var(--border-subtle)] text-[10px] font-mono font-bold">
-            <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 shadow-[0_0_6px_#10b981]' : 'bg-rose-500'}`} />
-            <span className={isConnected ? 'text-emerald-500' : 'text-rose-500'}>
-              {isConnected ? 'ONLINE' : 'OFFLINE'}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. Primary Action Card: Launch Code Audit */}
-      <div 
-        onClick={onStartAnalysis}
-        className="rounded-2xl p-5 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 text-white shadow-lg shadow-blue-500/25 cursor-pointer active:scale-[0.98] transition-all relative overflow-hidden group"
-      >
-        {/* Ambient background watermark icon */}
-        <ShieldCheck className="absolute -bottom-4 -right-4 w-32 h-32 text-white/10 pointer-events-none" />
-
-        <div className="relative z-10 space-y-3">
-          <div className="flex items-center space-x-2">
-            <span className="p-1.5 rounded-lg bg-white/20 backdrop-blur-sm">
-              <Sparkles className="w-4 h-4 text-white" />
-            </span>
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-100">
-              Deterministic AST &bull; Nemotron 550B
-            </span>
-          </div>
-
           <div>
-            <h3 className="text-lg font-bold font-display tracking-tight leading-tight">
-              Start Codebase Audit
-            </h3>
-            <p className="text-xs text-blue-100/90 mt-1 leading-relaxed">
-              Upload a ZIP archive or analyze a public GitHub repository for OWASP vulnerabilities & AI fixes.
+            <div className="flex items-center space-x-1.5">
+              <h2 className="text-sm font-black font-display text-white tracking-tight">
+                CODEXA
+              </h2>
+              <span className="px-1.5 py-0.2 text-[8px] font-mono font-bold uppercase bg-blue-500/15 text-blue-400 border border-blue-500/30 rounded">
+                v2.4
+              </span>
+            </div>
+            <p className="text-[10px] text-slate-400 font-mono">
+              AST &amp; Neural Security Platform
             </p>
           </div>
+        </div>
 
-          <div className="pt-2 flex items-center justify-between">
-            <span className="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-white text-blue-700 font-display font-bold text-xs shadow-md">
-              <PlusCircle className="w-4 h-4 stroke-[2.5]" />
-              <span>New Audit</span>
-            </span>
-
-            <span className="text-[11px] font-mono text-blue-200">
-              Takes ~15-30s &rarr;
-            </span>
-          </div>
+        <div className="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-[10px] font-mono font-bold">
+          <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 shadow-[0_0_6px_#10b981]' : 'bg-rose-500'}`} />
+          <span className={isConnected ? 'text-emerald-400' : 'text-rose-400'}>
+            {isConnected ? 'LIVE' : 'OFFLINE'}
+          </span>
         </div>
       </div>
 
-      {/* 3. If Active Audit Exists: Quick Shortcut Card */}
+      {/* 2. Primary Action Card: Enterprise Developer Console Look (Zero AI-Template Look) */}
+      <div className="rounded-2xl p-4 sm:p-5 bg-[#0D121F] border border-slate-800 hover:border-slate-700 transition-all shadow-md relative overflow-hidden space-y-3.5">
+        {/* Top subtle blue accent line */}
+        <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-transparent" />
+
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Terminal className="w-4 h-4 text-blue-400" />
+            <span className="text-[11px] font-mono font-bold text-slate-300 uppercase tracking-wider">
+              Code Security Audit
+            </span>
+          </div>
+          <span className="text-[10px] font-mono text-slate-400">
+            OWASP Top 10 &bull; AST
+          </span>
+        </div>
+
+        <div>
+          <h3 className="text-base font-bold font-display text-white tracking-tight">
+            Run Security Inspection
+          </h3>
+          <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+            Audit your codebase for SQLi, RCE, IDOR, and hardcoded secrets with AI remediation diffs.
+          </p>
+        </div>
+
+        <div className="pt-1 flex items-center gap-2">
+          <button
+            onClick={onStartAnalysis}
+            className="cdx-btn-primary flex-1 py-2.5 px-4 rounded-xl font-display font-bold text-xs flex items-center justify-center space-x-2 shadow-md shadow-blue-500/25 active:scale-95 transition-transform cursor-pointer"
+          >
+            <Plus className="w-4 h-4 stroke-[3]" />
+            <span>Start Code Audit</span>
+          </button>
+
+          {activeJobId && (
+            <button
+              onClick={onViewResults}
+              className="py-2.5 px-3.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white font-display font-semibold text-xs flex items-center space-x-1.5 active:scale-95 transition-transform cursor-pointer"
+            >
+              <span>Results</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* 3. Realtime Engine Telemetry Bar */}
+      <div className="grid grid-cols-3 gap-2 text-center">
+        <div className="p-2.5 rounded-xl bg-[#0D121F] border border-slate-800">
+          <div className="text-[9px] font-mono text-slate-400 uppercase">AST Engine</div>
+          <div className="text-xs font-bold font-mono text-emerald-400 mt-0.5">READY</div>
+        </div>
+        <div className="p-2.5 rounded-xl bg-[#0D121F] border border-slate-800">
+          <div className="text-[9px] font-mono text-slate-400 uppercase">LLM Reviewer</div>
+          <div className="text-xs font-bold font-mono text-blue-400 mt-0.5 truncate">Nemotron</div>
+        </div>
+        <div className="p-2.5 rounded-xl bg-[#0D121F] border border-slate-800">
+          <div className="text-[9px] font-mono text-slate-400 uppercase">Ruleset</div>
+          <div className="text-xs font-bold font-mono text-amber-400 mt-0.5">18 Active</div>
+        </div>
+      </div>
+
+      {/* 4. Active Audit Job Card (if running or completed) */}
       {activeJobId && (
         <div 
           onClick={onViewResults}
-          className="cdx-glass-card rounded-2xl p-4 border border-blue-500/40 bg-blue-500/10 cursor-pointer active:scale-[0.98] transition-all flex items-center justify-between shadow-sm"
+          className="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-between cursor-pointer active:scale-95 transition-transform"
         >
-          <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-blue-500 text-white flex items-center justify-center shadow-sm">
-              <Activity className="w-4 h-4" />
-            </div>
+          <div className="flex items-center space-x-2.5">
+            <Activity className="w-4 h-4 text-blue-400" />
             <div>
-              <div className="text-xs font-bold font-display text-[var(--text-primary)]">
-                Latest Audit Results Ready
-              </div>
-              <div className="text-[10px] font-mono text-blue-500 mt-0.5">
-                Job ID: {activeJobId.substring(0, 8)}... &bull; Tap to inspect
-              </div>
+              <div className="text-xs font-bold text-white font-display">Active Audit Report</div>
+              <div className="text-[10px] font-mono text-blue-400">ID: {activeJobId.substring(0, 12)}...</div>
             </div>
           </div>
-          <ChevronRight className="w-4 h-4 text-blue-500" />
+          <span className="text-xs font-mono font-bold text-blue-400 flex items-center">
+            View <ChevronRight className="w-3.5 h-3.5 ml-0.5" />
+          </span>
         </div>
       )}
 
-      {/* 4. Quick Metrics 2x2 Grid */}
+      {/* 5. Core Vulnerability Scopes */}
       <div className="space-y-2">
-        <span className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--text-muted)] px-1">
-          Security Capabilities
+        <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400 px-1">
+          Inspection Rules
         </span>
 
-        <div className="grid grid-cols-2 gap-2.5">
-          <div className="cdx-glass-card rounded-xl p-3 border border-[var(--border-subtle)] space-y-1.5">
-            <div className="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
-              <Lock className="w-3.5 h-3.5" />
-            </div>
-            <div className="text-xs font-bold text-[var(--text-primary)] font-display">
-              OWASP Top 10
+        <div className="grid grid-cols-2 gap-2">
+          <div className="p-3 rounded-xl bg-[#0D121F] border border-slate-800 space-y-1">
+            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-200">
+              <Lock className="w-3.5 h-3.5 text-rose-400" />
+              <span>Injection</span>
             </div>
             <p className="text-[10px] text-slate-500 leading-snug">
-              SQLi, RCE, IDOR, SSRF, & Hardcoded Secrets detection
+              SQLi &bull; NoSQLi &bull; Command Exec
             </p>
           </div>
 
-          <div className="cdx-glass-card rounded-xl p-3 border border-[var(--border-subtle)] space-y-1.5">
-            <div className="w-7 h-7 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
-              <Cpu className="w-3.5 h-3.5" />
-            </div>
-            <div className="text-xs font-bold text-[var(--text-primary)] font-display">
-              Nemotron 550B
+          <div className="p-3 rounded-xl bg-[#0D121F] border border-slate-800 space-y-1">
+            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-200">
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+              <span>Auth &amp; Secrets</span>
             </div>
             <p className="text-[10px] text-slate-500 leading-snug">
-              Neural AI generating production-ready code diffs
+              API Keys &bull; JWT &bull; Broken ACL
             </p>
           </div>
 
-          <div className="cdx-glass-card rounded-xl p-3 border border-[var(--border-subtle)] space-y-1.5">
-            <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-              <FileCode2 className="w-3.5 h-3.5" />
-            </div>
-            <div className="text-xs font-bold text-[var(--text-primary)] font-display">
-              Deterministic AST
+          <div className="p-3 rounded-xl bg-[#0D121F] border border-slate-800 space-y-1">
+            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-200">
+              <FileCode2 className="w-3.5 h-3.5 text-blue-400" />
+              <span>Code Quality</span>
             </div>
             <p className="text-[10px] text-slate-500 leading-snug">
-              Zero-hallucination syntax graph verification
+              Swallowed Exceptions &bull; AST Smells
             </p>
           </div>
 
-          <div className="cdx-glass-card rounded-xl p-3 border border-[var(--border-subtle)] space-y-1.5">
-            <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
-              <Zap className="w-3.5 h-3.5" />
-            </div>
-            <div className="text-xs font-bold text-[var(--text-primary)] font-display">
-              Readiness Score
+          <div className="p-3 rounded-xl bg-[#0D121F] border border-slate-800 space-y-1">
+            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-200">
+              <Zap className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Hardening</span>
             </div>
             <p className="text-[10px] text-slate-500 leading-snug">
-              Mathematical scoring for release certification
+              CORS &bull; Rate Limits &bull; Headers
             </p>
           </div>
         </div>
       </div>
 
-      {/* 5. Supported Upload Types Card */}
-      <div className="cdx-glass-card rounded-2xl p-3.5 border border-[var(--border-subtle)] space-y-2">
-        <div className="flex items-center justify-between text-xs">
-          <span className="font-bold text-[var(--text-primary)] font-display">Supported Repositories</span>
-          <span className="text-[10px] font-mono text-slate-500">Max 250MB ZIP</span>
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {['Java', 'Spring Boot', 'TypeScript', 'Node.js', 'Python', 'Go', 'PHP'].map((tech) => (
-            <span key={tech} className="px-2 py-0.5 rounded-md bg-[var(--bg-recessed)] text-[10px] font-mono font-medium text-slate-600 dark:text-slate-300">
-              {tech}
-            </span>
-          ))}
+      {/* 6. Supported Stacks Strip */}
+      <div className="p-3 rounded-xl bg-[#0D121F] border border-slate-800 flex items-center justify-between text-xs">
+        <span className="text-slate-400 font-mono text-[10px]">SUPPORTED</span>
+        <div className="flex items-center space-x-2 text-[10px] font-mono text-slate-300 font-medium">
+          <span>Java</span>
+          <span>&bull;</span>
+          <span>Spring</span>
+          <span>&bull;</span>
+          <span>TypeScript</span>
+          <span>&bull;</span>
+          <span>Python</span>
+          <span>&bull;</span>
+          <span>Go</span>
         </div>
       </div>
     </div>

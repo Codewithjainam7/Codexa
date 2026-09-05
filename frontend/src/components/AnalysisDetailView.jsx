@@ -138,45 +138,45 @@ export default function AnalysisDetailView({ jobId, onBack }) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-2 sm:px-6 py-4 sm:py-8 space-y-4 sm:space-y-6 overflow-hidden">
       {/* Top Navigation & Report Exporters */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
         <button
           onClick={onBack}
-          className="flex items-center space-x-2 px-4 py-2 rounded-full bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-300 hover:text-white hover:border-slate-700 transition-all shadow-sm active:scale-95 cursor-pointer font-display"
+          className="flex items-center space-x-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-300 hover:text-white hover:border-slate-700 transition-all shadow-sm active:scale-95 cursor-pointer font-display"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Dashboard</span>
         </button>
 
         {!isScanning && job?.status === 'COMPLETED' && (
-          <div className="flex items-center space-x-2">
+          <div className="grid grid-cols-3 gap-1.5 w-full sm:w-auto sm:flex sm:items-center sm:space-x-2">
             <a
               href={`http://localhost:8080/api/v1/analyses/${jobId}/report?format=html`}
               target="_blank"
               rel="noreferrer"
-              className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-full flex items-center space-x-1.5 transition-colors border border-slate-800 shadow-sm"
+              className="px-2.5 sm:px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-[11px] sm:text-xs font-semibold rounded-xl sm:rounded-full flex items-center justify-center space-x-1 sm:space-x-1.5 transition-colors border border-slate-800 shadow-sm"
             >
-              <FileText className="w-3.5 h-3.5 text-blue-400" />
-              <span>Export HTML</span>
+              <FileText className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+              <span>HTML</span>
             </a>
             <a
               href={`http://localhost:8080/api/v1/analyses/${jobId}/report?format=markdown`}
               target="_blank"
               rel="noreferrer"
-              className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-full flex items-center space-x-1.5 transition-colors border border-slate-800 shadow-sm"
+              className="px-2.5 sm:px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-[11px] sm:text-xs font-semibold rounded-xl sm:rounded-full flex items-center justify-center space-x-1 sm:space-x-1.5 transition-colors border border-slate-800 shadow-sm"
             >
-              <FileText className="w-3.5 h-3.5 text-violet-400" />
-              <span>Export Markdown</span>
+              <FileText className="w-3.5 h-3.5 text-violet-400 shrink-0" />
+              <span>MD</span>
             </a>
             <a
               href={`http://localhost:8080/api/v1/analyses/${jobId}/report?format=json`}
               target="_blank"
               rel="noreferrer"
-              className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-full flex items-center space-x-1.5 transition-colors border border-slate-800 shadow-sm"
+              className="px-2.5 sm:px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-[11px] sm:text-xs font-semibold rounded-xl sm:rounded-full flex items-center justify-center space-x-1 sm:space-x-1.5 transition-colors border border-slate-800 shadow-sm"
             >
-              <FileText className="w-3.5 h-3.5 text-blue-400" />
-              <span>Export JSON</span>
+              <FileText className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+              <span>JSON</span>
             </a>
           </div>
         )}
@@ -191,7 +191,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
       {!isScanning && job?.status === 'COMPLETED' && (
         <>
           {/* Main Scorecard Banner with Glowing Effect Container */}
-          <div className="relative rounded-3xl cdx-glass-card p-6 sm:p-8 space-y-6 shadow-2xl">
+          <div className="relative rounded-2xl sm:rounded-3xl cdx-glass-card p-4 sm:p-8 space-y-4 sm:space-y-6 shadow-xl overflow-hidden">
             <GlowingEffect
               spread={45}
               glow={true}
@@ -199,16 +199,16 @@ export default function AnalysisDetailView({ jobId, onBack }) {
               proximity={64}
               inactiveZone={0.01}
             />
-            <div className="relative z-10 space-y-6">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-[var(--border-subtle)]">
-                <div className="space-y-1">
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    <h1 className="text-xl sm:text-2xl font-black text-[var(--text-primary)] font-display tracking-tight">{job?.sourceIdentifier}</h1>
-                    <span className="text-[11px] px-3 py-0.5 bg-blue-500/10 text-blue-700 dark:text-blue-300 rounded-full uppercase font-mono font-bold border border-blue-500/30">
+            <div className="relative z-10 space-y-4 sm:space-y-6">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 pb-4 sm:pb-6 border-b border-[var(--border-subtle)]">
+                <div className="space-y-1.5 min-w-0 max-w-full">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h1 className="text-sm sm:text-2xl font-bold font-mono text-[var(--text-primary)] tracking-tight break-all max-w-full leading-snug">{job?.sourceIdentifier}</h1>
+                    <span className="text-[10px] sm:text-[11px] px-2.5 py-0.5 bg-blue-500/10 text-blue-700 dark:text-blue-300 rounded-full uppercase font-mono font-bold border border-blue-500/30 shrink-0">
                       {job?.sourceType}
                     </span>
                   </div>
-                  <p className="text-xs text-[var(--text-muted)] font-mono">Job ID: {jobId} &bull; Total Files: {job?.metrics?.totalFiles || 0}</p>
+                  <p className="text-[11px] sm:text-xs text-[var(--text-muted)] font-mono truncate">Job ID: {jobId} &bull; Total Files: {job?.metrics?.totalFiles || 0}</p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">
