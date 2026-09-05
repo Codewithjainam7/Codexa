@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   ShieldCheck, Plus, ArrowRight, Zap, 
   Lock, Cpu, FileCode2, Activity, CheckCircle2, ChevronRight,
-  UploadCloud, Terminal, ShieldAlert, Sparkles, GitBranch
+  UploadCloud, Terminal, ShieldAlert, GitBranch
 } from 'lucide-react';
 import { getActiveAvatar } from '../lib/avatars';
 
