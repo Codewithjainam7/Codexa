@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import FlickeringGrid from "./ui/FlickeringGrid";
 import GlowingEffect from "./ui/GlowingEffect";
+import BackgroundRippleEffect from "./ui/BackgroundRippleEffect";
 import { CanvasText } from "./ui/canvas-text";
 import { useTheme } from "../context/ThemeContext";
 
@@ -82,6 +83,22 @@ if stripeKey == "" {
         {/* Soft Radial Ambient Vignette */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(245,158,11,0.12),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(245,158,11,0.2),rgba(0,0,0,0))] pointer-events-none" />
       </div>
+
+      {/* Ambient background ripple waves with multi-focal centers */}
+      <BackgroundRippleEffect
+        numCircles={10}
+        mainCircleSize={280}
+        mainCircleOpacity={isDark ? 0.35 : 0.28}
+        interactive={true}
+        focalPoints={[
+          { x: "50%", y: "16%", size: 340, scale: 1.25 },
+          { x: "84%", y: "24%", size: 240, scale: 0.9 },
+          { x: "16%", y: "42%", size: 280, scale: 1.1 },
+          { x: "50%", y: "62%", size: 320, scale: 1.15 },
+          { x: "82%", y: "78%", size: 260, scale: 1.0 },
+          { x: "50%", y: "92%", size: 300, scale: 1.2 }
+        ]}
+      />
 
       {/* Ambient background light orbs that shine through frosted glass cards */}
       <div className="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[450px] bg-amber-500/15 dark:bg-amber-500/25 rounded-full blur-[140px] pointer-events-none -z-10" />

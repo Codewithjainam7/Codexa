@@ -207,4 +207,60 @@
   .smooth-transition {
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
+
+  /* Background Ambient Ripple Wave Keyframes */
+  @keyframes ripple-ambient {
+    0% {
+      transform: translate(-50%, -50%) scale(0.96);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.04);
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(0.96);
+    }
+  }
+
+  .animate-ripple {
+    animation: ripple-ambient 6s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  /* Interactive Cursor-Generated Ripples */
+  @keyframes interactive-expand {
+    0% {
+      width: 0px;
+      height: 0px;
+      opacity: 0.85;
+      transform: translate(-50%, -50%) scale(0.2);
+    }
+    100% {
+      width: 520px;
+      height: 520px;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  .cdx-interactive-ripple {
+    position: absolute;
+    border-radius: 9999px;
+    border: 1.5px solid rgba(245, 158, 11, 0.65);
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.16) 0%, transparent 75%);
+    pointer-events: none;
+    animation: interactive-expand 1.4s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+    will-change: transform, opacity, width, height;
+  }
+
+  .cdx-ripple-ring-1 {
+    animation-delay: 0ms;
+  }
+  .cdx-ripple-ring-2 {
+    animation-delay: 140ms;
+    border-color: rgba(217, 119, 6, 0.45);
+  }
+  .cdx-ripple-ring-3 {
+    animation-delay: 280ms;
+    border-color: rgba(251, 191, 36, 0.30);
+  }
 }
