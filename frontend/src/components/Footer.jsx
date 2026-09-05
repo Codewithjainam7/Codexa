@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { Shield, Github, FileCode, Terminal, Lock, ExternalLink, AlertTriangle, Sparkles, CheckCircle2, GitBranch } from 'lucide-react';
+import { Shield, Github, FileCode, Terminal, Lock, ExternalLink, AlertTriangle, Cpu, CheckCircle2, GitBranch } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -112,7 +112,7 @@ export default function Footer() {
                     rel="noreferrer"
                     className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center space-x-1.5 transition-colors"
                   >
-                    <Sparkles className="w-3.5 h-3.5" />
+                    <Cpu className="w-3.5 h-3.5" />
                     <span>OpenRouter AI</span>
                   </a>
                 </li>

@@ -4,8 +4,8 @@ import React, { forwardRef, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { AnimatedBeam } from "@/components/magicui/AnimatedBeam";
 import { 
-  GitBranch, FolderArchive, Shield, Sparkles, 
-  Code2, ShieldAlert, Cpu, Zap, CheckCircle2
+  GitBranch, FolderArchive, Shield, ShieldCheck, 
+  Code2, ShieldAlert, Cpu, Zap, CheckCircle2, Layers
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -117,15 +117,15 @@ export function AnimatedBeamPipeline({ currentStage = "INGESTION", sourceIdentif
       <div className="flex flex-col items-center justify-center z-10 px-2 sm:px-4">
         <div className="relative">
           {/* Pulsing Outer Rings */}
-          <div className="absolute -inset-3 rounded-full bg-amber-500/20 blur-md animate-pulse" />
-          <div className="absolute -inset-6 rounded-full border border-amber-500/30 animate-spin" style={{ animationDuration: '15s' }} />
+          <div className="absolute -inset-3 rounded-full bg-blue-500/20 blur-md animate-pulse" />
+          <div className="absolute -inset-6 rounded-full border border-blue-500/30 animate-spin" style={{ animationDuration: '15s' }} />
 
           <div
             ref={centerHubRef}
-            className="relative flex size-20 sm:size-24 items-center justify-center rounded-3xl border-2 border-amber-500 bg-gradient-to-tr from-amber-500/20 via-black/80 to-amber-600/20 p-4 shadow-[0_0_35px_rgba(245,158,11,0.35)] text-amber-500 transform transition-transform hover:scale-105"
+            className="relative flex size-20 sm:size-24 items-center justify-center rounded-3xl border-2 border-blue-500 bg-gradient-to-tr from-blue-600/30 via-slate-950/90 to-indigo-600/30 p-4 shadow-[0_0_35px_rgba(59,130,246,0.45)] text-blue-400 transform transition-transform hover:scale-105"
           >
-            <Sparkles className="w-10 h-10 sm:w-12 sm:h-12 text-amber-500 animate-pulse" />
-            <div className="absolute bottom-1 text-[9px] font-mono font-black text-amber-500 tracking-wider">
+            <Cpu className="w-10 h-10 sm:w-11 sm:h-11 text-blue-400 dark:text-blue-300 animate-pulse" strokeWidth={1.8} />
+            <div className="absolute bottom-1 text-[9px] font-mono font-black text-blue-400 dark:text-blue-300 tracking-wider">
               CODEXA
             </div>
           </div>

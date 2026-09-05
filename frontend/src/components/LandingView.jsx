@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 import {
   Shield, Zap, FileCode, Lock, Cpu, ShieldCheck,
-  ArrowRight, Sparkles, Terminal, CheckCircle2, AlertTriangle, 
+  ArrowRight, Terminal, CheckCircle2, AlertTriangle, 
   Code2, Activity, GitBranch, Layers, Check, Copy, ExternalLink,
-  ChevronRight, RefreshCw, EyeOff, Bug, Star, FileSearch, ShieldAlert,
+  ChevronRight, RefreshCw, EyeOff, Bug, FileSearch, ShieldAlert,
   Sliders, Gauge, Fingerprint, Radio, Play, CheckCircle
 } from "lucide-react";
 import FlickeringGrid from "./ui/FlickeringGrid";
@@ -394,7 +394,7 @@ if stripeKey == "" {
           {/* Explanation Footer */}
           <div className="px-5 py-3.5 bg-[var(--bg-recessed)] border-t border-[var(--border-subtle)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-slate-700 dark:text-slate-300">
             <span className="flex items-center space-x-2 font-medium">
-              <Sparkles className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
               <span>{codeDemos[activeCodeTab].explanation}</span>
             </span>
             <span className="text-blue-700 dark:text-blue-400 font-mono font-bold text-[11px]">0 Hallucination</span>
@@ -414,7 +414,7 @@ if stripeKey == "" {
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center space-x-2.5">
             <div className="p-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20">
-              <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <Layers className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </div>
             <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-white">
               Engine Architecture &amp; Capabilities

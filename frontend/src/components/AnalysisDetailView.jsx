@@ -8,7 +8,7 @@ import GlowingEffect from './ui/GlowingEffect';
 import { 
   CheckCircle, AlertTriangle, XCircle, Clock, Shield, 
   ArrowLeft, RefreshCw, FileText, ExternalLink, HelpCircle,
-  LayoutGrid, ListFilter, Sparkles, FolderTree, Code
+  LayoutGrid, ListFilter, FolderTree, Code
 } from 'lucide-react';
 
 export default function AnalysisDetailView({ jobId, onBack }) {

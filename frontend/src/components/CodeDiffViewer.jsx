@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Copy, Check, Code2, ShieldAlert, Sparkles, Terminal, CheckCircle2 } from 'lucide-react';
+import { Copy, Check, Code2, ShieldAlert, Cpu, Terminal, CheckCircle2 } from 'lucide-react';
 
 export default function CodeDiffViewer({ originalCode, suggestedFix, ruleId, isAiAssisted = true }) {
   const [copied, setCopied] = useState(false);
@@ -64,9 +64,9 @@ export default function CodeDiffViewer({ originalCode, suggestedFix, ruleId, isA
           <Terminal className="w-4 h-4 text-emerald-400" />
           <span>Remediation Diff Inspector</span>
           {isAiAssisted && (
-            <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30 text-[10px] font-mono font-semibold">
-              <Sparkles className="w-3 h-3 text-purple-400" />
-              <span>AI Patch</span>
+            <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/30 text-[10px] font-mono font-semibold">
+              <Cpu className="w-3 h-3 text-blue-400" />
+              <span>Remediation Patch</span>
             </span>
           )}
         </div>

@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   UploadCloud, FileArchive, Github, AlertCircle, Loader2, 
-  Info, ArrowRight, Check, Shield, Lock, Layers, Sparkles,
-  Activity, ShieldCheck, Cpu, CheckCircle2
+  Info, ArrowRight, Check, Shield, Lock, Layers,
+  Activity, ShieldCheck, Cpu, CheckCircle2, GitBranch
 } from 'lucide-react';
 import { submitZip, submitGitHubUrl } from '../api/client';
 import GlowingEffect from './ui/GlowingEffect';
@@ -233,7 +233,7 @@ export default function NewAnalysisView({ limits, onJobCreated }) {
                       onClick={() => { setGithubUrl(sample.url); setError(null); }}
                       className="px-3 py-1.5 rounded-lg cdx-pill hover:border-[var(--accent-border)] text-xs text-[var(--text-secondary)] hover:text-[var(--accent-primary)] font-mono transition-all duration-200 flex items-center space-x-2"
                     >
-                      <Sparkles className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
+                      <GitBranch className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
                       <span>{sample.name}</span>
                     </button>
                   ))}

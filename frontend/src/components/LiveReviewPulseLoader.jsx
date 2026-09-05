@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { 
-  Sparkles, ShieldCheck, Cpu, Code2, Binary, 
-  Search, FileCheck2, Zap, Flame, Shield, Activity
+  ShieldCheck, Cpu, Code2, Binary, 
+  Search, FileCheck2, Zap, Flame, Shield, Activity, Layers
 } from 'lucide-react';
 import AnimatedBeamPipeline from './AnimatedBeamPipeline';
 import DottedGlowBackground from './ui/DottedGlowBackground';
@@ -20,7 +20,7 @@ export default function LiveReviewPulseLoader({ job }) {
     { id: 'INGESTION', label: 'Sandboxed Ingestion', icon: Binary, desc: 'Extracting archive, checking Zip Slip & safety quotas' },
     { id: 'JAVA_AST_PARSING', label: 'AST Syntax & Graph Parsing', icon: Code2, desc: 'Constructing Abstract Syntax Tree and symbol graph' },
     { id: 'SECURITY_AND_QUALITY_RULES', label: 'Static Security & Quality Rules', icon: ShieldCheck, desc: 'Evaluating OWASP Top 10 rules across all files' },
-    { id: 'AI_EXPLANATION_AND_REMEDIATION', label: 'Neural AI Code Review & Remediation', icon: Sparkles, desc: 'Deep LLM audit generating fix diffs & explanations' },
+    { id: 'AI_EXPLANATION_AND_REMEDIATION', label: 'Neural AI Code Review & Remediation', icon: Cpu, desc: 'Deep LLM audit generating fix diffs & explanations' },
     { id: 'PRIORITIZATION_AND_SCORING', label: 'Production Readiness Scoring', icon: Zap, desc: 'Computing mathematical risk score & readiness index' }
   ];
 
@@ -76,7 +76,7 @@ export default function LiveReviewPulseLoader({ job }) {
         <div className="flex items-center space-x-4">
           <div className="relative">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/25 animate-pulse">
-              <Sparkles className="w-7 h-7 text-white dark:text-slate-950 animate-spin" style={{ animationDuration: '6s' }} />
+              <ShieldCheck className="w-7 h-7 text-white dark:text-slate-950" />
             </div>
             <div className="absolute -inset-1 rounded-2xl bg-blue-400/20 blur-md -z-10 animate-pulse" />
           </div>

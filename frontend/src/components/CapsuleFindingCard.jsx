@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import CodeDiffViewer from './CodeDiffViewer';
 import { 
-  ChevronDown, ShieldAlert, Sparkles, ExternalLink, 
+  ChevronDown, ShieldAlert, ExternalLink, 
   FileCode, ShieldCheck, Flame, Info, X, Maximize2, Minimize2
 } from 'lucide-react';
 
