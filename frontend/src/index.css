@@ -249,8 +249,8 @@
   .cdx-interactive-ripple {
     position: absolute;
     border-radius: 9999px;
-    border: 1.5px solid rgba(59, 130, 246, 0.65);
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.16) 0%, transparent 75%);
+    border: 1.5px solid rgba(59, 130, 246, 0.35);
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 75%);
     pointer-events: none;
     animation: interactive-expand 1.4s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
     will-change: transform, opacity, width, height;
@@ -261,10 +261,10 @@
   }
   .cdx-ripple-ring-2 {
     animation-delay: 140ms;
-    border-color: rgba(37, 99, 235, 0.45);
+    border-color: rgba(37, 99, 235, 0.25);
   }
   .cdx-ripple-ring-3 {
     animation-delay: 280ms;
-    border-color: rgba(96, 165, 250, 0.30);
+    border-color: rgba(96, 165, 250, 0.15);
   }
 }

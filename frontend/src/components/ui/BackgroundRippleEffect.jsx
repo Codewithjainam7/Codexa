@@ -4,9 +4,9 @@ import { useTheme } from "../../context/ThemeContext";
 
 export default function BackgroundRippleEffect({
   className = "",
-  numCircles = 8,
+  numCircles = 7,
   mainCircleSize = 220,
-  mainCircleOpacity = 0.30,
+  mainCircleOpacity = 0.15,
   interactive = true,
   focalPoints = [
     { x: "50%", y: "24%", size: 280, scale: 1.15 },
@@ -24,7 +24,6 @@ export default function BackgroundRippleEffect({
     if (!interactive) return;
 
     const handleClick = (e) => {
-      // Don't trigger if clicked inside footer or interactive controls that prefer quiet
       const target = e.target;
       if (target.closest("footer")) return;
 
@@ -49,9 +48,9 @@ export default function BackgroundRippleEffect({
     return () => window.removeEventListener("pointerdown", handleClick);
   }, [interactive]);
 
-  const blueBorder = isDark ? "rgba(59, 130, 246, 0.25)" : "rgba(37, 99, 235, 0.20)";
-  const blueGlow = isDark ? "rgba(59, 130, 246, 0.09)" : "rgba(37, 99, 235, 0.06)";
-  const outerBorder = isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(15, 23, 42, 0.06)";
+  const blueBorder = isDark ? "rgba(59, 130, 246, 0.12)" : "rgba(37, 99, 235, 0.09)";
+  const blueGlow = isDark ? "rgba(59, 130, 246, 0.03)" : "rgba(37, 99, 235, 0.02)";
+  const outerBorder = isDark ? "rgba(255, 255, 255, 0.04)" : "rgba(15, 23, 42, 0.04)";
 
   return (
     <div
@@ -68,9 +67,9 @@ export default function BackgroundRippleEffect({
         >
           {Array.from({ length: numCircles }).map((_, i) => {
             const size = (focal.size || mainCircleSize) + i * 85 * (focal.scale || 1);
-            const opacity = Math.max(0.04, mainCircleOpacity - i * 0.032);
+            const opacity = Math.max(0.02, mainCircleOpacity - i * 0.02);
             const delay = `${i * 0.35}s`;
-            const duration = `${4.5 + i * 0.4}s`;
+            const duration = `${5.0 + i * 0.4}s`;
             const isHighlightRing = i % 2 === 0;
 
             return (
@@ -87,8 +86,8 @@ export default function BackgroundRippleEffect({
                   opacity: opacity,
                   animationDelay: delay,
                   animationDuration: duration,
-                  boxShadow: isHighlightRing && i < 3 
-                    ? (isDark ? "0 0 35px -5px rgba(59, 130, 246, 0.18)" : "0 0 25px -5px rgba(37, 99, 235, 0.12)")
+                  boxShadow: isHighlightRing && i < 2 
+                    ? (isDark ? "0 0 25px -5px rgba(59, 130, 246, 0.08)" : "0 0 20px -5px rgba(37, 99, 235, 0.05)")
                     : "none",
                 }}
               />
@@ -104,9 +103,9 @@ export default function BackgroundRippleEffect({
               left: "0px",
               top: "0px",
               background: isDark
-                ? "radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, rgba(37, 99, 235, 0.12) 50%, transparent 80%)"
-                : "radial-gradient(circle, rgba(37, 99, 235, 0.28) 0%, rgba(59, 130, 246, 0.08) 50%, transparent 80%)",
-              filter: "blur(16px)",
+                ? "radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.04) 50%, transparent 80%)"
+                : "radial-gradient(circle, rgba(37, 99, 235, 0.10) 0%, rgba(59, 130, 246, 0.03) 50%, transparent 80%)",
+              filter: "blur(18px)",
             }}
           />
         </div>

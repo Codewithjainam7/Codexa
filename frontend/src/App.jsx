@@ -50,7 +50,7 @@ function MainApp() {
         <BackgroundRippleEffect
           numCircles={8}
           mainCircleSize={240}
-          mainCircleOpacity={0.24}
+          mainCircleOpacity={0.12}
           interactive={true}
           focalPoints={[
             { x: "50%", y: "220px", size: 300, scale: 1.15 },

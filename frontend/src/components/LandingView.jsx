@@ -77,18 +77,18 @@ if stripeKey == "" {
           squareSize={4}
           gridGap={6}
           color={isDark ? "#3B82F6" : "#2563EB"}
-          maxOpacity={isDark ? 0.45 : 0.35}
+          maxOpacity={isDark ? 0.28 : 0.20}
           flickerChance={0.14}
         />
         {/* Soft Radial Ambient Vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(37,99,235,0.12),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(59,130,246,0.18),rgba(0,0,0,0))] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(37,99,235,0.06),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(59,130,246,0.10),rgba(0,0,0,0))] pointer-events-none" />
       </div>
 
       {/* Ambient background ripple waves with multi-focal centers */}
       <BackgroundRippleEffect
         numCircles={9}
         mainCircleSize={260}
-        mainCircleOpacity={isDark ? 0.32 : 0.24}
+        mainCircleOpacity={isDark ? 0.16 : 0.11}
         interactive={true}
         focalPoints={[
           { x: "50%", y: "14%", size: 320, scale: 1.2 },
@@ -100,9 +100,9 @@ if stripeKey == "" {
       />
 
       {/* Ambient background light orbs that shine through frosted glass cards */}
-      <div className="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[450px] bg-blue-600/15 dark:bg-blue-600/25 rounded-full blur-[140px] pointer-events-none -z-10" />
-      <div className="fixed bottom-1/3 right-1/4 w-[550px] h-[380px] bg-indigo-600/10 dark:bg-indigo-600/20 rounded-full blur-[130px] pointer-events-none -z-10" />
-      <div className="fixed top-2/3 left-1/4 w-[480px] h-[320px] bg-sky-500/10 dark:bg-sky-500/15 rounded-full blur-[130px] pointer-events-none -z-10" />
+      <div className="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[450px] bg-blue-600/8 dark:bg-blue-600/14 rounded-full blur-[140px] pointer-events-none -z-10" />
+      <div className="fixed bottom-1/3 right-1/4 w-[550px] h-[380px] bg-indigo-600/6 dark:bg-indigo-600/10 rounded-full blur-[130px] pointer-events-none -z-10" />
+      <div className="fixed top-2/3 left-1/4 w-[480px] h-[320px] bg-sky-500/5 dark:bg-sky-500/8 rounded-full blur-[130px] pointer-events-none -z-10" />
 
       {/* ========================================================================= */}
       {/* 1. HERO SECTION (EDITORIAL ASYMMETRIC COMMAND CENTER)                     */}
