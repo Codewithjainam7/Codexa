@@ -267,12 +267,14 @@ export default function AnalysisDetailView({ jobId, onBack }) {
             </div>
           </div>
 
-          {/* Filter Bar */}
-          <FindingsFilterBar
-            category={categoryFilter} setCategory={setCategoryFilter}
-            severity={severityFilter} setSeverity={setSeverityFilter}
-            search={searchFilter} setSearch={setSearchFilter}
-          />
+          {/* Filter Bar with Elevated Stacking Priority */}
+          <div className="relative z-30">
+            <FindingsFilterBar
+              category={categoryFilter} setCategory={setCategoryFilter}
+              severity={severityFilter} setSeverity={setSeverityFilter}
+              search={searchFilter} setSearch={setSearchFilter}
+            />
+          </div>
 
           {/* Workspace Layout: Left (File Explorer Tree) | Right (Expandable Finding Cards) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

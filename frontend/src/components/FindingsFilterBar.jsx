@@ -23,7 +23,7 @@ export default function FindingsFilterBar({
   ];
 
   return (
-    <div className="cdx-glass-card rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-center justify-between shadow-xl">
+    <div className="cdx-glass-card rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-center justify-between shadow-xl relative z-30">
       {/* Search Input */}
       <div className="relative w-full md:w-80">
         <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2" />
