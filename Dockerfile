@@ -16,6 +16,7 @@ FROM maven:3.9-eclipse-temurin-17 AS backend-build
 WORKDIR /app
 COPY backend/pom.xml ./backend/
 COPY backend/src ./backend/src
+COPY --from=frontend-build /app/frontend/dist /app/frontend/dist
 COPY --from=frontend-build /app/frontend/dist ./backend/src/main/resources/static
 RUN mvn -f ./backend/pom.xml clean package -DskipTests
 
