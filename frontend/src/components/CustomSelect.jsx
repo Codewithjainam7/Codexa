@@ -13,9 +13,18 @@ export default function CustomSelect({ label, value, onChange, options = [], ico
         setIsOpen(false);
       }
     };
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen]);
 
   return (
     <div className={`relative w-full sm:w-auto text-left ${isOpen ? 'z-50' : 'z-30'}`} ref={dropdownRef}>
