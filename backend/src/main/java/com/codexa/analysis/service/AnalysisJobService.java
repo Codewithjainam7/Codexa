@@ -63,6 +63,7 @@ public class AnalysisJobService {
                     m.getQualityScore(),
                     m.getOperationsScore(),
                     m.getMaintainabilityScore() > 0 ? m.getMaintainabilityScore() : m.getQualityScore(),
+                    m.getArchitecturalScore() > 0 ? m.getArchitecturalScore() : m.getQualityScore(),
                     m.getTotalFiles(),
                     m.getAnalyzedFiles(),
                     m.getCriticalCount(),
@@ -155,6 +156,7 @@ public class AnalysisJobService {
                     m.getQualityScore(),
                     m.getOperationsScore(),
                     m.getMaintainabilityScore() > 0 ? m.getMaintainabilityScore() : m.getQualityScore(),
+                    m.getArchitecturalScore() > 0 ? m.getArchitecturalScore() : m.getQualityScore(),
                     m.getTotalFiles(),
                     m.getAnalyzedFiles(),
                     m.getCriticalCount(),
@@ -167,20 +169,19 @@ public class AnalysisJobService {
 
         List<FindingResponse> findingResponses = findings.stream()
                 .map(this::toFindingResponse)
-                .toList();
+                .collect(Collectors.toList());
 
         return new AnalysisReportResponse(
                 entity.getId(),
-                "Codexa Code Review & Security Audit",
-                entity.getSourceIdentifier(),
                 entity.getSourceType(),
+                entity.getSourceIdentifier(),
                 entity.getOverallScore(),
                 entity.getVerdict(),
                 entity.getSummary(),
-                entity.getCreatedAt(),
                 metricResponse,
                 findingResponses,
-                AnalysisReportResponse.STANDARD_DISCLAIMER
+                entity.getCreatedAt(),
+                entity.getCompletedAt()
         );
     }
 
@@ -217,7 +218,7 @@ public class AnalysisJobService {
             int analyzedFiles,
             long durationMs
     ) {
-        completeJob(jobId, overallScore, verdict, summary, findings, secScore, qualScore, opsScore, qualScore, totalFiles, analyzedFiles, durationMs);
+        completeJob(jobId, overallScore, verdict, summary, findings, secScore, qualScore, opsScore, qualScore, qualScore, totalFiles, analyzedFiles, durationMs);
     }
 
     @Transactional
@@ -231,6 +232,25 @@ public class AnalysisJobService {
             double qualScore,
             double opsScore,
             double maintainabilityScore,
+            int totalFiles,
+            int analyzedFiles,
+            long durationMs
+    ) {
+        completeJob(jobId, overallScore, verdict, summary, findings, secScore, qualScore, opsScore, maintainabilityScore, qualScore, totalFiles, analyzedFiles, durationMs);
+    }
+
+    @Transactional
+    public void completeJob(
+            UUID jobId,
+            double overallScore,
+            ProductionVerdict verdict,
+            String summary,
+            List<FindingEntity> findings,
+            double secScore,
+            double qualScore,
+            double opsScore,
+            double maintainabilityScore,
+            double architecturalScore,
             int totalFiles,
             int analyzedFiles,
             long durationMs
@@ -267,6 +287,7 @@ public class AnalysisJobService {
         metric.setQualityScore(qualScore);
         metric.setOperationsScore(opsScore);
         metric.setMaintainabilityScore(maintainabilityScore);
+        metric.setArchitecturalScore(architecturalScore);
         metric.setTotalFiles(totalFiles);
         metric.setAnalyzedFiles(analyzedFiles);
         metric.setCriticalCount(criticalCount);

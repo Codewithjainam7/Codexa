@@ -76,6 +76,7 @@ public class AnalysisOrchestrator {
                     context.getQualityScore(),
                     context.getOperationsScore(),
                     context.getMaintainabilityScore(),
+                    context.getArchitecturalScore(),
                     context.getTotalFiles(),
                     context.getAnalyzedFiles(),
                     durationMs
