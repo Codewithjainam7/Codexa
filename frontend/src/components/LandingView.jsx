@@ -138,6 +138,10 @@ if stripeKey == "" {
                 <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
                 <span>&lt; 100ms Parsing</span>
               </span>
+              <span className="flex items-center space-x-1.5">
+                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
+                <span>500MB Enterprise Archives</span>
+              </span>
             </div>
           </div>
 
