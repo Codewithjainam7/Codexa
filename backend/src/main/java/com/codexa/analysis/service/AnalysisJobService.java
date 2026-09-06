@@ -62,6 +62,7 @@ public class AnalysisJobService {
                     m.getSecurityScore(),
                     m.getQualityScore(),
                     m.getOperationsScore(),
+                    m.getMaintainabilityScore() > 0 ? m.getMaintainabilityScore() : m.getQualityScore(),
                     m.getTotalFiles(),
                     m.getAnalyzedFiles(),
                     m.getCriticalCount(),
@@ -153,6 +154,7 @@ public class AnalysisJobService {
                     m.getSecurityScore(),
                     m.getQualityScore(),
                     m.getOperationsScore(),
+                    m.getMaintainabilityScore() > 0 ? m.getMaintainabilityScore() : m.getQualityScore(),
                     m.getTotalFiles(),
                     m.getAnalyzedFiles(),
                     m.getCriticalCount(),
@@ -215,6 +217,24 @@ public class AnalysisJobService {
             int analyzedFiles,
             long durationMs
     ) {
+        completeJob(jobId, overallScore, verdict, summary, findings, secScore, qualScore, opsScore, qualScore, totalFiles, analyzedFiles, durationMs);
+    }
+
+    @Transactional
+    public void completeJob(
+            UUID jobId,
+            double overallScore,
+            ProductionVerdict verdict,
+            String summary,
+            List<FindingEntity> findings,
+            double secScore,
+            double qualScore,
+            double opsScore,
+            double maintainabilityScore,
+            int totalFiles,
+            int analyzedFiles,
+            long durationMs
+    ) {
         AnalysisJobEntity entity = getJobOrThrow(jobId);
         entity.setStatus(JobStatus.COMPLETED);
         entity.setProgressStage("COMPLETED");
@@ -246,6 +266,7 @@ public class AnalysisJobService {
         metric.setSecurityScore(secScore);
         metric.setQualityScore(qualScore);
         metric.setOperationsScore(opsScore);
+        metric.setMaintainabilityScore(maintainabilityScore);
         metric.setTotalFiles(totalFiles);
         metric.setAnalyzedFiles(analyzedFiles);
         metric.setCriticalCount(criticalCount);
