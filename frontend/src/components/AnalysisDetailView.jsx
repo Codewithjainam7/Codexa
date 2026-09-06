@@ -132,6 +132,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
         evidenceMasked: f.evidenceMasked,
         suggestedFix: f.suggestedFix,
         priorityScore: f.priorityScore
+      }))
     };
     downloadBlob(JSON.stringify(exportData, null, 2), `codexa-report-${jobId}.json`, 'application/json');
   };
