@@ -25,6 +25,9 @@ public class AnalysisMetricEntity {
     @Column(name = "operations_score")
     private double operationsScore;
 
+    @Column(name = "maintainability_score")
+    private double maintainabilityScore;
+
     @Column(name = "total_files")
     private int totalFiles;
 
@@ -90,6 +93,14 @@ public class AnalysisMetricEntity {
 
     public void setOperationsScore(double operationsScore) {
         this.operationsScore = operationsScore;
+    }
+
+    public double getMaintainabilityScore() {
+        return maintainabilityScore;
+    }
+
+    public void setMaintainabilityScore(double maintainabilityScore) {
+        this.maintainabilityScore = maintainabilityScore;
     }
 
     public int getTotalFiles() {
