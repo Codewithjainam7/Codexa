@@ -12,7 +12,9 @@ public class FileFilterService {
             "target", "build", "out", ".git", ".svn", ".hg",
             "node_modules", ".idea", ".vscode", ".gradle",
             "dist", "bin", "coverage", "__pycache__", ".staging",
-            ".next", ".turbo", ".nuxt", ".cache"
+            ".next", ".turbo", ".nuxt", ".cache", "vendor",
+            "venv", ".venv", "env", ".tox", ".pytest_cache",
+            "bower_components", ".serverless", ".terraform"
     );
 
     private static final Set<String> ALLOWED_SOURCE_EXTENSIONS = Set.of(
@@ -31,7 +33,9 @@ public class FileFilterService {
             ".class", ".jar", ".war", ".ear", ".exe", ".dll", ".so",
             ".dylib", ".zip", ".tar", ".gz", ".7z", ".png", ".jpg",
             ".jpeg", ".gif", ".svg", ".ico", ".pdf", ".mp4", ".mp3",
-            ".woff", ".woff2", ".ttf", ".eot", ".lock", ".map"
+            ".woff", ".woff2", ".ttf", ".eot", ".lock", ".map",
+            ".min.js", ".min.css", ".bundle.js", ".chunk.js", ".webp",
+            ".avif", ".wasm", ".pyc", ".pyo"
     );
 
     public boolean isIgnoredDirectory(Path relativePath) {
