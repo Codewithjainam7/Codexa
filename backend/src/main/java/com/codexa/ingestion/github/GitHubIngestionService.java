@@ -126,6 +126,11 @@ public class GitHubIngestionService {
         conn.setRequestProperty("User-Agent", "Codexa-Security-Scanner/1.0");
         conn.setRequestProperty("Accept", "application/vnd.github+json");
 
+        String githubToken = System.getenv("GITHUB_TOKEN");
+        if (githubToken != null && !githubToken.isBlank()) {
+            conn.setRequestProperty("Authorization", "Bearer " + githubToken.trim());
+        }
+
         int status = conn.getResponseCode();
         if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == 307 || status == 308) {
             String newLocation = conn.getHeaderField("Location");
