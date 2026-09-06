@@ -12,6 +12,18 @@ import java.time.Instant;
 @Service
 public class ReportExportService {
 
+    private final com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper()
+            .findAndRegisterModules()
+            .configure(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+    public String generateJsonReport(AnalysisReportResponse report) {
+        try {
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(report);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to serialize report to JSON", e);
+        }
+    }
+
     public String generateHtmlReport(AnalysisReportResponse report) {
         StringBuilder sb = new StringBuilder();
         String verdictStr = report.verdict() != null ? report.verdict().name() : "PENDING";
