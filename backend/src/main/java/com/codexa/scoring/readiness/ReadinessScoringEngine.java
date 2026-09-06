@@ -117,4 +117,24 @@ public class ReadinessScoringEngine {
             return ProductionVerdict.NOT_READY;
         }
     }
+
+    public static String getQualityRating(double score) {
+        if (score >= 90.0) return "EXCELLENT";
+        if (score >= 75.0) return "GOOD";
+        if (score >= 50.0) return "FAIR";
+        return "CRITICAL_ATTENTION_REQUIRED";
+    }
+
+    public static String getSecurityRating(double score) {
+        if (score >= 90.0) return "HARDENED";
+        if (score >= 75.0) return "ACCEPTABLE";
+        if (score >= 50.0) return "AT_RISK";
+        return "VULNERABLE";
+    }
+
+    public static double calculateDebtRatio(int totalFindings, int totalFiles) {
+        if (totalFiles <= 0) return 0.0;
+        double ratio = (double) totalFindings / totalFiles;
+        return Math.round(ratio * 100.0) / 100.0;
+    }
 }
