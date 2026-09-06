@@ -46,7 +46,7 @@ export default function MobileTopBar({ currentView, setCurrentView, isConnected 
           <span className="text-sm font-black font-display tracking-tight text-[var(--text-primary)]">
             CODEXA
           </span>
-          <span className="text-[10px] font-mono text-slate-400 font-semibold">
+          <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 font-bold">
             / {getScreenTitle()}
           </span>
         </div>
@@ -72,9 +72,9 @@ export default function MobileTopBar({ currentView, setCurrentView, isConnected 
           className="w-7 h-7 flex items-center justify-center rounded-lg bg-[var(--bg-recessed)] border border-[var(--border-subtle)] text-[var(--text-secondary)] active:scale-90 transition-transform cursor-pointer"
         >
           {theme === 'dark' ? (
-            <Sun className="w-3.5 h-3.5 text-blue-400" />
+            <Sun className="w-3.5 h-3.5 text-amber-400" />
           ) : (
-            <Moon className="w-3.5 h-3.5 text-slate-700" />
+            <Moon className="w-3.5 h-3.5 text-slate-800" />
           )}
         </button>
 
@@ -84,11 +84,11 @@ export default function MobileTopBar({ currentView, setCurrentView, isConnected 
           aria-label="User Settings"
           className={`w-7 h-7 rounded-lg p-[1px] bg-gradient-to-br ${avatar.color} shadow-sm active:scale-90 transition-transform cursor-pointer relative group`}
         >
-          <div className="w-full h-full bg-[#070A12] rounded-[7px] flex items-center justify-center">
+          <div className="w-full h-full bg-[var(--bg-card)] rounded-[7px] flex items-center justify-center">
             <AvatarIcon className={`w-3.5 h-3.5 ${avatar.text}`} />
           </div>
           {/* Subtle online pulse ring */}
-          <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 border border-[#070A12]" />
+          <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 border border-[var(--bg-card)]" />
         </button>
       </div>
     </header>
