@@ -1,5 +1,6 @@
 package com.codexa.analysis.service;
 
+import com.codexa.analysis.model.AnalysisMetricResponse;
 import com.codexa.analysis.model.AnalysisReportResponse;
 import com.codexa.analysis.model.FindingResponse;
 import org.springframework.stereotype.Service;
@@ -253,6 +254,28 @@ public class ReportExportService {
         sb.append("**Architectural Score:** **").append(report.metrics() != null ? String.format("%.1f", report.metrics().architecturalScore()) : "100.0").append("/100**  \n\n");
 
         sb.append("> **Security Advisory:** ").append(report.disclaimer()).append("\n\n");
+
+        if (report.metrics() != null) {
+            AnalysisMetricResponse m = report.metrics();
+            sb.append("## Executive Summary & Score Breakdown\n\n");
+            sb.append("| Dimension | Score | Status |\n");
+            sb.append("| :--- | :---: | :--- |\n");
+            sb.append("| **Security Readiness** | ").append(String.format("%.1f", m.securityScore())).append("/100 | ").append(m.securityScore() >= 80 ? "PASSED" : (m.securityScore() >= 50 ? "WARNING" : "FAILED")).append(" |\n");
+            sb.append("| **Code Quality** | ").append(String.format("%.1f", m.qualityScore())).append("/100 | ").append(m.qualityScore() >= 80 ? "PASSED" : (m.qualityScore() >= 50 ? "WARNING" : "FAILED")).append(" |\n");
+            sb.append("| **Operational Reliability** | ").append(String.format("%.1f", m.operationsScore())).append("/100 | ").append(m.operationsScore() >= 80 ? "PASSED" : (m.operationsScore() >= 50 ? "WARNING" : "FAILED")).append(" |\n");
+            sb.append("| **Maintainability Index** | ").append(String.format("%.1f", m.maintainabilityScore())).append("/100 | ").append(m.maintainabilityScore() >= 80 ? "PASSED" : (m.maintainabilityScore() >= 50 ? "WARNING" : "FAILED")).append(" |\n");
+            sb.append("| **Architectural Health** | ").append(String.format("%.1f", m.architecturalScore())).append("/100 | ").append(m.architecturalScore() >= 80 ? "PASSED" : (m.architecturalScore() >= 50 ? "WARNING" : "FAILED")).append(" |\n\n");
+
+            sb.append("### Severity Distribution\n\n");
+            sb.append("| Critical | High | Medium | Low | Total Findings | Scan Duration |\n");
+            sb.append("| :---: | :---: | :---: | :---: | :---: | :---: |\n");
+            sb.append("| ").append(m.criticalCount()).append(" | ")
+                    .append(m.highCount()).append(" | ")
+                    .append(m.mediumCount()).append(" | ")
+                    .append(m.lowCount()).append(" | ")
+                    .append(report.findings().size()).append(" | ")
+                    .append(m.durationMs()).append(" ms |\n\n");
+        }
 
         sb.append("## Findings Summary\n\n");
         sb.append("| Rule ID | Severity | Category | File | Line | Title | Priority |\n");
