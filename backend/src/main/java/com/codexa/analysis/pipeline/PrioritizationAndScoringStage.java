@@ -55,10 +55,11 @@ public class PrioritizationAndScoringStage implements PipelineStage {
         context.setSecurityScore(result.securityScore());
         context.setQualityScore(result.qualityScore());
         context.setOperationsScore(result.operationsScore());
+        context.setMaintainabilityScore(result.maintainabilityScore());
         context.setVerdict(result.verdict());
 
-        log.info("Scoring complete for jobId={}: Overall={}/100 (Security={}, Quality={}, Ops={}), Verdict={}",
+        log.info("Scoring complete for jobId={}: Overall={}/100 (Security={}, Quality={}, Ops={}, Maintainability={}), Verdict={}",
                 context.getJobId(), result.overallScore(), result.securityScore(),
-                result.qualityScore(), result.operationsScore(), result.verdict());
+                result.qualityScore(), result.operationsScore(), result.maintainabilityScore(), result.verdict());
     }
 }
