@@ -17,16 +17,21 @@ public class ReadinessScoringEngine {
             double qualityScore,
             double operationsScore,
             double maintainabilityScore,
+            double architecturalScore,
             ProductionVerdict verdict
     ) {
+        public ScoreResult(double overallScore, double securityScore, double qualityScore, double operationsScore, double maintainabilityScore, ProductionVerdict verdict) {
+            this(overallScore, securityScore, qualityScore, operationsScore, maintainabilityScore, qualityScore, verdict);
+        }
+
         public ScoreResult(double overallScore, double securityScore, double qualityScore, double operationsScore, ProductionVerdict verdict) {
-            this(overallScore, securityScore, qualityScore, operationsScore, qualityScore, verdict);
+            this(overallScore, securityScore, qualityScore, operationsScore, qualityScore, qualityScore, verdict);
         }
     }
 
     public ScoreResult computeScores(List<FindingEntity> findings) {
         if (findings == null || findings.isEmpty()) {
-            return new ScoreResult(100.0, 100.0, 100.0, 100.0, 100.0, ProductionVerdict.REVIEW_COMPLETE);
+            return new ScoreResult(100.0, 100.0, 100.0, 100.0, 100.0, 100.0, ProductionVerdict.REVIEW_COMPLETE);
         }
 
         double securityPenalty = 0.0;
@@ -75,12 +80,22 @@ public class ReadinessScoringEngine {
         double maintainabilityScore = Math.max(0.0, Math.min(100.0, 100.0 - maintainabilityPenalty));
         maintainabilityScore = Math.round(maintainabilityScore * 10.0) / 10.0;
 
+        double structuralDebt = 0.0;
+        for (FindingEntity f : findings) {
+            String ruleId = f.getRuleId() != null ? f.getRuleId() : "";
+            if (ruleId.startsWith("CR-ARCH") || ruleId.startsWith("CR-COMPLEX") || ruleId.startsWith("CR-NEST") || ruleId.startsWith("CR-DUP")) {
+                structuralDebt += 12.0;
+            }
+        }
+        double architecturalScore = Math.max(0.0, Math.min(100.0, 100.0 - structuralDebt - (qualityPenalty * 0.4)));
+        architecturalScore = Math.round(architecturalScore * 10.0) / 10.0;
+
         double weightedOverall = 0.60 * securityScore + 0.25 * qualityScore + 0.15 * operationsScore;
         double overallScore = Math.round(weightedOverall * 10.0) / 10.0;
 
         ProductionVerdict verdict = resolveVerdict(overallScore, hasConfirmedCriticalSecurity, hasHighAuthOrInjectionOrSecrets);
 
-        return new ScoreResult(overallScore, securityScore, qualityScore, operationsScore, maintainabilityScore, verdict);
+        return new ScoreResult(overallScore, securityScore, qualityScore, operationsScore, maintainabilityScore, architecturalScore, verdict);
     }
 
     private ProductionVerdict resolveVerdict(double overallScore, boolean hasConfirmedCritical, boolean hasHighAuthSecrets) {
