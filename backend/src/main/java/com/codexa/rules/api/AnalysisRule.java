@@ -20,5 +20,9 @@ public interface AnalysisRule {
 
     String getOwaspMapping();
 
+    default String getDescription() {
+        return getName();
+    }
+
     List<RuleFinding> evaluate(RuleContext context);
 }
