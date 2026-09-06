@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Filter, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { Search, Filter, ShieldCheck, AlertTriangle, X } from 'lucide-react';
 import CustomSelect from './CustomSelect';
 
 export default function FindingsFilterBar({
@@ -32,8 +32,18 @@ export default function FindingsFilterBar({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Filter by title, file, rule ID..."
-          className="w-full pl-10 pr-3.5 py-2 sm:py-2.5 bg-[var(--bg-recessed)] border border-[var(--border-subtle)] rounded-xl text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/30 transition-all font-medium"
+          className="w-full pl-10 pr-9 py-2 sm:py-2.5 bg-[var(--bg-recessed)] border border-[var(--border-subtle)] rounded-xl text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/30 transition-all font-medium"
         />
+        {search && (
+          <button
+            type="button"
+            onClick={() => setSearch('')}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer p-0.5"
+            aria-label="Clear search"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
       </div>
 
       {/* Category & Severity Custom Dropdowns (Clean 2-column grid on mobile, inline flex on desktop) */}
