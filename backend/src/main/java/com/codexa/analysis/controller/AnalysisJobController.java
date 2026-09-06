@@ -50,7 +50,8 @@ public class AnalysisJobController {
     @Operation(summary = "Get analysis report", description = "Returns a complete downloadable or viewable analysis report in JSON, HTML, or Markdown.")
     public ResponseEntity<?> getReport(
             @PathVariable UUID jobId,
-            @RequestParam(defaultValue = "json") String format
+            @RequestParam(defaultValue = "json") String format,
+            @RequestParam(defaultValue = "false") boolean download
     ) {
         AnalysisReportResponse report = jobService.generateReport(jobId);
 
@@ -68,6 +69,23 @@ public class AnalysisJobController {
                     .body(markdown);
         }
 
+        if (download) {
+            String json = reportExportService.generateJsonReport(report);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"codexa-report-" + jobId + ".json\"")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(json);
+        }
+
         return ResponseEntity.ok(report);
+    }
+
+    @GetMapping("/{jobId}/export")
+    @Operation(summary = "Download analysis report attachment", description = "Downloads an audit report file in JSON, HTML, or Markdown.")
+    public ResponseEntity<?> exportReport(
+            @PathVariable UUID jobId,
+            @RequestParam(defaultValue = "json") String format
+    ) {
+        return getReport(jobId, format, true);
     }
 }
