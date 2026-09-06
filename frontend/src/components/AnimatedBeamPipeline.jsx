@@ -20,21 +20,21 @@ const NodeCircle = forwardRef(({ className, children, label, active, completed }
             ? "border-blue-500 bg-blue-500/15 text-blue-600 dark:text-blue-400 shadow-[0_0_25px_rgba(59,130,246,0.4)] scale-110"
             : completed
             ? "border-emerald-500/60 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
-            : "border-[var(--border-subtle)] bg-[var(--bg-recessed)] text-slate-500 hover:border-blue-500/30",
+            : "border-[var(--border-subtle)] bg-[var(--bg-recessed)] text-slate-600 dark:text-slate-400 hover:border-blue-500/30",
           className
         )}
       >
         {children}
         {completed && (
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center text-white">
+          <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center text-white shadow-sm">
             <CheckCircle2 className="w-3 h-3 stroke-[2.5]" />
           </div>
         )}
       </div>
       {label && (
         <span className={cn(
-          "text-[10px] font-mono tracking-tight text-center max-w-[90px] truncate leading-tight font-medium transition-colors",
-          active ? "text-blue-700 dark:text-blue-400 font-bold" : completed ? "text-slate-700 dark:text-slate-300" : "text-slate-500"
+          "text-[10px] font-mono tracking-tight text-center max-w-[90px] truncate leading-tight font-semibold transition-colors",
+          active ? "text-blue-700 dark:text-blue-400 font-bold" : completed ? "text-slate-800 dark:text-slate-200" : "text-slate-600 dark:text-slate-400"
         )}>
           {label}
         </span>
