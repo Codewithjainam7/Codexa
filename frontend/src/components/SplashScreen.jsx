@@ -97,7 +97,7 @@ export default function SplashScreen({ onFinish }) {
           />
         </div>
 
-        <p className="text-[10px] text-slate-500 text-center font-mono">
+        <p className="text-[10px] text-slate-400 text-center font-mono font-medium">
           AST Parser &bull; Nemotron 550B &bull; OWASP Rules
         </p>
       </div>
