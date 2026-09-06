@@ -22,14 +22,15 @@ public class JavaAstParserService {
 
     private static final Logger log = LoggerFactory.getLogger(JavaAstParserService.class);
 
-    private final JavaParser javaParser;
-
-    public JavaAstParserService() {
+    private final ThreadLocal<JavaParser> threadLocalParser = ThreadLocal.withInitial(() -> {
         ParserConfiguration configuration = new ParserConfiguration()
                 .setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_17)
                 .setAttributeComments(true)
                 .setStoreTokens(true);
-        this.javaParser = new JavaParser(configuration);
+        return new JavaParser(configuration);
+    });
+
+    public JavaAstParserService() {
     }
 
     public ParsedJavaFile parseFile(Path filePath, Path rootStagingDir) {
@@ -49,7 +50,7 @@ public class JavaAstParserService {
         List<String> parseErrors = new ArrayList<>();
 
         try {
-            ParseResult<CompilationUnit> parseResult = javaParser.parse(content);
+            ParseResult<CompilationUnit> parseResult = threadLocalParser.get().parse(content);
 
             if (parseResult.isSuccessful() && parseResult.getResult().isPresent()) {
                 CompilationUnit cu = parseResult.getResult().get();
@@ -70,10 +71,10 @@ public class JavaAstParserService {
     }
 
     public List<ParsedJavaFile> parseAll(List<Path> javaFiles, Path rootStagingDir) {
-        List<ParsedJavaFile> results = new ArrayList<>();
-        for (Path file : javaFiles) {
-            results.add(parseFile(file, rootStagingDir));
-        }
+        List<ParsedJavaFile> results = javaFiles.parallelStream()
+                .map(file -> parseFile(file, rootStagingDir))
+                .toList();
+
         log.info("AST Parser analyzed {} Java files ({} successfully generated ASTs)",
                 results.size(), results.stream().filter(ParsedJavaFile::isParseSuccessful).count());
         return results;
