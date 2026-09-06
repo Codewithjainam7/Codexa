@@ -132,9 +132,29 @@ export default function AnalysisDetailView({ jobId, onBack }) {
         evidenceMasked: f.evidenceMasked,
         suggestedFix: f.suggestedFix,
         priorityScore: f.priorityScore
-      }))
     };
     downloadBlob(JSON.stringify(exportData, null, 2), `codexa-report-${jobId}.json`, 'application/json');
+  };
+
+  const triggerExport = async (format, clientFallback) => {
+    try {
+      const resp = await fetch(`/api/v1/analyses/${jobId}/export?format=${format}`);
+      if (resp.ok) {
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `codexa-report-${jobId}.${format === 'markdown' ? 'md' : format}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        return;
+      }
+    } catch (err) {
+      console.warn('Server export request fallback:', err);
+    }
+    clientFallback();
   };
 
   const handleExportMarkdown = () => {
@@ -279,7 +299,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
               <span>PDF</span>
             </button>
             <button
-              onClick={handleExportHtml}
+              onClick={() => triggerExport('html', handleExportHtml)}
               title="Download standalone HTML report"
               className="px-2.5 sm:px-3.5 py-1.5 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-[11px] sm:text-xs font-semibold rounded-xl sm:rounded-full flex items-center justify-center space-x-1 sm:space-x-1.5 transition-colors border border-slate-200 dark:border-slate-800 shadow-sm cursor-pointer"
             >
@@ -287,7 +307,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
               <span>HTML</span>
             </button>
             <button
-              onClick={handleExportMarkdown}
+              onClick={() => triggerExport('markdown', handleExportMarkdown)}
               title="Download Markdown summary"
               className="px-2.5 sm:px-3.5 py-1.5 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-[11px] sm:text-xs font-semibold rounded-xl sm:rounded-full flex items-center justify-center space-x-1 sm:space-x-1.5 transition-colors border border-slate-200 dark:border-slate-800 shadow-sm cursor-pointer"
             >
@@ -295,7 +315,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
               <span>MD</span>
             </button>
             <button
-              onClick={handleExportJson}
+              onClick={() => triggerExport('json', handleExportJson)}
               title="Download raw JSON findings"
               className="px-2.5 sm:px-3.5 py-1.5 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-[11px] sm:text-xs font-semibold rounded-xl sm:rounded-full flex items-center justify-center space-x-1 sm:space-x-1.5 transition-colors border border-slate-200 dark:border-slate-800 shadow-sm cursor-pointer"
             >
