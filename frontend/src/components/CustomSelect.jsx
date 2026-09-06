@@ -59,7 +59,7 @@ export default function CustomSelect({ label, value, onChange, options = [], ico
       {/* Dropdown Menu Modal - 100% Solid Opaque Background (Zero Transparency Bleed, Never Clipped) */}
       {isOpen && (
         <div
-          className={`absolute mt-1.5 w-48 sm:w-52 max-w-[calc(100vw-32px)] rounded-2xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 shadow-[0_16px_40px_rgba(0,0,0,0.5)] z-[100] p-1.5 space-y-0.5 animate-in fade-in zoom-in-95 duration-100 ${
+          className={`absolute mt-1.5 w-48 sm:w-52 max-w-[calc(100vw-32px)] rounded-2xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 shadow-xl dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)] z-[100] p-1.5 space-y-0.5 animate-in fade-in zoom-in-95 duration-100 ${
             align === 'right' ? 'right-0' : 'left-0'
           }`}
         >
@@ -75,8 +75,8 @@ export default function CustomSelect({ label, value, onChange, options = [], ico
                 }}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                   isSelected 
-                    ? 'bg-blue-500/15 text-blue-600 dark:text-blue-400 font-bold border border-blue-500/30' 
-                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white'
+                    ? 'bg-blue-500/15 text-blue-700 dark:text-blue-300 font-bold border border-blue-500/30' 
+                    : 'text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-950 dark:hover:text-white'
                 }`}
               >
                 <div className="flex items-center space-x-2 truncate min-w-0">
