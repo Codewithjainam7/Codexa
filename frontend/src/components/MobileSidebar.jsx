@@ -199,7 +199,7 @@ export default function MobileSidebar({ isOpen, onClose, currentView, setCurrent
                   </div>
                   <span className="flex items-center space-x-1.5 text-[10px] font-mono font-bold">
                     <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 shadow-[0_0_6px_#10b981] animate-pulse' : 'bg-rose-500'}`} />
-                    <span className={isConnected ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500'}>
+                    <span className={isConnected ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}>
                       {isConnected ? 'API ONLINE' : 'OFFLINE'}
                     </span>
                   </span>
@@ -210,7 +210,7 @@ export default function MobileSidebar({ isOpen, onClose, currentView, setCurrent
                     <Cpu className="w-3.5 h-3.5 text-indigo-500" />
                     <span>DeepSeek / OpenAI AI</span>
                   </div>
-                  <span className="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[9px] font-mono font-bold">
+                  <span className="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-700 dark:text-blue-400 text-[9px] font-mono font-bold">
                     READY
                   </span>
                 </div>
@@ -218,13 +218,13 @@ export default function MobileSidebar({ isOpen, onClose, currentView, setCurrent
 
               {/* Theme Selector Segmented Control */}
               <div className="space-y-1.5">
-                <span className="px-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                <span className="px-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-secondary)]">
                   Interface Theme
                 </span>
                 <div className="p-1 bg-[var(--bg-recessed)] border border-[var(--border-subtle)] rounded-xl flex items-center">
                   <button
                     onClick={() => { if (theme !== 'light') toggleTheme(); }}
-                    className={`flex-1 py-2 rounded-lg text-xs font-semibold flex items-center justify-center space-x-2 transition-all cursor-pointer ${
+                    className={`flex-1 py-2 rounded-lg text-xs font-bold flex items-center justify-center space-x-2 transition-all cursor-pointer ${
                       theme === 'light'
                         ? 'bg-[var(--bg-card)] text-blue-600 shadow-sm border border-[var(--border-subtle)]'
                         : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
@@ -235,7 +235,7 @@ export default function MobileSidebar({ isOpen, onClose, currentView, setCurrent
                   </button>
                   <button
                     onClick={() => { if (theme !== 'dark') toggleTheme(); }}
-                    className={`flex-1 py-2 rounded-lg text-xs font-semibold flex items-center justify-center space-x-2 transition-all cursor-pointer ${
+                    className={`flex-1 py-2 rounded-lg text-xs font-bold flex items-center justify-center space-x-2 transition-all cursor-pointer ${
                       theme === 'dark'
                         ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 shadow-sm'
                         : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
