@@ -1,3 +1,9 @@
 codexa:
+  limits:
+    max-compressed-size-mb: 25
+    max-extracted-size-mb: 100
+    max-file-count: 1000
+    max-path-depth: 15
+    max-single-file-size-mb: 5
   ai:
     enabled: false
