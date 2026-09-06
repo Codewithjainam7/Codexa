@@ -31,7 +31,7 @@ export default function CodeDiffViewer({ originalCode, suggestedFix, ruleId, isA
     return (
       <div className="flex font-mono text-xs leading-relaxed select-text min-h-[90px]">
         {/* Line Numbers Column */}
-        <div className="select-none py-3 px-2 text-right text-slate-600 bg-[#03060f] border-r border-slate-800/80 shrink-0 font-mono text-[11px] min-w-[34px]">
+        <div className="select-none py-3 px-2 text-right text-slate-400 dark:text-slate-500 bg-slate-950 dark:bg-[#03060f] border-r border-slate-800 shrink-0 font-mono text-[11px] min-w-[36px]">
           {lines.map((_, i) => (
             <div key={i} className="leading-6">{i + 1}</div>
           ))}
@@ -44,8 +44,8 @@ export default function CodeDiffViewer({ originalCode, suggestedFix, ruleId, isA
               key={i} 
               className={`px-1.5 rounded transition-colors break-all whitespace-pre-wrap ${
                 type === 'before' 
-                  ? 'text-rose-200/90 bg-rose-950/15 hover:bg-rose-950/30' 
-                  : 'text-emerald-200/90 bg-emerald-950/15 hover:bg-emerald-950/30'
+                  ? 'text-rose-300 dark:text-rose-200 bg-rose-950/30 hover:bg-rose-950/45' 
+                  : 'text-emerald-300 dark:text-emerald-200 bg-emerald-950/30 hover:bg-emerald-950/45'
               }`}
             >
               {line || ' '}
