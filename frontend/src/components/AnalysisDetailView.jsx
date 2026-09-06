@@ -428,10 +428,10 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                     </h3>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/30">
                       Maintainability: {job?.metrics?.maintainabilityScore ?? (job?.metrics?.qualityScore ?? 100)}/100
                     </span>
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-500/30">
                       Architecture: {job?.metrics?.architecturalScore ?? (job?.metrics?.qualityScore ?? 100)}/100
                     </span>
                   </div>
