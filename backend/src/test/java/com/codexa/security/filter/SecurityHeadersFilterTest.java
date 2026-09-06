@@ -24,6 +24,8 @@ class SecurityHeadersFilterTest {
         assertThat(response.getHeader("X-XSS-Protection")).isEqualTo("0");
         assertThat(response.getHeader("Referrer-Policy")).isEqualTo("strict-origin-when-cross-origin");
         assertThat(response.getHeader("Permissions-Policy")).isEqualTo("geolocation=(), camera=(), microphone=()");
+        assertThat(response.getHeader("Cross-Origin-Opener-Policy")).isEqualTo("same-origin");
+        assertThat(response.getHeader("X-Permitted-Cross-Domain-Policies")).isEqualTo("none");
         assertThat(response.getHeader("Content-Security-Policy")).contains("default-src 'self'");
     }
 }
