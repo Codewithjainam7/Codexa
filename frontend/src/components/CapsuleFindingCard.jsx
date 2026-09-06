@@ -55,24 +55,24 @@ export default function CapsuleFindingCard({ finding, defaultExpanded = false, g
       {!isOpen && (
         <div 
           onClick={handleToggle}
-          className={`group flex items-center justify-between px-5 py-3 rounded-full bg-slate-900/90 hover:bg-slate-900 border ${getSeverityBorder(f.severity)} shadow-lg cursor-pointer transition-all duration-300 transform hover:scale-[1.01] active:scale-[0.99] select-none`}
+          className={`group flex items-center justify-between px-4 sm:px-5 py-3 rounded-2xl sm:rounded-full bg-[var(--bg-card)] hover:bg-[var(--bg-recessed)] border ${getSeverityBorder(f.severity)} shadow-md cursor-pointer transition-all duration-300 transform hover:scale-[1.01] active:scale-[0.99] select-none`}
         >
-          <div className="flex items-center space-x-3 min-w-0 pr-3">
+          <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0 pr-3">
             <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${getSeverityDot(f.severity)}`} />
-            <span className="text-[11px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
+            <span className="text-[11px] font-mono font-bold text-blue-700 dark:text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20 shrink-0">
               {f.ruleId}
             </span>
-            <h4 className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-emerald-300 transition-colors">
+            <h4 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] truncate group-hover:text-blue-600 transition-colors">
               {f.title}
             </h4>
           </div>
 
-          <div className="flex items-center space-x-3 shrink-0">
-            <span className="hidden sm:inline-block font-mono text-[11px] text-slate-400 truncate max-w-[180px]">
+          <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
+            <span className="hidden sm:inline-block font-mono text-[11px] text-[var(--text-secondary)] truncate max-w-[180px]">
               📄 {f.filePath?.split('/').pop()}:{f.startLine}
             </span>
             {getSeverityBadge(f.severity)}
-            <div className="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-white group-hover:bg-slate-700 transition-all">
+            <div className="w-6 h-6 rounded-full bg-[var(--bg-recessed)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-all">
               <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200" />
             </div>
           </div>
@@ -82,18 +82,18 @@ export default function CapsuleFindingCard({ finding, defaultExpanded = false, g
       {/* 2. Expanded Capsule Window with Morph Open/Close Animations */}
       {isOpen && (
         <div 
-          className={`bg-slate-900/95 border ${getSeverityBorder(f.severity)} shadow-2xl backdrop-blur-xl rounded-3xl p-6 sm:p-7 space-y-5 transition-all duration-300 overflow-hidden ${
+          className={`bg-[var(--bg-card)] border ${getSeverityBorder(f.severity)} shadow-2xl backdrop-blur-xl rounded-2xl sm:rounded-3xl p-5 sm:p-7 space-y-5 transition-all duration-300 overflow-hidden ${
             isClosing ? 'animate-capsule-close' : 'animate-capsule-open'
           }`}
         >
           {/* Header Pill Bar with Close Button */}
-          <div className="flex items-center justify-between gap-3 pb-3 border-b border-slate-800">
-            <div className="flex items-center space-x-3 min-w-0 pr-2">
+          <div className="flex items-center justify-between gap-3 pb-3.5 border-b border-[var(--border-subtle)]">
+            <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0 pr-2">
               <span className={`w-3 h-3 rounded-full shrink-0 ${getSeverityDot(f.severity)}`} />
-              <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
+              <span className="text-xs font-mono font-bold text-blue-700 dark:text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20 shrink-0">
                 {f.ruleId}
               </span>
-              <h3 className="text-sm sm:text-base font-bold text-white truncate tracking-tight">
+              <h3 className="text-sm sm:text-base font-bold text-[var(--text-primary)] truncate tracking-tight font-display">
                 {f.title}
               </h3>
             </div>
@@ -102,7 +102,7 @@ export default function CapsuleFindingCard({ finding, defaultExpanded = false, g
               {getSeverityBadge(f.severity)}
               <button
                 onClick={handleToggle}
-                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-rose-500/20 hover:text-rose-300 border border-slate-700 hover:border-rose-500/40 flex items-center justify-center text-slate-400 transition-all shadow-sm active:scale-95"
+                className="w-8 h-8 rounded-full bg-[var(--bg-recessed)] hover:bg-rose-500/20 hover:text-rose-600 dark:hover:text-rose-300 border border-[var(--border-subtle)] hover:border-rose-500/40 flex items-center justify-center text-[var(--text-secondary)] transition-all shadow-sm active:scale-95 cursor-pointer"
                 title="Close Window"
               >
                 <X className="w-4 h-4" />
@@ -112,45 +112,45 @@ export default function CapsuleFindingCard({ finding, defaultExpanded = false, g
 
           {/* File Meta Tags & OWASP Mapping */}
           <div className="flex flex-wrap items-center gap-2 text-xs">
-            <span className="font-mono text-slate-200 bg-slate-950 px-3 py-1 rounded-full border border-slate-800 flex items-center space-x-1.5 shadow-inner">
-              <FileCode className="w-3.5 h-3.5 text-slate-400" />
+            <span className="font-mono text-[var(--text-primary)] bg-[var(--bg-recessed)] px-3 py-1 rounded-full border border-[var(--border-subtle)] flex items-center space-x-1.5 shadow-inner">
+              <FileCode className="w-3.5 h-3.5 text-[var(--text-muted)]" />
               <span>{f.filePath}:{f.startLine}</span>
             </span>
             {f.owaspMapping && (
-              <span className="text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full font-medium flex items-center space-x-1.5 shadow-sm">
+              <span className="text-blue-700 dark:text-blue-400 bg-blue-500/10 border border-blue-500/20 px-3 py-1 rounded-full font-medium flex items-center space-x-1.5 shadow-sm">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>{f.owaspMapping}</span>
               </span>
             )}
             {f.requiresManualReview && (
-              <span className="px-3 py-1 text-[10px] font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/20 rounded-full">
+              <span className="px-3 py-1 text-[10px] font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20 rounded-full">
                 Review Required
               </span>
             )}
-            <span className="text-xs font-mono text-slate-500 ml-auto">
-              Risk Priority: <strong className="text-slate-300">{f.priorityScore}</strong>
+            <span className="text-xs font-mono text-[var(--text-muted)] ml-auto">
+              Risk Priority: <strong className="text-[var(--text-primary)] font-bold">{f.priorityScore}</strong>
             </span>
           </div>
 
           {/* Vulnerability Analysis Card */}
-          <div className="bg-slate-950/70 p-4 rounded-2xl border border-slate-800/80 space-y-1">
-            <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
-              <Info className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="cdx-recessed p-4 rounded-2xl border border-[var(--border-subtle)] space-y-1 text-left">
+            <div className="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider flex items-center space-x-1.5 font-display">
+              <Info className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
               <span>Vulnerability Analysis</span>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed pt-1">
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed pt-1 font-normal">
               {f.description}
             </p>
           </div>
 
           {/* Potential Impact Card */}
           {f.impact && (
-            <div className="p-4 bg-rose-950/20 border border-rose-500/30 rounded-2xl text-xs text-slate-300 space-y-1 shadow-sm">
-              <strong className="text-rose-400 font-bold block text-xs flex items-center space-x-1.5">
+            <div className="p-4 bg-rose-500/10 border border-rose-500/25 rounded-2xl text-xs text-[var(--text-secondary)] space-y-1 shadow-sm text-left">
+              <strong className="text-rose-700 dark:text-rose-400 font-bold block text-xs flex items-center space-x-1.5">
                 <Flame className="w-3.5 h-3.5" />
                 <span>Potential Security &amp; Operational Risk:</span>
               </strong>
-              <p className="leading-relaxed text-slate-300/90">{f.impact}</p>
+              <p className="leading-relaxed font-normal">{f.impact}</p>
             </div>
           )}
 
@@ -163,15 +163,15 @@ export default function CapsuleFindingCard({ finding, defaultExpanded = false, g
 
           {/* References & Links */}
           {f.references && f.references.length > 0 && (
-            <div className="pt-3 border-t border-slate-800 flex flex-wrap items-center gap-2 text-[11px]">
-              <span className="text-slate-500 font-medium">Security References:</span>
+            <div className="pt-3 border-t border-[var(--border-subtle)] flex flex-wrap items-center gap-2 text-[11px]">
+              <span className="text-[var(--text-muted)] font-medium">Security References:</span>
               {f.references.map((ref, idx) => (
                 <a
                   key={idx}
                   href={ref}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-2.5 py-1 bg-slate-950 rounded-full border border-slate-800 text-emerald-400 hover:text-emerald-300 hover:border-emerald-500/40 transition-all flex items-center space-x-1"
+                  className="px-2.5 py-1 bg-[var(--bg-recessed)] rounded-full border border-[var(--border-subtle)] text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:border-blue-500/40 transition-all flex items-center space-x-1"
                 >
                   <span>OWASP Advisory</span>
                   <ExternalLink className="w-3 h-3 inline" />
