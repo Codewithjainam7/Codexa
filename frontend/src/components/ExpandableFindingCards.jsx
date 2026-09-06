@@ -64,7 +64,7 @@ export function ExpandableFindingCards({ findings = [], getSeverityBadge }) {
         <div className="flex justify-end pb-1">
           <button
             onClick={toggleAll}
-            className="text-xs font-semibold text-slate-400 hover:text-emerald-300 flex items-center space-x-1.5 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 transition-colors"
+            className="text-xs font-semibold text-slate-700 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm transition-colors cursor-pointer"
           >
             {expandedIds.size === findings.length ? (
               <>
@@ -113,7 +113,7 @@ export function ExpandableFindingCards({ findings = [], getSeverityBadge }) {
                     {getSeverityBadge(f.severity)}
                   </div>
                   <div className={"w-5 h-5 sm:w-6 sm:h-6 rounded-full cdx-recessed flex items-center justify-center text-[var(--text-muted)] transition-transform duration-200 shrink-0 " + (isExpanded ? "rotate-180 text-blue-600 dark:text-blue-400 bg-blue-500/10" : "")}>
-                    <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                    <ChevronDown className="w-3.5 h-3.5 sm:w-3.5 sm:h-3.5" />
                   </div>
                 </div>
               </div>
@@ -152,24 +152,24 @@ export function ExpandableFindingCards({ findings = [], getSeverityBadge }) {
                       </div>
 
                       {/* Vulnerability Analysis */}
-                      <div className="bg-slate-950/80 p-4 rounded-xl border border-slate-800 space-y-1">
-                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
-                          <Info className="w-3.5 h-3.5 text-emerald-400" />
+                      <div className="bg-white dark:bg-slate-950/80 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1 shadow-sm">
+                        <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
+                          <Info className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                           <span>Vulnerability Analysis</span>
                         </div>
-                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed pt-1">
+                        <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-300 leading-relaxed pt-1">
                           {f.description}
                         </p>
                       </div>
 
                       {/* Potential Impact */}
                       {f.impact && (
-                        <div className="p-4 bg-rose-950/20 border border-rose-500/30 rounded-xl text-xs sm:text-sm text-slate-300 space-y-1">
-                          <strong className="text-rose-400 font-bold block flex items-center space-x-1.5">
+                        <div className="p-4 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-500/30 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-300 space-y-1">
+                          <strong className="text-rose-700 dark:text-rose-400 font-bold block flex items-center space-x-1.5">
                             <Flame className="w-4 h-4" />
                             <span>Potential Security & Architectural Risk:</span>
                           </strong>
-                          <p className="leading-relaxed text-slate-300/90">{f.impact}</p>
+                          <p className="leading-relaxed text-slate-700 dark:text-slate-300/90">{f.impact}</p>
                         </div>
                       )}
 
@@ -182,15 +182,15 @@ export function ExpandableFindingCards({ findings = [], getSeverityBadge }) {
 
                       {/* Security References */}
                       {f.references && f.references.length > 0 && (
-                        <div className="pt-2 border-t border-slate-800/80 flex flex-wrap items-center gap-2 text-[11px]">
-                          <span className="text-slate-500 font-medium">References:</span>
+                        <div className="pt-2 border-t border-slate-200 dark:border-slate-800/80 flex flex-wrap items-center gap-2 text-[11px]">
+                          <span className="text-slate-500 dark:text-slate-400 font-medium">References:</span>
                           {f.references.map((ref, idx) => (
                             <a
                               key={idx}
                               href={ref}
                               target="_blank"
                               rel="noreferrer"
-                              className="px-2.5 py-0.5 bg-slate-950 rounded-full border border-slate-800 text-emerald-400 hover:text-emerald-300 hover:border-emerald-500/40 transition-all flex items-center space-x-1"
+                              className="px-2.5 py-0.5 bg-white dark:bg-slate-950 rounded-full border border-slate-200 dark:border-slate-800 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:border-blue-400/40 transition-all flex items-center space-x-1 shadow-sm"
                             >
                               <span>OWASP Advisory</span>
                               <ExternalLink className="w-3 h-3 inline" />
