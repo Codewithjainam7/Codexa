@@ -11,6 +11,7 @@ import { TECH_AVATARS, getActiveAvatar, setActiveAvatar } from '../lib/avatars';
 export default function MobileSettingsView({ isConnected, limits }) {
   const { theme, toggleTheme } = useTheme();
   const [selectedAvatarId, setSelectedAvatarId] = useState(getActiveAvatar().id);
+  const [cacheCleared, setCacheCleared] = useState(false);
 
   const handleSelectAvatar = (id) => {
     setSelectedAvatarId(id);
@@ -169,7 +170,36 @@ export default function MobileSettingsView({ isConnected, limits }) {
         </div>
       </div>
 
-      {/* 4. Developer Resources Card */}
+      {/* 4. Storage & Local Cache Card */}
+      <div className="p-4 rounded-2xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            Storage &amp; Local Data
+          </span>
+        </div>
+        <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80">
+          <div>
+            <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">Session Audit Cache</div>
+            <div className="text-[10px] text-slate-500 dark:text-slate-400">Recent scans and temporary storage</div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              try {
+                localStorage.removeItem('codexa_last_job_id');
+                sessionStorage.clear();
+              } catch (_) {}
+              setCacheCleared(true);
+              setTimeout(() => setCacheCleared(false), 2500);
+            }}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/20 transition-all cursor-pointer"
+          >
+            {cacheCleared ? 'Cleared!' : 'Clear Cache'}
+          </button>
+        </div>
+      </div>
+
+      {/* 5. Developer Resources Card */}
       <div className="p-4 rounded-2xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 space-y-2 shadow-sm">
         <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
           Developer Resources
@@ -189,7 +219,7 @@ export default function MobileSettingsView({ isConnected, limits }) {
         </a>
       </div>
 
-      {/* 5. App Info Card */}
+      {/* 6. App Info Card */}
       <div className="p-3 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 shadow-sm">
         <div className="flex items-center space-x-2">
           <Info className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
