@@ -16,12 +16,17 @@ public class ReadinessScoringEngine {
             double securityScore,
             double qualityScore,
             double operationsScore,
+            double maintainabilityScore,
             ProductionVerdict verdict
-    ) {}
+    ) {
+        public ScoreResult(double overallScore, double securityScore, double qualityScore, double operationsScore, ProductionVerdict verdict) {
+            this(overallScore, securityScore, qualityScore, operationsScore, qualityScore, verdict);
+        }
+    }
 
     public ScoreResult computeScores(List<FindingEntity> findings) {
         if (findings == null || findings.isEmpty()) {
-            return new ScoreResult(100.0, 100.0, 100.0, 100.0, ProductionVerdict.REVIEW_COMPLETE);
+            return new ScoreResult(100.0, 100.0, 100.0, 100.0, 100.0, ProductionVerdict.REVIEW_COMPLETE);
         }
 
         double securityPenalty = 0.0;
@@ -66,12 +71,16 @@ public class ReadinessScoringEngine {
         double qualityScore = Math.max(0.0, 100.0 - qualityPenalty);
         double operationsScore = Math.max(0.0, 100.0 - operationsPenalty);
 
+        double maintainabilityPenalty = qualityPenalty * 0.7 + operationsPenalty * 0.4 + findings.size() * 1.2;
+        double maintainabilityScore = Math.max(0.0, Math.min(100.0, 100.0 - maintainabilityPenalty));
+        maintainabilityScore = Math.round(maintainabilityScore * 10.0) / 10.0;
+
         double weightedOverall = 0.60 * securityScore + 0.25 * qualityScore + 0.15 * operationsScore;
         double overallScore = Math.round(weightedOverall * 10.0) / 10.0;
 
         ProductionVerdict verdict = resolveVerdict(overallScore, hasConfirmedCriticalSecurity, hasHighAuthOrInjectionOrSecrets);
 
-        return new ScoreResult(overallScore, securityScore, qualityScore, operationsScore, verdict);
+        return new ScoreResult(overallScore, securityScore, qualityScore, operationsScore, maintainabilityScore, verdict);
     }
 
     private ProductionVerdict resolveVerdict(double overallScore, boolean hasConfirmedCritical, boolean hasHighAuthSecrets) {
