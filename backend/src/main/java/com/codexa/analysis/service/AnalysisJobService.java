@@ -173,15 +173,16 @@ public class AnalysisJobService {
 
         return new AnalysisReportResponse(
                 entity.getId(),
-                entity.getSourceType(),
+                "Codexa Code Review & Security Audit",
                 entity.getSourceIdentifier(),
+                entity.getSourceType(),
                 entity.getOverallScore(),
                 entity.getVerdict(),
                 entity.getSummary(),
+                entity.getCreatedAt(),
                 metricResponse,
                 findingResponses,
-                entity.getCreatedAt(),
-                entity.getCompletedAt()
+                AnalysisReportResponse.STANDARD_DISCLAIMER
         );
     }
 
