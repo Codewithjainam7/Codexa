@@ -183,42 +183,42 @@ export default function MobileHomeView({ onStartAnalysis, onViewResults, activeJ
         </span>
 
         <div className="grid grid-cols-2 gap-2">
-          <div className="p-3 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 space-y-1 shadow-sm">
-            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 font-display">
-              <Lock className="w-3.5 h-3.5 text-rose-500 dark:text-rose-400" />
+          <div className="p-3 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 hover:border-rose-500/30 space-y-1 shadow-sm transition-colors">
+            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-900 dark:text-slate-100 font-display">
+              <Lock className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
               <span>Injection</span>
             </div>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug">
+            <p className="text-[10px] text-slate-600 dark:text-slate-400 leading-snug">
               SQLi &bull; NoSQLi &bull; Command Exec
             </p>
           </div>
 
-          <div className="p-3 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 space-y-1 shadow-sm">
-            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 font-display">
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+          <div className="p-3 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 hover:border-amber-500/30 space-y-1 shadow-sm transition-colors">
+            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-900 dark:text-slate-100 font-display">
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               <span>Auth &amp; Secrets</span>
             </div>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug">
+            <p className="text-[10px] text-slate-600 dark:text-slate-400 leading-snug">
               API Keys &bull; JWT &bull; Broken ACL
             </p>
           </div>
 
-          <div className="p-3 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 space-y-1 shadow-sm">
-            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 font-display">
-              <FileCode2 className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
+          <div className="p-3 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 hover:border-blue-500/30 space-y-1 shadow-sm transition-colors">
+            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-900 dark:text-slate-100 font-display">
+              <FileCode2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
               <span>Code Quality</span>
             </div>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug">
+            <p className="text-[10px] text-slate-600 dark:text-slate-400 leading-snug">
               Swallowed Exceptions &bull; AST Smells
             </p>
           </div>
 
-          <div className="p-3 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 space-y-1 shadow-sm">
-            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 font-display">
-              <Zap className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
+          <div className="p-3 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 hover:border-indigo-500/30 space-y-1 shadow-sm transition-colors">
+            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-900 dark:text-slate-100 font-display">
+              <Zap className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
               <span>Hardening</span>
             </div>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug">
+            <p className="text-[10px] text-slate-600 dark:text-slate-400 leading-snug">
               CORS &bull; Rate Limits &bull; Headers
             </p>
           </div>
