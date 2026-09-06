@@ -143,6 +143,12 @@ public class ReportExportService {
                             </div>
                         </div>
                         <div class="card">
+                            <div class="card-label">Maintainability Index</div>
+                            <div class="card-value """).append(report.metrics() != null ? getScoreColor(report.metrics().maintainabilityScore()) : "green").append("""
+                            ">""").append(report.metrics() != null ? String.format("%.1f", report.metrics().maintainabilityScore()) : "100.0").append("""
+                            /100</div>
+                        </div>
+                        <div class="card">
                             <div class="card-label">Total Findings</div>
                             <div class="card-value">""").append(report.findings().size()).append("""
                             </div>
@@ -201,7 +207,8 @@ public class ReportExportService {
         sb.append("**Scan Target:** `").append(report.scanTarget()).append("`  \n");
         sb.append("**Job ID:** `").append(report.jobId()).append("`  \n");
         sb.append("**Verdict:** **").append(verdictStr).append("**  \n");
-        sb.append("**Overall Score:** **").append(report.overallScore() != null ? String.format("%.1f", report.overallScore()) : "N/A").append("/100**  \n\n");
+        sb.append("**Overall Score:** **").append(report.overallScore() != null ? String.format("%.1f", report.overallScore()) : "N/A").append("/100**  \n");
+        sb.append("**Maintainability Score:** **").append(report.metrics() != null ? String.format("%.1f", report.metrics().maintainabilityScore()) : "100.0").append("/100**  \n\n");
 
         sb.append("> **Security Advisory:** ").append(report.disclaimer()).append("\n\n");
 
