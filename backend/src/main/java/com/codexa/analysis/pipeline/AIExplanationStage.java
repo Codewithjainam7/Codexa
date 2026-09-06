@@ -50,15 +50,31 @@ public class AIExplanationStage implements PipelineStage {
     public void execute(PipelineContext context) {
         log.info("Executing AI Explanation & Multi-Language Review stage for jobId={}", context.getJobId());
 
-        // 1. Enrich existing deterministic findings in parallel for maximum performance
+        // 1. Enrich existing deterministic findings: top-3 with LLM, instant template for remainder
         if (context.getFindings() != null && !context.getFindings().isEmpty()) {
-            context.getFindings().parallelStream().forEach(finding -> {
+            List<FindingEntity> allFindings = context.getFindings();
+            // Sort by severity so CRITICAL and HIGH severity findings get LLM priority
+            allFindings.sort((a, b) -> {
+                int sevA = a.getSeverity() == Severity.CRITICAL ? 4 : a.getSeverity() == Severity.HIGH ? 3 : a.getSeverity() == Severity.MEDIUM ? 2 : 1;
+                int sevB = b.getSeverity() == Severity.CRITICAL ? 4 : b.getSeverity() == Severity.HIGH ? 3 : b.getSeverity() == Severity.MEDIUM ? 2 : 1;
+                return Integer.compare(sevB, sevA);
+            });
+
+            for (int i = 0; i < allFindings.size(); i++) {
+                FindingEntity finding = allFindings.get(i);
                 try {
-                    aiExplanationService.enrichFinding(finding);
+                    if (i < 3) {
+                        aiExplanationService.enrichFinding(finding);
+                    } else {
+                        aiExplanationService.enrichFindingDeterministic(finding);
+                    }
                 } catch (Exception e) {
                     log.warn("Failed to enrich finding {} with AI explanation: {}", finding.getRuleId(), e.getMessage());
+                    try {
+                        aiExplanationService.enrichFindingDeterministic(finding);
+                    } catch (Exception ignored) {}
                 }
-            });
+            }
         }
 
         // 2. Perform Multi-Language Holistic AI Review (TypeScript, JS, Python, Fullstack)
@@ -114,7 +130,7 @@ public class AIExplanationStage implements PipelineStage {
         try (Stream<Path> stream = Files.walk(stagingDir)) {
             stream.filter(Files::isRegularFile)
                     .filter(this::isRelevantSourceFile)
-                    .limit(10)
+                    .limit(3)
                     .forEach(file -> {
                         try {
                             String rel = stagingDir.relativize(file).toString().replace("\\", "/");
