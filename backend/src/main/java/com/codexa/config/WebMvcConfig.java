@@ -29,6 +29,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/")
-                .setCacheControl(CacheControl.noCache());
+                .setCacheControl(CacheControl.noStore().mustRevalidate().noCache());
     }
 }
