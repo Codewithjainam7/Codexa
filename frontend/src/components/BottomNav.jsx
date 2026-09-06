@@ -60,7 +60,7 @@ export default function BottomNav({ currentView, setCurrentView, activeJobId }) 
                 className={`relative flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-colors duration-150 cursor-pointer ${
                   isActive
                     ? 'text-blue-600 dark:text-white'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 {/* Framer Motion Liquid Spring Sliding Pill */}
