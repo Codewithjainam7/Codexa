@@ -43,7 +43,9 @@ public class AnalysisJobController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        return ResponseEntity.ok(jobService.getFindings(jobId, category, severity, confidence, search, page, size));
+        int sanitizedPage = Math.max(0, page);
+        int sanitizedSize = Math.min(Math.max(1, size), 200);
+        return ResponseEntity.ok(jobService.getFindings(jobId, category, severity, confidence, search, sanitizedPage, sanitizedSize));
     }
 
     @GetMapping("/{jobId}/report")
