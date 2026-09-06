@@ -147,10 +147,10 @@ export default function LiveReviewPulseLoader({ job }) {
             <ActiveIcon className="w-4 h-4" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-xs font-bold font-display text-blue-600 dark:text-blue-400 truncate">
+            <div className="text-xs font-bold font-display text-blue-700 dark:text-blue-400 truncate">
               {activeStage.label}
             </div>
-            <p className="text-[10px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug">
+            <p className="text-[10px] text-slate-700 dark:text-slate-200 mt-0.5 leading-snug font-medium">
               {activeStage.desc}
             </p>
           </div>
