@@ -38,7 +38,8 @@ public class SecureZipExtractor {
         long totalBytesExtracted = 0;
         List<Path> extractedFiles = new ArrayList<>();
 
-        byte[] buffer = new byte[8192];
+        // 64 KB buffer optimized for high-throughput enterprise archive decompression
+        byte[] buffer = new byte[65536];
 
         try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(zipStream))) {
             ZipEntry entry;
