@@ -133,10 +133,10 @@ export default function Footer() {
         </div>
 
         {/* Advisory Disclaimer Notice */}
-        <div className="border-t border-[var(--border-subtle)] pt-6 pb-2 text-[11px] text-[var(--text-muted)] leading-relaxed flex items-start space-x-2.5">
+        <div className="border-t border-[var(--border-subtle)] pt-6 pb-2 text-[11px] text-[var(--text-secondary)] leading-relaxed flex items-start space-x-2.5">
           <AlertTriangle className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
           <p>
-            <span className="text-[var(--text-primary)] font-semibold">Advisory Disclaimer:</span> Codexa is an automated static code review and production-readiness assessment engine. It does not execute untrusted bytecode. Suggested remediations should always be verified and tested prior to production deployment.
+            <span className="text-[var(--text-primary)] font-bold">Advisory Disclaimer:</span> Codexa is an automated static code review and production-readiness assessment engine. It does not execute untrusted bytecode. Suggested remediations should always be verified and tested prior to production deployment.
           </p>
         </div>
       </div>
