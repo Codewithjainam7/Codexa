@@ -363,7 +363,7 @@ export default function NewAnalysisView({ limits, onJobCreated, initialGithubUrl
                       </span>
                     </p>
                     <p className="text-xs text-[var(--text-muted)] font-mono">
-                      Maximum archive size: 250 MB &bull; ZIP files only
+                      Maximum archive size: 500 MB &bull; ZIP files only
                     </p>
                   </div>
                 )}
@@ -452,11 +452,11 @@ export default function NewAnalysisView({ limits, onJobCreated, initialGithubUrl
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 text-[11px] font-mono">
           <div className="p-2.5 rounded-lg cdx-recessed border border-[var(--border-subtle)] space-y-1">
             <span className="text-[var(--text-muted)] block">Max Archive Bounds</span>
-            <span className="text-[var(--text-primary)] font-semibold">{limits?.maxZipSizeBytes ? (limits.maxZipSizeBytes / (1024 * 1024)).toFixed(0) : '250'} MB / {limits?.maxFileCount || '5000'} Files</span>
+            <span className="text-[var(--text-primary)] font-semibold">{limits?.maxZipSizeBytes ? (limits.maxZipSizeBytes / (1024 * 1024)).toFixed(0) : '500'} MB / {limits?.maxFileCount || '20000'} Files</span>
           </div>
           <div className="p-2.5 rounded-lg cdx-recessed border border-[var(--border-subtle)] space-y-1">
             <span className="text-[var(--text-muted)] block">Single File Limit</span>
-            <span className="text-[var(--text-primary)] font-semibold">{limits?.maxSingleFileSizeBytes ? (limits.maxSingleFileSizeBytes / (1024 * 1024)).toFixed(0) : '50'} MB / Depth {limits?.maxDirectoryDepth || '30'}</span>
+            <span className="text-[var(--text-primary)] font-semibold">{limits?.maxSingleFileSizeBytes ? (limits.maxSingleFileSizeBytes / (1024 * 1024)).toFixed(0) : '100'} MB / Depth {limits?.maxDirectoryDepth || '30'}</span>
           </div>
           <div className="p-2.5 rounded-lg cdx-recessed border border-[var(--border-subtle)] space-y-1">
             <span className="text-[var(--text-muted)] block">Bytecode Execution</span>
