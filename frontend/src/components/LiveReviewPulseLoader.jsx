@@ -210,24 +210,24 @@ export default function LiveReviewPulseLoader({ job }) {
       </div>
 
       {/* Live Scan Activity Terminal Stream (Compact on Mobile) */}
-      <div className="cdx-recessed border border-[var(--border-subtle)] rounded-xl sm:rounded-2xl p-3 sm:p-4 font-mono text-xs text-slate-600 dark:text-slate-400 space-y-1.5 sm:space-y-2 relative z-10 text-left">
-        <div className="flex items-center justify-between pb-1.5 sm:pb-2 border-b border-[var(--border-subtle)] text-[10px] sm:text-[11px] text-slate-500">
+      <div className="cdx-recessed border border-[var(--border-subtle)] rounded-xl sm:rounded-2xl p-3 sm:p-4 font-mono text-xs text-slate-700 dark:text-slate-300 space-y-1.5 sm:space-y-2 relative z-10 text-left">
+        <div className="flex items-center justify-between pb-1.5 sm:pb-2 border-b border-[var(--border-subtle)] text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400">
           <div className="flex items-center space-x-1.5">
             <span className="w-2 h-2 rounded-full bg-rose-500/80 inline-block" />
             <span className="w-2 h-2 rounded-full bg-amber-500/80 inline-block" />
             <span className="w-2 h-2 rounded-full bg-emerald-500/80 inline-block" />
-            <span className="ml-1 sm:ml-2 font-semibold text-slate-700 dark:text-slate-300 truncate">Live Scan Stream</span>
+            <span className="ml-1 sm:ml-2 font-semibold text-slate-800 dark:text-slate-200 truncate">Live Scan Stream</span>
           </div>
-          <span className="text-[9px] sm:text-[10px] text-blue-600 dark:text-blue-400 font-bold tracking-wider uppercase">Active Engine</span>
+          <span className="text-[9px] sm:text-[10px] text-blue-700 dark:text-blue-400 font-bold tracking-wider uppercase">Active Engine</span>
         </div>
 
         <div className="space-y-1 text-slate-700 dark:text-slate-300 py-0.5">
-          <div className="flex items-center space-x-1.5 sm:space-x-2 text-blue-600 dark:text-blue-400 font-semibold text-[11px] sm:text-xs">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 text-blue-700 dark:text-blue-400 font-semibold text-[11px] sm:text-xs">
             <span className="animate-pulse font-bold shrink-0">❯</span>
             <span className="truncate">{terminalLines[pulseLine]}</span>
           </div>
-          <div className="text-[10px] sm:text-[11px] text-slate-500 pl-3.5 sm:pl-4 truncate">
-            Stage: <span className="text-slate-700 dark:text-slate-300 font-semibold">{currentStageName}</span> &bull; 4 Core AST Workers
+          <div className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 pl-3.5 sm:pl-4 truncate">
+            Stage: <span className="text-slate-900 dark:text-white font-bold">{currentStageName}</span> &bull; 4 Core AST Workers
           </div>
         </div>
       </div>
