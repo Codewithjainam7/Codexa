@@ -124,11 +124,34 @@ public class ReportExportService {
                     .diff-box.fix { border-top: 3px solid var(--accent-green); }
                     .diff-title { font-size: 12px; font-weight: 700; margin-bottom: 6px; }
                     .diff-title.vuln { color: #f87171; }
-                    .diff-title.fix { color: #4ade80; }
+                    @media print {
+                        body { background: #ffffff !important; color: #0f172a !important; padding: 0 !important; }
+                        .no-print { display: none !important; }
+                        .card, .finding, .diff-box { background: #f8fafc !important; border: 1px solid #cbd5e1 !important; color: #0f172a !important; page-break-inside: avoid; }
+                        .code-block { background: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+                        .disclaimer { background: #fffbeb !important; border-left-color: #f59e0b !important; color: #b45309 !important; }
+                    }
+                    .btn-print {
+                        background: #0284c7;
+                        color: #ffffff;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 6px;
+                        font-weight: 600;
+                        font-size: 13px;
+                        cursor: pointer;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 6px;
+                    }
+                    .btn-print:hover { background: #0369a1; }
                 </style>
             </head>
             <body>
                 <div class="container">
+                    <div class="no-print" style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+                        <button class="btn-print" onclick="window.print()">Print or Save as PDF</button>
+                    </div>
                     <div class="header">
                         <div class="brand">CODEXA</div>
                         <div class="tagline">Deterministic AST Security & Production Readiness Assessment</div>
