@@ -149,6 +149,12 @@ public class ReportExportService {
                             /100</div>
                         </div>
                         <div class="card">
+                            <div class="card-label">Architectural Health</div>
+                            <div class="card-value """).append(report.metrics() != null ? getScoreColor(report.metrics().architecturalScore()) : "green").append("""
+                            ">""").append(report.metrics() != null ? String.format("%.1f", report.metrics().architecturalScore()) : "100.0").append("""
+                            /100</div>
+                        </div>
+                        <div class="card">
                             <div class="card-label">Total Findings</div>
                             <div class="card-value">""").append(report.findings().size()).append("""
                             </div>
