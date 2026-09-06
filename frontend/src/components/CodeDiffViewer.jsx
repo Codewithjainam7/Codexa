@@ -19,10 +19,36 @@ export default function CodeDiffViewer({ originalCode, suggestedFix, ruleId, isA
 
   const handleCopy = () => {
     if (cleanedFixCode) {
-      navigator.clipboard.writeText(cleanedFixCode);
+      try {
+        if (typeof window !== 'undefined' && window.navigator?.vibrate) {
+          window.navigator.vibrate(10);
+        }
+      } catch (_) {}
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(cleanedFixCode).catch(() => {
+          fallbackCopy(cleanedFixCode);
+        });
+      } else {
+        fallbackCopy(cleanedFixCode);
+      }
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     }
+  };
+
+  const fallbackCopy = (text) => {
+    try {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    } catch (_) {}
   };
 
   // Render lines with numbering and proper soft-wrap to eliminate horizontal scrollbar clutter

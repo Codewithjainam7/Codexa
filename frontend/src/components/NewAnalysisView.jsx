@@ -152,23 +152,23 @@ export default function NewAnalysisView({ limits, onJobCreated, initialGithubUrl
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-10 sm:py-14 space-y-8 px-4 font-sans">
+    <div className="max-w-3xl mx-auto py-4 sm:py-12 space-y-6 sm:space-y-8 px-3.5 sm:px-4 font-sans">
       {/* Header section */}
-      <div className="space-y-3 text-left">
+      <div className="space-y-2 sm:space-y-3 text-left">
         <div className="inline-flex items-center space-x-2 text-xs font-mono text-[var(--accent-primary)] font-semibold uppercase tracking-wider cdx-pill px-3.5 py-1 rounded-full">
           <Shield className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
           <span>Zero-Bytecode Security Sandbox</span>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold font-display text-[var(--text-primary)] tracking-tight">
+        <h1 className="text-2xl sm:text-5xl font-extrabold font-display text-[var(--text-primary)] tracking-tight">
           Start Codebase Audit
         </h1>
-        <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed font-sans font-normal">
+        <p className="text-xs sm:text-base text-[var(--text-secondary)] leading-relaxed font-sans font-normal">
           Submit your codebase via public GitHub repository HTTPS link or upload a compressed ZIP archive for deep AST inspection and AI-assisted remediation.
         </p>
       </div>
 
       {/* Mode Switcher Tabs */}
-      <div className="flex flex-col sm:flex-row p-1.5 rounded-2xl cdx-glass-card border border-[var(--border-subtle)] gap-1">
+      <div className="flex flex-row p-1.5 rounded-2xl cdx-glass-card border border-[var(--border-subtle)] gap-1">
         <button
           onClick={() => { if (!isSubmitting) { setActiveTab('github'); setError(null); } }}
           disabled={isSubmitting}
