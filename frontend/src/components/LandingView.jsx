@@ -125,7 +125,7 @@ if stripeKey == "" {
             </div>
 
             {/* Trust Badges */}
-            <div className="pt-3 flex flex-wrap items-center gap-4 text-xs font-mono text-slate-600 dark:text-slate-400 font-medium">
+            <div className="pt-3 flex flex-wrap items-center gap-4 text-xs font-mono text-slate-700 dark:text-slate-300 font-medium">
               <span className="flex items-center space-x-1.5">
                 <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
                 <span>Zero Bytecode Exec</span>
@@ -179,7 +179,7 @@ if stripeKey == "" {
                     <span>19+ OWASP Rules Active</span>
                     <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">Enforced</span>
                   </div>
-                  <div className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">SQLi, RCE, SSRF, Deserialization, CSRF</div>
+                  <div className="text-[10px] text-slate-700 dark:text-slate-300 font-medium">SQLi, RCE, SSRF, Deserialization, CSRF</div>
                 </div>
 
                 {/* Telemetry Stat 2 - Readiness Score */}
@@ -195,7 +195,7 @@ if stripeKey == "" {
                     <span>98.5 / 100 Grade A</span>
                     <span className="text-[10px] font-mono text-blue-700 dark:text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">Verified</span>
                   </div>
-                  <div className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">Security 60% &bull; Quality 25% &bull; Ops 15%</div>
+                  <div className="text-[10px] text-slate-700 dark:text-slate-300 font-medium">Security 60% &bull; Quality 25% &bull; Ops 15%</div>
                 </div>
 
                 {/* Telemetry Stat 3 - AI Cascader */}
@@ -211,7 +211,7 @@ if stripeKey == "" {
                     <span>Nvidia Nemotron 550B</span>
                     <span className="text-[10px] font-mono text-indigo-700 dark:text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded">&lt; 85ms</span>
                   </div>
-                  <div className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">Contextual patches &amp; zero hallucination</div>
+                  <div className="text-[10px] text-slate-700 dark:text-slate-300 font-medium">Contextual patches &amp; zero hallucination</div>
                 </div>
               </div>
             </div>
@@ -225,7 +225,7 @@ if stripeKey == "" {
               <div className="p-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20">
                 <Shield className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
-              <span className="text-[11px] text-slate-600 dark:text-slate-400 font-mono font-medium">AST Engine</span>
+              <span className="text-[11px] text-slate-700 dark:text-slate-300 font-mono font-medium">AST Engine</span>
             </div>
             <div className="text-sm font-bold text-slate-950 dark:text-white font-display">19+ Security Rules</div>
           </div>
@@ -235,7 +235,7 @@ if stripeKey == "" {
               <div className="p-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
                 <Cpu className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
-              <span className="text-[11px] text-slate-600 dark:text-slate-400 font-mono font-medium">AI Cascade</span>
+              <span className="text-[11px] text-slate-700 dark:text-slate-300 font-mono font-medium">AI Cascade</span>
             </div>
             <div className="text-sm font-bold text-slate-950 dark:text-white font-display">Nemotron 550B</div>
           </div>
@@ -245,7 +245,7 @@ if stripeKey == "" {
               <div className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                 <Zap className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
-              <span className="text-[11px] text-slate-600 dark:text-slate-400 font-mono font-medium">Benchmark</span>
+              <span className="text-[11px] text-slate-700 dark:text-slate-300 font-mono font-medium">Benchmark</span>
             </div>
             <div className="text-sm font-bold text-slate-950 dark:text-white font-display">&lt; 100ms Parsing</div>
           </div>
@@ -255,7 +255,7 @@ if stripeKey == "" {
               <div className="p-1.5 rounded-lg bg-sky-500/10 border border-sky-500/20">
                 <Lock className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
-              <span className="text-[11px] text-slate-600 dark:text-slate-400 font-mono font-medium">Sandboxing</span>
+              <span className="text-[11px] text-slate-700 dark:text-slate-300 font-mono font-medium">Sandboxing</span>
             </div>
             <div className="text-sm font-bold text-slate-950 dark:text-white font-display">Zero Bytecode Exec</div>
           </div>
@@ -307,7 +307,7 @@ if stripeKey == "" {
                   className={`px-3 py-1 rounded-md text-xs font-mono uppercase font-bold transition-all duration-150 ${
                     activeCodeTab === tab
                       ? "bg-blue-500/20 text-blue-700 dark:text-blue-400 border border-blue-500/30 shadow-sm"
-                      : "text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white"
+                      : "text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white"
                   }`}
                 >
                   {tab}
@@ -384,7 +384,7 @@ if stripeKey == "" {
               Engine Architecture &amp; Capabilities
             </h2>
           </div>
-          <span className="text-xs font-mono text-slate-600 dark:text-slate-400 font-medium">5-Layer Security Shield</span>
+          <span className="text-xs font-mono text-slate-700 dark:text-slate-300 font-medium">5-Layer Security Shield</span>
         </div>
 
         <ul className="grid grid-cols-1 md:grid-cols-12 gap-5 auto-rows-fr">
@@ -398,7 +398,7 @@ if stripeKey == "" {
                 </div>
                 <div>
                   <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">OWASP Top 10 SAST</h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
+                  <p className="text-xs text-slate-700 dark:text-slate-300 mt-1.5 leading-relaxed font-normal">
                     Deterministic AST checking for SQL injection, command execution, hardcoded credentials, and deserialization flaws.
                   </p>
                 </div>
@@ -428,7 +428,7 @@ if stripeKey == "" {
                 </div>
                 <div>
                   <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Before &amp; After Fix Diffs</h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
+                  <p className="text-xs text-slate-700 dark:text-slate-300 mt-1.5 leading-relaxed font-normal">
                     Side-by-side IDE terminal diff comparison with automatic secret masking and copyable secure fixes.
                   </p>
                 </div>
@@ -436,7 +436,7 @@ if stripeKey == "" {
 
               {/* Mini IDE Terminal Window */}
               <div className="relative z-10 my-auto rounded-xl cdx-recessed p-3.5 font-mono text-[11px] space-y-2.5 shadow-inner">
-                <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] text-[10px] text-slate-600 dark:text-slate-400">
+                <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] text-[10px] text-slate-700 dark:text-slate-300">
                   <div className="flex items-center space-x-1.5">
                     <span className="w-2 h-2 rounded-full bg-rose-500/90" />
                     <span className="w-2 h-2 rounded-full bg-amber-500/90" />
@@ -475,7 +475,7 @@ if stripeKey == "" {
                 </div>
                 <div>
                   <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Nvidia Nemotron 550B AI</h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
+                  <p className="text-xs text-slate-700 dark:text-slate-300 mt-1.5 leading-relaxed font-normal">
                     State-of-the-art neural code review cascade generating contextual remediation and deep explanations.
                   </p>
                 </div>
@@ -499,14 +499,14 @@ if stripeKey == "" {
                 </div>
                 <div>
                   <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Readiness Score (0–100)</h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
+                  <p className="text-xs text-slate-700 dark:text-slate-300 mt-1.5 leading-relaxed font-normal">
                     Mathematical model weighting Security (60%), Quality (25%), and Operations (15%) with failure caps.
                   </p>
                 </div>
               </div>
 
               <div className="relative z-10 space-y-2.5 pt-4 border-t border-[var(--border-subtle)]">
-                <div className="flex items-center justify-between text-[10px] font-mono text-slate-600 dark:text-slate-400 font-medium">
+                <div className="flex items-center justify-between text-[10px] font-mono text-slate-700 dark:text-slate-300 font-medium">
                   <span>Readiness Weighting</span>
                   <span className="text-blue-700 dark:text-blue-400 font-bold">100% Deterministic</span>
                 </div>
@@ -529,13 +529,13 @@ if stripeKey == "" {
                 </div>
                 <div>
                   <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white">Zero-Execution Sandbox</h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-normal">
+                  <p className="text-xs text-slate-700 dark:text-slate-300 mt-1.5 leading-relaxed font-normal">
                     Safe archive decompression with Zip Slip protection, bomb size quotas, and zero untrusted bytecode execution.
                   </p>
                 </div>
               </div>
 
-              <div className="relative z-10 flex items-center justify-between pt-4 border-t border-[var(--border-subtle)] text-[11px] font-mono text-slate-600 dark:text-slate-400">
+              <div className="relative z-10 flex items-center justify-between pt-4 border-t border-[var(--border-subtle)] text-[11px] font-mono text-slate-700 dark:text-slate-300">
                 <span className="flex items-center space-x-1.5 text-emerald-700 dark:text-emerald-400 font-bold">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                   <span>Zip Slip Block</span>
@@ -576,7 +576,7 @@ if stripeKey == "" {
               01
             </div>
             <h4 className="text-sm font-bold text-slate-950 dark:text-white font-display mb-1">Sandboxed Ingestion</h4>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
+            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
               Safe extraction of ZIP archives or GitHub repos with Zip Slip, Bomb &amp; Depth verification.
             </p>
           </div>
@@ -587,7 +587,7 @@ if stripeKey == "" {
               02
             </div>
             <h4 className="text-sm font-bold text-slate-950 dark:text-white font-display mb-1">Deterministic AST Scan</h4>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
+            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
               JavaParser &amp; Multi-Lang regex pattern analyzers detect 19+ critical vulnerability rules.
             </p>
           </div>
@@ -598,7 +598,7 @@ if stripeKey == "" {
               03
             </div>
             <h4 className="text-sm font-bold text-slate-950 dark:text-white font-display mb-1">Neural Cascade</h4>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
+            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
               Nvidia Nemotron 550B generates explainable security insights and context-aware code patches.
             </p>
           </div>
@@ -609,7 +609,7 @@ if stripeKey == "" {
               04
             </div>
             <h4 className="text-sm font-bold text-slate-950 dark:text-white font-display mb-1">Readiness Index</h4>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
+            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
               Mathematical scoring formula produces clear 0–100 production-readiness rating &amp; report.
             </p>
           </div>
