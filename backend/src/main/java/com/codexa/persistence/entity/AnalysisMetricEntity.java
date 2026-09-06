@@ -28,6 +28,9 @@ public class AnalysisMetricEntity {
     @Column(name = "maintainability_score")
     private double maintainabilityScore;
 
+    @Column(name = "architectural_score")
+    private double architecturalScore = 100.0;
+
     @Column(name = "total_files")
     private int totalFiles;
 
@@ -101,6 +104,14 @@ public class AnalysisMetricEntity {
 
     public void setMaintainabilityScore(double maintainabilityScore) {
         this.maintainabilityScore = maintainabilityScore;
+    }
+
+    public double getArchitecturalScore() {
+        return architecturalScore;
+    }
+
+    public void setArchitecturalScore(double architecturalScore) {
+        this.architecturalScore = architecturalScore;
     }
 
     public int getTotalFiles() {
