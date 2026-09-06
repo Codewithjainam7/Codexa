@@ -138,18 +138,22 @@ export default function MobileHomeView({ onStartAnalysis, onViewResults, activeJ
       </div>
 
       {/* 3. Realtime Engine Telemetry Bar */}
-      <div className="grid grid-cols-3 gap-2 text-center">
-        <div className="p-2.5 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">AST Engine</div>
-          <div className="text-xs font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-0.5">READY</div>
+      <div className="grid grid-cols-4 gap-1.5 sm:gap-2 text-center">
+        <div className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div className="text-[8px] sm:text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">AST Engine</div>
+          <div className="text-[11px] sm:text-xs font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-0.5">READY</div>
         </div>
-        <div className="p-2.5 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">LLM Reviewer</div>
-          <div className="text-xs font-bold font-mono text-blue-600 dark:text-blue-400 mt-0.5 truncate">Nemotron</div>
+        <div className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div className="text-[8px] sm:text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">Maintainability</div>
+          <div className="text-[11px] sm:text-xs font-bold font-mono text-blue-600 dark:text-blue-400 mt-0.5 truncate">Tracked</div>
         </div>
-        <div className="p-2.5 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">Ruleset</div>
-          <div className="text-xs font-bold font-mono text-amber-600 dark:text-amber-400 mt-0.5">18 Active</div>
+        <div className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div className="text-[8px] sm:text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">AI Reviewer</div>
+          <div className="text-[11px] sm:text-xs font-bold font-mono text-indigo-600 dark:text-indigo-400 mt-0.5 truncate">Nemotron</div>
+        </div>
+        <div className="p-2 sm:p-2.5 rounded-xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div className="text-[8px] sm:text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">Ruleset</div>
+          <div className="text-[11px] sm:text-xs font-bold font-mono text-amber-600 dark:text-amber-400 mt-0.5">19+ AST</div>
         </div>
       </div>
 
