@@ -269,4 +269,22 @@
     animation: water-expand 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     will-change: transform, opacity;
   }
+
+  /* Clean Print Styles for PDF Export */
+  @media print {
+    body {
+      background: #ffffff !important;
+      color: #0f172a !important;
+    }
+    header, nav, footer, .cdx-bottom-nav, button {
+      display: none !important;
+    }
+    .cdx-glass-card, .cdx-card {
+      box-shadow: none !important;
+      border: 1px solid #cbd5e1 !important;
+      background: #ffffff !important;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+  }
 }
