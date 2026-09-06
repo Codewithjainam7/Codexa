@@ -67,4 +67,21 @@ class ReadinessScoringEngineTest {
         assertTrue(result.maintainabilityScore() < 100.0, "Maintainability score should decrease when quality issues exist");
         assertTrue(result.maintainabilityScore() >= 0.0, "Maintainability score must never be negative");
     }
+
+    @Test
+    void shouldEvaluateRatingsAndDebtRatioCorrectly() {
+        assertEquals("EXCELLENT", ReadinessScoringEngine.getQualityRating(95.0));
+        assertEquals("GOOD", ReadinessScoringEngine.getQualityRating(80.0));
+        assertEquals("FAIR", ReadinessScoringEngine.getQualityRating(60.0));
+        assertEquals("CRITICAL_ATTENTION_REQUIRED", ReadinessScoringEngine.getQualityRating(40.0));
+
+        assertEquals("HARDENED", ReadinessScoringEngine.getSecurityRating(92.0));
+        assertEquals("ACCEPTABLE", ReadinessScoringEngine.getSecurityRating(78.0));
+        assertEquals("AT_RISK", ReadinessScoringEngine.getSecurityRating(55.0));
+        assertEquals("VULNERABLE", ReadinessScoringEngine.getSecurityRating(30.0));
+
+        assertEquals(0.5, ReadinessScoringEngine.calculateDebtRatio(5, 10));
+        assertEquals(0.0, ReadinessScoringEngine.calculateDebtRatio(0, 10));
+        assertEquals(0.0, ReadinessScoringEngine.calculateDebtRatio(5, 0));
+    }
 }
