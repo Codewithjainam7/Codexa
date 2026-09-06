@@ -94,9 +94,9 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
                 className="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-[var(--bg-recessed)] hover:bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-primary)] hover:text-blue-500 transition-all cursor-pointer shrink-0"
               >
                 {theme === 'dark' ? (
-                  <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-400" />
+                  <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
                 ) : (
-                  <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-700" />
+                  <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-800" />
                 )}
               </button>
 
@@ -123,7 +123,7 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
                     }`}
                   />
                 </span>
-                <span className="text-[10px] font-mono text-[var(--text-muted)] whitespace-nowrap shrink-0">
+                <span className="text-[10px] font-mono font-bold text-[var(--text-secondary)] whitespace-nowrap shrink-0">
                   {isConnected ? 'API ONLINE' : 'OFFLINE'}
                 </span>
               </div>
