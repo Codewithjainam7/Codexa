@@ -65,6 +65,17 @@ export default function FindingsFilterBar({
           icon={AlertTriangle}
           align="right"
         />
+
+        {(category || severity || search) && (
+          <button
+            type="button"
+            onClick={() => { setCategory(''); setSeverity(''); setSearch(''); }}
+            className="col-span-2 sm:col-span-1 px-2.5 py-1.5 text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-500/10 rounded-lg transition-colors flex items-center justify-center gap-1 cursor-pointer border border-blue-500/20"
+          >
+            <X className="w-3 h-3" />
+            <span>Reset</span>
+          </button>
+        )}
       </div>
     </div>
   );
