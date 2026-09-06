@@ -27,11 +27,9 @@ public class NvidiaNemotronAiClient {
     private static final Logger log = LoggerFactory.getLogger(NvidiaNemotronAiClient.class);
     private static final String DEFAULT_OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
     private static final String DEFAULT_NVIDIA_ENDPOINT = "https://integrate.api.nvidia.com/v1/chat/completions";
-    private static final String DEFAULT_MODEL = "google/gemini-2.0-flash-exp:free";
+    private static final String DEFAULT_MODEL = "meta-llama/llama-3.3-70b-instruct:free";
     private static final List<String> FALLBACK_MODELS = List.of(
-            "google/gemini-2.0-flash-exp:free",
             "meta-llama/llama-3.3-70b-instruct:free",
-            "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
             "mistralai/mistral-small-24b-instruct-2501:free"
     );
 
