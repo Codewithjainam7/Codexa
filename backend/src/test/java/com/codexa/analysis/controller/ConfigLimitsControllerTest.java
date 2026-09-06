@@ -22,6 +22,8 @@ class ConfigLimitsControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.maxCompressedSizeMb").value(25))
                 .andExpect(jsonPath("$.maxExtractedSizeMb").value(100))
-                .andExpect(jsonPath("$.maxFileCount").value(1000));
+                .andExpect(jsonPath("$.maxFileCount").value(1000))
+                .andExpect(jsonPath("$.maxPathDepth").value(15))
+                .andExpect(jsonPath("$.maxSingleFileSizeMb").value(5));
     }
 }
