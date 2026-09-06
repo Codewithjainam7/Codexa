@@ -53,20 +53,22 @@ public class AnalysisJobController {
     public ResponseEntity<?> getReport(
             @PathVariable UUID jobId,
             @RequestParam(defaultValue = "json") String format,
-            @RequestParam(defaultValue = "false") boolean download
+            @RequestParam(defaultValue = "false") boolean download,
+            @RequestParam(defaultValue = "false") boolean view
     ) {
         AnalysisReportResponse report = jobService.generateReport(jobId);
+        String disposition = view ? "inline" : "attachment";
 
-        if ("html".equalsIgnoreCase(format)) {
+        if ("html".equalsIgnoreCase(format) || "pdf".equalsIgnoreCase(format)) {
             String html = reportExportService.generateHtmlReport(report);
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"codexa-report-" + jobId + ".html\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, disposition + "; filename=\"codexa-report-" + jobId + ".html\"")
                     .contentType(MediaType.TEXT_HTML)
                     .body(html);
         } else if ("markdown".equalsIgnoreCase(format) || "md".equalsIgnoreCase(format)) {
             String markdown = reportExportService.generateMarkdownReport(report);
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"codexa-report-" + jobId + ".md\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, disposition + "; filename=\"codexa-report-" + jobId + ".md\"")
                     .contentType(MediaType.TEXT_PLAIN)
                     .body(markdown);
         }
@@ -88,6 +90,6 @@ public class AnalysisJobController {
             @PathVariable UUID jobId,
             @RequestParam(defaultValue = "json") String format
     ) {
-        return getReport(jobId, format, true);
+        return getReport(jobId, format, true, false);
     }
 }

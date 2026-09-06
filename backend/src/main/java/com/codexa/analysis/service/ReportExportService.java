@@ -150,9 +150,15 @@ public class ReportExportService {
             </head>
             <body>
                 <div class="container">
-                    <div class="no-print" style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+                    <div class="no-print" style="display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+                        <button class="btn-print" style="background: #334155;" onclick="if(navigator.share){navigator.share({title:document.title,url:window.location.href});}else{navigator.clipboard.writeText(window.location.href);alert('Report URL copied!');}">Share Report</button>
                         <button class="btn-print" onclick="window.print()">Print or Save as PDF</button>
                     </div>
+                    <script>
+                        if (window.location.search.indexOf('print=true') !== -1) {
+                            window.addEventListener('load', function() { setTimeout(function() { window.print(); }, 400); });
+                        }
+                    </script>
                     <div class="header">
                         <div class="brand">CODEXA</div>
                         <div class="tagline">Deterministic AST Security & Production Readiness Assessment</div>
