@@ -89,33 +89,33 @@ export default function FileTreeExplorer({ findings = [], selectedFile, onSelect
     switch (highestSev) {
       case 'CRITICAL':
         return {
-          textColor: 'text-rose-400 font-semibold',
-          badgeBg: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
+          textColor: 'text-rose-600 dark:text-rose-400 font-semibold',
+          badgeBg: 'bg-rose-500/10 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-500/30 dark:border-rose-500/40',
           dot: 'bg-rose-500 animate-pulse'
         };
       case 'HIGH':
         return {
-          textColor: 'text-orange-400 font-semibold',
-          badgeBg: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
+          textColor: 'text-orange-600 dark:text-orange-400 font-semibold',
+          badgeBg: 'bg-orange-500/10 dark:bg-orange-500/20 text-orange-700 dark:text-orange-300 border border-orange-500/30 dark:border-orange-500/40',
           dot: 'bg-orange-500'
         };
       case 'MEDIUM':
         return {
-          textColor: 'text-amber-400',
-          badgeBg: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+          textColor: 'text-amber-600 dark:text-amber-400 font-semibold',
+          badgeBg: 'bg-amber-500/10 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30 dark:border-amber-500/40',
           dot: 'bg-amber-400'
         };
       case 'LOW':
         return {
-          textColor: 'text-blue-400',
-          badgeBg: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+          textColor: 'text-blue-600 dark:text-blue-400 font-semibold',
+          badgeBg: 'bg-blue-500/10 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 dark:border-blue-500/40',
           dot: 'bg-blue-400'
         };
       default:
         return {
-          textColor: 'text-slate-400',
-          badgeBg: 'bg-slate-800 text-slate-400 border-slate-700',
-          dot: 'bg-slate-600'
+          textColor: 'text-slate-600 dark:text-slate-400',
+          badgeBg: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-400 border border-slate-200 dark:border-slate-700',
+          dot: 'bg-slate-500'
         };
     }
   };
@@ -149,30 +149,30 @@ export default function FileTreeExplorer({ findings = [], selectedFile, onSelect
           style={{ paddingLeft: `${depth * 14 + 8}px` }}
           className={`flex items-center justify-between py-1.5 pr-2 rounded-lg cursor-pointer transition-all duration-150 ${
             isSelected 
-              ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300' 
-              : 'hover:bg-slate-800/60 text-slate-300'
+              ? 'bg-blue-500/15 dark:bg-blue-500/20 border border-blue-500/30 dark:border-blue-500/40 text-blue-700 dark:text-blue-300 font-semibold' 
+              : 'hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
           }`}
         >
           <div className="flex items-center space-x-1.5 min-w-0 pr-2">
             {isFolder ? (
               <>
-                <span className="text-slate-500 w-3.5 h-3.5 flex items-center justify-center">
+                <span className="text-slate-400 dark:text-slate-500 w-3.5 h-3.5 flex items-center justify-center">
                   {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                 </span>
                 {isExpanded ? (
-                  <FolderOpen className="w-4 h-4 text-amber-400 shrink-0" />
+                  <FolderOpen className="w-4 h-4 text-amber-500 dark:text-amber-400 shrink-0" />
                 ) : (
-                  <Folder className="w-4 h-4 text-amber-400/80 shrink-0" />
+                  <Folder className="w-4 h-4 text-amber-500/80 dark:text-amber-400/80 shrink-0" />
                 )}
-                <span className="truncate font-medium text-slate-200">{node.name}</span>
+                <span className="truncate font-medium text-slate-800 dark:text-slate-200">{node.name}</span>
               </>
             ) : (
               <>
                 <span className="w-3.5 h-3.5 flex items-center justify-center shrink-0">
                   <span className={`w-2 h-2 rounded-full ${sevStyle.dot}`} />
                 </span>
-                <FileCode className={`w-4 h-4 shrink-0 ${fileStats ? sevStyle.textColor : 'text-slate-400'}`} />
-                <span className={`truncate ${fileStats ? sevStyle.textColor : 'text-slate-300'}`}>
+                <FileCode className={`w-4 h-4 shrink-0 ${fileStats ? sevStyle.textColor : 'text-slate-500 dark:text-slate-400'}`} />
+                <span className={`truncate ${fileStats ? sevStyle.textColor : 'text-slate-700 dark:text-slate-300'}`}>
                   {node.name}
                 </span>
               </>
