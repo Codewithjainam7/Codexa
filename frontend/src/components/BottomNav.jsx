@@ -38,7 +38,7 @@ export default function BottomNav({ currentView, setCurrentView, activeJobId }) 
   ];
 
   return (
-    <nav className="fixed bottom-3 inset-x-4 z-50 md:hidden pointer-events-auto select-none">
+    <nav className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] inset-x-4 z-50 md:hidden pointer-events-auto select-none">
       <div className="max-w-md mx-auto relative px-2 py-1.5 rounded-2xl bg-white/95 dark:bg-[#070A14]/95 backdrop-blur-3xl border border-slate-200/80 dark:border-white/10 shadow-[0_16px_40px_rgba(0,0,0,0.18),0_0_20px_rgba(37,99,235,0.08)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.7),0_0_25px_rgba(37,99,235,0.12)]">
         {/* Subtle Ambient Top Accent Line */}
         <div className="absolute top-0 inset-x-8 h-[1px] bg-gradient-to-r from-transparent via-blue-500/40 dark:via-blue-400/30 to-transparent pointer-events-none" />
