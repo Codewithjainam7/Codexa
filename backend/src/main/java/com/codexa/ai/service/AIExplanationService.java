@@ -98,6 +98,13 @@ public class AIExplanationService {
         applyExplanation(finding, fallback);
     }
 
+    public void enrichFindingDeterministic(FindingEntity finding) {
+        String maskedEvidence = secretMasker.mask(finding.getEvidenceMasked());
+        finding.setEvidenceMasked(maskedEvidence);
+        LlmExplanationResponse fallback = templateService.generateFallback(finding);
+        applyExplanation(finding, fallback);
+    }
+
     private void applyExplanation(FindingEntity finding, LlmExplanationResponse resp) {
         if (resp.title() != null && !resp.title().isBlank()) finding.setTitle(resp.title());
         if (resp.explanation() != null && !resp.explanation().isBlank()) finding.setDescription(resp.explanation());
