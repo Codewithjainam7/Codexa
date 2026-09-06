@@ -153,11 +153,11 @@ export function ExpandableFindingCards({ findings = [], getSeverityBadge }) {
 
                       {/* Vulnerability Analysis */}
                       <div className="bg-white dark:bg-slate-950/80 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1 shadow-sm">
-                        <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
+                        <div className="text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center space-x-1.5 font-display">
                           <Info className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                           <span>Vulnerability Analysis</span>
                         </div>
-                        <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-300 leading-relaxed pt-1">
+                        <p className="text-xs sm:text-sm text-slate-900 dark:text-slate-200 leading-relaxed pt-1">
                           {f.description}
                         </p>
                       </div>
@@ -169,7 +169,7 @@ export function ExpandableFindingCards({ findings = [], getSeverityBadge }) {
                             <Flame className="w-4 h-4" />
                             <span>Potential Security & Architectural Risk:</span>
                           </strong>
-                          <p className="leading-relaxed text-slate-700 dark:text-slate-300/90">{f.impact}</p>
+                          <p className="leading-relaxed text-slate-800 dark:text-slate-200 font-medium">{f.impact}</p>
                         </div>
                       )}
 
@@ -183,7 +183,7 @@ export function ExpandableFindingCards({ findings = [], getSeverityBadge }) {
                       {/* Security References */}
                       {f.references && f.references.length > 0 && (
                         <div className="pt-2 border-t border-slate-200 dark:border-slate-800/80 flex flex-wrap items-center gap-2 text-[11px]">
-                          <span className="text-slate-500 dark:text-slate-400 font-medium">References:</span>
+                          <span className="text-slate-700 dark:text-slate-300 font-semibold">References:</span>
                           {f.references.map((ref, idx) => (
                             <a
                               key={idx}
