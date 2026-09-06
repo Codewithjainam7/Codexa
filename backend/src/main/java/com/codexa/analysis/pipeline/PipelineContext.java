@@ -19,6 +19,7 @@ public class PipelineContext {
     private double securityScore = 100.0;
     private double qualityScore = 100.0;
     private double operationsScore = 100.0;
+    private double maintainabilityScore = 100.0;
     private double overallScore = 100.0;
     private ProductionVerdict verdict = ProductionVerdict.REVIEW_COMPLETE;
     private String executiveSummary = "";
@@ -88,6 +89,14 @@ public class PipelineContext {
 
     public void setOperationsScore(double operationsScore) {
         this.operationsScore = operationsScore;
+    }
+
+    public double getMaintainabilityScore() {
+        return maintainabilityScore;
+    }
+
+    public void setMaintainabilityScore(double maintainabilityScore) {
+        this.maintainabilityScore = maintainabilityScore;
     }
 
     public double getOverallScore() {
