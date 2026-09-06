@@ -149,30 +149,30 @@ export default function FileTreeExplorer({ findings = [], selectedFile, onSelect
           style={{ paddingLeft: `${depth * 14 + 8}px` }}
           className={`flex items-center justify-between py-1.5 pr-2 rounded-lg cursor-pointer transition-all duration-150 ${
             isSelected 
-              ? 'bg-blue-500/15 dark:bg-blue-500/20 border border-blue-500/30 dark:border-blue-500/40 text-blue-700 dark:text-blue-300 font-semibold' 
-              : 'hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
+              ? 'bg-blue-500/15 dark:bg-blue-500/25 border border-blue-500/40 dark:border-blue-500/50 text-blue-800 dark:text-blue-200 font-bold shadow-sm' 
+              : 'hover:bg-slate-200/70 dark:hover:bg-slate-800/60 text-slate-900 dark:text-slate-100'
           }`}
         >
           <div className="flex items-center space-x-1.5 min-w-0 pr-2">
             {isFolder ? (
               <>
-                <span className="text-slate-400 dark:text-slate-500 w-3.5 h-3.5 flex items-center justify-center">
+                <span className="text-slate-500 dark:text-slate-400 w-3.5 h-3.5 flex items-center justify-center">
                   {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                 </span>
                 {isExpanded ? (
-                  <FolderOpen className="w-4 h-4 text-amber-500 dark:text-amber-400 shrink-0" />
+                  <FolderOpen className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
                 ) : (
-                  <Folder className="w-4 h-4 text-amber-500/80 dark:text-amber-400/80 shrink-0" />
+                  <Folder className="w-4 h-4 text-amber-600/90 dark:text-amber-400/90 shrink-0" />
                 )}
-                <span className="truncate font-medium text-slate-800 dark:text-slate-200">{node.name}</span>
+                <span className="truncate font-semibold text-slate-900 dark:text-slate-100">{node.name}</span>
               </>
             ) : (
               <>
                 <span className="w-3.5 h-3.5 flex items-center justify-center shrink-0">
                   <span className={`w-2 h-2 rounded-full ${sevStyle.dot}`} />
                 </span>
-                <FileCode className={`w-4 h-4 shrink-0 ${fileStats ? sevStyle.textColor : 'text-slate-500 dark:text-slate-400'}`} />
-                <span className={`truncate ${fileStats ? sevStyle.textColor : 'text-slate-700 dark:text-slate-300'}`}>
+                <FileCode className={`w-4 h-4 shrink-0 ${fileStats ? sevStyle.textColor : 'text-slate-600 dark:text-slate-400'}`} />
+                <span className={`truncate font-medium ${fileStats ? sevStyle.textColor : 'text-slate-800 dark:text-slate-200'}`}>
                   {node.name}
                 </span>
               </>
