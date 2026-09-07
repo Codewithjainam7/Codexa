@@ -37,6 +37,7 @@ public class SecurityHeadersFilter implements Filter {
             httpServletResponse.setHeader("Permissions-Policy", "geolocation=(), camera=(), microphone=()");
             httpServletResponse.setHeader("Cross-Origin-Opener-Policy", "same-origin");
             httpServletResponse.setHeader("X-Permitted-Cross-Domain-Policies", "none");
+            httpServletResponse.setHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
             httpServletResponse.setHeader("Content-Security-Policy", CSP_POLICY);
         }
         chain.doFilter(request, response);
