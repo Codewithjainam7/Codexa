@@ -85,3 +85,12 @@ class ReadinessScoringEngineTest {
         assertEquals(0.0, ReadinessScoringEngine.calculateDebtRatio(5, 0));
     }
 }
+
+    @Test
+    void nullFindingsListShouldReturnCleanScores() {
+        var result = scoringEngine.computeScores(null);
+        assertNotNull(result);
+        assertEquals(100.0, result.overallScore());
+        assertEquals(ProductionVerdict.REVIEW_COMPLETE, result.verdict());
+    }
+}
