@@ -145,4 +145,15 @@ public class SecureZipExtractor {
 
         return new ExtractionResult(normalizedTargetDir, fileCount, totalBytesExtracted, extractedFiles);
     }
+
+    /**
+     * Checks if the JVM has sufficient heap headroom before initiating high-throughput extraction.
+     */
+    public boolean hasSufficientMemoryHeadroom() {
+        long freeMem = Runtime.getRuntime().freeMemory();
+        long maxMem = Runtime.getRuntime().maxMemory();
+        long totalMem = Runtime.getRuntime().totalMemory();
+        long usableMem = (maxMem - totalMem) + freeMem;
+        return usableMem > (32L * 1024L * 1024L);
+    }
 }
