@@ -1,70 +1,70 @@
 # Codexa High-Performance Analysis Pipeline
 
-Codexa processes source code archives and Git repositories through a multi-stage deterministic pipeline engineered for blazing speed and rigorous security analysis.
+Codexa processes source code archives and Git repositories through a multi-stage deterministic pipeline engineered for blazing speed, high-scale ingestion, and rigorous static security analysis.
 
 ```
-       [ Uploaded Archive / Git URL ]
-                    │
-                    ▼
-     [ Stage 1: Sandboxed Ingestion ]
-    (Path Traversal, Quotas, 64KB Buffer)
-                    │
-                    ▼
-   [ Stage 2: Parallel AST Parsing ]
- (ThreadLocal JavaParser, ForkJoinPool)
-                    │
-                    ▼
-   [ Stage 3: Rule Evaluation Engine ]
- (19+ OWASP Deterministic AST Visitors)
-                    │
-                    ▼
-  [ Stage 4: AI Enrichment & Fallback ]
-  (Top-3 Findings LLM + Template Fallback)
-                    │
-                    ▼
- [ Stage 5: Multi-Factor Risk Scoring ]
- (Security, Quality, Ops, Maintainability, Debt)
-                    │
-                    ▼
- [ Stage 6: Report Generation & Export ]
- (JSON API, Markdown, Standalone HTML & PDF)
+       [ Uploaded Archive / Git URL (Up to 3 GB) ]
+                          │
+                          ▼
+        [ Stage 1: Sandboxed Ingestion ]
+       (Path Traversal, Quotas, 50,000 Files)
+                          │
+                          ▼
+       [ Stage 2: Parallel AST Parsing ]
+    (ThreadLocal JavaParser, ForkJoinPool)
+                          │
+                          ▼
+       [ Stage 3: Rule Evaluation Engine ]
+    (23+ OWASP Deterministic AST Security Rules)
+                          │
+                          ▼
+      [ Stage 4: Deep Project Diagnostics ]
+  (White-Box AST Metrics & Black-Box Ingress Map)
+                          │
+                          ▼
+     [ Stage 5: AI Enrichment & Fallback ]
+    (Top-3 Findings LLM + Template Fallback)
+                          │
+                          ▼
+    [ Stage 6: Multi-Factor Risk Scoring ]
+ (Security 60%, Quality 25%, Ops 15%, Maintainability)
+                          │
+                          ▼
+    [ Stage 7: Report Generation & Export ]
+   (Interactive Dashboard, PDF, HTML, MD, JSON)
 ```
 
 ## Stage Breakdown
 
-### Stage 1: Sandboxed Ingestion
-- **Zip Slip Mitigation**: Enforces canonical destination containment within staging root.
-- **Enterprise Boundaries**: Limits up to 500MB compressed, 1000MB extracted, 20,000 files.
-- **Selective Filtering**: Discards binaries, node_modules, build outputs, and vendor trees.
+### Stage 1: Sandboxed Ingestion & Scaling
+- **High-Capacity Quotas**: Supports archives up to **3,072 MB (3.0 GB)** upload size, **4,000 MB (4.0 GB)** extracted capacity, and **50,000 files** per scan.
+- **Zip Slip Defense**: Canonical path validation prevents directory traversal out of isolated staging directories.
+- **Selective Filtering**: Discards binaries, `node_modules`, build outputs, coverage caches, and vendor directories.
 
 ### Stage 2: Parallel AST Parsing
 - Parses source files into structured Abstract Syntax Trees concurrently using a `ForkJoinPool` with `ThreadLocal<JavaParser>` instances.
-- Zero parser re-instantiation overhead across threads.
+- Zero parser re-instantiation overhead across worker threads.
 
-### Stage 3: Deterministic Rule Evaluation
-- Analyzes AST nodes across 19 OWASP Top 10 rules including SQL injection, command injection, secret leakage, and missing access control.
-- Deterministic detection produces zero false negatives on known patterns.
+### Stage 3: Deterministic Rule Evaluation (23+ Rules)
+- Analyzes AST nodes across 23 deterministic rules including SQL Injection, Command Injection, Insecure Deserialization, Path Traversal, SSRF, CSRF, and Cryptographic failures.
+- Deterministic AST visitor pattern produces reproducible results with zero hallucination.
 
-### Stage 4: AI Enrichment & Remediation Diff Generation
-- Prioritizes top-3 highest severity findings for deep neural LLM remediation generation.
-- Remaining findings use instant deterministic remediation templates, avoiding latency spikes and rate limits.
+### Stage 4: Deep Project Diagnostics Collection
+- **Code Composition**: Extracts lines of code (LOC), documentation/comment lines, blank lines, and language distribution (Java, TypeScript, Python, SQL, Config).
+- **White-Box AST Metrics**: Calculates average/peak cyclomatic complexity, AST nesting depth, total classes/methods/interfaces, and top complex files refactoring leaderboard.
+- **Black-Box Attack Surface**: Maps exposed HTTP endpoints (`@GetMapping`, `@PostMapping`, Express, FastAPI), access control boundaries, and perimeter status.
 
-### Stage 5: Production Readiness & Quality Scoring
-- **Overall Score**: `0.60 * Security + 0.25 * Quality + 0.15 * Operations`
-- **Maintainability Index**: Evaluates code complexity, swallowed exceptions, and smell count.
-- **Architectural Health**: Penalizes structural anti-patterns, cyclic complexity, and nesting.
+### Stage 5: AI Enrichment & Remediation Diff Generation
+- Prioritizes top findings for deep neural LLM remediation generation with prompt secret masking.
+- Offline deterministic template fallback ensures zero downtime if AI service is unavailable.
+
+### Stage 6: Production Readiness & Quality Scoring
+- **Overall Score**: `0.60 * Security + 0.25 * Quality + 0.15 * Operations`.
+- **Maintainability Index**: Refactoring penalty based on cyclomatic complexity and nesting depth.
+- **Architectural Health**: Evaluates layered separation, controller isolation, and error handling.
 - **Verdict Resolver**: Enforces strict production blocking caps on critical vulnerabilities.
 
-### Stage 6: Multi-Format Report Export
-- **JSON**: Machine-readable full scan output via `/api/v1/analyses/{id}/export?format=json`.
-- **Markdown**: Formatted executive summary table, findings catalog, and remediation snippets.
-- **HTML**: Standalone responsive report with embedded `@media print` styles and one-click "Print / Save as PDF" button.
-
-
-### AST Deterministic Parsing vs. Generative LLM Analysis
-
-| Dimension | JavaParser AST Engine | Large Language Model (LLM) |
-| :--- | :--- | :--- |
-| **Determinism** | 100% reproducible syntax analysis | Probabilistic / non-deterministic |
-| **False Positives** | Strict rule-bound parsing | Potential hallucinations |
-| **Role in Codexa** | Primary vulnerability detection | Remediation patch generation |
+### Stage 7: Multi-Format Report Export
+- **JSON**: Complete machine-readable scan payload via `/api/v1/analyses/{id}/export?format=json`.
+- **Markdown**: Formatted executive summary, code composition, white-box complexity, black-box endpoints, and collapsible diffs.
+- **HTML & PDF**: Standalone styled executive report with `@media print` white-paper styles.
