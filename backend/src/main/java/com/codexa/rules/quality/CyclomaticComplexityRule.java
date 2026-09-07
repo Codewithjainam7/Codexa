@@ -103,10 +103,16 @@ public class CyclomaticComplexityRule implements AnalysisRule {
         complexity += method.findAll(ForEachStmt.class).size();
         complexity += method.findAll(CatchClause.class).size();
         complexity += method.findAll(ConditionalExpr.class).size();
-        complexity += (int) method.findAll(SwitchEntry.class).stream().filter(e -> !e.getLabels().isEmpty()).count();
-        complexity += (int) method.findAll(BinaryExpr.class).stream()
-                .filter(b -> b.getOperator() == BinaryExpr.Operator.AND || b.getOperator() == BinaryExpr.Operator.OR)
-                .count();
+        for (SwitchEntry e : method.findAll(SwitchEntry.class)) {
+            if (!e.getLabels().isEmpty()) {
+                complexity++;
+            }
+        }
+        for (BinaryExpr b : method.findAll(BinaryExpr.class)) {
+            if (b.getOperator() == BinaryExpr.Operator.AND || b.getOperator() == BinaryExpr.Operator.OR) {
+                complexity++;
+            }
+        }
 
         return complexity;
     }

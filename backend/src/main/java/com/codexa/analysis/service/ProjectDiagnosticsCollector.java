@@ -373,7 +373,11 @@ public class ProjectDiagnosticsCollector {
         complexity += method.findAll(ForEachStmt.class).size();
         complexity += method.findAll(WhileStmt.class).size();
         complexity += method.findAll(DoStmt.class).size();
-        complexity += method.findAll(SwitchEntry.class).stream().filter(e -> !e.getLabels().isEmpty()).count();
+        for (SwitchEntry e : method.findAll(SwitchEntry.class)) {
+            if (!e.getLabels().isEmpty()) {
+                complexity++;
+            }
+        }
         return complexity;
     }
 
