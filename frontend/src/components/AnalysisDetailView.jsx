@@ -563,6 +563,49 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                   </div>
                 </div>
               </div>
+
+              {/* Dual-Spectrum Testing: White-Box Code Audit & Black-Box Attack Surface Simulation */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                <div className="p-4 rounded-2xl cdx-card border border-blue-500/20 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Code className="w-4 h-4 text-blue-400" />
+                      <h4 className="text-xs font-bold text-[var(--text-primary)] font-display">White-Box Code Audit (AST)</h4>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                      INTERNAL CODE
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[var(--text-muted)] leading-relaxed font-sans">
+                    Deterministic traversal of Abstract Syntax Trees, cyclomatic complexity profiling, dataflow taint tracing, and automated code-patch generation.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3 text-[10.5px] font-mono text-slate-300 pt-1">
+                    <span className="flex items-center space-x-1 text-emerald-400 font-semibold"><span>✓</span><span>Zero-Hallucination AST</span></span>
+                    <span className="flex items-center space-x-1 text-blue-400 font-semibold"><span>✓</span><span>In-Memory Masking</span></span>
+                    <span className="flex items-center space-x-1 text-indigo-400 font-semibold"><span>✓</span><span>Remediation Diffs</span></span>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-2xl cdx-card border border-purple-500/20 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Shield className="w-4 h-4 text-purple-400" />
+                      <h4 className="text-xs font-bold text-[var(--text-primary)] font-display">Black-Box Attack Simulation</h4>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30">
+                      EXTERIOR SURFACE
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[var(--text-muted)] leading-relaxed font-sans">
+                    Inspection of exposed API endpoints, unauthenticated ingress routes, permissive CORS policies, rate-limiting boundaries, and header disclosures.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3 text-[10.5px] font-mono text-slate-300 pt-1">
+                    <span className="flex items-center space-x-1 text-emerald-400 font-semibold"><span>✓</span><span>API Ingress Mapping</span></span>
+                    <span className="flex items-center space-x-1 text-purple-400 font-semibold"><span>✓</span><span>CORS Boundary Check</span></span>
+                    <span className="flex items-center space-x-1 text-cyan-400 font-semibold"><span>✓</span><span>Rate-Limit Defense</span></span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
