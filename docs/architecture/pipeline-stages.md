@@ -59,3 +59,12 @@ Codexa processes source code archives and Git repositories through a multi-stage
 - **JSON**: Machine-readable full scan output via `/api/v1/analyses/{id}/export?format=json`.
 - **Markdown**: Formatted executive summary table, findings catalog, and remediation snippets.
 - **HTML**: Standalone responsive report with embedded `@media print` styles and one-click "Print / Save as PDF" button.
+
+
+### AST Deterministic Parsing vs. Generative LLM Analysis
+
+| Dimension | JavaParser AST Engine | Large Language Model (LLM) |
+| :--- | :--- | :--- |
+| **Determinism** | 100% reproducible syntax analysis | Probabilistic / non-deterministic |
+| **False Positives** | Strict rule-bound parsing | Potential hallucinations |
+| **Role in Codexa** | Primary vulnerability detection | Remediation patch generation |
