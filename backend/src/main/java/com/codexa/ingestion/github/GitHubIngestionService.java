@@ -64,6 +64,7 @@ public class GitHubIngestionService {
         RepoCoordinates coords = parseCoordinates(repoUrl);
         String archiveUrl = "https://api.github.com/repos/" + coords.owner() + "/" + coords.repo() + "/zipball";
 
+        log.debug("Target GitHub coordinates: owner={}, repo={}", coords.owner(), coords.repo());
         log.info("Fetching public GitHub repository archive from: {}", archiveUrl);
 
         try {
