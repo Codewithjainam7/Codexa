@@ -885,7 +885,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
             <div className="space-y-6">
               {/* Telemetry Metric Meters */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-4 rounded-2xl cdx-card border border-[var(--border-subtle)] space-y-2">
+                <div className="p-4 rounded-2xl cdx-card border border-[var(--border-subtle)] space-y-2 cursor-help" title="McCabe Cyclomatic Complexity: measures distinct linear execution paths. Target &lt; 10.0 per method.">
                   <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Average Cyclomatic Complexity</div>
                   <div className="text-2xl sm:text-3xl font-black text-blue-400 font-mono">
                     {diagnostics.whiteBox.avgComplexity}
@@ -893,7 +893,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                   <div className="text-[11px] text-emerald-400 font-medium">Optimal (&lt; 10.0 target)</div>
                 </div>
 
-                <div className="p-4 rounded-2xl cdx-card border border-[var(--border-subtle)] space-y-2">
+                <div className="p-4 rounded-2xl cdx-card border border-[var(--border-subtle)] space-y-2 cursor-help" title="Highest cyclomatic complexity observed in a single method across the repository.">
                   <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Peak Method Complexity</div>
                   <div className="text-2xl sm:text-3xl font-black text-amber-400 font-mono">
                     {diagnostics.whiteBox.peakComplexity}
@@ -903,7 +903,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                   </div>
                 </div>
 
-                <div className="p-4 rounded-2xl cdx-card border border-[var(--border-subtle)] space-y-2">
+                <div className="p-4 rounded-2xl cdx-card border border-[var(--border-subtle)] space-y-2 cursor-help" title="Maximum AST block nesting depth (if/for/while/try). Nesting &gt; 4 indicates arrow anti-pattern.">
                   <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Max AST Nesting Depth</div>
                   <div className="text-2xl sm:text-3xl font-black text-purple-400 font-mono">
                     {diagnostics.whiteBox.maxNestingDepth} Levels
@@ -911,7 +911,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                   <div className="text-[11px] text-emerald-400 font-medium">Within safe readability threshold</div>
                 </div>
 
-                <div className="p-4 rounded-2xl cdx-card border border-[var(--border-subtle)] space-y-2">
+                <div className="p-4 rounded-2xl cdx-card border border-[var(--border-subtle)] space-y-2 cursor-help" title="Total counts of classes, interfaces, and methods parsed in the Abstract Syntax Tree.">
                   <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Structural Declarations</div>
                   <div className="text-2xl sm:text-3xl font-black text-[var(--text-primary)] font-mono">
                     {diagnostics.whiteBox.totalClasses + diagnostics.whiteBox.totalMethods}
