@@ -47,14 +47,29 @@ export async function submitGitHubUrl(repoUrl) {
   return data;
 }
 
+const inFlightJobRequests = new Map();
+
 export async function getAnalysisJob(jobId) {
-  const res = await fetch(`${API_BASE}/analyses/${jobId}`);
-  if (!res.ok) {
-    const error = new Error(res.status === 404 ? 'Analysis job not found' : 'Failed to fetch analysis job');
-    error.status = res.status;
-    throw error;
+  if (inFlightJobRequests.has(jobId)) {
+    return inFlightJobRequests.get(jobId);
   }
-  return res.json();
+
+  const requestPromise = (async () => {
+    try {
+      const res = await fetch(`${API_BASE}/analyses/${jobId}`);
+      if (!res.ok) {
+        const error = new Error(res.status === 404 ? 'Analysis job not found' : 'Failed to fetch analysis job');
+        error.status = res.status;
+        throw error;
+      }
+      return await res.json();
+    } finally {
+      inFlightJobRequests.delete(jobId);
+    }
+  })();
+
+  inFlightJobRequests.set(jobId, requestPromise);
+  return requestPromise;
 }
 
 export async function getFindings(jobId, params = {}) {
