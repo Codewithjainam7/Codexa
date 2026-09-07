@@ -215,3 +215,8 @@ Test coverage includes:
 
 ## 🔒 Security & Privacy Notice
 Codexa treats all submitted codebases as untrusted and private. Uploaded archives and cloned repositories are isolated in ephemeral UUID directories and purged immediately upon analysis completion or via automated scheduled sweeps. No source code or credentials are transmitted externally without explicit user configuration.
+
+
+### Production Readiness Weighted Formula
+
+$$\text{Readiness Score} = (\text{Security} \times 0.60) + (\text{Quality} \times 0.15) + (\text{Maintainability} \times 0.15) + (\text{Architecture} \times 0.10)$$
