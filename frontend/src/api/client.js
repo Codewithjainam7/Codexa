@@ -46,7 +46,11 @@ export async function submitGitHubUrl(repoUrl) {
 
 export async function getAnalysisJob(jobId) {
   const res = await fetch(`${API_BASE}/analyses/${jobId}`);
-  if (!res.ok) throw new Error('Failed to fetch analysis job');
+  if (!res.ok) {
+    const error = new Error(res.status === 404 ? 'Analysis job not found' : 'Failed to fetch analysis job');
+    error.status = res.status;
+    throw error;
+  }
   return res.json();
 }
 

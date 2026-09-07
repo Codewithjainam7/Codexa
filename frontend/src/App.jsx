@@ -33,19 +33,25 @@ function MainApp() {
   };
 
   useEffect(() => {
+    let failureCount = 0;
     const initApp = async () => {
       try {
         await checkHealth();
         setIsConnected(true);
+        failureCount = 0;
         const lData = await getLimits();
         setLimits(lData);
       } catch (e) {
-        setIsConnected(false);
+        failureCount++;
+        // Prevent false OFFLINE status on a single momentary wake-up delay
+        if (failureCount >= 2) {
+          setIsConnected(false);
+        }
       }
     };
 
     initApp();
-    const interval = setInterval(initApp, 10000);
+    const interval = setInterval(initApp, 8000);
     return () => clearInterval(interval);
   }, []);
 

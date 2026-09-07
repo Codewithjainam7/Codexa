@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { getAnalysisJob, getFindings } from '../api/client';
 import FindingsFilterBar from './FindingsFilterBar';
 import FileTreeExplorer from './FileTreeExplorer';
@@ -58,10 +58,15 @@ export default function AnalysisDetailView({ jobId, onBack }) {
     }
   }, [job?.status, job?.progressPercent]);
 
+  const [fetchError, setFetchError] = useState(null);
+  const failCountRef = useRef(0);
+
   const fetchJobData = async () => {
     try {
       const data = await getAnalysisJob(jobId);
       setJob(data);
+      setFetchError(null);
+      failCountRef.current = 0;
 
       if (data.progressStage) {
         setLiveStage(data.progressStage);
@@ -80,7 +85,14 @@ export default function AnalysisDetailView({ jobId, onBack }) {
         setFindings(allFindings);
       }
     } catch (err) {
-      console.error(err);
+      failCountRef.current += 1;
+      if (err.status === 404 || failCountRef.current >= 4) {
+        setFetchError(
+          err.status === 404
+            ? 'Analysis session expired or job not found. (The server may have restarted or refreshed).'
+            : 'Unable to reach the Codexa inspection engine. Please verify connection and retry.'
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -91,13 +103,15 @@ export default function AnalysisDetailView({ jobId, onBack }) {
     const interval = setInterval(() => {
       if (job && (job.status === 'COMPLETED' || job.status === 'FAILED')) {
         clearInterval(interval);
+      } else if (fetchError) {
+        clearInterval(interval);
       } else {
         fetchJobData();
       }
-    }, 650);
+    }, 750);
 
     return () => clearInterval(interval);
-  }, [jobId, job?.status, categoryFilter, severityFilter, searchFilter]);
+  }, [jobId, job?.status, fetchError, categoryFilter, severityFilter, searchFilter]);
 
   // Filter findings based on selected file from FileTreeExplorer
   const filteredFindings = useMemo(() => {
@@ -303,6 +317,29 @@ export default function AnalysisDetailView({ jobId, onBack }) {
         return <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/40">LOW</span>;
     }
   };
+
+  if (fetchError && !job) {
+    return (
+      <div className="py-24 text-center space-y-5 max-w-md mx-auto px-4">
+        <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shadow-lg shadow-amber-500/10">
+          <AlertTriangle className="w-7 h-7" />
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-base font-bold text-white font-display">Analysis Session Not Available</h3>
+          <p className="text-slate-400 text-xs leading-relaxed font-sans">
+            {fetchError}
+          </p>
+        </div>
+        <button
+          onClick={onBack}
+          className="inline-flex items-center space-x-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold font-display shadow-lg shadow-blue-500/20 active:scale-95 transition-all cursor-pointer"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Return to Dashboard</span>
+        </button>
+      </div>
+    );
+  }
 
   if (loading && !job) {
     return (
