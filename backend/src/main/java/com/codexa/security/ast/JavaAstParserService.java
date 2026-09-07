@@ -79,4 +79,13 @@ public class JavaAstParserService {
                 results.size(), results.stream().filter(ParsedJavaFile::isParseSuccessful).count());
         return results;
     }
+
+    @jakarta.annotation.PreDestroy
+    public void cleanup() {
+        try {
+            threadLocalParser.remove();
+        } catch (Exception e) {
+            log.warn("Failed to clean up thread local parser: {}", e.getMessage());
+        }
+    }
 }
