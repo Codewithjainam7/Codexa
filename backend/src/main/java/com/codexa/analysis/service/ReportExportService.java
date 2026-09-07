@@ -941,4 +941,32 @@ public class ReportExportService {
                 .replace("\"", "&quot;")
                 .replace("'", "&#39;");
     }
+
+    /**
+     * Generates an RFC 4180 compliant CSV export of all findings for spreadsheet import.
+     */
+    public String generateCsvReport(AnalysisReportResponse report) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Finding ID,Rule ID,Category,Severity,Confidence,File Path,Line Number,Title,Description,Remediation\r\n");
+        if (report != null && report.findings() != null) {
+            for (FindingResponse f : report.findings()) {
+                sb.append(escapeCsv(f.id() != null ? f.id().toString() : "")).append(",");
+                sb.append(escapeCsv(f.ruleId())).append(",");
+                sb.append(escapeCsv(f.category() != null ? f.category().name() : "")).append(",");
+                sb.append(escapeCsv(f.severity() != null ? f.severity().name() : "")).append(",");
+                sb.append(escapeCsv(f.confidence() != null ? f.confidence().name() : "")).append(",");
+                sb.append(escapeCsv(f.filePath())).append(",");
+                sb.append(f.lineNumber() != null ? f.lineNumber() : 1).append(",");
+                sb.append(escapeCsv(f.title())).append(",");
+                sb.append(escapeCsv(f.explanation())).append(",");
+                sb.append(escapeCsv(f.remediationSnippet())).append("\r\n");
+            }
+        }
+        return sb.toString();
+    }
+
+    private String escapeCsv(String value) {
+        if (value == null) return "\"\"";
+        return "\"" + value.replace("\"", "\"\"").replace("\r", " ").replace("\n", " ") + "\"";
+    }
 }
