@@ -26,31 +26,36 @@ class ReportExportServiceTest {
         FindingResponse finding = new FindingResponse(
                 findingId,
                 "CR-SQL-001",
+                Category.SECURITY,
+                Severity.CRITICAL,
+                Confidence.HIGH,
                 "SQL Injection Detected",
                 "Concatenating raw SQL statements",
+                "Full database compromise",
                 "Use parameterized PreparedStatement",
-                Severity.CRITICAL,
-                Confidence.CONFIRMED,
-                Category.SECURITY,
+                "A03:2021-Injection",
                 "src/main/java/UserRepo.java",
                 42,
-                "SELECT * FROM users WHERE id = '" + id",
+                45,
+                "SELECT * FROM users WHERE id = '...'",
                 "SELECT * FROM users WHERE id = ?",
-                "A03:2021-Injection"
+                9.5,
+                false,
+                List.of("https://owasp.org")
         );
 
         AnalysisReportResponse report = new AnalysisReportResponse(
                 jobId,
-                SourceType.ZIP,
+                "TestApp",
                 "project.zip",
-                AnalysisJobStatus.COMPLETED,
-                "Ready for review",
-                ProductionVerdict.NEEDS_URGENT_FIXES,
+                SourceType.ZIP,
                 65.0,
-                new AnalysisMetricResponse(10, 1200, 1, 0, 0, 0, 500L),
+                ProductionVerdict.NEEDS_URGENT_FIXES,
+                "Ready for review",
+                Instant.now(),
+                new AnalysisMetricResponse(80.0, 70.0, 75.0, 10, 10, 1, 0, 0, 0, 500L),
                 List.of(finding),
-                Instant.now(),
-                Instant.now(),
+                "Disclaimer text",
                 null
         );
 

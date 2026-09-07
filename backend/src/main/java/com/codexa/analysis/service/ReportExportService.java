@@ -956,10 +956,10 @@ public class ReportExportService {
                 sb.append(escapeCsv(f.severity() != null ? f.severity().name() : "")).append(",");
                 sb.append(escapeCsv(f.confidence() != null ? f.confidence().name() : "")).append(",");
                 sb.append(escapeCsv(f.filePath())).append(",");
-                sb.append(f.lineNumber() != null ? f.lineNumber() : 1).append(",");
+                sb.append(f.startLine()).append(",");
                 sb.append(escapeCsv(f.title())).append(",");
-                sb.append(escapeCsv(f.explanation())).append(",");
-                sb.append(escapeCsv(f.remediationSnippet())).append("\r\n");
+                sb.append(escapeCsv(f.description())).append(",");
+                sb.append(escapeCsv(f.remediation())).append("\r\n");
             }
         }
         return sb.toString();

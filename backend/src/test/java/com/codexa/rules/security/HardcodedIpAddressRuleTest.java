@@ -33,12 +33,12 @@ class HardcodedIpAddressRuleTest {
             }
             """;
 
-        ParsedJavaFile parsed = parserService.parseContent(Path.of("NetworkConfig.java"), code);
-        RuleContext ctx = RuleContext.builder().parsedJavaFile(parsed).build();
+        ParsedJavaFile parsed = parserService.parseContent(code, Path.of("NetworkConfig.java"), "NetworkConfig.java");
+        RuleContext ctx = new RuleContext(parsed, null);
         List<RuleFinding> findings = rule.evaluate(ctx);
 
         assertEquals(2, findings.size());
-        assertTrue(findings.stream().allMatch(f -> f.getSeverity() == Severity.MEDIUM));
+        assertTrue(findings.stream().allMatch(f -> f.severity() == Severity.MEDIUM));
     }
 
     @Test
@@ -49,8 +49,8 @@ class HardcodedIpAddressRuleTest {
             }
             """;
 
-        ParsedJavaFile parsed = parserService.parseContent(Path.of("NetworkConfig.java"), code);
-        RuleContext ctx = RuleContext.builder().parsedJavaFile(parsed).build();
+        ParsedJavaFile parsed = parserService.parseContent(code, Path.of("NetworkConfig.java"), "NetworkConfig.java");
+        RuleContext ctx = new RuleContext(parsed, null);
         List<RuleFinding> findings = rule.evaluate(ctx);
 
         assertTrue(findings.isEmpty());

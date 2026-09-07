@@ -38,13 +38,13 @@ class InsecureRandomRuleTest {
             }
             """;
 
-        ParsedJavaFile parsed = parserService.parseContent(Path.of("TokenGenerator.java"), code);
-        RuleContext ctx = RuleContext.builder().parsedJavaFile(parsed).build();
+        ParsedJavaFile parsed = parserService.parseContent(code, Path.of("TokenGenerator.java"), "TokenGenerator.java");
+        RuleContext ctx = new RuleContext(parsed, null);
         List<RuleFinding> findings = rule.evaluate(ctx);
 
         assertEquals(2, findings.size());
-        assertTrue(findings.stream().anyMatch(f -> f.getSeverity() == Severity.HIGH && f.getTitle().contains("java.util.Random")));
-        assertTrue(findings.stream().anyMatch(f -> f.getSeverity() == Severity.MEDIUM && f.getTitle().contains("Math.random()")));
+        assertTrue(findings.stream().anyMatch(f -> f.severity() == Severity.HIGH && f.title().contains("java.util.Random")));
+        assertTrue(findings.stream().anyMatch(f -> f.severity() == Severity.MEDIUM && f.title().contains("Math.random()")));
     }
 
     @Test
@@ -59,8 +59,8 @@ class InsecureRandomRuleTest {
             }
             """;
 
-        ParsedJavaFile parsed = parserService.parseContent(Path.of("SafeGenerator.java"), code);
-        RuleContext ctx = RuleContext.builder().parsedJavaFile(parsed).build();
+        ParsedJavaFile parsed = parserService.parseContent(code, Path.of("SafeGenerator.java"), "SafeGenerator.java");
+        RuleContext ctx = new RuleContext(parsed, null);
         List<RuleFinding> findings = rule.evaluate(ctx);
 
         assertTrue(findings.isEmpty());

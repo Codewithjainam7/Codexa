@@ -69,6 +69,9 @@ public class HardcodedIpAddressRule implements AnalysisRule {
             String val = sle.getValue().trim();
             if (PRIVATE_IP_PATTERN.matcher(val).matches()) {
                 int line = sle.getBegin().map(p -> p.line).orElse(1);
+                int endLine = sle.getEnd().map(p -> p.line).orElse(line);
+                String evidence = snippetExtractor.extractNodeSnippet(sle, parsedFile.getLines());
+
                 findings.add(RuleFinding.builder()
                         .ruleId(getRuleId())
                         .title("Hardcoded Private IP Address: " + val)
@@ -77,10 +80,14 @@ public class HardcodedIpAddressRule implements AnalysisRule {
                         .confidence(getDefaultConfidence())
                         .owaspMapping(getOwaspMapping())
                         .filePath(filename)
-                        .lineNumber(line)
-                        .snippet(snippetExtractor.extract(cu, line))
-                        .explanation("Hardcoded private IP address exposes internal network topology and inhibits dynamic orchestration.")
+                        .startLine(line)
+                        .endLine(endLine)
+                        .evidence(evidence)
+                        .description("Hardcoded private IP address exposes internal network topology and inhibits dynamic orchestration.")
+                        .impact("Exposure of internal infrastructure addressing and fragile environment configuration.")
                         .remediation("Source hostnames and IP addresses from externalized environment variables or configuration properties.")
+                        .suggestedFix("// Recommended: externalize host IP into application.yml or environment variable\n@Value(\"${service.host.ip}\")\nprivate String serviceHost;")
+                        .references(List.of("https://owasp.org/Top10/2021/A05_2021-Security_Misconfiguration/"))
                         .build());
             }
         }

@@ -65,6 +65,9 @@ public class InsecureRandomRule implements AnalysisRule {
             String typeName = oce.getTypeAsString();
             if ("Random".equals(typeName) || "java.util.Random".equals(typeName)) {
                 int line = oce.getBegin().map(p -> p.line).orElse(1);
+                int endLine = oce.getEnd().map(p -> p.line).orElse(line);
+                String evidence = snippetExtractor.extractNodeSnippet(oce, parsedFile.getLines());
+
                 findings.add(RuleFinding.builder()
                         .ruleId(getRuleId())
                         .title("Insecure java.util.Random Instance")
@@ -73,10 +76,14 @@ public class InsecureRandomRule implements AnalysisRule {
                         .confidence(getDefaultConfidence())
                         .owaspMapping(getOwaspMapping())
                         .filePath(filename)
-                        .lineNumber(line)
-                        .snippet(snippetExtractor.extract(cu, line))
-                        .explanation("java.util.Random uses a linear congruential formula that is mathematically predictable. Use java.security.SecureRandom for tokens, keys, and security contexts.")
-                        .remediation("SecureRandom random = new SecureRandom();")
+                        .startLine(line)
+                        .endLine(endLine)
+                        .evidence(evidence)
+                        .description("java.util.Random uses a linear congruential formula that is mathematically predictable. Use java.security.SecureRandom for tokens, keys, and security contexts.")
+                        .impact("Predictable pseudorandom generation leading to token spoofing, session hijacking, or replay attacks.")
+                        .remediation("Use java.security.SecureRandom for all security-sensitive random value generation.")
+                        .suggestedFix("SecureRandom random = new SecureRandom();")
+                        .references(List.of("https://owasp.org/Top10/2021/A02_2021-Cryptographic_Failures/"))
                         .build());
             }
         }
@@ -89,6 +96,9 @@ public class InsecureRandomRule implements AnalysisRule {
                         .orElse(false);
                 if (isMath) {
                     int line = mce.getBegin().map(p -> p.line).orElse(1);
+                    int endLine = mce.getEnd().map(p -> p.line).orElse(line);
+                    String evidence = snippetExtractor.extractNodeSnippet(mce, parsedFile.getLines());
+
                     findings.add(RuleFinding.builder()
                             .ruleId(getRuleId())
                             .title("Insecure Math.random() Call")
@@ -97,10 +107,14 @@ public class InsecureRandomRule implements AnalysisRule {
                             .confidence(getDefaultConfidence())
                             .owaspMapping(getOwaspMapping())
                             .filePath(filename)
-                            .lineNumber(line)
-                            .snippet(snippetExtractor.extract(cu, line))
-                            .explanation("Math.random() is backed by an internal java.util.Random generator and is unsuitable for security-sensitive entropy generation.")
-                            .remediation("SecureRandom.getInstanceStrong().nextDouble();")
+                            .startLine(line)
+                            .endLine(endLine)
+                            .evidence(evidence)
+                            .description("Math.random() is backed by an internal java.util.Random generator and is unsuitable for security-sensitive entropy generation.")
+                            .impact("Predictable pseudorandom output unsuitable for security controls.")
+                            .remediation("Use SecureRandom.getInstanceStrong() or SecureRandom instead of Math.random().")
+                            .suggestedFix("SecureRandom.getInstanceStrong().nextDouble();")
+                            .references(List.of("https://owasp.org/Top10/2021/A02_2021-Cryptographic_Failures/"))
                             .build());
                 }
             }
