@@ -1,0 +1,8 @@
+# Global default code owners
+* @Codewithjainam7
+
+# Critical security, configuration, and analysis rule subsystems
+/backend/src/main/java/com/codexa/security/ @Codewithjainam7
+/backend/src/main/java/com/codexa/config/   @Codewithjainam7
+/backend/src/main/java/com/codexa/rules/    @Codewithjainam7
+/.github/workflows/                         @Codewithjainam7
