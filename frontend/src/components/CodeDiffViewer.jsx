@@ -125,9 +125,14 @@ export default function CodeDiffViewer({ originalCode, suggestedFix, ruleId, isA
                 <span>Detected Vulnerable Pattern</span>
               </span>
             </div>
-            <span className="font-mono text-[10px] text-rose-400 font-bold bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/30">
-              {ruleId}
-            </span>
+            <div className="flex items-center space-x-2">
+              <span className="font-mono text-[10px] text-rose-400 font-bold bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/30">
+                {ruleId}
+              </span>
+              <span className="text-[10px] text-slate-500 font-mono hidden sm:inline">
+                {originalCode ? originalCode.split('\n').length : 0} lines
+              </span>
+            </div>
           </div>
 
           {/* Code Body */}
@@ -151,9 +156,14 @@ export default function CodeDiffViewer({ originalCode, suggestedFix, ruleId, isA
                 <span>Remediated Implementation</span>
               </span>
             </div>
-            <span className="text-[10px] text-emerald-400 font-mono font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
-              Ready to Apply
-            </span>
+            <div className="flex items-center space-x-2">
+              <span className="text-[10px] text-emerald-400 font-mono font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
+                Ready to Apply
+              </span>
+              <span className="text-[10px] text-slate-500 font-mono hidden sm:inline">
+                {cleanedFixCode ? cleanedFixCode.split('\n').length : 0} lines
+              </span>
+            </div>
           </div>
 
           {/* Code Body */}
