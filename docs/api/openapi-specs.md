@@ -90,3 +90,12 @@ Codexa provides high-performance REST APIs for continuous static security analys
     "maxSingleFileSizeBytes": 104857600
   }
   ```
+
+
+### Report Export API Endpoint
+- **GET** `/api/v1/analyses/{id}/export`
+- **Parameters**:
+  - `format`: `pdf` | `html` | `markdown` | `json`
+  - `view`: `true` to view inline, `false` to download
+  - `print`: `true` to auto-trigger print dialog for PDF
+- **Responses**: 200 OK with content-type matching requested format, 404 if job not found.
