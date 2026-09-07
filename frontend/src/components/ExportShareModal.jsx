@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   X, Share2, Copy, Check, Download, ExternalLink, 
   Printer, FileText, Shield, CheckCircle2, AlertTriangle,
-  Code2, Eye, Sparkles
+  Code2, Eye, Table
 } from 'lucide-react';
 
 export default function ExportShareModal({ 
@@ -182,10 +182,20 @@ _Audited deterministically by CODEXA AST Engine_`;
     }, null, 2);
   };
 
+  const getCsvContent = () => {
+    let csv = "Finding ID,Rule ID,Category,Severity,Confidence,File Path,Line Number,Title,Description,Remediation\r\n";
+    findings.forEach(f => {
+      const escape = (str) => `"${(str || '').replace(/"/g, '""').replace(/[\r\n]+/g, ' ')}"`;
+      csv += `${escape(f.id)},${escape(f.ruleId)},${escape(f.category)},${escape(f.severity)},${escape(f.confidence)},${escape(f.filePath)},${f.startLine || 1},${escape(f.title)},${escape(f.description)},${escape(f.suggestedFix || f.remediationSnippet || '')}\r\n`;
+    });
+    return csv;
+  };
+
   // Generate format-specific raw content for copying
   const getRawContent = () => {
     if (format === 'json') return getJsonContent();
     if (format === 'md') return getMarkdownContent();
+    if (format === 'csv') return getCsvContent();
     return getShareSummary();
   };
 
@@ -290,12 +300,13 @@ _Audited deterministically by CODEXA AST Engine_`;
 
         {/* Format Selector Tabs */}
         <div className="px-5 pt-3 pb-2">
-          <div className="grid grid-cols-4 gap-1.5 p-1 bg-slate-900/90 rounded-2xl border border-slate-800">
+          <div className="grid grid-cols-5 gap-1.5 p-1 bg-slate-900/90 rounded-2xl border border-slate-800">
             {[
               { id: 'pdf', label: 'PDF Print', icon: Printer, color: 'text-rose-400' },
-              { id: 'html', label: 'HTML Report', icon: FileText, color: 'text-blue-400' },
+              { id: 'html', label: 'HTML', icon: FileText, color: 'text-blue-400' },
               { id: 'md', label: 'Markdown', icon: FileText, color: 'text-violet-400' },
-              { id: 'json', label: 'JSON Data', icon: Code2, color: 'text-emerald-400' }
+              { id: 'json', label: 'JSON', icon: Code2, color: 'text-emerald-400' },
+              { id: 'csv', label: 'CSV', icon: Table, color: 'text-amber-400' }
             ].map(tab => {
               const TabIcon = tab.icon;
               const isActive = format === tab.id;
@@ -353,6 +364,7 @@ _Audited deterministically by CODEXA AST Engine_`;
                   {format === 'html' && 'Standalone Interactive HTML Audit'}
                   {format === 'md' && 'GitHub-Flavored Markdown Security Advisory'}
                   {format === 'json' && 'Structured Machine-Readable Audit JSON'}
+                  {format === 'csv' && 'CSV Spreadsheet Triage Table'}
                 </span>
                 <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-blue-500/15 text-blue-400 border border-blue-500/30">
                   {format.toUpperCase()}
@@ -363,6 +375,7 @@ _Audited deterministically by CODEXA AST Engine_`;
                 {format === 'html' && 'Complete standalone audit report with executive scorecards, triage bars, and syntax-styled code diffs.'}
                 {format === 'md' && 'Formatted with summary tables, triage distribution, and code blocks ready to paste into GitHub PR reviews.'}
                 {format === 'json' && 'Complete JSON payload with all metric scores, rule IDs, file locations, line numbers, and AI remediation patches.'}
+                {format === 'csv' && 'RFC 4180 compliant CSV export ready for import into Jira, Excel, or Google Sheets.'}
               </p>
             </div>
           ) : (
@@ -418,12 +431,12 @@ _Audited deterministically by CODEXA AST Engine_`;
             href={exportUrl}
             target="_blank"
             rel="noopener noreferrer"
-            download={`codexa-report-${jobId}.${format === 'markdown' || format === 'md' ? 'md' : format === 'pdf' ? 'html' : format}`}
+            download={`codexa-report-${jobId}.${format === 'markdown' || format === 'md' ? 'md' : format === 'pdf' ? 'html' : format === 'csv' ? 'csv' : format}`}
             onClick={() => triggerHaptic(8)}
             className="w-full py-2.5 px-3 rounded-xl bg-slate-900/60 border border-slate-800 text-[11px] font-mono text-slate-400 hover:text-blue-400 flex items-center justify-center space-x-1.5 transition-colors active:scale-98"
           >
             <Download className="w-3.5 h-3.5 text-blue-400" />
-            <span>Direct File Download (.{(format === 'markdown' || format === 'md' ? 'md' : format === 'pdf' ? 'html' : format)})</span>
+            <span>Direct File Download (.{(format === 'markdown' || format === 'md' ? 'md' : format === 'pdf' ? 'html' : format === 'csv' ? 'csv' : format)})</span>
           </a>
         </div>
       </div>
