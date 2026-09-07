@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <javaparser.version>3.26.1</javaparser.version>
+        <javaparser.version>3.28.2</javaparser.version>
         <springdoc.version>2.6.0</springdoc.version>
         <jacoco.version>0.8.12</jacoco.version>
         <dependency-check.version>10.0.4</dependency-check.version>
