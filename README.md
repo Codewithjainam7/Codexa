@@ -379,8 +379,8 @@ All endpoints are documented with OpenAPI 3.0 at `/api-docs` and interactive Swa
 | `POST` | `/api/v1/analyses/github` | Clone and analyze a public GitHub repository | `application/json`: `{"githubUrl": "https://github.com/org/repo"}` |
 | `GET` | `/api/v1/analyses/{jobId}` | Retrieve job summary, score breakdown, and top action items | Path: `jobId` (UUID) |
 | `GET` | `/api/v1/analyses/{jobId}/findings` | Retrieve paginated and filtered findings | Query: `category`, `severity`, `confidence`, `search`, `page`, `size` |
-| `GET` | `/api/v1/analyses/{jobId}/report` | Retrieve or view formatted report | Query: `format` (`json`\|`html`\|`markdown`), `view` (`true`\|`false`) |
-| `GET` | `/api/v1/analyses/{jobId}/export` | Download report attachment | Query: `format` (`json`\|`html`\|`markdown`) |
+| `GET` | `/api/v1/analyses/{jobId}/report` | Retrieve or view formatted report | Query: `format` (`json`\|`html`\|`markdown`\|`csv`), `view` (`true`\|`false`) |
+| `GET` | `/api/v1/analyses/{jobId}/export` | Download report attachment | Query: `format` (`json`\|`html`\|`markdown`\|`csv`) |
 | `GET` | `/api/v1/analyses/config/limits` | Retrieve active ingestion size and count limits | None |
 | `GET` | `/api/health` | Service health status check | None |
 
