@@ -169,6 +169,17 @@ export default function AnalysisDetailView({ jobId, onBack }) {
     };
   }, [jobId, job?.status, categoryFilter, severityFilter, searchFilter]);
 
+  // Keyboard shortcut: ESC to return to dashboard
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && typeof onBack === 'function') {
+        onBack();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onBack]);
+
   // Filter findings based on selected file from FileTreeExplorer
   const filteredFindings = useMemo(() => {
     if (!selectedFile) return findings;
