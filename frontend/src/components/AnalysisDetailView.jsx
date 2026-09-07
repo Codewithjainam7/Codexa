@@ -487,9 +487,14 @@ export default function AnalysisDetailView({ jobId, onBack }) {
         )}
       </div>
 
-      {/* When In Scanning Mode -> Display Animated Pulse Loader */}
+      {/* When In Scanning Mode -> Display Animated Pulse Loader with Accessibility Live Region */}
       {isScanning && (
-        <LiveReviewPulseLoader job={displayJob} />
+        <div role="status" aria-live="polite" aria-atomic="true">
+          <span className="sr-only">
+            Analysis in progress: {liveStage || displayJob?.progressStage || 'Initializing'}, {Math.round(liveProgress)} percent completed.
+          </span>
+          <LiveReviewPulseLoader job={displayJob} />
+        </div>
       )}
 
       {/* Completed Detailed Inspection Dashboard */}
