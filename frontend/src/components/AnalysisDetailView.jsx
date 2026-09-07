@@ -11,13 +11,14 @@ import {
   ArrowLeft, RefreshCw, FileText, ExternalLink, HelpCircle,
   LayoutGrid, ListFilter, FolderTree, Code, Printer, Download, Share2,
   Server, Cpu, Layers, Terminal, Activity, FileCode, Lock, Unlock,
-  Check, CheckSquare, BarChart3, PieChart, Zap
+  Check, CheckSquare, BarChart3, PieChart, Zap, Copy
 } from 'lucide-react';
 
 export default function AnalysisDetailView({ jobId, onBack }) {
   const [job, setJob] = useState(null);
   const [findings, setFindings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [copiedJobId, setCopiedJobId] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [severityFilter, setSeverityFilter] = useState('');
   const [searchFilter, setSearchFilter] = useState('');
@@ -514,9 +515,23 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                       {job?.sourceType}
                     </span>
                   </div>
-                  <p className="text-[11px] sm:text-xs text-[var(--text-muted)] font-mono truncate">
-                    Job ID: {jobId} &bull; Total Files: {job?.metrics?.totalFiles || 0} &bull; Ingestion: Up to 3 GB
-                  </p>
+                  <div className="flex items-center space-x-1.5 text-[11px] sm:text-xs text-[var(--text-muted)] font-mono truncate">
+                    <span>Job ID: {jobId}</span>
+                    <button
+                      onClick={() => {
+                        if (navigator?.clipboard?.writeText) {
+                          navigator.clipboard.writeText(jobId);
+                          setCopiedJobId(true);
+                          setTimeout(() => setCopiedJobId(false), 1800);
+                        }
+                      }}
+                      className="p-1 rounded hover:bg-slate-200 dark:hover:bg-neutral-800 text-slate-500 dark:text-neutral-400 transition-all cursor-pointer inline-flex items-center shrink-0"
+                      title="Copy Job ID to clipboard"
+                    >
+                      {copiedJobId ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+                    </button>
+                    <span>&bull; Total Files: {job?.metrics?.totalFiles || 0} &bull; Ingestion: Up to 3 GB</span>
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3">
