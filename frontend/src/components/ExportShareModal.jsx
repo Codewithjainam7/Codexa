@@ -17,7 +17,17 @@ export default function ExportShareModal({
   const [format, setFormat] = useState(initialFormat || 'pdf');
   const [copied, setCopied] = useState(false);
   const [shareSuccess, setShareSuccess] = useState(false);
-  const [activeTab, setActiveTab] = useState('actions'); // 'actions' | 'preview'
+  const [activeTab, setActiveTab] = useState('actions');
+
+  // Close modal on Escape key press
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]); // 'actions' | 'preview'
 
   // Synchronize format when initialFormat changes
   useEffect(() => {
