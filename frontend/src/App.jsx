@@ -174,7 +174,13 @@ function MainApp() {
                 >
                   <AnalysisDetailView
                     jobId={activeJobId}
-                    onBack={() => setCurrentView('landing')}
+                    onBack={() => {
+                      setActiveJobId(null);
+                      try {
+                        localStorage.removeItem('codexa_last_job_id');
+                      } catch (e) {}
+                      setCurrentView('landing');
+                    }}
                   />
                 </motion.div>
               )}
