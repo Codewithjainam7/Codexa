@@ -848,6 +848,21 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                       <CheckCircle className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto" />
                       <p className="text-slate-900 dark:text-slate-200 font-bold text-base font-display">Zero issues matching criteria</p>
                       <p className="text-xs text-slate-600 dark:text-slate-400 font-sans">All scanned AST rules and heuristics passed for this selection.</p>
+                      {(categoryFilter || severityFilter || searchFilter || selectedFile) && (
+                        <div className="pt-2">
+                          <button
+                            onClick={() => {
+                              setCategoryFilter('');
+                              setSeverityFilter('');
+                              setSearchFilter('');
+                              setSelectedFile('');
+                            }}
+                            className="px-4 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-semibold hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-all font-display cursor-pointer"
+                          >
+                            Reset All Active Filters
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <ExpandableFindingCards
