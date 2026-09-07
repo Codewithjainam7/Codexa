@@ -4,3 +4,5 @@
 - Milestone 2: AST Rules & Security Checks (Completed)
 - Milestone 3: Universal Multi-Language & AI Explanations (Completed)
 - Milestone 4: CI/CD Integrations & Enterprise Reporting (Active)
+- Milestone 5: Executive Multi-Format Export (PDF, Markdown, JSON, HTML) (Completed)
+- Milestone 6: Mobile Touch UX & Native Capacitor Parity (Completed)
