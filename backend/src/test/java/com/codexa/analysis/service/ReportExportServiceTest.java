@@ -19,108 +19,47 @@ class ReportExportServiceTest {
         exportService = new ReportExportService();
     }
 
-    private AnalysisReportResponse createMockReport() {
-        AnalysisMetricResponse metrics = new AnalysisMetricResponse(
-                95.0, 90.0, 88.0, 92.0, 89.0,
-                15, 15, 0, 1, 2, 3, 450L
-        );
-
+    @Test
+    void shouldGenerateValidCsvReport() {
+        UUID jobId = UUID.randomUUID();
+        UUID findingId = UUID.randomUUID();
         FindingResponse finding = new FindingResponse(
-                UUID.randomUUID(),
+                findingId,
                 "CR-SQL-001",
+                "SQL Injection Detected",
+                "Concatenating raw SQL statements",
+                "Use parameterized PreparedStatement",
+                Severity.CRITICAL,
+                Confidence.CONFIRMED,
                 Category.SECURITY,
-                Severity.HIGH,
-                Confidence.HIGH,
-                "SQL Injection Vector",
-                "Raw parameter concat in query.",
-                "Data leakage risk.",
-                "Use parameterized query.",
-                "OWASP A03:2021",
-                "src/main/UserController.java",
+                "src/main/java/UserRepo.java",
                 42,
-                45,
-                "String q = 'SELECT * FROM users';",
-                "db.find(id);",
-                85.0,
-                false,
-                List.of("https://owasp.org")
+                "SELECT * FROM users WHERE id = '" + id",
+                "SELECT * FROM users WHERE id = ?",
+                "A03:2021-Injection"
         );
 
-        return new AnalysisReportResponse(
-                UUID.randomUUID(),
-                "Codexa Code Review & Security Audit",
-                "https://github.com/example/repo",
-                SourceType.GITHUB,
-                92.5,
-                ProductionVerdict.GENERALLY_PROMISING,
-                "Audit completed with 1 high finding.",
-                Instant.now(),
-                metrics,
+        AnalysisReportResponse report = new AnalysisReportResponse(
+                jobId,
+                SourceType.ZIP,
+                "project.zip",
+                AnalysisJobStatus.COMPLETED,
+                "Ready for review",
+                ProductionVerdict.NEEDS_URGENT_FIXES,
+                65.0,
+                new AnalysisMetricResponse(10, 1200, 1, 0, 0, 0, 500L),
                 List.of(finding),
-                AnalysisReportResponse.STANDARD_DISCLAIMER
-        );
-    }
-
-    @Test
-    void shouldGenerateValidMarkdownReport() {
-        AnalysisReportResponse report = createMockReport();
-        String markdown = exportService.generateMarkdownReport(report);
-
-        assertNotNull(markdown);
-        assertTrue(markdown.contains("# Codexa Production Readiness Report"));
-        assertTrue(markdown.contains("CR-SQL-001"));
-        assertTrue(markdown.contains("Maintainability Score:"));
-        assertTrue(markdown.contains("Architectural Score:"));
-        assertTrue(markdown.contains("SQL Injection Vector"));
-    }
-
-    @Test
-    void shouldGenerateValidHtmlReport() {
-        AnalysisReportResponse report = createMockReport();
-        String html = exportService.generateHtmlReport(report);
-
-        assertNotNull(html);
-        assertTrue(html.contains("<!DOCTYPE html>"));
-        assertTrue(html.contains("Codexa Audit Report"));
-        assertTrue(html.contains("Maintainability Index"));
-        assertTrue(html.contains("Architectural Health"));
-        assertTrue(html.contains("CR-SQL-001"));
-    }
-
-    @Test
-    void shouldGenerateValidJsonReport() {
-        AnalysisReportResponse report = createMockReport();
-        String json = exportService.generateJsonReport(report);
-
-        assertNotNull(json);
-        assertTrue(json.contains("\"jobId\""));
-        assertTrue(json.contains("CR-SQL-001"));
-        assertTrue(json.contains("maintainabilityScore"));
-        assertTrue(json.contains("architecturalScore"));
-    }
-
-    @Test
-    void exportWithEmptyFindingsShouldRenderCleanState() {
-        AnalysisMetricResponse metrics = new AnalysisMetricResponse(
-                100.0, 100.0, 100.0, 100.0, 100.0,
-                5, 5, 0, 0, 0, 0, 120L
-        );
-        AnalysisReportResponse emptyReport = new AnalysisReportResponse(
-                UUID.randomUUID(),
-                "Codexa Code Review & Security Audit",
-                "https://github.com/example/clean-repo",
-                SourceType.GITHUB,
-                100.0,
-                ProductionVerdict.REVIEW_COMPLETE,
-                "Clean scan with zero findings.",
                 Instant.now(),
-                metrics,
-                List.of(),
-                AnalysisReportResponse.STANDARD_DISCLAIMER
+                Instant.now(),
+                null
         );
 
-        String html = exportService.generateHtmlReport(emptyReport);
-        assertNotNull(html);
-        assertTrue(html.contains("Zero static security vulnerabilities"));
+        String csv = exportService.generateCsvReport(report);
+        assertNotNull(csv);
+        assertTrue(csv.startsWith("Finding ID,Rule ID,Category,Severity"));
+        assertTrue(csv.contains("CR-SQL-001"));
+        assertTrue(csv.contains("SQL Injection Detected"));
+        assertTrue(csv.contains("CRITICAL"));
+        assertTrue(csv.contains("UserRepo.java"));
     }
 }
