@@ -25,9 +25,15 @@ public class SecureZipExtractor {
     private final CodexaProperties properties;
     private final FileFilterService fileFilterService;
 
+    public static final int BUFFER_SIZE = 65536;
+
     public SecureZipExtractor(CodexaProperties properties, FileFilterService fileFilterService) {
         this.properties = properties;
         this.fileFilterService = fileFilterService;
+    }
+
+    public int getBufferSize() {
+        return BUFFER_SIZE;
     }
 
     public ExtractionResult extract(InputStream zipStream, Path targetDir) throws IOException {
@@ -39,7 +45,7 @@ public class SecureZipExtractor {
         List<Path> extractedFiles = new ArrayList<>();
 
         // 64 KB buffer optimized for high-throughput enterprise archive decompression
-        byte[] buffer = new byte[65536];
+        byte[] buffer = new byte[BUFFER_SIZE];
 
         try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(zipStream))) {
             ZipEntry entry;
