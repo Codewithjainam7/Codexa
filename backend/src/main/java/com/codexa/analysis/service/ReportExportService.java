@@ -776,6 +776,94 @@ public class ReportExportService {
                     .append(m.durationMs()).append(" ms` |\n\n");
         }
 
+
+        if (report.diagnostics() != null) {
+            var diag = report.diagnostics();
+            if (diag.composition() != null) {
+                var comp = diag.composition();
+                sb.append("## 📦 Repository Code Composition\n\n");
+                sb.append("| Metric | Lines of Code | Percentage |\n");
+                sb.append("| :--- | :---: | :---: |\n");
+                sb.append("| **Executable Code** | `").append(comp.codeLines()).append("` | **").append(comp.totalLines() > 0 ? (comp.codeLines() * 100 / comp.totalLines()) : 0).append("%** |\n");
+                sb.append("| **Documentation / Comments** | `").append(comp.commentLines()).append("` | ").append(comp.totalLines() > 0 ? (comp.commentLines() * 100 / comp.totalLines()) : 0).append("% |\n");
+                sb.append("| **Blank / Spacing Lines** | `").append(comp.blankLines()).append("` | ").append(comp.totalLines() > 0 ? (comp.blankLines() * 100 / comp.totalLines()) : 0).append("% |\n");
+                sb.append("| **Total Lines of Code** | `").append(comp.totalLines()).append("` | 100% |\n\n");
+
+                if (comp.languageLoc() != null && !comp.languageLoc().isEmpty()) {
+                    sb.append("### 💻 Language Breakdown\n\n");
+                    sb.append("| Language | Files | Lines of Code |\n");
+                    sb.append("| :--- | :---: | :---: |\n");
+                    comp.languageLoc().forEach((lang, loc) -> {
+                        int files = comp.languageFiles() != null ? comp.languageFiles().getOrDefault(lang, 1) : 1;
+                        sb.append("| **").append(lang).append("** | `").append(files).append("` | `").append(loc).append("` |\n");
+                    });
+                    sb.append("\n");
+                }
+            }
+
+            if (diag.whiteBox() != null) {
+                var wb = diag.whiteBox();
+                sb.append("## 🔬 White-Box AST Structural Analysis\n\n");
+                sb.append("| Metric | Value | Threshold / Safety |\n");
+                sb.append("| :--- | :---: | :--- |\n");
+                sb.append("| **Average Cyclomatic Complexity** | `").append(wb.avgComplexity()).append("` | `< 10.0` Optimal |\n");
+                sb.append("| **Peak Method Complexity** | `").append(wb.peakComplexity()).append("` | `").append(wb.peakComplexity() <= 15 ? "🟢 WITHIN SAFETY BOUNDS" : "🟡 REFACTOR RECOMMENDED").append("` |\n");
+                sb.append("| **Max AST Nesting Depth** | `").append(wb.maxNestingDepth()).append("` | `< 5` Optimal |\n");
+                sb.append("| **Total Declarations** | `").append(wb.totalClasses()).append(" Classes, ").append(wb.totalMethods()).append(" Methods, ").append(wb.totalInterfaces()).append(" Interfaces` | Structural Balance |\n\n");
+
+                if (wb.topComplexFiles() != null && !wb.topComplexFiles().isEmpty()) {
+                    sb.append("### 📈 Top Complex Files (Refactoring Leaderboard)\n\n");
+                    sb.append("| File Path | LOC | Methods | Max Complexity | Avg Complexity | Findings |\n");
+                    sb.append("| :--- | :---: | :---: | :---: | :---: | :---: |\n");
+                    for (var cf : wb.topComplexFiles()) {
+                        sb.append("| `").append(cf.filePath()).append("` | ").append(cf.loc()).append(" | ")
+                                .append(cf.methodCount()).append(" | **").append(cf.maxComplexity()).append("** | ")
+                                .append(cf.avgComplexity()).append(" | ").append(cf.findingCount()).append(" |\n");
+                    }
+                    sb.append("\n");
+                }
+            }
+
+            if (diag.blackBox() != null) {
+                var bb = diag.blackBox();
+                sb.append("## 🌐 Black-Box Attack Surface Map\n\n");
+                sb.append("- **Total Exposed Ingress Endpoints:** `").append(bb.totalEndpoints()).append("`\n");
+                sb.append("- **Unauthenticated Entry Routes:** `").append(bb.unauthenticatedEndpoints()).append("`\n");
+                if (bb.perimeterStatus() != null) {
+                    var p = bb.perimeterStatus();
+                    sb.append("- **CORS Perimeter:** `").append(p.corsStatus()).append("`\n");
+                    sb.append("- **Rate Limiting Barrier:** `").append(p.rateLimitingStatus()).append("`\n");
+                    sb.append("- **Security Headers:** `").append(p.securityHeadersStatus()).append("`\n");
+                    sb.append("- **Credential Exposure:** `").append(p.secretsExposureStatus()).append("`\n\n");
+                }
+
+                if (bb.exposedEndpoints() != null && !bb.exposedEndpoints().isEmpty()) {
+                    sb.append("### 🚪 Exposed HTTP Endpoints Inventory\n\n");
+                    sb.append("| Method | Endpoint Route | Controller / Handler | Auth Protected | Risk Rating |\n");
+                    sb.append("| :---: | :--- | :--- | :---: | :---: |\n");
+                    for (var ep : bb.exposedEndpoints()) {
+                        sb.append("| `").append(ep.httpMethod()).append("` | `").append(ep.path()).append("` | `")
+                                .append(ep.controllerClass()).append(".").append(ep.methodName()).append("()` | ")
+                                .append(ep.requiresAuth() ? "🔒 Protected" : "🔓 Public Ingress").append(" | **")
+                                .append(ep.attackSurfaceRisk()).append("** |\n");
+                    }
+                    sb.append("\n");
+                }
+            }
+
+            if (diag.complianceChecklist() != null && !diag.complianceChecklist().isEmpty()) {
+                sb.append("## 📋 Pre-Deployment Compliance Checklist\n\n");
+                sb.append("| Checkpoint | Category | Status | Details |\n");
+                sb.append("| :--- | :--- | :---: | :--- |\n");
+                for (var item : diag.complianceChecklist()) {
+                    String icon = "PASS".equalsIgnoreCase(item.status()) ? "🟢 PASS" : ("WARN".equalsIgnoreCase(item.status()) ? "🟡 WARN" : "🔴 FAIL");
+                    sb.append("| **").append(item.title()).append("** | `").append(item.category()).append("` | ")
+                            .append(icon).append(" | ").append(item.detail()).append(" |\n");
+                }
+                sb.append("\n");
+            }
+        }
+
         sb.append("## 🔍 Findings Catalog\n\n");
         sb.append("| Rule ID | Severity | Category | File | Line | Title | Priority |\n");
         sb.append("| :--- | :---: | :--- | :--- | :---: | :--- | :---: |\n");
