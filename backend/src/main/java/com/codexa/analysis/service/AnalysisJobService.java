@@ -28,18 +28,50 @@ public class AnalysisJobService {
     private final AnalysisJobRepository jobRepository;
     private final FindingRepository findingRepository;
     private final AnalysisMetricRepository metricRepository;
+    private final ProjectDiagnosticsCollector diagnosticsCollector;
+    private final java.util.Map<UUID, ProjectDiagnostics> diagnosticsCache = new java.util.concurrent.ConcurrentHashMap<>();
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public AnalysisJobService(
+            AnalysisJobRepository jobRepository,
+            FindingRepository findingRepository,
+            AnalysisMetricRepository metricRepository,
+            ProjectDiagnosticsCollector diagnosticsCollector
+    ) {
+        this.jobRepository = jobRepository;
+        this.findingRepository = findingRepository;
+        this.metricRepository = metricRepository;
+        this.diagnosticsCollector = diagnosticsCollector;
+    }
 
     public AnalysisJobService(
             AnalysisJobRepository jobRepository,
             FindingRepository findingRepository,
             AnalysisMetricRepository metricRepository
     ) {
-        this.jobRepository = jobRepository;
-        this.findingRepository = findingRepository;
-        this.metricRepository = metricRepository;
+        this(jobRepository, findingRepository, metricRepository, new ProjectDiagnosticsCollector());
     }
 
     @Transactional
+
+    public void saveDiagnostics(UUID jobId, ProjectDiagnostics diagnostics) {
+        if (jobId != null && diagnostics != null) {
+            diagnosticsCache.put(jobId, diagnostics);
+        }
+    }
+
+    public ProjectDiagnostics getOrComputeDiagnostics(AnalysisJobEntity entity, List<FindingEntity> findings) {
+        if (entity == null) return null;
+        ProjectDiagnostics cached = diagnosticsCache.get(entity.getId());
+        if (cached != null) return cached;
+        if (diagnosticsCollector != null) {
+            ProjectDiagnostics fallback = diagnosticsCollector.generateFallback(entity, findings);
+            diagnosticsCache.put(entity.getId(), fallback);
+            return fallback;
+        }
+        return null;
+    }
+
     public AnalysisJobEntity createJob(SourceType sourceType, String identifier) {
         AnalysisJobEntity entity = new AnalysisJobEntity(UUID.randomUUID(), sourceType, identifier);
         return jobRepository.save(entity);
@@ -80,6 +112,7 @@ public class AnalysisJobService {
                 .map(this::toFindingResponse)
                 .collect(Collectors.toList());
 
+        ProjectDiagnostics diagnostics = getOrComputeDiagnostics(entity, topEntities);
         return new AnalysisJobResponse(
                 entity.getId(),
                 entity.getSourceType(),
@@ -96,7 +129,8 @@ public class AnalysisJobService {
                 entity.getCreatedAt(),
                 entity.getCompletedAt(),
                 metricResponse,
-                topFindings
+                topFindings,
+                diagnostics
         );
     }
 
@@ -171,6 +205,7 @@ public class AnalysisJobService {
                 .map(this::toFindingResponse)
                 .collect(Collectors.toList());
 
+        ProjectDiagnostics diagnostics = getOrComputeDiagnostics(entity, findings);
         return new AnalysisReportResponse(
                 entity.getId(),
                 "Codexa Code Review & Security Audit",
@@ -182,7 +217,8 @@ public class AnalysisJobService {
                 entity.getCreatedAt(),
                 metricResponse,
                 findingResponses,
-                AnalysisReportResponse.STANDARD_DISCLAIMER
+                AnalysisReportResponse.STANDARD_DISCLAIMER,
+                diagnostics
         );
     }
 

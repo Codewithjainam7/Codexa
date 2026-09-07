@@ -15,8 +15,25 @@ public record AnalysisReportResponse(
         Instant scanDate,
         AnalysisMetricResponse metrics,
         List<FindingResponse> findings,
-        String disclaimer
+        String disclaimer,
+        ProjectDiagnostics diagnostics
 ) {
+    public AnalysisReportResponse(
+            UUID jobId,
+            String appName,
+            String scanTarget,
+            SourceType sourceType,
+            Double overallScore,
+            ProductionVerdict verdict,
+            String summary,
+            Instant scanDate,
+            AnalysisMetricResponse metrics,
+            List<FindingResponse> findings,
+            String disclaimer
+    ) {
+        this(jobId, appName, scanTarget, sourceType, overallScore, verdict, summary, scanDate, metrics, findings, disclaimer, null);
+    }
+
     public static final String STANDARD_DISCLAIMER =
             "DISCLAIMER: Codexa is an automated static code review and advisory tool, not a guarantee of security or compliance certification. " +
             "A clean scan does not prove the total absence of vulnerabilities, and all suggested remediations require human engineering review and testing.";

@@ -3,6 +3,7 @@ package com.codexa.analysis.pipeline;
 import com.codexa.analysis.model.JobStatus;
 import com.codexa.analysis.model.ProductionVerdict;
 import com.codexa.analysis.service.AnalysisJobService;
+import com.codexa.analysis.service.ProjectDiagnosticsCollector;
 import com.codexa.ingestion.service.StagingManagerService;
 import com.codexa.persistence.entity.FindingEntity;
 import org.slf4j.Logger;
@@ -22,16 +23,28 @@ public class AnalysisOrchestrator {
 
     private final AnalysisJobService jobService;
     private final StagingManagerService stagingManagerService;
+    private final ProjectDiagnosticsCollector diagnosticsCollector;
     private final List<PipelineStage> stages;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public AnalysisOrchestrator(
+            AnalysisJobService jobService,
+            StagingManagerService stagingManagerService,
+            ProjectDiagnosticsCollector diagnosticsCollector,
+            List<PipelineStage> stages
+    ) {
+        this.jobService = jobService;
+        this.stagingManagerService = stagingManagerService;
+        this.diagnosticsCollector = diagnosticsCollector;
+        this.stages = stages != null ? stages : new ArrayList<>();
+    }
 
     public AnalysisOrchestrator(
             AnalysisJobService jobService,
             StagingManagerService stagingManagerService,
             List<PipelineStage> stages
     ) {
-        this.jobService = jobService;
-        this.stagingManagerService = stagingManagerService;
-        this.stages = stages != null ? stages : new ArrayList<>();
+        this(jobService, stagingManagerService, new ProjectDiagnosticsCollector(), stages);
     }
 
     @Async
@@ -60,6 +73,15 @@ public class AnalysisOrchestrator {
                 jobService.updateProgress(jobId, JobStatus.SCANNING, stageName, percent);
                 log.debug("Executing pipeline stage [{}] for jobId={}", stageName, jobId);
                 stage.execute(context);
+            }
+
+            // Collect Project Diagnostics
+            try {
+                com.codexa.analysis.model.ProjectDiagnostics diag = diagnosticsCollector.collect(context);
+                context.setProjectDiagnostics(diag);
+                jobService.saveDiagnostics(jobId, diag);
+            } catch (Exception ex) {
+                log.warn("Failed to collect detailed project diagnostics for jobId={}: {}", jobId, ex.getMessage());
             }
 
             // Stage: COMPLETING & SCORING

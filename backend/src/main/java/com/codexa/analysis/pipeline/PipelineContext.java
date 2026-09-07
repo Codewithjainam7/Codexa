@@ -26,6 +26,7 @@ public class PipelineContext {
     private String executiveSummary = "";
     private int totalFiles = 0;
     private int analyzedFiles = 0;
+    private com.codexa.analysis.model.ProjectDiagnostics projectDiagnostics;
 
     public PipelineContext(UUID jobId, Path stagingDirectory) {
         this.jobId = jobId;
@@ -147,4 +148,13 @@ public class PipelineContext {
     public void setAnalyzedFiles(int analyzedFiles) {
         this.analyzedFiles = analyzedFiles;
     }
+
+    public com.codexa.analysis.model.ProjectDiagnostics getProjectDiagnostics() {
+        return projectDiagnostics;
+    }
+
+    public void setProjectDiagnostics(com.codexa.analysis.model.ProjectDiagnostics projectDiagnostics) {
+        this.projectDiagnostics = projectDiagnostics;
+    }
+
 }

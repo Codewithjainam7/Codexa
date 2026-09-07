@@ -20,6 +20,28 @@ public record AnalysisJobResponse(
         Instant createdAt,
         Instant completedAt,
         AnalysisMetricResponse metrics,
-        List<FindingResponse> topFindings
+        List<FindingResponse> topFindings,
+        ProjectDiagnostics diagnostics
 ) {
+    public AnalysisJobResponse(
+            UUID id,
+            SourceType sourceType,
+            String sourceIdentifier,
+            String repositoryCommit,
+            JobStatus status,
+            String progressStage,
+            int progressPercent,
+            Double overallScore,
+            ProductionVerdict verdict,
+            String summary,
+            String errorCode,
+            String errorMessage,
+            Instant createdAt,
+            Instant completedAt,
+            AnalysisMetricResponse metrics,
+            List<FindingResponse> topFindings
+    ) {
+        this(id, sourceType, sourceIdentifier, repositoryCommit, status, progressStage, progressPercent,
+                overallScore, verdict, summary, errorCode, errorMessage, createdAt, completedAt, metrics, topFindings, null);
+    }
 }
