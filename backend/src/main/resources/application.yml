@@ -31,6 +31,12 @@ codexa:
     fallback-model: ${CODEXA_AI_FALLBACK_MODEL:nvidia/nemotron-3.5-lightning:free}
     api-key: ${OPENROUTER_API_KEY:${NVIDIA_API_KEY:}}
     timeout-ms: 30000
+  security:
+    allowed-origins: ${CODEXA_ALLOWED_ORIGINS:http://localhost:5173,https://codexa-ye85.onrender.com}
+    rate-limit-enabled: ${CODEXA_RATE_LIMIT_ENABLED:true}
+    rate-limit-requests-per-minute: ${CODEXA_RATE_LIMIT_RPM:60}
+    trusted-proxies: ${CODEXA_TRUSTED_PROXIES:}
+    api-key: ${CODEXA_API_KEY:}
 
 springdoc:
   api-docs:
