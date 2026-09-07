@@ -161,6 +161,8 @@ Codexa's rule engine evaluates every AST node against 23+ deterministic rules ma
 | `CR-QUAL-006` | Swallowed / Broad Exception Catch | QUALITY | MEDIUM | Robust Error Handling | CWE-390 | Empty catch blocks or catching raw `Exception`/`Throwable` without re-throwing or structured logging. |
 | `CR-OPS-002` | Unstructured Request Logging | OPERATIONS | LOW | Observability | CWE-778 | Controller methods performing ingress mutations without request contextual correlation logging. |
 | `CR-OPS-004` | Missing Input Validation | OPERATIONS | MEDIUM | Defensive Coding | CWE-20 | Missing `@Valid` or `@Validated` annotations on `@RequestBody` parameters in mutating endpoints. |
+| `CR-SEC-007` | Insecure Random Number Generator | SECURITY | HIGH | A02:2021-Cryptographic Failures | CWE-330 | Utilization of predictable PRNGs (`java.util.Random`, `Math.random()`) for security tokens, session keys, or cryptography. |
+| `CR-SEC-008` | Hardcoded Internal IP Address | SECURITY | MEDIUM | A05:2021-Security Misconfiguration | CWE-668 | Embedded RFC 1918 private IPv4 addresses (`10.x`, `192.168.x`, `172.16-31.x`) exposing internal infrastructure topology. |
 | `CR-MULTI-001` | Universal Polyglot Security Scan | UNIVERSAL | HIGH | Multi-Language Security | CWE-699 | Polyglot fallback engine scanning non-Java assets (TypeScript, Python, Go, PHP, C#) for hardcoded secrets and SQLi. |
 
 ---
