@@ -608,7 +608,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
           <div className="flex items-center space-x-1.5 p-1.5 bg-slate-100 dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-x-auto no-scrollbar">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold font-display flex items-center space-x-2 transition-all cursor-pointer whitespace-nowrap ${
+              className={`px-3.5 py-2 min-h-[44px] rounded-xl text-xs font-bold font-display flex items-center space-x-2 transition-all cursor-pointer whitespace-nowrap active:scale-98 ${
                 activeTab === 'overview'
                   ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/80 dark:border-slate-700'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -620,7 +620,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
 
             <button
               onClick={() => setActiveTab('findings')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold font-display flex items-center space-x-2 transition-all cursor-pointer whitespace-nowrap ${
+              className={`px-3.5 py-2 min-h-[44px] rounded-xl text-xs font-bold font-display flex items-center space-x-2 transition-all cursor-pointer whitespace-nowrap active:scale-98 ${
                 activeTab === 'findings'
                   ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/80 dark:border-slate-700'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -632,7 +632,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
 
             <button
               onClick={() => setActiveTab('whitebox')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold font-display flex items-center space-x-2 transition-all cursor-pointer whitespace-nowrap ${
+              className={`px-3.5 py-2 min-h-[44px] rounded-xl text-xs font-bold font-display flex items-center space-x-2 transition-all cursor-pointer whitespace-nowrap active:scale-98 ${
                 activeTab === 'whitebox'
                   ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/80 dark:border-slate-700'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -644,7 +644,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
 
             <button
               onClick={() => setActiveTab('blackbox')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold font-display flex items-center space-x-2 transition-all cursor-pointer whitespace-nowrap ${
+              className={`px-3.5 py-2 min-h-[44px] rounded-xl text-xs font-bold font-display flex items-center space-x-2 transition-all cursor-pointer whitespace-nowrap active:scale-98 ${
                 activeTab === 'blackbox'
                   ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/80 dark:border-slate-700'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -656,14 +656,14 @@ export default function AnalysisDetailView({ jobId, onBack }) {
 
             <button
               onClick={() => setActiveTab('compliance')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold font-display flex items-center space-x-2 transition-all cursor-pointer whitespace-nowrap ${
+              className={`px-3.5 py-2 min-h-[44px] rounded-xl text-xs font-bold font-display flex items-center space-x-2 transition-all cursor-pointer whitespace-nowrap active:scale-98 ${
                 activeTab === 'compliance'
                   ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/80 dark:border-slate-700'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <CheckSquare className="w-3.5 h-3.5 text-emerald-400" />
-              <span>OWASP &amp; Compliance</span>
+              <span>OWASP &amp; Checks</span>
             </button>
           </div>
 
