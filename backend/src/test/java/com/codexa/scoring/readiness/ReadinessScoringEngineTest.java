@@ -84,7 +84,6 @@ class ReadinessScoringEngineTest {
         assertEquals(0.0, ReadinessScoringEngine.calculateDebtRatio(0, 10));
         assertEquals(0.0, ReadinessScoringEngine.calculateDebtRatio(5, 0));
     }
-}
 
     @Test
     void nullFindingsListShouldReturnCleanScores() {

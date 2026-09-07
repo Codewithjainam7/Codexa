@@ -98,17 +98,28 @@ class ReportExportServiceTest {
         assertTrue(json.contains("maintainabilityScore"));
         assertTrue(json.contains("architecturalScore"));
     }
-}
 
     @Test
     void exportWithEmptyFindingsShouldRenderCleanState() {
-        AnalysisJobEntity emptyJob = new AnalysisJobEntity();
-        emptyJob.setId(java.util.UUID.randomUUID());
-        emptyJob.setSourceIdentifier("https://github.com/demo/clean-repo");
-        emptyJob.setStatus(com.codexa.analysis.model.AnalysisStatus.COMPLETED);
-        emptyJob.setOverallScore(100.0);
+        AnalysisMetricResponse metrics = new AnalysisMetricResponse(
+                100.0, 100.0, 100.0, 100.0, 100.0,
+                5, 5, 0, 0, 0, 0, 120L
+        );
+        AnalysisReportResponse emptyReport = new AnalysisReportResponse(
+                UUID.randomUUID(),
+                "Codexa Code Review & Security Audit",
+                "https://github.com/example/clean-repo",
+                SourceType.GITHUB,
+                100.0,
+                ProductionVerdict.REVIEW_COMPLETE,
+                "Clean scan with zero findings.",
+                Instant.now(),
+                metrics,
+                List.of(),
+                AnalysisReportResponse.STANDARD_DISCLAIMER
+        );
 
-        String html = exportService.generateHtmlReport(emptyJob, java.util.List.of());
+        String html = exportService.generateHtmlReport(emptyReport);
         assertNotNull(html);
         assertTrue(html.contains("Zero static security vulnerabilities"));
     }
