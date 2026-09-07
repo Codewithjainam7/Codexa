@@ -99,3 +99,17 @@ class ReportExportServiceTest {
         assertTrue(json.contains("architecturalScore"));
     }
 }
+
+    @Test
+    void exportWithEmptyFindingsShouldRenderCleanState() {
+        AnalysisJobEntity emptyJob = new AnalysisJobEntity();
+        emptyJob.setId(java.util.UUID.randomUUID());
+        emptyJob.setSourceIdentifier("https://github.com/demo/clean-repo");
+        emptyJob.setStatus(com.codexa.analysis.model.AnalysisStatus.COMPLETED);
+        emptyJob.setOverallScore(100.0);
+
+        String html = exportService.generateHtmlReport(emptyJob, java.util.List.of());
+        assertNotNull(html);
+        assertTrue(html.contains("Zero static security vulnerabilities"));
+    }
+}
