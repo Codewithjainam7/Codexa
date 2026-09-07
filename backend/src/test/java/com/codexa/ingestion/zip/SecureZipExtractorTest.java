@@ -131,4 +131,9 @@ class SecureZipExtractorTest {
     void shouldValidateMemoryHeadroom() {
         assertTrue(extractor.hasSufficientMemoryHeadroom());
     }
+
+    @Test
+    void shouldConfigureSixtyFourKilobyteBufferSize() {
+        assertEquals(65536, extractor.getBufferSize());
+    }
 }
