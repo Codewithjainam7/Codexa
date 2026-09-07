@@ -1,16 +1,33 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/v1';
 
+export async function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      const timeoutError = new Error(`Request timed out after ${timeoutMs}ms`);
+      timeoutError.isTimeout = true;
+      throw timeoutError;
+    }
+    throw err;
+  } finally {
+    clearTimeout(id);
+  }
+}
+
 /**
  * Pings server health check with status code verification
  */
 export async function checkHealth() {
-  const res = await fetch(`${API_BASE}/health`);
+  const res = await fetchWithTimeout(`${API_BASE}/health`, {}, 5000);
   if (!res.ok) throw new Error('Health check failed');
   return res.json();
 }
 
 export async function getLimits() {
-  const res = await fetch(`${API_BASE}/config/limits`);
+  const res = await fetchWithTimeout(`${API_BASE}/config/limits`, {}, 8000);
   if (!res.ok) throw new Error('Failed to fetch upload limits');
   return res.json();
 }
