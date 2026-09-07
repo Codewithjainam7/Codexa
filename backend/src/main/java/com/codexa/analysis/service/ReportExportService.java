@@ -26,6 +26,10 @@ public class ReportExportService {
         }
     }
 
+    /**
+     * Generates a self-contained executive HTML report styled with
+     * dark-mode corporate typography and @media print PDF layout rules.
+     */
     public String generateHtmlReport(AnalysisReportResponse report) {
         StringBuilder sb = new StringBuilder();
         String verdictStr = report.verdict() != null ? report.verdict().name() : "PENDING";
