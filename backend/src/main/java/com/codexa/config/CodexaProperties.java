@@ -3,6 +3,9 @@ package com.codexa.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
+import java.util.List;
+import java.util.Set;
+
 @ConfigurationProperties(prefix = "codexa")
 public record CodexaProperties(
         Limits limits,
@@ -83,10 +86,26 @@ public record CodexaProperties(
 
     public record Security(
             boolean rateLimitEnabled,
-            int rateLimitRequestsPerMinute
+            int rateLimitRequestsPerMinute,
+            List<String> allowedOrigins,
+            Set<String> trustedProxies,
+            String apiKey
     ) {
         public Security {
             if (rateLimitRequestsPerMinute <= 0) rateLimitRequestsPerMinute = 60;
+            if (allowedOrigins == null || allowedOrigins.isEmpty()) {
+                allowedOrigins = List.of("http://localhost:5173", "https://codexa-ye85.onrender.com");
+            }
+            if (trustedProxies == null) {
+                trustedProxies = Set.of();
+            }
+            if (apiKey == null) {
+                apiKey = "";
+            }
+        }
+
+        public Security(boolean rateLimitEnabled, int rateLimitRequestsPerMinute) {
+            this(rateLimitEnabled, rateLimitRequestsPerMinute, List.of("http://localhost:5173", "https://codexa-ye85.onrender.com"), Set.of(), "");
         }
     }
 }
