@@ -30,6 +30,7 @@ public class ReadinessScoringEngine {
     }
 
     public ScoreResult computeScores(List<FindingEntity> findings) {
+        // Guard against null findings collection
         if (findings == null || findings.isEmpty()) {
             return new ScoreResult(100.0, 100.0, 100.0, 100.0, 100.0, 100.0, ProductionVerdict.REVIEW_COMPLETE);
         }
