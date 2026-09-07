@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -97,11 +98,19 @@ public class RateLimitingFilter implements Filter {
     }
 
     private String extractClientIp(HttpServletRequest request) {
-        String xForwardedFor = request.getHeader("X-Forwarded-For");
-        if (xForwardedFor != null && !xForwardedFor.isBlank()) {
-            return xForwardedFor.split(",")[0].trim();
+        String remoteAddr = request.getRemoteAddr();
+        Set<String> trustedProxies = properties.security() != null && properties.security().trustedProxies() != null
+                ? properties.security().trustedProxies()
+                : Set.of();
+
+        // Only trust X-Forwarded-For if the immediate connecting IP is a configured trusted proxy
+        if (remoteAddr != null && trustedProxies.contains(remoteAddr.trim())) {
+            String xForwardedFor = request.getHeader("X-Forwarded-For");
+            if (xForwardedFor != null && !xForwardedFor.isBlank()) {
+                return xForwardedFor.split(",")[0].trim();
+            }
         }
-        return request.getRemoteAddr() != null ? request.getRemoteAddr() : "unknown-client";
+        return remoteAddr != null ? remoteAddr : "unknown-client";
     }
 
     private static class RequestCounter {
