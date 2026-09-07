@@ -63,10 +63,16 @@ export default function AnalysisDetailView({ jobId, onBack }) {
 
   const [fetchError, setFetchError] = useState(null);
   const failCountRef = useRef(0);
+  const isPollingActiveRef = useRef(true);
+  const pollTimeoutRef = useRef(null);
 
-  const fetchJobData = async () => {
+  const fetchJobData = useCallback(async () => {
+    if (!isPollingActiveRef.current) return;
+
     try {
       const data = await getAnalysisJob(jobId);
+      if (!isPollingActiveRef.current) return;
+
       setJob(data);
       setFetchError(null);
       failCountRef.current = 0;
@@ -79,42 +85,89 @@ export default function AnalysisDetailView({ jobId, onBack }) {
       }
 
       if (data.status === 'COMPLETED' || data.status === 'FAILED') {
-        const fData = await getFindings(jobId, {
-          category: categoryFilter,
-          severity: severityFilter,
-          search: searchFilter
-        });
-        const allFindings = fData.content || [];
-        setFindings(allFindings);
+        isPollingActiveRef.current = false;
+        if (pollTimeoutRef.current) {
+          clearTimeout(pollTimeoutRef.current);
+          pollTimeoutRef.current = null;
+        }
       }
     } catch (err) {
       failCountRef.current += 1;
-      if (err.status === 404 || failCountRef.current >= 4) {
-        setFetchError(
-          err.status === 404
-            ? 'Analysis session expired or job not found. (The server may have restarted or refreshed).'
-            : 'Unable to reach the Codexa inspection engine. Please verify connection and retry.'
-        );
+      if (err.status === 404) {
+        // Stop polling immediately on 404 - nonexistent job will never appear
+        isPollingActiveRef.current = false;
+        if (pollTimeoutRef.current) {
+          clearTimeout(pollTimeoutRef.current);
+          pollTimeoutRef.current = null;
+        }
+        setFetchError('Analysis session expired or job not found. (The server may have restarted or refreshed).');
+        try {
+          localStorage.removeItem('codexa_last_job_id');
+        } catch (e) {
+          // Ignore localStorage errors
+        }
+      } else if (failCountRef.current >= 4) {
+        isPollingActiveRef.current = false;
+        if (pollTimeoutRef.current) {
+          clearTimeout(pollTimeoutRef.current);
+          pollTimeoutRef.current = null;
+        }
+        setFetchError('Unable to reach the Codexa inspection engine. Please verify connection and retry.');
       }
     } finally {
       setLoading(false);
     }
-  };
+  }, [jobId]);
 
   useEffect(() => {
-    fetchJobData();
-    const interval = setInterval(() => {
-      if (job && (job.status === 'COMPLETED' || job.status === 'FAILED')) {
-        clearInterval(interval);
-      } else if (fetchError) {
-        clearInterval(interval);
-      } else {
-        fetchJobData();
-      }
-    }, 750);
+    isPollingActiveRef.current = true;
+    failCountRef.current = 0;
+    setFetchError(null);
 
-    return () => clearInterval(interval);
-  }, [jobId, job?.status, fetchError, categoryFilter, severityFilter, searchFilter]);
+    let isMounted = true;
+
+    const runPoll = async () => {
+      if (!isMounted || !isPollingActiveRef.current) return;
+      await fetchJobData();
+
+      if (isMounted && isPollingActiveRef.current) {
+        const nextDelay = failCountRef.current > 0 ? 2500 : 1200;
+        pollTimeoutRef.current = setTimeout(runPoll, nextDelay);
+      }
+    };
+
+    runPoll();
+
+    return () => {
+      isMounted = false;
+      isPollingActiveRef.current = false;
+      if (pollTimeoutRef.current) {
+        clearTimeout(pollTimeoutRef.current);
+        pollTimeoutRef.current = null;
+      }
+    };
+  }, [jobId, fetchJobData]);
+
+  // Fetch findings when job reaches terminal state or when filters change
+  useEffect(() => {
+    let active = true;
+    if (job && (job.status === 'COMPLETED' || job.status === 'FAILED')) {
+      getFindings(jobId, {
+        category: categoryFilter,
+        severity: severityFilter,
+        search: searchFilter
+      }).then(fData => {
+        if (active) {
+          setFindings(fData.content || []);
+        }
+      }).catch(err => {
+        console.warn('Unable to load findings for job:', err);
+      });
+    }
+    return () => {
+      active = false;
+    };
+  }, [jobId, job?.status, categoryFilter, severityFilter, searchFilter]);
 
   // Filter findings based on selected file from FileTreeExplorer
   const filteredFindings = useMemo(() => {
@@ -324,19 +377,30 @@ export default function AnalysisDetailView({ jobId, onBack }) {
           <h2 className="text-xl font-bold text-slate-900 dark:text-white font-display">Analysis Session Not Available</h2>
           <p className="text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto font-sans">{fetchError}</p>
         </div>
-        <div className="flex items-center justify-center space-x-3 pt-2">
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
           <button
             onClick={onBack}
-            className="px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all font-display cursor-pointer"
+            className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md shadow-emerald-500/20 transition-all font-display cursor-pointer flex items-center space-x-1.5"
           >
-            Return to Dashboard
+            <span>Start New Scan</span>
           </button>
           <button
-            onClick={() => { setFetchError(null); fetchJobData(); }}
-            className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md shadow-blue-500/20 transition-all font-display cursor-pointer flex items-center space-x-1.5"
+            onClick={() => {
+              isPollingActiveRef.current = true;
+              failCountRef.current = 0;
+              setFetchError(null);
+              fetchJobData();
+            }}
+            className="px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all font-display cursor-pointer flex items-center space-x-1.5"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Retry Connection</span>
+          </button>
+          <button
+            onClick={onBack}
+            className="px-4 py-2.5 rounded-xl text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 text-xs font-medium transition-all font-display cursor-pointer"
+          >
+            Return to Dashboard
           </button>
         </div>
       </div>
