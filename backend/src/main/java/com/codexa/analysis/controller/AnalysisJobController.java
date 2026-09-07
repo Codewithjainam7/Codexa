@@ -71,6 +71,12 @@ public class AnalysisJobController {
                     .header(HttpHeaders.CONTENT_DISPOSITION, disposition + "; filename=\"codexa-report-" + jobId + ".md\"")
                     .contentType(MediaType.TEXT_PLAIN)
                     .body(markdown);
+        } else if ("csv".equalsIgnoreCase(format)) {
+            String csv = reportExportService.generateCsvReport(report);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, disposition + "; filename=\"codexa-report-" + jobId + ".csv\"")
+                    .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+                    .body(csv);
         }
 
         if (download) {
