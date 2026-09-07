@@ -23,7 +23,16 @@ RUN mvn -f ./backend/pom.xml clean package -DskipTests
 # Stage 3: Lightweight Runtime Container
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-COPY --from=backend-build /app/backend/target/*.jar app.jar
+
+# Create non-root system user and group
+RUN addgroup -S codexa && adduser -S codexa -G codexa
+
+COPY --from=backend-build --chown=codexa:codexa /app/backend/target/*.jar app.jar
+
+RUN chown -R codexa:codexa /app
+
+USER codexa
+
 EXPOSE 8080
 ENV PORT=8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
