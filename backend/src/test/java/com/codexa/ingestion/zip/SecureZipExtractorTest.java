@@ -126,4 +126,9 @@ class SecureZipExtractorTest {
 
         assertEquals("ZIP_BOMB_FILE_COUNT_EXCEEDED", ex.getErrorCode());
     }
+
+    @Test
+    void shouldValidateMemoryHeadroom() {
+        assertTrue(extractor.hasSufficientMemoryHeadroom());
+    }
 }
