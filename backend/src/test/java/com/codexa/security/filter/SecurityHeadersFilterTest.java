@@ -28,5 +28,6 @@ class SecurityHeadersFilterTest {
         assertThat(response.getHeader("X-Permitted-Cross-Domain-Policies")).isEqualTo("none");
         assertThat(response.getHeader("X-Robots-Tag")).isEqualTo("noindex, nofollow, noarchive");
         assertThat(response.getHeader("Content-Security-Policy")).contains("default-src 'self'");
+        assertThat(response.getHeader("X-DNS-Prefetch-Control")).isEqualTo("off");
     }
 }
