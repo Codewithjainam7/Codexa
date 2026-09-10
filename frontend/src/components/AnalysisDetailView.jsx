@@ -56,7 +56,12 @@ export default function AnalysisDetailView({ jobId, onBack }) {
           return prev;
         });
       }, 150);
-      
+      return () => clearInterval(interval);
+    } else if (job.status === 'COMPLETED') {
+      setLiveProgress(100);
+    }
+  }, [job?.status, job?.progressPercent]);
+
   // Quick jump '/' shortcut to focus findings search
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -68,12 +73,6 @@ export default function AnalysisDetailView({ jobId, onBack }) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
-
-  return () => clearInterval(interval);
-    } else if (job.status === 'COMPLETED') {
-      setLiveProgress(100);
-    }
-  }, [job?.status, job?.progressPercent]);
 
   const [fetchError, setFetchError] = useState(null);
   const failCountRef = useRef(0);
