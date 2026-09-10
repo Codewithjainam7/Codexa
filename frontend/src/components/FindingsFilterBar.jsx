@@ -31,7 +31,7 @@ export default function FindingsFilterBar({
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Filter by title, file, rule ID..."
+          placeholder="Filter by title, file, rule ID... (/)" aria-label="Filter by title, file, or rule ID"
           className="w-full pl-10 pr-9 py-2 sm:py-2.5 bg-[var(--bg-recessed)] border border-[var(--border-subtle)] rounded-xl text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/30 transition-all font-medium"
         />
         {search && (
