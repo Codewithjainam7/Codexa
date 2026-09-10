@@ -220,7 +220,7 @@ export default function FileTreeExplorer({ findings = [], selectedFile, onSelect
           type="text"
           value={fileSearch}
           onChange={(e) => setFileSearch(e.target.value)}
-          placeholder="Filter files..."
+          placeholder="Filter files..." aria-label="Search files"
           className="w-full pl-8 pr-2.5 py-1.5 bg-[var(--bg-recessed)] border border-[var(--border-subtle)] rounded-lg text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)]"
         />
       </div>
