@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useRef } from 'react';
+import React, { useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import { getAnalysisJob, getFindings } from '../api/client';
 import FindingsFilterBar from './FindingsFilterBar';
 import FileTreeExplorer from './FileTreeExplorer';
