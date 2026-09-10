@@ -22,6 +22,7 @@ class HealthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("UP"))
                 .andExpect(jsonPath("$.appName").value("Codexa Security Platform"))
-                .andExpect(jsonPath("$.version").value("1.0.0"));
+                .andExpect(jsonPath("$.version").value("1.0.0"))
+                .andExpect(jsonPath("$.ruleCatalogCount").value(30));
     }
 }
