@@ -20,7 +20,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
   const [loading, setLoading] = useState(true);
   const [copiedJobId, setCopiedJobId] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState('');
-  const [severityFilter, setSeverityFilter] = useState('');
+  const [severityFilter, setSeverityFilter] = useState('');\n  useEffect(() => {\n    try {\n      const saved = sessionStorage.getItem('codexa_filter_cat');\n      if (saved) setCategoryFilter(saved);\n    } catch (_) {}\n  }, []);
   const [searchFilter, setSearchFilter] = useState('');
   const [selectedFile, setSelectedFile] = useState('');
   const [showExportModal, setShowExportModal] = useState(false);
