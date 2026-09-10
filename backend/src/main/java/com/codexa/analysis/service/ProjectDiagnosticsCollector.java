@@ -542,4 +542,18 @@ public class ProjectDiagnosticsCollector {
         return new ProjectDiagnostics(comp, wb, bb, checklist);
     }
 
+
+    /**
+     * Gathers JVM runtime telemetry and host machine core concurrency metadata.
+     */
+    public Map<String, Object> getHostRuntimeTelemetry() {
+        return Map.of(
+            "osArch", System.getProperty("os.arch", "unknown"),
+            "availableCores", Runtime.getRuntime().availableProcessors(),
+            "jvmName", System.getProperty("java.vm.name", "OpenJDK"),
+            "jvmVersion", System.getProperty("java.version", "17")
+        );
+    }
+    // Runtime host architecture telemetry
+
 }
