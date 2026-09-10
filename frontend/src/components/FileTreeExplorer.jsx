@@ -200,7 +200,7 @@ export default function FileTreeExplorer({ findings = [], selectedFile, onSelect
     <div className="cdx-glass-card rounded-2xl p-4 space-y-3 flex flex-col h-full shadow-xl">
       <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)]">
         <div className="flex items-center space-x-2">
-          <Folder className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+          <Folder className="w-4 h-4 text-blue-600 dark:text-blue-400" title="Repository files with findings" />
           <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">Repository Files</h3>
         </div>
         {selectedFile && (
