@@ -531,3 +531,8 @@ For in-depth architectural specifications and guides, consult the `docs/` librar
 ### CR-SEC-009 & CR-SEC-010: Cryptographic Assurance
 - **CR-SEC-009 (Weak Hash Algorithms):** Flags MD5, MD2, and SHA-1 in `MessageDigest.getInstance(...)`.
 - **CR-SEC-010 (Disabled TLS Validation):** Flags empty `checkServerTrusted` and `checkClientTrusted` methods.
+
+### CR-OPS-003, CR-QUAL-006 & CR-PERF-001: Operational & Performance Rules
+- **CR-OPS-003 (Unbounded Thread Pool):** Flags `Executors.newCachedThreadPool()` that leads to thread starvation.
+- **CR-QUAL-006 (Empty Catch Blocks):** Flags swallowed exceptions with zero statements.
+- **CR-PERF-001 (String Concat in Loops):** Flags string `+=` in loop statements with quadratic memory growth.
