@@ -71,6 +71,12 @@ public class AnalysisJobController {
                     .header(HttpHeaders.CONTENT_DISPOSITION, disposition + "; filename=\"codexa-report-" + jobId + ".md\"")
                     .contentType(MediaType.TEXT_PLAIN)
                     .body(markdown);
+                } else if ("sarif".equalsIgnoreCase(format)) {
+            String sarif = reportExportService.generateSarifReport(report);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, disposition + "; filename=\"codexa-report-\" + jobId + \".sarif\"")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(sarif);
         } else if ("csv".equalsIgnoreCase(format)) {
             String csv = reportExportService.generateCsvReport(report);
             return ResponseEntity.ok()
