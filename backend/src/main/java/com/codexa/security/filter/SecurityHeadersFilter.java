@@ -38,7 +38,7 @@ public class SecurityHeadersFilter implements Filter {
             httpServletResponse.setHeader("Cross-Origin-Opener-Policy", "same-origin");
             httpServletResponse.setHeader("X-Permitted-Cross-Domain-Policies", "none");
             httpServletResponse.setHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
-            httpServletResponse.setHeader("Content-Security-Policy", CSP_POLICY);
+            httpServletResponse.setHeader("Content-Security-Policy", CSP_POLICY);\n            httpServletResponse.setHeader("X-DNS-Prefetch-Control", "off");
         }
         chain.doFilter(request, response);
     }
