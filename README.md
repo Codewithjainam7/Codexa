@@ -527,3 +527,7 @@ For in-depth architectural specifications and guides, consult the `docs/` librar
 - **License**: Licensed under the [Apache License, Version 2.0](LICENSE).
 - **Security Disclosures**: Please report security concerns following the instructions in [SECURITY.md](SECURITY.md).
 - **Contributing**: Developer guidelines, code style, and PR processes are detailed in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+### CR-SEC-009 & CR-SEC-010: Cryptographic Assurance
+- **CR-SEC-009 (Weak Hash Algorithms):** Flags MD5, MD2, and SHA-1 in `MessageDigest.getInstance(...)`.
+- **CR-SEC-010 (Disabled TLS Validation):** Flags empty `checkServerTrusted` and `checkClientTrusted` methods.
