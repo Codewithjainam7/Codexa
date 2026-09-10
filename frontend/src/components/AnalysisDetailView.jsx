@@ -736,7 +736,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
           </div>
 
           {/* Interactive Navigation Tabs Bar */}
-          <div className="flex items-center space-x-1.5 p-1.5 bg-slate-100 dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-x-auto no-scrollbar">
+          <div role="tablist" aria-label="Analysis navigation tabs" className="flex items-center space-x-1.5 p-1.5 bg-slate-100 dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-x-auto no-scrollbar">
             <button
               onClick={() => setActiveTab('overview')}
               className={`px-3.5 py-2 min-h-[44px] rounded-xl text-xs font-bold font-display flex items-center space-x-2 transition-all cursor-pointer whitespace-nowrap active:scale-98 ${
