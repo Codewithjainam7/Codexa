@@ -306,7 +306,8 @@ _Audited deterministically by CODEXA AST Engine_`;
               { id: 'html', label: 'HTML', icon: FileText, color: 'text-blue-400' },
               { id: 'md', label: 'Markdown', icon: FileText, color: 'text-violet-400' },
               { id: 'json', label: 'JSON', icon: Code2, color: 'text-emerald-400' },
-              { id: 'csv', label: 'CSV', icon: Table, color: 'text-amber-400' }
+              { id: 'csv', label: 'CSV', icon: Table, color: 'text-amber-400' },
+              { id: 'sarif', label: 'SARIF', icon: Shield, color: 'text-cyan-400' }
             ].map(tab => {
               const TabIcon = tab.icon;
               const isActive = format === tab.id;
