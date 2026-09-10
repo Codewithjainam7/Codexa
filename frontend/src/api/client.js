@@ -101,3 +101,12 @@ export async function getFindings(jobId, params = {}) {
   if (!res.ok) throw new Error('Failed to fetch findings');
   return res.json();
 }
+
+
+/**
+ * Calculates exponential backoff with full jitter to avoid thundering herd.
+ */
+export function calculateBackoffJitter(attempt, baseMs = 300, maxMs = 4000) {
+  const exp = Math.min(maxMs, baseMs * Math.pow(2, attempt));
+  return Math.floor(Math.random() * exp);
+}
