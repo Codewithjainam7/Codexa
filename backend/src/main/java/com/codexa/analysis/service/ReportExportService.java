@@ -969,4 +969,56 @@ public class ReportExportService {
         if (value == null) return "\"\"";
         return "\"" + value.replace("\"", "\"\"").replace("\r", " ").replace("\n", " ") + "\"";
     }
+
+    /**
+     * Generates a SARIF v2.1.0 JSON report for GitHub Advanced Security / CodeQL ingestion.
+     */
+    public String generateSarifReport(AnalysisReportResponse report) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\n");
+        sb.append("  \"$schema\": \"https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json\",\n");
+        sb.append("  \"version\": \"2.1.0\",\n");
+        sb.append("  \"runs\": [\n");
+        sb.append("    {\n");
+        sb.append("      \"tool\": {\n");
+        sb.append("        \"driver\": {\n");
+        sb.append("          \"name\": \"Codexa Security Engine\",\n");
+        sb.append("          \"version\": \"1.0.0\",\n");
+        sb.append("          \"informationUri\": \"https://github.com/Codewithjainam7/Codexa\"\n");
+        sb.append("        }\n");
+        sb.append("      },\n");
+        sb.append("      \"results\": [\n");
+
+        if (report != null && report.findings() != null) {
+            List<FindingResponse> flist = report.findings();
+            for (int i = 0; i < flist.size(); i++) {
+                FindingResponse f = flist.get(i);
+                String level = switch (f.severity()) {
+                    case CRITICAL, HIGH -> "error";
+                    case MEDIUM -> "warning";
+                    default -> "note";
+                };
+                sb.append("        {\n");
+                sb.append("          \"ruleId\": \"").append(f.ruleId()).append("\",\n");
+                sb.append("          \"level\": \"").append(level).append("\",\n");
+                sb.append("          \"message\": { \"text\": \"").append(escapeJson(f.description())).append("\" },\n");
+                sb.append("          \"locations\": [\n");
+                sb.append("            {\n");
+                sb.append("              \"physicalLocation\": {\n");
+                sb.append("                \"artifactLocation\": { \"uri\": \"").append(escapeJson(f.filePath())).append("\" },\n");
+                sb.append("                \"region\": { \"startLine\": ").append(Math.max(1, f.startLine())).append(" }\n");
+                sb.append("              }\n");
+                sb.append("            }\n");
+                sb.append("          ]\n");
+                sb.append("        }").append(i < flist.size() - 1 ? "," : "").append("\n");
+            }
+        }
+
+        sb.append("      ]\n");
+        sb.append("    }\n");
+        sb.append("  ]\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
 }
