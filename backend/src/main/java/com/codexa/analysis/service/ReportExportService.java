@@ -6,6 +6,7 @@ import com.codexa.analysis.model.FindingResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 
 /**
  * Service responsible for exporting rich, executive-grade audit reports
@@ -968,6 +969,15 @@ public class ReportExportService {
     private String escapeCsv(String value) {
         if (value == null) return "\"\"";
         return "\"" + value.replace("\"", "\"\"").replace("\r", " ").replace("\n", " ") + "\"";
+    }
+
+    private String escapeJson(String input) {
+        if (input == null) return "";
+        return input.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\r", "\\r")
+                .replace("\n", "\\n")
+                .replace("\t", "\\t");
     }
 
     /**

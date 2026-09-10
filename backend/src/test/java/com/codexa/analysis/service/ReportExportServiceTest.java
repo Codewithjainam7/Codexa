@@ -78,7 +78,7 @@ class ReportExportServiceTest {
                 "A02:2021", "Crypto.java", 12, 12, "MD5", "SHA-256", 8.0, false, List.of()
         );
         AnalysisReportResponse report = new AnalysisReportResponse(
-                jobId, "App", "app.zip", SourceType.ZIP, 80.0, ProductionVerdict.PRODUCTION_READY,
+                jobId, "App", "app.zip", SourceType.ZIP, 80.0, ProductionVerdict.REVIEW_COMPLETE,
                 "Pass", Instant.now(), new AnalysisMetricResponse(80.0, 80.0, 80.0, 5, 5, 0, 1, 0, 0, 100L),
                 List.of(finding), "Disclaimer", null
         );
