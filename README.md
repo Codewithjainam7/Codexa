@@ -536,3 +536,9 @@ For in-depth architectural specifications and guides, consult the `docs/` librar
 - **CR-OPS-003 (Unbounded Thread Pool):** Flags `Executors.newCachedThreadPool()` that leads to thread starvation.
 - **CR-QUAL-006 (Empty Catch Blocks):** Flags swallowed exceptions with zero statements.
 - **CR-PERF-001 (String Concat in Loops):** Flags string `+=` in loop statements with quadratic memory growth.
+
+### SARIF v2.1.0 GitHub Integration
+Download report in SARIF format for direct upload to GitHub Security Code Scanning:
+```bash
+curl -s "http://localhost:8080/api/v1/analyses/{jobId}/report?format=sarif" -o results.sarif
+```
