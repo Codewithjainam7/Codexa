@@ -93,6 +93,8 @@ export function ExpandableFindingCards({ findings = [], getSeverityBadge }) {
               {/* Header Pill Row (Clickable & Touch-Friendly) */}
               <div
                 onClick={() => toggleExpand(f.id)}
+                role="button"
+                aria-expanded={isExpanded}
                 className="flex items-center justify-between p-3 sm:p-4 cursor-pointer select-none hover:bg-blue-500/5 transition-colors gap-2"
               >
                 <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 pr-1 sm:pr-3">
