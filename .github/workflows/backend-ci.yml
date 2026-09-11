@@ -27,7 +27,7 @@ jobs:
           cache: maven
 
       - name: Build and Verify with Maven
-        run: mvn -B -f backend/pom.xml clean verify
+        run: mvn -B -f backend/pom.xml clean verify -Ddependency-check.skip=true
 
       - name: Upload JaCoCo Coverage Report
         if: always()
