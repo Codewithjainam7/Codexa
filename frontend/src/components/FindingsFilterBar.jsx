@@ -5,7 +5,8 @@ import CustomSelect from './CustomSelect';
 export default function FindingsFilterBar({
   category, setCategory,
   severity, setSeverity,
-  search, setSearch
+  search, setSearch,
+  searchInputRef
 }) {
   const categoryOptions = [
     { value: '', label: 'All Categories' },
@@ -28,6 +29,7 @@ export default function FindingsFilterBar({
       <div className="relative w-full md:w-72 lg:w-80 flex-1">
         <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
         <input
+          ref={searchInputRef}
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}

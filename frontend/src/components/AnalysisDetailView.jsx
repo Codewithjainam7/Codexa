@@ -68,6 +68,12 @@ export default function AnalysisDetailView({ jobId, onBack }) {
     }
   }, [job?.status, job?.progressPercent]);
 
+  const [fetchError, setFetchError] = useState(null);
+  const failCountRef = useRef(0);
+  const isPollingActiveRef = useRef(true);
+  const pollTimeoutRef = useRef(null);
+  const searchInputRef = useRef(null);
+
   // Quick jump '/' shortcut to focus findings search
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -79,12 +85,6 @@ export default function AnalysisDetailView({ jobId, onBack }) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
-
-  const [fetchError, setFetchError] = useState(null);
-  const failCountRef = useRef(0);
-  const isPollingActiveRef = useRef(true);
-  const pollTimeoutRef = useRef(null);
-  const searchInputRef = useRef(null);
 
   const fetchJobData = useCallback(async () => {
     if (!isPollingActiveRef.current) return;
@@ -158,20 +158,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
 
     runPoll();
 
-    
-  // Quick jump '/' shortcut to focus findings search
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  return () => {
+    return () => {
       isMounted = false;
       isPollingActiveRef.current = false;
       if (pollTimeoutRef.current) {
@@ -197,20 +184,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
         console.warn('Unable to load findings for job:', err);
       });
     }
-    
-  // Quick jump '/' shortcut to focus findings search
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  return () => {
+    return () => {
       active = false;
     };
   }, [jobId, job?.status, categoryFilter, severityFilter, searchFilter]);
@@ -223,20 +197,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-    
-  // Quick jump '/' shortcut to focus findings search
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onBack]);
 
   // Filter findings based on selected file from FileTreeExplorer
@@ -381,80 +342,28 @@ export default function AnalysisDetailView({ jobId, onBack }) {
   const getVerdictBadge = (verdict) => {
     switch (verdict) {
       case 'REVIEW_COMPLETE':
-        
-  // Quick jump '/' shortcut to focus findings search
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  return (
+        return (
           <span className="px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 flex items-center space-x-1.5 font-display">
             <CheckCircle className="w-3.5 h-3.5 shrink-0" />
             <span>Ready for Production</span>
           </span>
         );
       case 'GENERALLY_PROMISING':
-        
-  // Quick jump '/' shortcut to focus findings search
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  return (
+        return (
           <span className="px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/30 flex items-center space-x-1.5 font-display">
             <Check className="w-3.5 h-3.5 shrink-0" />
             <span>Generally Promising</span>
           </span>
         );
       case 'NEEDS_URGENT_FIXES':
-        
-  // Quick jump '/' shortcut to focus findings search
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  return (
+        return (
           <span className="px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30 flex items-center space-x-1.5 font-display">
             <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
             <span>Needs Urgent Fixes</span>
           </span>
         );
       default:
-        
-  // Quick jump '/' shortcut to focus findings search
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  return (
+        return (
           <span className="px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/30 flex items-center space-x-1.5 font-display">
             <XCircle className="w-3.5 h-3.5 shrink-0" />
             <span>Not Production Ready</span>
@@ -490,20 +399,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
   };
 
   if (fetchError) {
-    
-  // Quick jump '/' shortcut to focus findings search
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  return (
+    return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center space-y-6">
         <div className="w-16 h-16 rounded-3xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto shadow-lg">
           <AlertTriangle className="w-8 h-8" />
@@ -549,19 +445,6 @@ export default function AnalysisDetailView({ jobId, onBack }) {
     progressStage: job?.progressStage || liveStage,
     progressPercent: job?.status === 'COMPLETED' ? 100 : Math.round(liveProgress)
   };
-
-  
-  // Quick jump '/' shortcut to focus findings search
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
 
   return (
     <div className="max-w-7xl mx-auto px-2 sm:px-6 py-4 sm:py-8 space-y-4 sm:space-y-6">
@@ -825,20 +708,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                   {Object.entries(diagnostics.composition.languageLoc).map(([lang, loc], idx) => {
                     const pct = diagnostics.composition.codeLines > 0 ? (loc / diagnostics.composition.codeLines) * 100 : 25;
                     const colors = ['bg-blue-500', 'bg-amber-500', 'bg-emerald-500', 'bg-purple-500', 'bg-pink-500', 'bg-slate-500'];
-                    
-  // Quick jump '/' shortcut to focus findings search
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  return (
+                    return (
                       <div
                         key={lang}
                         style={{ width: `${pct}%` }}
@@ -854,20 +724,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                   {Object.entries(diagnostics.composition.languageLoc).map(([lang, loc], idx) => {
                     const files = diagnostics.composition.languageFiles[lang] || 1;
                     const pct = diagnostics.composition.codeLines > 0 ? Math.round((loc / diagnostics.composition.codeLines) * 100) : 0;
-                    
-  // Quick jump '/' shortcut to focus findings search
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  return (
+                    return (
                       <div key={lang} className="p-3 rounded-xl cdx-recessed border border-[var(--border-subtle)] space-y-1">
                         <div className="flex items-center justify-between text-xs">
                           <span className="font-bold text-[var(--text-primary)] font-display">{lang}</span>
@@ -952,6 +809,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                   category={categoryFilter} setCategory={setCategoryFilter}
                   severity={severityFilter} setSeverity={setSeverityFilter}
                   search={searchFilter} setSearch={setSearchFilter}
+                  searchInputRef={searchInputRef}
                 />
               </div>
 
@@ -1253,20 +1111,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                           DELETE: 'bg-rose-500/20 text-rose-400 border-rose-500/30',
                           PATCH: 'bg-purple-500/20 text-purple-400 border-purple-500/30'
                         };
-                        
-  // Quick jump '/' shortcut to focus findings search
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  return (
+                        return (
                           <tr key={idx} className="hover:bg-slate-800/20 transition-colors">
                             <td className="py-3 px-3">
                               <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${methodColors[ep.httpMethod] || 'bg-slate-800 text-slate-300'}`}>

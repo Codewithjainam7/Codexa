@@ -153,7 +153,8 @@ export default function CodeDiffViewer({ originalCode, suggestedFix, ruleId, isA
               </div>
               <span className="text-[11px] text-emerald-300 font-mono pl-1 flex items-center space-x-1">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Remediated Implementation</span>\n                <span className="text-[10px] font-mono uppercase bg-emerald-500/10 text-emerald-400 px-1.5 py-0.2 rounded border border-emerald-500/20">Java</span>
+                <span>Remediated Implementation</span>
+                <span className="text-[10px] font-mono uppercase bg-emerald-500/10 text-emerald-400 px-1.5 py-0.2 rounded border border-emerald-500/20">Java</span>
               </span>
             </div>
             <div className="flex items-center space-x-2">

@@ -1,4 +1,4 @@
-import{r as k}from"./motion-DEGRPWWk.js";/**
+import{r as k}from"./vendor-B0Hqei9R.js";/**
  * @license lucide-react v0.439.0 - ISC
  *
  * This source code is licensed under the ISC license.
