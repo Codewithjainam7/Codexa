@@ -1,0 +1,7 @@
+profile:
+  name: minimal-fast
+  version: 1.0.0
+rules:
+  minQualityScore: 70
+  failOnCritical: true
+  failOnHigh: false
