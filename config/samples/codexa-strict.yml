@@ -1,0 +1,7 @@
+profile:
+  name: enterprise-strict
+  version: 1.0.0
+rules:
+  minQualityScore: 90
+  failOnCritical: true
+  failOnHigh: true
