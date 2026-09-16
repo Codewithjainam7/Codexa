@@ -1,0 +1,5 @@
+codexa-scan:
+  stage: test
+  image: alpine:latest
+  script:
+    - echo 'Running Codexa security gate'
