@@ -1,0 +1,10 @@
+pipeline {
+  agent any
+  stages {
+    stage('Codexa Review') {
+      steps {
+        sh 'echo Running Codexa code review'
+      }
+    }
+  }
+}
