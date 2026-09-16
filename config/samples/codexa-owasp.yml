@@ -1,0 +1,7 @@
+profile:
+  name: owasp-top-10
+  version: 1.0.0
+rules:
+  minQualityScore: 85
+  failOnCritical: true
+  failOnHigh: true
