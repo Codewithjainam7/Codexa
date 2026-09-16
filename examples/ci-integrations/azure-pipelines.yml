@@ -1,0 +1,7 @@
+trigger:
+- main
+pool:
+  vmImage: 'ubuntu-latest'
+steps:
+- script: echo Running Codexa static analysis
+  displayName: 'Codexa Gate'
