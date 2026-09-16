@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CodexaRuleDefinition",
+  "type": "object",
+  "required": ["ruleId", "name", "severity", "category", "languages"],
+  "properties": {
+    "ruleId": { "type": "string" },
+    "name": { "type": "string" },
+    "severity": { "type": "string" },
+    "category": { "type": "string" },
+    "languages": { "type": "array" }
+  }
+}
