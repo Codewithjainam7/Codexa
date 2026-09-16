@@ -507,8 +507,10 @@ Codexa enforces strict quality controls across both backend and frontend:
 
 ## 📚 14. Deep Documentation Directory
 
-For in-depth architectural specifications and guides, consult the `docs/` library:
+For comprehensive guides and specifications, visit the **[Master Documentation Index](docs/INDEX.md)** or explore key sections:
 
+- **[Master Documentation Index](docs/INDEX.md)**: Full navigation matrix across all 40+ guides and runbooks.
+- **[Architecture Decision Records (ADRs)](docs/adr/README.md)**: Documented architectural choices (Loom, Tree-sitter, SQLite WAL, SARIF).
 - [Pipeline Stages & Throughput Architecture](docs/architecture/pipeline-stages.md)
 - [Scoring Formula & Deduction Weights](docs/architecture/scoring-formula.md)
 - [Multi-Language Engine Specifications](docs/architecture/multi-language-engine.md)
