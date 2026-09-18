@@ -62,41 +62,81 @@ public class GitHubIngestionService {
 
     public ExtractionResult downloadAndExtract(String repoUrl, Path stagingDir) {
         RepoCoordinates coords = parseCoordinates(repoUrl);
-        String archiveUrl = "https://api.github.com/repos/" + coords.owner() + "/" + coords.repo() + "/zipball";
-
         log.debug("Target GitHub coordinates: owner={}, repo={}", coords.owner(), coords.repo());
-        log.info("Fetching public GitHub repository archive from: {}", archiveUrl);
 
-        try {
-            HttpURLConnection connection = openSecureConnection(archiveUrl, 0);
-            int responseCode = connection.getResponseCode();
+        String githubToken = resolveGitHubToken();
+        java.util.List<String> candidateUrls = new java.util.ArrayList<>();
 
-            if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
-                throw new ApiException(HttpStatus.NOT_FOUND, "REPO_NOT_FOUND",
-                        "GitHub repository not found or is private: " + repoUrl);
-            }
-
-            if (responseCode == 403 || responseCode == 429) {
-                throw new ApiException(HttpStatus.TOO_MANY_REQUESTS, "GITHUB_RATE_LIMITED",
-                        "GitHub API rate limit exceeded or access forbidden. Please try again later.");
-            }
-
-            if (responseCode < 200 || responseCode >= 300) {
-                throw new ApiException(HttpStatus.BAD_GATEWAY, "GITHUB_DOWNLOAD_ERROR",
-                        "GitHub returned HTTP status " + responseCode + " when requesting repository archive.");
-            }
-
-            try (InputStream in = connection.getInputStream()) {
-                return zipExtractor.extract(in, stagingDir);
-            }
-
-        } catch (ApiException e) {
-            throw e;
-        } catch (Exception e) {
-            log.error("Failed to download or extract GitHub archive from {}: {}", repoUrl, e.getMessage(), e);
-            throw new ApiException(HttpStatus.BAD_GATEWAY, "GITHUB_DOWNLOAD_FAILED",
-                    "Could not fetch repository archive from GitHub: " + e.getMessage(), e);
+        // If a GitHub token is provided, prioritize the authenticated REST API endpoint (5,000 req/hr quota)
+        if (githubToken != null && !githubToken.isBlank()) {
+            candidateUrls.add("https://api.github.com/repos/" + coords.owner() + "/" + coords.repo() + "/zipball");
         }
+
+        // Primary unauthenticated: Direct GitHub CDN archive (HEAD.zip) - bypasses REST API 60 req/hr limit completely
+        candidateUrls.add("https://github.com/" + coords.owner() + "/" + coords.repo() + "/archive/HEAD.zip");
+        candidateUrls.add("https://github.com/" + coords.owner() + "/" + coords.repo() + "/archive/refs/heads/main.zip");
+        candidateUrls.add("https://github.com/" + coords.owner() + "/" + coords.repo() + "/archive/refs/heads/master.zip");
+        if (githubToken == null || githubToken.isBlank()) {
+            candidateUrls.add("https://api.github.com/repos/" + coords.owner() + "/" + coords.repo() + "/zipball");
+        }
+
+        Exception lastException = null;
+        int lastStatusCode = 0;
+
+        for (String archiveUrl : candidateUrls) {
+            log.info("Attempting to fetch repository archive from: {}", archiveUrl);
+            try {
+                HttpURLConnection connection = openSecureConnection(archiveUrl, 0);
+                int responseCode = connection.getResponseCode();
+                lastStatusCode = responseCode;
+
+                if (responseCode >= 200 && responseCode < 300) {
+                    try (InputStream in = connection.getInputStream()) {
+                        return zipExtractor.extract(in, stagingDir);
+                    }
+                }
+
+                if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+                    log.warn("Archive endpoint returned 404 for {}, attempting fallback candidate...", archiveUrl);
+                    connection.disconnect();
+                    continue;
+                }
+
+                if (responseCode == 403 || responseCode == 429) {
+                    log.warn("Archive endpoint rate-limited/forbidden ({}) for {}, attempting fallback candidate...", responseCode, archiveUrl);
+                    connection.disconnect();
+                    continue;
+                }
+
+                connection.disconnect();
+            } catch (Exception e) {
+                lastException = e;
+                log.warn("Failed fetching from {}: {}, attempting next candidate...", archiveUrl, e.getMessage());
+            }
+        }
+
+        if (lastStatusCode == HttpURLConnection.HTTP_NOT_FOUND) {
+            throw new ApiException(HttpStatus.NOT_FOUND, "REPO_NOT_FOUND",
+                    "GitHub repository not found or is private: " + repoUrl);
+        }
+
+        if (lastStatusCode == 403 || lastStatusCode == 429) {
+            throw new ApiException(HttpStatus.TOO_MANY_REQUESTS, "GITHUB_RATE_LIMITED",
+                    "GitHub API rate limit exceeded or access forbidden. Please verify repository visibility or try again later.");
+        }
+
+        throw new ApiException(HttpStatus.BAD_GATEWAY, "GITHUB_DOWNLOAD_FAILED",
+                "Could not fetch repository archive from GitHub for " + repoUrl + (lastException != null ? ": " + lastException.getMessage() : ""));
+    }
+
+    private String resolveGitHubToken() {
+        String token = System.getenv("GITHUB_TOKEN");
+        if (token != null && !token.isBlank()) return token.trim();
+        token = System.getenv("CODEXA_GITHUB_TOKEN");
+        if (token != null && !token.isBlank()) return token.trim();
+        token = System.getenv("GH_TOKEN");
+        if (token != null && !token.isBlank()) return token.trim();
+        return null;
     }
 
     private HttpURLConnection openSecureConnection(String targetUrl, int redirectCount) throws Exception {
@@ -125,11 +165,11 @@ public class GitHubIngestionService {
         conn.setConnectTimeout(15000);
         conn.setReadTimeout(30000);
         conn.setRequestProperty("User-Agent", "Codexa-Security-Scanner/1.0");
-        conn.setRequestProperty("Accept", "application/vnd.github+json");
+        conn.setRequestProperty("Accept", "application/vnd.github+json, application/zip, application/octet-stream, */*");
 
-        String githubToken = System.getenv("GITHUB_TOKEN");
-        if (githubToken != null && !githubToken.isBlank()) {
-            conn.setRequestProperty("Authorization", "Bearer " + githubToken.trim());
+        String githubToken = resolveGitHubToken();
+        if (githubToken != null && !githubToken.isBlank() && host != null && host.contains("github.com") && !host.contains("codeload")) {
+            conn.setRequestProperty("Authorization", "Bearer " + githubToken);
         }
 
         int status = conn.getResponseCode();
