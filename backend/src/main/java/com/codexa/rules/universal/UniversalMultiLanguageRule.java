@@ -57,12 +57,42 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
     private static final Pattern REDOS_PATTERN = Pattern.compile("RegExp\\s*\\([\"'][^\"']*(?:\\([^)]+\\+\\)\\+|\\([^)]+\\*\\)\\*|\\([^)]+\\+\\)\\*)[^\"']*[\"']\\)|/(?:\\([^)]+\\+\\)\\+|\\([^)]+\\*\\)\\*|\\([^)]+\\+\\)\\*)/");
 
     // 10. Insecure Randomness in Security Contexts
-    private static final Pattern INSECURE_RANDOM_PATTERN = Pattern.compile("(?i)(?:token|secret|password|nonce|otp|auth|salt|key)\\s*[:=].*?(?:Math\\.random\\(\\)|random\\.random\\(\\)|rand\\.Int\\(\\))");
+    private static final Pattern INSECURE_RANDOM_PATTERN = Pattern.compile("(?i)(?:token|secret|password|nonce|otp|auth|salt|key|pin|code|accessPin|randomPin|passcode|invite|magic)\\s*[:=].*?(?:Math\\.random\\s*\\(|random\\.random\\s*\\(|rand\\.Int\\s*\\()");
+    private static final Pattern PREDICTABLE_TIMESTAMP_TOKEN_PATTERN = Pattern.compile("(?i)(?:const|let|var|token|inviteToken|magicToken|accessToken|refreshToken|accessCode|auth)\\s*[:=].*?(?:`[^`]*\\$\\{Date\\.now\\(\\)\\}[^`]*`|['\"][^'\"]*['\"]\\s*\\+\\s*Date\\.now\\(\\))");
 
     // 11. Insecure Deserialization
     private static final Pattern INSECURE_DESERIALIZATION_PATTERN = Pattern.compile("(?:pickle\\.loads|yaml\\.load\\s*\\([^,)]*Loader\\s*=\\s*yaml\\.Loader|unserialize\\s*\\(|java\\.io\\.ObjectInputStream)");
 
-    // 12. Quality & Maintainability
+    // 12. Frontend Hardcoded Admin Authentication
+    private static final Pattern HARDCODED_ADMIN_AUTH_PATTERN = Pattern.compile(
+            "(?i)(?:[a-zA-Z0-9_.]*(?:adminId|username|user_?name|login|email)\\s*===?\\s*['\"][^'\"\\s]{2,}['\"]\\s*&&\\s*[a-zA-Z0-9_.]*(?:password|pass|secret|pin|adminKey)\\s*===?\\s*['\"][^'\"\\s]{2,}['\"]" +
+            "|[a-zA-Z0-9_.]*(?:password|pass|secret|pin|adminKey)\\s*===?\\s*['\"][^'\"\\s]{2,}['\"]\\s*&&\\s*[a-zA-Z0-9_.]*(?:adminId|username|user_?name|login|email)\\s*===?\\s*['\"][^'\"\\s]{2,}['\"])"
+    );
+
+    // 13. Client-Side Secret Leak via Build Prefixes
+    private static final Pattern CLIENT_SIDE_SECRET_LEAK_PATTERN = Pattern.compile(
+            "(?i)(?:import\\.meta\\.env|process\\.env)\\.(?:VITE|NEXT_PUBLIC|REACT_APP|EXPO_PUBLIC)_[A-Z0-9_]*(?:SECRET|PRIVATE|API_TOKEN|MAILTRAP|RESEND|SENDGRID|GEMINI|OPENAI|ANTHROPIC|STRIPE_SECRET|DATABASE_URL|SERVICE_ROLE|ADMIN_KEY)"
+    );
+    private static final Pattern CLIENT_PREFIXED_SECRET_ASSIGN_PATTERN = Pattern.compile(
+            "(?i)(?:VITE|NEXT_PUBLIC|REACT_APP|EXPO_PUBLIC)_[A-Z0-9_]*(?:SECRET|PRIVATE|API_TOKEN|MAILTRAP|RESEND|SENDGRID|GEMINI|OPENAI|ANTHROPIC|STRIPE_SECRET|SERVICE_ROLE|ADMIN_KEY)\\s*=\\s*['\"][^'\"\\s]{8,}['\"]"
+    );
+
+    // 14. Dev Server Middleware API Route (Vite configureServer 404 trap)
+    private static final Pattern DEV_MIDDLEWARE_API_PATTERN = Pattern.compile(
+            "(?i)(?:req\\.url|url)\\s*(?:===?|\\.startsWith\\s*\\()\\s*['\"]/api/[a-zA-Z0-9_.-]+"
+    );
+
+    // 15. Hardcoded Signed JWT Tokens in scripts or source
+    private static final Pattern JWT_TOKEN_PATTERN = Pattern.compile(
+            "eyJhbGciOi[a-zA-Z0-9_-]{10,}\\.[a-zA-Z0-9_-]{10,}\\.[a-zA-Z0-9_-]{10,}"
+    );
+
+    // 16. Insecure Database Scripts (RLS Disabled / Permissive Policy)
+    private static final Pattern INSECURE_RLS_DISABLE_PATTERN = Pattern.compile(
+            "(?i)(?:DISABLE\\s+ROW\\s+LEVEL\\s+SECURITY|CREATE\\s+POLICY[^\n;]+USING\\s*\\(\\s*true\\s*\\)|CREATE\\s+POLICY[^\n;]+WITH\\s+CHECK\\s*\\(\\s*true\\s*\\))"
+    );
+
+    // 17. Quality & Maintainability
     private static final Pattern EMPTY_CATCH_PATTERN = Pattern.compile("(?:catch\\s*\\([a-zA-Z0-9_\\s]*\\)|except(?:\\s+[a-zA-Z0-9_]+)?\\s*:)\\s*\\{\\s*\\}");
     private static final Pattern DEBUG_CONSOLE_PATTERN = Pattern.compile("(?<![a-zA-Z0-9_.])console\\.(?:log|debug|trace)\\s*\\(");
     private static final Pattern TECH_DEBT_PATTERN = Pattern.compile("(?:\\/\\/|#|\\/\\*)\\s*(?:TODO|FIXME|HACK|XXX):?\\s*(.+)");
@@ -131,8 +161,67 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
             return;
         }
 
+        List<String> lines;
         try {
-            List<String> lines = Files.readAllLines(file, StandardCharsets.UTF_8);
+            lines = Files.readAllLines(file, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            try {
+                lines = Files.readAllLines(file, StandardCharsets.ISO_8859_1);
+            } catch (Exception ex) {
+                return;
+            }
+        }
+        if (lines.isEmpty()) {
+            return;
+        }
+
+        String entireFileContent = String.join("\n", lines);
+
+        // Edge Function Auth Check (Supabase / Deno / Edge workers)
+        boolean isEdgeFunction = (relPath.contains("supabase/functions/") || relPath.contains("edge-functions/"))
+                && (filename.endsWith(".ts") || filename.endsWith(".js"));
+        if (isEdgeFunction) {
+            boolean handlesRequests = entireFileContent.contains("serve(") || entireFileContent.contains("Deno.serve(") || entireFileContent.contains("req") || entireFileContent.contains("Request");
+            boolean performsAction = entireFileContent.contains("json(") || entireFileContent.contains("fetch(") || entireFileContent.contains("email") ||
+                    entireFileContent.contains("send") || entireFileContent.contains("resend") || entireFileContent.contains("mailtrap") ||
+                    entireFileContent.contains("insert") || entireFileContent.contains("update") || entireFileContent.contains("delete");
+            boolean checksAuth = entireFileContent.contains("Authorization") || entireFileContent.contains("authorization") ||
+                    entireFileContent.contains("getUser") || entireFileContent.contains("getSession") || entireFileContent.contains("verifyUser");
+
+            if (handlesRequests && performsAction && !checksAuth) {
+                int targetLine = 1;
+                for (int j = 0; j < lines.size(); j++) {
+                    String l = lines.get(j);
+                    if (l.contains("serve(") || l.contains("Deno.serve(") || l.contains("export default")) {
+                        targetLine = j + 1;
+                        break;
+                    }
+                }
+                findings.add(RuleFinding.builder()
+                        .ruleId("CR-EDGE-001")
+                        .category(Category.SECURITY)
+                        .severity(Severity.HIGH)
+                        .confidence(Confidence.HIGH)
+                        .title("Supabase Edge Function missing authorization verification (unauthenticated open relay)")
+                        .description("Supabase Edge Function handles incoming requests and performs sensitive operations (such as sending emails or database mutations) without verifying the caller's JWT or Authorization header. Any anonymous caller can invoke this endpoint directly.")
+                        .impact("Unauthenticated actors on the public internet can abuse this endpoint to send spam emails, exhaust API quotas, or trigger backend mutations without authorization.")
+                        .remediation("Verify the caller's JWT from the Authorization header using supabaseClient.auth.getUser() before executing privileged logic.")
+                        .owaspMapping("A01:2021-Broken Access Control")
+                        .filePath(relPath)
+                        .startLine(targetLine)
+                        .endLine(targetLine)
+                        .evidence(SecretMasker.maskSecrets(lines.get(targetLine - 1).trim()))
+                        .suggestedFix("const authHeader = req.headers.get('Authorization');\nif (!authHeader) return new Response('Unauthorized', { status: 401 });\nconst { data: { user }, error } = await supabaseClient.auth.getUser(authHeader.replace('Bearer ', ''));\nif (error || !user) return new Response('Unauthorized', { status: 401 });")
+                        .references(List.of("https://supabase.com/docs/guides/functions/auth"))
+                        .build()
+                );
+            }
+        }
+
+        boolean isDevConfig = relPath.contains("vite.config") || relPath.contains("webpack.config")
+                || entireFileContent.contains("configureServer") || entireFileContent.contains("server.middlewares");
+
+        try {
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);
                 int lineNum = i + 1;
@@ -335,7 +424,7 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
                     );
                 }
 
-                // 10. Check Insecure Randomness
+                // 10. Check Insecure Randomness (Math.random in security/PIN contexts)
                 if (INSECURE_RANDOM_PATTERN.matcher(line).find()) {
                     findings.add(RuleFinding.builder()
                             .ruleId("CR-RAND-001")
@@ -343,15 +432,37 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
                             .severity(Severity.MEDIUM)
                             .confidence(Confidence.HIGH)
                             .title("Cryptographically Weak Pseudo-Random Number Generator (PRNG)")
-                            .description("Using Math.random() or random.random() for security tokens or keys generates predictable values.")
-                            .impact("Predictable tokens enable session hijacking, password reset hijacking, or cryptographic forgery.")
-                            .remediation("Use a cryptographically secure random number generator (e.g. crypto.randomBytes() in Node.js or secrets in Python).")
+                            .description("Using Math.random() or random.random() for security tokens, access PINs, or keys generates predictable values.")
+                            .impact("Predictable PINs and tokens enable unauthorized access, brute-force attacks, session hijacking, or cryptographic forgery.")
+                            .remediation("Use a cryptographically secure random number generator (e.g. crypto.getRandomValues() in browsers, crypto.randomBytes() in Node.js, or secrets in Python).")
                             .owaspMapping("A02:2021-Cryptographic Failures")
                             .filePath(relPath)
                             .startLine(lineNum)
                             .endLine(lineNum)
                             .evidence(SecretMasker.maskSecrets(line.trim()))
-                            .suggestedFix("import crypto from 'crypto';\nconst token = crypto.randomBytes(32).toString('hex');")
+                            .suggestedFix("// Cryptographically secure random PIN:\nconst pin = crypto.getRandomValues(new Uint32Array(1))[0] % 9000 + 1000;")
+                            .references(List.of("https://owasp.org/Top10/A02_2021-Cryptographic_Failures/"))
+                            .build()
+                    );
+                }
+
+                // 10b. Check Predictable Timestamp Tokens (Date.now())
+                if (PREDICTABLE_TIMESTAMP_TOKEN_PATTERN.matcher(line).find()) {
+                    findings.add(RuleFinding.builder()
+                            .ruleId("CR-RAND-002")
+                            .category(Category.SECURITY)
+                            .severity(Severity.HIGH)
+                            .confidence(Confidence.HIGH)
+                            .title("Predictable security token generated using Date.now() timestamp")
+                            .description("Security token, magic link, or invite token generated using Date.now() without cryptographic randomness. Timestamp-based tokens are completely predictable within small millisecond windows.")
+                            .impact("Attackers can predict or brute-force valid tokens, bypass invitation flows, or gain unauthorized access to protected resources.")
+                            .remediation("Use a cryptographically secure random token generator, such as crypto.randomUUID() or crypto.getRandomValues().")
+                            .owaspMapping("A02:2021-Cryptographic Failures")
+                            .filePath(relPath)
+                            .startLine(lineNum)
+                            .endLine(lineNum)
+                            .evidence(SecretMasker.maskSecrets(line.trim()))
+                            .suggestedFix("const token = `tok_${payload.schemeId}_${crypto.randomUUID()}`;")
                             .references(List.of("https://owasp.org/Top10/A02_2021-Cryptographic_Failures/"))
                             .build()
                     );
@@ -441,6 +552,116 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
                             .evidence(SecretMasker.maskSecrets(line.trim()))
                             .suggestedFix("const secret = process.env.SESSION_SECRET;\nif (!secret) throw new Error('SESSION_SECRET is required in production');")
                             .references(List.of("https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures/"))
+                            .build()
+                    );
+                }
+
+                // 14b. Check Frontend Hardcoded Admin Authentication (Bypass)
+                if (HARDCODED_ADMIN_AUTH_PATTERN.matcher(line).find()) {
+                    findings.add(RuleFinding.builder()
+                            .ruleId("CR-AUTH-002")
+                            .category(Category.SECURITY)
+                            .severity(Severity.CRITICAL)
+                            .confidence(Confidence.HIGH)
+                            .title("Hardcoded Administrator Credentials in Client-Side Code")
+                            .description("Hardcoded administrator authentication logic comparing credentials to plaintext string literals directly in client-side code allows trivial authentication bypass.")
+                            .impact("Attackers can inspect the client-side bundle to extract administrator credentials and gain unauthorized super-admin privileges.")
+                            .remediation("Authenticate administrators against a secure backend API using bcrypt/Argon2 password hashing and secure HTTP-only session cookies or signed JWTs. Never verify passwords directly in frontend code.")
+                            .owaspMapping("A07:2021-Identification and Authentication Failures")
+                            .filePath(relPath)
+                            .startLine(lineNum)
+                            .endLine(lineNum)
+                            .evidence(SecretMasker.maskSecrets(line.trim()))
+                            .suggestedFix("// Authenticate via backend API endpoint:\nconst response = await api.post('/auth/admin/login', { adminId, password });")
+                            .references(List.of("https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures/"))
+                            .build()
+                    );
+                }
+
+                // 14c. Check Client-Side Secret Leak via Build Prefixes (VITE_, NEXT_PUBLIC_, REACT_APP_, EXPO_PUBLIC_)
+                if (CLIENT_SIDE_SECRET_LEAK_PATTERN.matcher(line).find() || CLIENT_PREFIXED_SECRET_ASSIGN_PATTERN.matcher(line).find()) {
+                    findings.add(RuleFinding.builder()
+                            .ruleId("CR-LEAK-001")
+                            .category(Category.SECURITY)
+                            .severity(Severity.HIGH)
+                            .confidence(Confidence.HIGH)
+                            .title("Client-Exposed Private Service Secret via Build Prefix")
+                            .description("Sensitive service secret or private API token accessed or assigned with a client build prefix (VITE_, NEXT_PUBLIC_, REACT_APP_, or EXPO_PUBLIC_). Any environment variable with these prefixes is bundled directly into public client-side JavaScript.")
+                            .impact("Anyone inspecting public JavaScript bundles can steal third-party service credentials (e.g. Gemini, Mailtrap, OpenAI, Stripe), deplete API quotas, or access restricted services.")
+                            .remediation("Remove the client prefix and proxy requests through a secure server-side backend or serverless edge function that keeps secrets hidden on the server.")
+                            .owaspMapping("A01:2021-Broken Access Control")
+                            .filePath(relPath)
+                            .startLine(lineNum)
+                            .endLine(lineNum)
+                            .evidence(SecretMasker.maskSecrets(line.trim()))
+                            .suggestedFix("// Proxy third-party API calls via backend server instead of client-side:\nconst response = await fetch('/api/services/dispatch', { method: 'POST', body: JSON.stringify(payload) });")
+                            .references(List.of("https://owasp.org/Top10/A01_2021-Broken_Access_Control/"))
+                            .build()
+                    );
+                }
+
+                // 14d. Check Dev Server Middleware API Route (Vite configureServer 404 trap)
+                if (isDevConfig && DEV_MIDDLEWARE_API_PATTERN.matcher(line).find()) {
+                    findings.add(RuleFinding.builder()
+                            .ruleId("CR-ARCH-001")
+                            .category(Category.SECURITY)
+                            .severity(Severity.HIGH)
+                            .confidence(Confidence.HIGH)
+                            .title("Production API endpoint defined in dev server middleware (configureServer)")
+                            .description("API route handling ('/api/...') is implemented inside Vite/dev-server 'configureServer' middleware. This middleware only executes during local 'vite dev' and is completely omitted during production builds ('vite build'), causing all production API requests to 404.")
+                            .impact("Production functionality breaks entirely (HTTP 404 Not Found on API endpoints in production), and dev middleware may expose sensitive logic locally.")
+                            .remediation("Move API endpoints to a dedicated production backend service (Express, Spring Boot, Fastify) or serverless cloud functions (Supabase Edge Functions, Vercel Functions).")
+                            .owaspMapping("A05:2021-Security Misconfiguration")
+                            .filePath(relPath)
+                            .startLine(lineNum)
+                            .endLine(lineNum)
+                            .evidence(SecretMasker.maskSecrets(line.trim()))
+                            .suggestedFix("// Move API routes to dedicated backend server or serverless functions.\n// In vite.config.ts, only configure proxies for production targets:\nserver: { proxy: { '/api': 'http://localhost:8080' } }")
+                            .references(List.of("https://vitejs.dev/guide/api-plugin.html#configureserver"))
+                            .build()
+                    );
+                }
+
+                // 14e. Check Hardcoded Signed JWT Tokens in scripts or source
+                if (JWT_TOKEN_PATTERN.matcher(line).find()) {
+                    findings.add(RuleFinding.builder()
+                            .ruleId("CR-SEC-013")
+                            .category(Category.SECURITY)
+                            .severity(Severity.CRITICAL)
+                            .confidence(Confidence.HIGH)
+                            .title("Hardcoded JSON Web Token (JWT) or Service Role Key in script")
+                            .description("A signed JWT bearer token (such as a Supabase service role key, anon token, or user session JWT) was found hardcoded in source control or script.")
+                            .impact("Anyone with read access to the repository can use this token to authenticate against APIs or bypass database Row Level Security.")
+                            .remediation("Revoke the exposed key immediately in your service dashboard and inject credentials via environment variables.")
+                            .owaspMapping("A07:2021-Identification and Authentication Failures")
+                            .filePath(relPath)
+                            .startLine(lineNum)
+                            .endLine(lineNum)
+                            .evidence(SecretMasker.maskSecrets(line.trim()))
+                            .suggestedFix("const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);")
+                            .references(List.of("https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures/"))
+                            .build()
+                    );
+                }
+
+                // 14f. Check Insecure Database Scripts Disabling Row Level Security (RLS)
+                if (INSECURE_RLS_DISABLE_PATTERN.matcher(line).find()) {
+                    findings.add(RuleFinding.builder()
+                            .ruleId("CR-RLS-001")
+                            .category(Category.SECURITY)
+                            .severity(Severity.CRITICAL)
+                            .confidence(Confidence.HIGH)
+                            .title("Insecure Database Script Disabling Row Level Security (RLS Bypass)")
+                            .description("Database migration or SQL script contains statements disabling Row Level Security ('DISABLE ROW LEVEL SECURITY') or creating globally permissive policies ('USING (true)' / 'WITH CHECK (true)').")
+                            .impact("Bypasses multi-tenant data isolation and row-level authorization, allowing any anonymous or low-privileged user to read, modify, or delete arbitrary rows across the database.")
+                            .remediation("Enable Row Level Security ('ENABLE ROW LEVEL SECURITY') and specify restrictive policy predicates based on auth.uid() or tenant identifiers.")
+                            .owaspMapping("A01:2021-Broken Access Control")
+                            .filePath(relPath)
+                            .startLine(lineNum)
+                            .endLine(lineNum)
+                            .evidence(SecretMasker.maskSecrets(line.trim()))
+                            .suggestedFix("ALTER TABLE table_name ENABLE ROW LEVEL SECURITY;\nCREATE POLICY \"Users can view own data\" ON table_name FOR SELECT USING (auth.uid() = user_id);")
+                            .references(List.of("https://supabase.com/docs/guides/auth/row-level-security"))
                             .build()
                     );
                 }
