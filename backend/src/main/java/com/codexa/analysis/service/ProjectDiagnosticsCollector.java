@@ -321,6 +321,9 @@ public class ProjectDiagnosticsCollector {
         List<ApiEndpointItem> endpoints = new ArrayList<>();
         int unauthCount = 0;
 
+        List<Path> sourceFiles = context.getSourceFiles() != null ? context.getSourceFiles() : List.of();
+        Map<String, String> webXmlMappings = parseWebXmlMappings(sourceFiles);
+
         List<ParsedJavaFile> parsedFiles = context.getParsedJavaFiles() != null ? context.getParsedJavaFiles() : List.of();
 
         for (ParsedJavaFile pjf : parsedFiles) {
@@ -331,43 +334,78 @@ public class ProjectDiagnosticsCollector {
             for (ClassOrInterfaceDeclaration clazz : classes) {
                 boolean isController = clazz.getAnnotations().stream()
                         .anyMatch(a -> a.getNameAsString().endsWith("Controller") || a.getNameAsString().equals("RestController"));
-                if (!isController) continue;
 
-                String basePath = extractRoutePath(clazz.getAnnotations());
-                boolean classHasAuth = clazz.getAnnotations().stream()
-                        .anyMatch(a -> a.getNameAsString().matches("PreAuthorize|Secured|RolesAllowed"));
+                boolean isServlet = !isController && (clazz.getAnnotations().stream().anyMatch(a -> a.getNameAsString().equals("WebServlet"))
+                        || clazz.getExtendedTypes().stream().anyMatch(t -> t.getNameAsString().contains("HttpServlet") || t.getNameAsString().contains("GenericServlet"))
+                        || clazz.getNameAsString().endsWith("Servlet"));
 
-                for (MethodDeclaration method : clazz.getMethods()) {
-                    String httpMethod = null;
-                    String methodSubPath = "";
+                if (isController) {
+                    String basePath = extractRoutePath(clazz.getAnnotations());
+                    boolean classHasAuth = clazz.getAnnotations().stream()
+                            .anyMatch(a -> a.getNameAsString().matches("PreAuthorize|Secured|RolesAllowed"));
 
-                    for (AnnotationExpr a : method.getAnnotations()) {
-                        String name = a.getNameAsString();
-                        if (name.equals("GetMapping")) { httpMethod = "GET"; methodSubPath = extractAnnotationString(a); }
-                        else if (name.equals("PostMapping")) { httpMethod = "POST"; methodSubPath = extractAnnotationString(a); }
-                        else if (name.equals("PutMapping")) { httpMethod = "PUT"; methodSubPath = extractAnnotationString(a); }
-                        else if (name.equals("DeleteMapping")) { httpMethod = "DELETE"; methodSubPath = extractAnnotationString(a); }
-                        else if (name.equals("PatchMapping")) { httpMethod = "PATCH"; methodSubPath = extractAnnotationString(a); }
-                        else if (name.equals("RequestMapping")) {
-                            httpMethod = "REQUEST";
-                            methodSubPath = extractAnnotationString(a);
+                    for (MethodDeclaration method : clazz.getMethods()) {
+                        String httpMethod = null;
+                        String methodSubPath = "";
+
+                        for (AnnotationExpr a : method.getAnnotations()) {
+                            String name = a.getNameAsString();
+                            if (name.equals("GetMapping")) { httpMethod = "GET"; methodSubPath = extractAnnotationString(a); }
+                            else if (name.equals("PostMapping")) { httpMethod = "POST"; methodSubPath = extractAnnotationString(a); }
+                            else if (name.equals("PutMapping")) { httpMethod = "PUT"; methodSubPath = extractAnnotationString(a); }
+                            else if (name.equals("DeleteMapping")) { httpMethod = "DELETE"; methodSubPath = extractAnnotationString(a); }
+                            else if (name.equals("PatchMapping")) { httpMethod = "PATCH"; methodSubPath = extractAnnotationString(a); }
+                            else if (name.equals("RequestMapping")) {
+                                httpMethod = "REQUEST";
+                                methodSubPath = extractAnnotationString(a);
+                            }
+                        }
+
+                        if (httpMethod != null) {
+                            String fullPath = normalizeEndpointPath(basePath, methodSubPath);
+                            boolean methodHasAuth = classHasAuth || method.getAnnotations().stream()
+                                    .anyMatch(a -> a.getNameAsString().matches("PreAuthorize|Secured|RolesAllowed"));
+
+                            if (!methodHasAuth) unauthCount++;
+
+                            String risk = determineEndpointRisk(httpMethod, fullPath, methodHasAuth);
+                            endpoints.add(new ApiEndpointItem(
+                                    httpMethod,
+                                    fullPath,
+                                    clazz.getNameAsString(),
+                                    method.getNameAsString(),
+                                    methodHasAuth,
+                                    risk
+                            ));
                         }
                     }
+                } else if (isServlet) {
+                    String servletPath = extractServletPath(clazz, webXmlMappings);
+                    boolean servletHasAuth = checkServletAuth(clazz);
 
-                    if (httpMethod != null) {
-                        String fullPath = normalizeEndpointPath(basePath, methodSubPath);
-                        boolean methodHasAuth = classHasAuth || method.getAnnotations().stream()
-                                .anyMatch(a -> a.getNameAsString().matches("PreAuthorize|Secured|RolesAllowed"));
+                    List<String> servletMethods = new ArrayList<>();
+                    for (MethodDeclaration method : clazz.getMethods()) {
+                        String mName = method.getNameAsString();
+                        if (mName.equals("doGet")) servletMethods.add("GET");
+                        else if (mName.equals("doPost")) servletMethods.add("POST");
+                        else if (mName.equals("doPut")) servletMethods.add("PUT");
+                        else if (mName.equals("doDelete")) servletMethods.add("DELETE");
+                        else if (mName.equals("service")) servletMethods.add("ALL");
+                    }
 
-                        if (!methodHasAuth) unauthCount++;
+                    if (servletMethods.isEmpty()) {
+                        servletMethods.add("POST/GET");
+                    }
 
-                        String risk = determineEndpointRisk(httpMethod, fullPath, methodHasAuth);
+                    for (String httpMethod : servletMethods) {
+                        if (!servletHasAuth) unauthCount++;
+                        String risk = determineEndpointRisk(httpMethod, servletPath, servletHasAuth);
                         endpoints.add(new ApiEndpointItem(
                                 httpMethod,
-                                fullPath,
+                                servletPath,
                                 clazz.getNameAsString(),
-                                method.getNameAsString(),
-                                methodHasAuth,
+                                "service",
+                                servletHasAuth,
                                 risk
                         ));
                     }
@@ -377,7 +415,6 @@ public class ProjectDiagnosticsCollector {
 
         // Multi-language & polyglot endpoint discovery: Supabase, Next.js, Express, FastAPI, Vite
         Path stagingDir = context.getStagingDirectory();
-        List<Path> sourceFiles = context.getSourceFiles() != null ? context.getSourceFiles() : List.of();
 
         for (Path file : sourceFiles) {
             String fname = file.getFileName().toString().toLowerCase();
@@ -498,17 +535,37 @@ public class ProjectDiagnosticsCollector {
             }
         }
 
-        // Perimeter status
+        // Dynamic Perimeter Status Evaluation
         boolean hasCorsIssue = context.getFindings().stream().anyMatch(f ->
                 "CR-CONFIG-001".equals(f.getRuleId()) || "CR-CORS-001".equals(f.getRuleId()));
         boolean hasSecrets = context.getFindings().stream().anyMatch(f ->
                 f.getRuleId().startsWith("CR-SEC") || "CR-LEAK-001".equals(f.getRuleId()));
 
+        boolean hasRateLimiting = isRateLimitingConfigured(sourceFiles);
+        boolean hasSecurityHeaders = isSecurityHeadersConfigured(sourceFiles);
+        boolean hasExplicitCors = isCorsConfigured(sourceFiles);
+
+        String corsStatus = hasCorsIssue
+                ? "PERMISSIVE ORIGIN (CR-CORS-001)"
+                : (hasExplicitCors ? "RESTRICTED ALLOW-LIST (SECURE)" : "NO EXPLICIT CORS POLICY (DEFAULT ORIGIN)");
+
+        String rateLimitingStatus = hasRateLimiting
+                ? "RATE-LIMITED (SLIDING-WINDOW BUCKET)"
+                : "UNPROTECTED (NO RATE LIMITING DETECTED)";
+
+        String securityHeadersStatus = hasSecurityHeaders
+                ? "ACTIVE (CSP, HSTS, X-FRAME-OPTIONS)"
+                : "MISSING HEADERS (NO CSP/HSTS DEFENSE)";
+
+        String secretsExposureStatus = hasSecrets
+                ? "EXPOSURE DETECTED (ACTION REQUIRED)"
+                : "ZERO LEAKED CREDENTIALS (PASSED)";
+
         PerimeterStatus perimeter = new PerimeterStatus(
-                hasCorsIssue ? "PERMISSIVE ORIGIN (CR-CONFIG-001)" : "RESTRICTED ALLOW-LIST (SECURE)",
-                "RATE-LIMITED (SLIDING-WINDOW BUCKET)",
-                "ACTIVE (CSP, HSTS, X-FRAME-OPTIONS)",
-                hasSecrets ? "EXPOSURE DETECTED (ACTION REQUIRED)" : "ZERO LEAKED CREDENTIALS (PASSED)"
+                corsStatus,
+                rateLimitingStatus,
+                securityHeadersStatus,
+                secretsExposureStatus
         );
 
         return new BlackBoxDiagnostics(endpoints, endpoints.size(), unauthCount, perimeter);
@@ -562,6 +619,20 @@ public class ProjectDiagnosticsCollector {
                 "OPERATIONS",
                 bb.perimeterStatus().corsStatus().contains("RESTRICTED") ? "PASS" : "WARN",
                 bb.perimeterStatus().corsStatus()
+        ));
+
+        checklist.add(new ComplianceCheckItem(
+                "Rate-Limiting & Flood Protection",
+                "OPERATIONS",
+                bb.perimeterStatus().rateLimitingStatus().contains("RATE-LIMITED") ? "PASS" : "WARN",
+                bb.perimeterStatus().rateLimitingStatus()
+        ));
+
+        checklist.add(new ComplianceCheckItem(
+                "HTTP Security Headers Barrier",
+                "SECURITY",
+                bb.perimeterStatus().securityHeadersStatus().contains("ACTIVE") ? "PASS" : "WARN",
+                bb.perimeterStatus().securityHeadersStatus()
         ));
 
         checklist.add(new ComplianceCheckItem(
@@ -732,8 +803,8 @@ public class ProjectDiagnosticsCollector {
 
         PerimeterStatus perimeter = new PerimeterStatus(
                 hasCors ? "PERMISSIVE ORIGIN (CR-CONFIG-001)" : "RESTRICTED ALLOW-LIST (SECURE)",
-                "RATE-LIMITED (SLIDING-WINDOW BUCKET)",
-                "ACTIVE (CSP, HSTS, X-FRAME-OPTIONS)",
+                "UNPROTECTED (NO RATE LIMITING DETECTED)",
+                "MISSING HEADERS (NO CSP/HSTS DEFENSE)",
                 hasSecrets ? "EXPOSURE DETECTED (ACTION REQUIRED)" : "ZERO LEAKED CREDENTIALS (PASSED)"
         );
         BlackBoxDiagnostics bb = new BlackBoxDiagnostics(endpoints, endpoints.size(), 1, perimeter);
@@ -750,6 +821,8 @@ public class ProjectDiagnosticsCollector {
                 new ComplianceCheckItem("Deterministic AST Complexity Threshold", "MAINTAINABILITY", "PASS", "Method cyclomatic complexity within safety bounds."),
                 new ComplianceCheckItem("API Ingress Boundary Authentication", "SURFACE", "PASS", "Protected API endpoints configured."),
                 new ComplianceCheckItem("CORS Policy & Ingress Perimeter", "OPERATIONS", perimeter.corsStatus().contains("RESTRICTED") ? "PASS" : "WARN", perimeter.corsStatus()),
+                new ComplianceCheckItem("Rate-Limiting & Flood Protection", "OPERATIONS", perimeter.rateLimitingStatus().contains("RATE-LIMITED") ? "PASS" : "WARN", perimeter.rateLimitingStatus()),
+                new ComplianceCheckItem("HTTP Security Headers Barrier", "SECURITY", perimeter.securityHeadersStatus().contains("ACTIVE") ? "PASS" : "WARN", perimeter.securityHeadersStatus()),
                 new ComplianceCheckItem("Exception Boundary Integrity", "QUALITY", overallScore >= 70 ? "PASS" : "WARN", "Overall readiness index: " + overallScore + "/100"),
                 new ComplianceCheckItem("Operational Observability & Logging", "OPERATIONS", "PASS", "Structured request logging validated.")
         );
@@ -801,6 +874,147 @@ public class ProjectDiagnosticsCollector {
             methods.add(m.group(1));
         }
         return methods;
+    }
+
+    private Map<String, String> parseWebXmlMappings(List<Path> sourceFiles) {
+        Map<String, String> mappings = new HashMap<>();
+        if (sourceFiles == null || sourceFiles.isEmpty()) return mappings;
+
+        for (Path file : sourceFiles) {
+            String fname = file.getFileName().toString();
+            if ("web.xml".equalsIgnoreCase(fname)) {
+                String content = readFileContentSafely(file);
+                Map<String, String> servletNameToClass = new HashMap<>();
+                Matcher servletMatcher = Pattern.compile("(?s)<servlet>.*?<servlet-name>\\s*([^<]+?)\\s*</servlet-name>.*?<servlet-class>\\s*([^<]+?)\\s*</servlet-class>.*?</servlet>")
+                        .matcher(content);
+                while (servletMatcher.find()) {
+                    String sName = servletMatcher.group(1).trim();
+                    String sClass = servletMatcher.group(2).trim();
+                    servletNameToClass.put(sName, sClass);
+                }
+
+                Matcher mappingMatcher = Pattern.compile("(?s)<servlet-mapping>.*?<servlet-name>\\s*([^<]+?)\\s*</servlet-name>.*?<url-pattern>\\s*([^<]+?)\\s*</url-pattern>.*?</servlet-mapping>")
+                        .matcher(content);
+                while (mappingMatcher.find()) {
+                    String sName = mappingMatcher.group(1).trim();
+                    String url = mappingMatcher.group(2).trim();
+                    String sClass = servletNameToClass.get(sName);
+                    if (sClass != null) {
+                        mappings.put(sClass, url);
+                        String simpleClass = sClass.contains(".") ? sClass.substring(sClass.lastIndexOf('.') + 1) : sClass;
+                        mappings.put(simpleClass, url);
+                    }
+                    mappings.put(sName, url);
+                }
+            }
+        }
+        return mappings;
+    }
+
+    private String extractServletPath(ClassOrInterfaceDeclaration clazz, Map<String, String> webXmlMappings) {
+        for (AnnotationExpr a : clazz.getAnnotations()) {
+            if ("WebServlet".equals(a.getNameAsString())) {
+                if (a instanceof SingleMemberAnnotationExpr s) {
+                    String v = cleanQuotes(s.getMemberValue().toString());
+                    if (v.contains(",")) v = v.split(",")[0].trim();
+                    if (!v.isEmpty()) return v.startsWith("/") ? v : "/" + v;
+                } else if (a instanceof NormalAnnotationExpr n) {
+                    for (MemberValuePair p : n.getPairs()) {
+                        if ("urlPatterns".equals(p.getNameAsString()) || "value".equals(p.getNameAsString()) || "path".equals(p.getNameAsString())) {
+                            String v = cleanQuotes(p.getValue().toString());
+                            if (v.contains(",")) v = v.split(",")[0].trim();
+                            if (!v.isEmpty()) return v.startsWith("/") ? v : "/" + v;
+                        }
+                    }
+                }
+            }
+        }
+
+        String className = clazz.getNameAsString();
+        if (webXmlMappings != null && webXmlMappings.containsKey(className)) {
+            String path = webXmlMappings.get(className);
+            return path.startsWith("/") ? path : "/" + path;
+        }
+
+        String clean = className.replaceAll("(?i)Servlet$", "");
+        if (clean.isEmpty()) clean = className;
+        return "/" + clean.toLowerCase();
+    }
+
+    private boolean checkServletAuth(ClassOrInterfaceDeclaration clazz) {
+        boolean hasAuthAnnotation = clazz.getAnnotations().stream()
+                .anyMatch(a -> a.getNameAsString().matches("ServletSecurity|RolesAllowed|Secured|PreAuthorize"));
+        if (hasAuthAnnotation) return true;
+
+        for (MethodDeclaration method : clazz.getMethods()) {
+            if (method.getBody().isPresent()) {
+                String body = method.getBody().get().toString();
+                if (body.contains("getSession") && (body.contains("getAttribute") || body.contains("user") || body.contains("auth"))
+                        || body.contains("getUserPrincipal") || body.contains("isUserInRole")
+                        || body.contains("checkAuth") || body.contains("validateToken") || body.contains("SecurityContext")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isRateLimitingConfigured(List<Path> sourceFiles) {
+        if (sourceFiles == null || sourceFiles.isEmpty()) return false;
+        Pattern rateLimitPattern = Pattern.compile(
+                "(?i)(?:Bucket4j|RateLimiter|RateLimit|resilience4j\\.ratelimiter|RedisRateLimiter|express-rate-limit|rate-limiter-flexible|slowapi|flask[-_]limiter|django[-_]ratelimit|limit_req_zone|golang\\.org/x/time/rate|@upstash/ratelimit|slidingWindow|tokenBucket)"
+        );
+        for (Path file : sourceFiles) {
+            String fname = file.getFileName().toString().toLowerCase();
+            if (isIgnoredFile(fname)) continue;
+            if (fname.endsWith(".java") || fname.endsWith(".js") || fname.endsWith(".ts") ||
+                    fname.endsWith(".py") || fname.endsWith(".go") || fname.endsWith(".yml") ||
+                    fname.endsWith(".yaml") || fname.endsWith(".properties") || fname.endsWith(".conf")) {
+                String content = readFileContentSafely(file);
+                if (rateLimitPattern.matcher(content).find()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isSecurityHeadersConfigured(List<Path> sourceFiles) {
+        if (sourceFiles == null || sourceFiles.isEmpty()) return false;
+        Pattern headersPattern = Pattern.compile(
+                "(?i)(?:contentSecurityPolicy|Content-Security-Policy|Strict-Transport-Security|X-Frame-Options|X-Content-Type-Options|helmet\\s*\\(|django[-_]csp|Secure-Headers|Talisman|securityHeaders|addHeader\\s*\\(\\s*[\"'](?:X-Frame-Options|Content-Security-Policy))"
+        );
+        for (Path file : sourceFiles) {
+            String fname = file.getFileName().toString().toLowerCase();
+            if (isIgnoredFile(fname)) continue;
+            if (fname.endsWith(".java") || fname.endsWith(".js") || fname.endsWith(".ts") ||
+                    fname.endsWith(".py") || fname.endsWith(".conf") || fname.endsWith(".xml")) {
+                String content = readFileContentSafely(file);
+                if (headersPattern.matcher(content).find()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isCorsConfigured(List<Path> sourceFiles) {
+        if (sourceFiles == null || sourceFiles.isEmpty()) return false;
+        Pattern corsPattern = Pattern.compile(
+                "(?i)(?:@CrossOrigin|CorsConfiguration|CorsRegistry|CorsFilter|addCorsMappings|cors\\s*\\(|CORSMiddleware|flask[-_]cors|Access-Control-Allow-Origin)"
+        );
+        for (Path file : sourceFiles) {
+            String fname = file.getFileName().toString().toLowerCase();
+            if (isIgnoredFile(fname)) continue;
+            if (fname.endsWith(".java") || fname.endsWith(".js") || fname.endsWith(".ts") ||
+                    fname.endsWith(".py") || fname.endsWith(".xml")) {
+                String content = readFileContentSafely(file);
+                if (corsPattern.matcher(content).find()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

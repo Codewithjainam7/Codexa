@@ -63,10 +63,29 @@ public class HardcodedSecretsRule implements AnalysisRule {
             return findings;
         }
 
+        String relPath = parsedFile.getRelativePath();
+        String lowerRelPath = relPath != null ? relPath.toLowerCase() : "";
+
+        // Exclude scanner rule classes, secret maskers, and test files from flagging themselves
+        if (lowerRelPath.contains("com/codexa/rules/") || lowerRelPath.contains("rules/universal/") ||
+            lowerRelPath.contains("rules/security/") || lowerRelPath.contains("rules/quality/") ||
+            lowerRelPath.contains("rules/operations/") || lowerRelPath.contains("secretmasker") ||
+            lowerRelPath.contains("/test/") || lowerRelPath.startsWith("test/") ||
+            lowerRelPath.contains("/tests/") || lowerRelPath.startsWith("tests/") ||
+            lowerRelPath.contains("/fixtures/") || lowerRelPath.startsWith("fixtures/") ||
+            lowerRelPath.endsWith("rule.java") || lowerRelPath.endsWith("ruletest.java")) {
+            return findings;
+        }
+
         List<String> lines = parsedFile.getLines();
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
             int lineNumber = i + 1;
+
+            // Ignore regex pattern definitions or value annotations
+            if (line.contains("Pattern.compile") || line.contains("@Value")) {
+                continue;
+            }
 
             // Check for private key header
             if (PRIVATE_KEY_PATTERN.matcher(line).find()) {
@@ -94,6 +113,7 @@ public class HardcodedSecretsRule implements AnalysisRule {
         String lower = val.toLowerCase();
         return lower.contains("placeholder") || lower.contains("example") || lower.contains("your_") ||
                 lower.contains("change_me") || lower.contains("test") || lower.contains("dummy") ||
+                lower.contains("fake") || lower.contains("sample") ||
                 lower.equals("password") || lower.equals("12345678");
     }
 

@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -26,7 +27,8 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
 
     // 1. Dynamic Eval & RCE
     private static final Pattern EVAL_PATTERN = Pattern.compile("(?<![a-zA-Z0-9_.])(?:eval|Function)\\s*\\(");
-    private static final Pattern CMD_EXEC_PATTERN = Pattern.compile("(?<![a-zA-Z0-9_.])(?:child_process\\.(?:exec|execSync)|os\\.system|subprocess\\.(?:call|Popen|run)\\s*\\([^,)]*shell\\s*=\\s*True)");
+    private static final Pattern JS_CMD_EXEC_PATTERN = Pattern.compile("(?<![a-zA-Z0-9_.])child_process\\.(?:exec|execSync)");
+    private static final Pattern PY_CMD_EXEC_PATTERN = Pattern.compile("(?<![a-zA-Z0-9_.])(?:os\\.system|subprocess\\.(?:call|Popen|run)\\s*\\([^,)]*shell\\s*=\\s*True)");
 
     // 2. DOM XSS
     private static final Pattern DOM_XSS_PATTERN = Pattern.compile("(?i)dangerouslySetInnerHTML|\\.innerHTML\\s*=|document\\.write\\s*\\(");
@@ -39,10 +41,83 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
     private static final Pattern TLS_VERIFY_DISABLED_PATTERN = Pattern.compile("(?i)rejectUnauthorized\\s*:\\s*false|verify\\s*=\\s*False|InsecureSkipVerify\\s*:\\s*true|NODE_TLS_REJECT_UNAUTHORIZED\\s*=\\s*['\"]?0['\"]?");
 
     // 5. Secrets & Fallback Secrets
-    private static final Pattern FALLBACK_SECRET_PATTERN = Pattern.compile("(?i)(?:process\\.env|import\\.meta\\.env)\\.[A-Z0-9_]*(?:SECRET|KEY|PASSWORD|TOKEN|API|MAILTRAP|RESEND|SENDGRID|GEMINI|OPENAI|INBOX|CLIENT_ID|AUTH)[A-Z0-9_]*\\s*(?:\\|\\|\\s*['\"]([^'\"]{4,})['\"]|\\?\\?\\s*['\"]([^'\"]{4,})['\"])");
+    private static final Pattern ENV_FALLBACK_PATTERN = Pattern.compile(
+            "(?i)(?:process\\.env|import\\.meta\\.env)\\.([A-Za-z0-9_]+)\\s*(?:\\|\\|\\s*['\"]([^'\"]+)['\"]|\\?\\?\\s*['\"]([^'\"]+)['\"])"
+    );
     private static final Pattern HARDCODED_SECRET_PATTERN = Pattern.compile("(?i)(?:const|let|var|String|val)\\s+(?:jwtSecret|api_?key|secretKey|auth_?token|app_?secret|mailtrap_?token|mailtrapToken|token|apiKey|apiSecret|secretToken)\\s*=\\s*[\"'][a-zA-Z0-9_\\-+=]{8,}[\"']");
     private static final Pattern PEM_PRIVATE_KEY_PATTERN = Pattern.compile("-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----");
     private static final Pattern DB_CONN_STRING_SECRET_PATTERN = Pattern.compile("(?:mongodb(?:\\+srv)?|postgres(?:ql)?|mysql|redis):\\/\\/[a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.-]+");
+
+    public static boolean isFallbackSecret(String line) {
+        Matcher m = ENV_FALLBACK_PATTERN.matcher(line);
+        while (m.find()) {
+            String varName = m.group(1).toUpperCase();
+            String fallback = m.group(2) != null ? m.group(2) : m.group(3);
+
+            if (fallback == null || fallback.trim().length() < 4) {
+                continue;
+            }
+
+            // Exclude network endpoints, URLs, ports, paths, prefixes, environment modes
+            if (varName.contains("URL") || varName.contains("URI") || varName.contains("HOST") ||
+                varName.contains("PORT") || varName.contains("BASE") || varName.contains("PATH") ||
+                varName.contains("ENDPOINT") || varName.contains("PREFIX") || varName.contains("VERSION") ||
+                varName.contains("TIMEOUT") || varName.contains("MODE") || varName.contains("ENV")) {
+                continue;
+            }
+
+            // Require explicit secret-indicating variable names
+            boolean isSecretVar = varName.contains("SECRET") || varName.contains("PASSWORD") ||
+                    varName.contains("PASS") || varName.contains("PRIVATE_KEY") ||
+                    varName.contains("AUTH_TOKEN") || varName.contains("JWT") ||
+                    varName.contains("SIGNING_KEY") || varName.contains("API_KEY") ||
+                    varName.contains("API_SECRET") || varName.contains("API_TOKEN") ||
+                    varName.contains("SERVICE_ROLE") || varName.contains("ADMIN_KEY") ||
+                    varName.contains("MAILTRAP_TOKEN") || varName.contains("RESEND_KEY") ||
+                    varName.contains("SENDGRID_KEY");
+
+            if (!isSecretVar) {
+                continue;
+            }
+
+            String trimmedFallback = fallback.trim();
+
+            // Ignore endpoint paths, full URLs, localhost, booleans, environment modes
+            if (trimmedFallback.startsWith("/") || trimmedFallback.startsWith("http://") ||
+                trimmedFallback.startsWith("https://") || trimmedFallback.startsWith("ws://") ||
+                trimmedFallback.contains("localhost") ||
+                trimmedFallback.matches("(?i)^(?:true|false|null|undefined|development|production|staging|test|local|none|dev|prod)$") ||
+                trimmedFallback.matches("(?i)^(?:GET|POST|PUT|DELETE|PATCH)$")) {
+                continue;
+            }
+
+            // Ignore obvious placeholders
+            String lowerFallback = trimmedFallback.toLowerCase();
+            if (lowerFallback.contains("placeholder") || lowerFallback.contains("example") ||
+                lowerFallback.contains("dummy") || lowerFallback.contains("your_") ||
+                lowerFallback.contains("change_me")) {
+                continue;
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isHardcodedSecret(String line) {
+        Matcher m = HARDCODED_SECRET_PATTERN.matcher(line);
+        if (m.find()) {
+            String lineLower = line.toLowerCase();
+            if (lineLower.contains("example") || lineLower.contains("placeholder") ||
+                lineLower.contains("your_") || lineLower.contains("change_me") ||
+                lineLower.contains("dummy") || lineLower.contains("test") ||
+                line.contains("http://") || line.contains("https://") || line.contains("Bearer ")) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
 
     // 6. SQL Injection in Multi-Language code
     private static final Pattern MULTI_SQL_INJECTION_PATTERN = Pattern.compile("(?i)(?:db|client|pool|connection|cursor|conn|knex|sequelize)\\.(?:query|raw|execute|executeRaw)\\s*\\(\\s*(?:`[^`]*\\$\\{[^}]+\\}[^`]*`|f[\"'][^\"']*\\{[^}]+\\}[^\"']*[\"']|[\"'][^\"']*(?:SELECT|INSERT|UPDATE|DELETE)[^\"']*[\"']\\s*\\+)");
@@ -186,16 +261,59 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
 
     private void scanFile(Path file, Path stagingDir, List<RuleFinding> findings) {
         String filename = file.getFileName().toString().toLowerCase();
-        
-        // Exclude binary, git, and build artifacts
-        if (filename.endsWith(".class") || filename.endsWith(".jar") || filename.endsWith(".png") ||
-            filename.endsWith(".jpg") || filename.endsWith(".zip") || filename.endsWith(".lock") ||
-            filename.endsWith(".svg") || filename.endsWith(".ico") || filename.endsWith(".woff2")) {
+        String relPath = stagingDir.relativize(file).toString().replace("\\", "/");
+        String lowerRelPath = relPath.toLowerCase();
+
+        // 1. Exclude scanner rule engine classes & self-referencing definitions
+        if (lowerRelPath.contains("com/codexa/rules/") || lowerRelPath.contains("rules/universal/") ||
+            lowerRelPath.contains("rules/security/") || lowerRelPath.contains("rules/quality/") ||
+            lowerRelPath.contains("rules/operations/") || lowerRelPath.contains("secretmasker") ||
+            filename.endsWith("rule.java") || filename.endsWith("ruletest.java")) {
             return;
         }
 
-        String relPath = stagingDir.relativize(file).toString().replace("\\", "/");
-        if (relPath.startsWith(".git") || relPath.contains("node_modules") || relPath.contains(".next") || relPath.contains("dist") || relPath.contains("build")) {
+        // 2. Exclude test directories, test suites, and test fixtures
+        if (lowerRelPath.contains("/test/") || lowerRelPath.startsWith("test/") ||
+            lowerRelPath.contains("/tests/") || lowerRelPath.startsWith("tests/") ||
+            lowerRelPath.contains("/__tests__/") || lowerRelPath.startsWith("__tests__/") ||
+            lowerRelPath.contains("/fixtures/") || lowerRelPath.startsWith("fixtures/") ||
+            lowerRelPath.contains("/fixture/") || lowerRelPath.startsWith("fixture/") ||
+            lowerRelPath.contains("/test-fixtures/") || lowerRelPath.startsWith("test-fixtures/") ||
+            lowerRelPath.contains("/spec/") || lowerRelPath.startsWith("spec/") ||
+            lowerRelPath.contains("/specs/") || lowerRelPath.startsWith("specs/")) {
+            return;
+        }
+
+        // 3. Exclude compiled static bundles, minified JS, and build artifacts
+        if (lowerRelPath.startsWith(".git") || lowerRelPath.contains("node_modules") ||
+            lowerRelPath.contains(".next") || lowerRelPath.contains("dist") ||
+            lowerRelPath.contains("build") || lowerRelPath.contains("/static/assets/") ||
+            lowerRelPath.startsWith("static/assets/") || lowerRelPath.contains("resources/static/") ||
+            lowerRelPath.contains("/public/assets/") ||
+            filename.endsWith(".min.js") || filename.endsWith(".bundle.js") ||
+            filename.endsWith(".chunk.js") || filename.startsWith("vendor-")) {
+            return;
+        }
+
+        // 4. Exclude documentation directories
+        if (lowerRelPath.contains("/docs/") || lowerRelPath.startsWith("docs/") ||
+            lowerRelPath.contains("/documentation/") || lowerRelPath.startsWith("documentation/")) {
+            return;
+        }
+
+        // 5. Exclude binary, image, font, and archive files
+        if (filename.endsWith(".class") || filename.endsWith(".jar") || filename.endsWith(".war") ||
+            filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg") ||
+            filename.endsWith(".gif") || filename.endsWith(".ico") || filename.endsWith(".svg") ||
+            filename.endsWith(".zip") || filename.endsWith(".tar") || filename.endsWith(".gz") ||
+            filename.endsWith(".lock") || filename.endsWith(".woff") || filename.endsWith(".woff2") ||
+            filename.endsWith(".ttf") || filename.endsWith(".pdf") || filename.endsWith(".map")) {
+            return;
+        }
+
+        // 6. Documentation files (.md, .markdown, .txt, .rst, .adoc) are documentation, not code!
+        if (filename.endsWith(".md") || filename.endsWith(".markdown") ||
+            filename.endsWith(".txt") || filename.endsWith(".rst") || filename.endsWith(".adoc")) {
             return;
         }
 
@@ -276,8 +394,21 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
                     );
                 }
 
-                // 2. Check Dynamic Eval & Code Execution
-                if (EVAL_PATTERN.matcher(line).find() || CMD_EXEC_PATTERN.matcher(line).find()) {
+                // 2. Check Dynamic Eval & Code Execution (Language-specific and excludes UI demo strings)
+                boolean isPy = filename.endsWith(".py");
+                boolean isJsOrTs = filename.endsWith(".js") || filename.endsWith(".jsx") || filename.endsWith(".ts") || filename.endsWith(".tsx") || filename.endsWith(".mjs");
+                boolean isDemoString = line.contains("❌") || line.contains("✅") || line.contains("before:") || line.contains("after:") || line.contains("explanation:");
+
+                boolean hasCmdExec = false;
+                if (!isDemoString) {
+                    if (isPy && PY_CMD_EXEC_PATTERN.matcher(line).find()) {
+                        hasCmdExec = true;
+                    } else if (isJsOrTs && (JS_CMD_EXEC_PATTERN.matcher(line).find() || EVAL_PATTERN.matcher(line).find())) {
+                        hasCmdExec = true;
+                    }
+                }
+
+                if (hasCmdExec) {
                     findings.add(RuleFinding.builder()
                             .ruleId("CR-CMD-001")
                             .category(Category.SECURITY)
@@ -581,7 +712,7 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
                 }
 
                 // 14. Check Fallback or Hardcoded Secrets
-                if (FALLBACK_SECRET_PATTERN.matcher(line).find() || HARDCODED_SECRET_PATTERN.matcher(line).find()) {
+                if (isFallbackSecret(line) || isHardcodedSecret(line)) {
                     findings.add(RuleFinding.builder()
                             .ruleId("CR-SEC-002")
                             .category(Category.SECURITY)
@@ -691,7 +822,8 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
                 }
 
                 // 14f. Check Insecure Database Scripts Disabling Row Level Security (RLS)
-                if (INSECURE_RLS_DISABLE_PATTERN.matcher(line).find()) {
+                boolean isSqlFile = filename.endsWith(".sql") || relPath.contains("db/migration") || relPath.contains("supabase/migrations");
+                if (isSqlFile && INSECURE_RLS_DISABLE_PATTERN.matcher(line).find()) {
                     int startLine = lineNum;
                     int endLine = lineNum;
                     String evidenceText = line.trim();

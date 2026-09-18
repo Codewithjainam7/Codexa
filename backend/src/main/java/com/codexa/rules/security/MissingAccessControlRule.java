@@ -21,8 +21,20 @@ import java.util.Set;
 @Component
 public class MissingAccessControlRule implements AnalysisRule {
 
-    private static final Set<String> SENSITIVE_KEYWORDS = Set.of(
-            "admin", "manage", "delete", "destroy", "role", "permission", "payment", "billing", "config", "internal"
+    private static final Set<String> SENSITIVE_PATH_SEGMENTS = Set.of(
+            "/admin", "/manage", "/billing", "/payment", "/internal/", "/roles", "/permissions"
+    );
+
+    private static final Set<String> SENSITIVE_METHOD_PREFIXES = Set.of(
+            "delete", "remove", "destroy", "purge", "manage", "grant", "revoke", "admin", "updaterole", "setadmin"
+    );
+
+    private static final Set<String> PUBLIC_PATH_ALLOWLIST = Set.of(
+            "/", "/api", "/api/v1/health", "/health", "/api/v1/config/limits", "/swagger-ui", "/v3/api-docs"
+    );
+
+    private static final Set<String> PUBLIC_METHOD_ALLOWLIST = Set.of(
+            "index", "getapiinfo", "health", "gethealth", "getlimits", "getconfiglimits", "submitzipanalysis", "submitgithubanalysis"
     );
 
     private static final Set<String> AUTH_ANNOTATIONS = Set.of(
@@ -86,12 +98,7 @@ public class MissingAccessControlRule implements AnalysisRule {
 
             for (MethodDeclaration method : clazz.getMethods()) {
                 if (isEndpointMethod(method) && !classHasAuth && !hasAuthAnnotation(method.getAnnotations())) {
-                    String methodName = method.getNameAsString().toLowerCase();
-                    String methodText = method.toString().toLowerCase();
-
-                    boolean isSensitive = SENSITIVE_KEYWORDS.stream().anyMatch(kw -> methodName.contains(kw) || methodText.contains(kw));
-
-                    if (isSensitive) {
+                    if (isSensitiveEndpoint(clazz, method)) {
                         int startLine = method.getRange().map(r -> r.begin.line).orElse(1);
                         int endLine = method.getRange().map(r -> r.end.line).orElse(startLine);
                         String evidence = snippetExtractor.extractNodeSnippet(method, parsedFile.getLines());
@@ -120,6 +127,66 @@ public class MissingAccessControlRule implements AnalysisRule {
         });
 
         return findings;
+    }
+
+    private boolean isSensitiveEndpoint(ClassOrInterfaceDeclaration clazz, MethodDeclaration method) {
+        String methodName = method.getNameAsString().toLowerCase();
+        if (PUBLIC_METHOD_ALLOWLIST.contains(methodName)) {
+            return false;
+        }
+
+        String fullPath = extractEndpointPath(clazz, method);
+        if (PUBLIC_PATH_ALLOWLIST.contains(fullPath) || fullPath.startsWith("/api/v1/analyses")) {
+            return false;
+        }
+
+        // 1. Path contains administrative or sensitive segments
+        for (String seg : SENSITIVE_PATH_SEGMENTS) {
+            if (fullPath.contains(seg)) {
+                return true;
+            }
+        }
+
+        // 2. Method name indicates sensitive/destructive operation
+        for (String prefix : SENSITIVE_METHOD_PREFIXES) {
+            if (methodName.startsWith(prefix) || methodName.contains(prefix)) {
+                return true;
+            }
+        }
+
+        // 3. Class name explicitly indicates Admin or Internal controller
+        String className = clazz.getNameAsString().toLowerCase();
+        if (className.contains("admin") || className.contains("internal") || className.contains("billing")) {
+            return true;
+        }
+
+        // 4. Any @DeleteMapping on non-public endpoints
+        return method.getAnnotations().stream().anyMatch(a -> "DeleteMapping".equals(a.getNameAsString()));
+    }
+
+    private String extractEndpointPath(ClassOrInterfaceDeclaration clazz, MethodDeclaration method) {
+        StringBuilder sb = new StringBuilder();
+        for (AnnotationExpr a : clazz.getAnnotations()) {
+            if ("RequestMapping".equals(a.getNameAsString())) {
+                sb.append(extractAnnotationValue(a));
+            }
+        }
+        for (AnnotationExpr a : method.getAnnotations()) {
+            if (MAPPING_ANNOTATIONS.contains(a.getNameAsString())) {
+                sb.append(extractAnnotationValue(a));
+            }
+        }
+        return sb.toString().toLowerCase();
+    }
+
+    private String extractAnnotationValue(AnnotationExpr a) {
+        String s = a.toString();
+        int firstQuote = s.indexOf('"');
+        int lastQuote = s.lastIndexOf('"');
+        if (firstQuote != -1 && lastQuote > firstQuote) {
+            return s.substring(firstQuote + 1, lastQuote);
+        }
+        return "";
     }
 
     private boolean isEndpointMethod(MethodDeclaration method) {

@@ -55,7 +55,7 @@ public class ReadinessScoringEngine {
                     securityPenalty += 15.0;
                     if (ruleId.startsWith("CR-SQL") || ruleId.startsWith("CR-CMD") || ruleId.startsWith("CR-SEC") ||
                             ruleId.startsWith("CR-AUTH") || ruleId.startsWith("CR-PASS") || ruleId.startsWith("CR-LEAK") ||
-                            ruleId.startsWith("CR-EDGE") || ruleId.startsWith("CR-RLS")) {
+                            ruleId.startsWith("CR-EDGE") || ruleId.startsWith("CR-RLS") || ruleId.startsWith("CR-PARAM")) {
                         hasHighAuthOrInjectionOrSecrets = true;
                     }
                 } else if (sev == Severity.MEDIUM) {

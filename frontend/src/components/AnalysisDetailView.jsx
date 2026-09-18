@@ -294,17 +294,13 @@ export default function AnalysisDetailView({ jobId, onBack }) {
         smellsDistribution: Object.values(smells)
       },
       blackBox: {
-        totalEndpoints: 3,
-        unauthenticatedEndpoints: 1,
-        exposedEndpoints: [
-          { httpMethod: 'GET', path: '/api/v1/health', controllerClass: 'HealthController', methodName: 'getHealth', requiresAuth: false, attackSurfaceRisk: 'LOW' },
-          { httpMethod: 'POST', path: '/api/v1/analyses/zip', controllerClass: 'ZipAnalysisController', methodName: 'submitZipAnalysis', requiresAuth: true, attackSurfaceRisk: 'MEDIUM' },
-          { httpMethod: 'POST', path: '/api/v1/analyses/github', controllerClass: 'GitHubAnalysisController', methodName: 'submitGitHubAnalysis', requiresAuth: true, attackSurfaceRisk: 'MEDIUM' }
-        ],
+        totalEndpoints: 0,
+        unauthenticatedEndpoints: 0,
+        exposedEndpoints: [],
         perimeterStatus: {
-          corsStatus: findings.some(f => f.ruleId === 'CR-CONFIG-001' || f.ruleId === 'CR-CORS-001') ? 'PERMISSIVE ORIGIN (CR-CONFIG-001)' : 'RESTRICTED ALLOW-LIST (SECURE)',
-          rateLimitingStatus: 'RATE-LIMITED (SLIDING-WINDOW BUCKET)',
-          securityHeadersStatus: 'ACTIVE (CSP, HSTS, X-FRAME-OPTIONS)',
+          corsStatus: findings.some(f => f.ruleId === 'CR-CONFIG-001' || f.ruleId === 'CR-CORS-001') ? 'PERMISSIVE ORIGIN (CR-CONFIG-001)' : 'NO EXPLICIT CORS POLICY (DEFAULT ORIGIN)',
+          rateLimitingStatus: 'UNPROTECTED (NO RATE LIMITING DETECTED)',
+          securityHeadersStatus: 'MISSING HEADERS (NO CSP/HSTS DEFENSE)',
           secretsExposureStatus: findings.some(f => f.ruleId?.startsWith('CR-SEC') || f.ruleId === 'CR-LEAK-001') ? 'EXPOSURE DETECTED (ACTION REQUIRED)' : 'ZERO LEAKED CREDENTIALS (PASSED)'
         }
       },
@@ -910,30 +906,68 @@ export default function AnalysisDetailView({ jobId, onBack }) {
             <div className="space-y-6">
               {/* Telemetry Metric Meters */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-4 rounded-2xl cdx-card border border-[var(--border-subtle)] space-y-2 cursor-help" title="McCabe Cyclomatic Complexity: measures distinct linear execution paths. Target &lt; 10.0 per method.">
+                <div className={`p-4 rounded-2xl cdx-card border space-y-2 cursor-help transition-all ${
+                  diagnostics.whiteBox.avgComplexity > 10.0
+                    ? 'border-rose-500/40 bg-rose-500/10'
+                    : diagnostics.whiteBox.avgComplexity > 6.0
+                    ? 'border-amber-500/30 bg-amber-500/5'
+                    : 'border-[var(--border-subtle)]'
+                }`} title="McCabe Cyclomatic Complexity: measures distinct linear execution paths. Target &lt; 10.0 per method.">
                   <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Average Cyclomatic Complexity</div>
-                  <div className="text-2xl sm:text-3xl font-black text-blue-400 font-mono">
+                  <div className={`text-2xl sm:text-3xl font-black font-mono ${
+                    diagnostics.whiteBox.avgComplexity > 10.0 ? 'text-rose-400' :
+                    diagnostics.whiteBox.avgComplexity > 6.0 ? 'text-amber-400' : 'text-blue-400'
+                  }`}>
                     {diagnostics.whiteBox.avgComplexity}
                   </div>
-                  <div className="text-[11px] text-emerald-400 font-medium">Optimal (&lt; 10.0 target)</div>
+                  <div className={`text-[11px] font-medium ${
+                    diagnostics.whiteBox.avgComplexity > 10.0 ? 'text-rose-400 font-bold' :
+                    diagnostics.whiteBox.avgComplexity > 6.0 ? 'text-amber-400' : 'text-emerald-400'
+                  }`}>
+                    {diagnostics.whiteBox.avgComplexity > 10.0 ? 'Critical Complexity Debt (> 10.0)' :
+                     diagnostics.whiteBox.avgComplexity > 6.0 ? 'Moderate Complexity (6-10)' : 'Optimal (< 6.0 target)'}
+                  </div>
                 </div>
 
-                <div className="p-4 rounded-2xl cdx-card border border-[var(--border-subtle)] space-y-2 cursor-help" title="Highest cyclomatic complexity observed in a single method across the repository.">
+                <div className={`p-4 rounded-2xl cdx-card border space-y-2 cursor-help transition-all ${
+                  diagnostics.whiteBox.peakComplexity > 20
+                    ? 'border-rose-500/40 bg-rose-500/10'
+                    : diagnostics.whiteBox.peakComplexity > 15
+                    ? 'border-amber-500/30 bg-amber-500/5'
+                    : 'border-[var(--border-subtle)]'
+                }`} title="Highest cyclomatic complexity observed in a single method across the repository.">
                   <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Peak Method Complexity</div>
-                  <div className="text-2xl sm:text-3xl font-black text-amber-400 font-mono">
+                  <div className={`text-2xl sm:text-3xl font-black font-mono ${
+                    diagnostics.whiteBox.peakComplexity > 20 ? 'text-rose-400' :
+                    diagnostics.whiteBox.peakComplexity > 15 ? 'text-amber-400' : 'text-amber-400'
+                  }`}>
                     {diagnostics.whiteBox.peakComplexity}
                   </div>
                   <div className="text-[11px] text-[var(--text-muted)] truncate font-mono" title={diagnostics.whiteBox.peakComplexityFile}>
-                    {diagnostics.whiteBox.peakComplexityFile}
+                    {diagnostics.whiteBox.peakComplexity > 20 ? (
+                      <span className="text-rose-400 font-bold">Unbounded Branching ({diagnostics.whiteBox.peakComplexityFile})</span>
+                    ) : (
+                      diagnostics.whiteBox.peakComplexityFile
+                    )}
                   </div>
                 </div>
 
-                <div className="p-4 rounded-2xl cdx-card border border-[var(--border-subtle)] space-y-2 cursor-help" title="Maximum AST block nesting depth (if/for/while/try). Nesting &gt; 4 indicates arrow anti-pattern.">
+                <div className={`p-4 rounded-2xl cdx-card border space-y-2 cursor-help transition-all ${
+                  diagnostics.whiteBox.maxNestingDepth > 4
+                    ? 'border-rose-500/40 bg-rose-500/10'
+                    : 'border-[var(--border-subtle)]'
+                }`} title="Maximum AST block nesting depth (if/for/while/try). Nesting &gt; 4 indicates arrow anti-pattern.">
                   <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider font-display">Max AST Nesting Depth</div>
-                  <div className="text-2xl sm:text-3xl font-black text-purple-400 font-mono">
+                  <div className={`text-2xl sm:text-3xl font-black font-mono ${
+                    diagnostics.whiteBox.maxNestingDepth > 4 ? 'text-rose-400' : 'text-purple-400'
+                  }`}>
                     {diagnostics.whiteBox.maxNestingDepth} Levels
                   </div>
-                  <div className="text-[11px] text-emerald-400 font-medium">Within safe readability threshold</div>
+                  <div className={`text-[11px] font-medium ${
+                    diagnostics.whiteBox.maxNestingDepth > 4 ? 'text-rose-400 font-bold' : 'text-emerald-400'
+                  }`}>
+                    {diagnostics.whiteBox.maxNestingDepth > 4 ? 'Deep Nesting Anti-Pattern (> 4 Levels)' : 'Within safe readability threshold'}
+                  </div>
                 </div>
 
                 <div className="p-4 rounded-2xl cdx-card border border-[var(--border-subtle)] space-y-2 cursor-help" title="Total counts of classes, interfaces, and methods parsed in the Abstract Syntax Tree.">
@@ -997,11 +1031,13 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                           </td>
                           <td className="py-3 px-3 text-right">
                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                              file.maxComplexity > 15 || file.findingCount > 2
+                              file.maxComplexity > 20 || file.findingCount > 5
+                                ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40'
+                                : file.maxComplexity > 15 || file.findingCount > 2
                                 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
                                 : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
                             }`}>
-                              {file.maxComplexity > 15 ? 'REFACTOR' : 'OPTIMAL'}
+                              {file.maxComplexity > 20 ? 'CRITICAL DEBT' : file.maxComplexity > 15 ? 'REFACTOR' : 'OPTIMAL'}
                             </span>
                           </td>
                         </tr>
@@ -1023,17 +1059,26 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {diagnostics.whiteBox.smellsDistribution.map((smell, idx) => (
-                      <div key={idx} className="p-3.5 rounded-xl cdx-recessed border border-[var(--border-subtle)] flex items-center justify-between">
-                        <div className="min-w-0 space-y-0.5">
-                          <div className="text-xs font-mono font-bold text-blue-400">{smell.ruleId}</div>
-                          <div className="text-xs text-[var(--text-primary)] truncate font-sans">{smell.title}</div>
+                    {diagnostics.whiteBox.smellsDistribution.map((smell, idx) => {
+                      const isHighOrCrit = smell.ruleId?.startsWith('CR-SEC') || smell.ruleId?.startsWith('CR-AUTH') || smell.ruleId?.startsWith('CR-SQL') || smell.ruleId?.startsWith('CR-CMD') || smell.ruleId?.startsWith('CR-PARAM-002');
+                      return (
+                        <div key={idx} className={`p-3.5 rounded-xl cdx-recessed border flex items-center justify-between ${
+                          isHighOrCrit ? 'border-rose-500/30 bg-rose-500/5' : 'border-[var(--border-subtle)]'
+                        }`}>
+                          <div className="min-w-0 space-y-0.5">
+                            <div className={`text-xs font-mono font-bold ${isHighOrCrit ? 'text-rose-400' : 'text-blue-400'}`}>
+                              {smell.ruleId}
+                            </div>
+                            <div className="text-xs text-[var(--text-primary)] truncate font-sans">{smell.title}</div>
+                          </div>
+                          <span className={`px-2.5 py-1 rounded-full text-xs font-mono font-bold shrink-0 ml-2 ${
+                            isHighOrCrit ? 'bg-rose-500/20 text-rose-300' : 'bg-slate-800 text-slate-200'
+                          }`}>
+                            {smell.count}x
+                          </span>
                         </div>
-                        <span className="px-2.5 py-1 rounded-full bg-slate-800 text-xs font-mono font-bold text-slate-200 shrink-0 ml-2">
-                          {smell.count}x
-                        </span>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -1044,51 +1089,144 @@ export default function AnalysisDetailView({ jobId, onBack }) {
           {activeTab === 'blackbox' && (
             <div className="space-y-6">
               {/* Perimeter Status Checklist */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-4 rounded-2xl cdx-card border border-blue-500/30 space-y-2">
-                  <div className="flex items-center space-x-2 text-xs font-bold text-blue-400 font-display">
-                    <Shield className="w-4 h-4" />
-                    <span>CORS Perimeter</span>
-                  </div>
-                  <div className="text-xs font-mono font-bold text-slate-200">
-                    {diagnostics.blackBox.perimeterStatus.corsStatus}
-                  </div>
-                  <p className="text-[11px] text-[var(--text-muted)]">Origin boundary allow-list enforcement.</p>
-                </div>
+              {(() => {
+                const cors = diagnostics?.blackBox?.perimeterStatus?.corsStatus || '';
+                const isCorsSecure = cors.includes('RESTRICTED');
+                const isCorsPermissive = cors.includes('PERMISSIVE');
 
-                <div className="p-4 rounded-2xl cdx-card border border-emerald-500/30 space-y-2">
-                  <div className="flex items-center space-x-2 text-xs font-bold text-emerald-400 font-display">
-                    <Zap className="w-4 h-4" />
-                    <span>Rate-Limiting Barrier</span>
-                  </div>
-                  <div className="text-xs font-mono font-bold text-slate-200">
-                    {diagnostics.blackBox.perimeterStatus.rateLimitingStatus}
-                  </div>
-                  <p className="text-[11px] text-[var(--text-muted)]">Sliding-window token bucket defense.</p>
-                </div>
+                const rate = diagnostics?.blackBox?.perimeterStatus?.rateLimitingStatus || '';
+                const isRateSecure = rate.includes('RATE-LIMITED');
 
-                <div className="p-4 rounded-2xl cdx-card border border-purple-500/30 space-y-2">
-                  <div className="flex items-center space-x-2 text-xs font-bold text-purple-400 font-display">
-                    <Lock className="w-4 h-4" />
-                    <span>HTTP Security Headers</span>
-                  </div>
-                  <div className="text-xs font-mono font-bold text-slate-200">
-                    {diagnostics.blackBox.perimeterStatus.securityHeadersStatus}
-                  </div>
-                  <p className="text-[11px] text-[var(--text-muted)]">Enforced CSP, HSTS, and X-Frame-Options.</p>
-                </div>
+                const headers = diagnostics?.blackBox?.perimeterStatus?.securityHeadersStatus || '';
+                const isHeadersSecure = headers.includes('ACTIVE');
 
-                <div className="p-4 rounded-2xl cdx-card border border-amber-500/30 space-y-2">
-                  <div className="flex items-center space-x-2 text-xs font-bold text-amber-400 font-display">
-                    <Terminal className="w-4 h-4" />
-                    <span>Secret Exposure Barrier</span>
+                const secrets = diagnostics?.blackBox?.perimeterStatus?.secretsExposureStatus || '';
+                const isSecretsSecure = secrets.includes('ZERO LEAKED') || secrets.includes('PASSED');
+
+                return (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* CORS Perimeter */}
+                    <div className={`p-4 rounded-2xl cdx-card border space-y-2 transition-all ${
+                      isCorsPermissive
+                        ? 'border-rose-500/40 bg-rose-500/10'
+                        : isCorsSecure
+                        ? 'border-emerald-500/30 bg-emerald-500/5'
+                        : 'border-amber-500/30 bg-amber-500/5'
+                    }`}>
+                      <div className="flex items-center justify-between">
+                        <div className={`flex items-center space-x-2 text-xs font-bold font-display ${
+                          isCorsPermissive ? 'text-rose-400' : isCorsSecure ? 'text-emerald-400' : 'text-amber-400'
+                        }`}>
+                          <Shield className="w-4 h-4" />
+                          <span>CORS Perimeter</span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider font-mono ${
+                          isCorsPermissive
+                            ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                            : isCorsSecure
+                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                            : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                        }`}>
+                          {isCorsPermissive ? 'FAIL' : isCorsSecure ? 'PASS' : 'WARN'}
+                        </span>
+                      </div>
+                      <div className={`text-xs font-mono font-bold ${isCorsPermissive ? 'text-rose-300' : 'text-slate-200'}`}>
+                        {cors}
+                      </div>
+                      <p className="text-[11px] text-[var(--text-muted)]">
+                        {isCorsPermissive ? 'Wildcard origin allows unrestricted cross-origin requests.' : isCorsSecure ? 'Origin boundary allow-list enforcement active.' : 'No explicit CORS policy configured (browser defaults apply).'}
+                      </p>
+                    </div>
+
+                    {/* Rate-Limiting Barrier */}
+                    <div className={`p-4 rounded-2xl cdx-card border space-y-2 transition-all ${
+                      isRateSecure
+                        ? 'border-emerald-500/30 bg-emerald-500/5'
+                        : 'border-rose-500/40 bg-rose-500/10'
+                    }`}>
+                      <div className="flex items-center justify-between">
+                        <div className={`flex items-center space-x-2 text-xs font-bold font-display ${
+                          isRateSecure ? 'text-emerald-400' : 'text-rose-400'
+                        }`}>
+                          <Zap className="w-4 h-4" />
+                          <span>Rate-Limiting Barrier</span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider font-mono ${
+                          isRateSecure
+                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                            : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                        }`}>
+                          {isRateSecure ? 'PASS' : 'FAIL'}
+                        </span>
+                      </div>
+                      <div className={`text-xs font-mono font-bold ${isRateSecure ? 'text-slate-200' : 'text-rose-300'}`}>
+                        {rate}
+                      </div>
+                      <p className="text-[11px] text-[var(--text-muted)]">
+                        {isRateSecure ? 'Sliding-window token bucket defense configured.' : 'No rate limiting or flood protection detected.'}
+                      </p>
+                    </div>
+
+                    {/* HTTP Security Headers */}
+                    <div className={`p-4 rounded-2xl cdx-card border space-y-2 transition-all ${
+                      isHeadersSecure
+                        ? 'border-emerald-500/30 bg-emerald-500/5'
+                        : 'border-rose-500/40 bg-rose-500/10'
+                    }`}>
+                      <div className="flex items-center justify-between">
+                        <div className={`flex items-center space-x-2 text-xs font-bold font-display ${
+                          isHeadersSecure ? 'text-emerald-400' : 'text-rose-400'
+                        }`}>
+                          <Lock className="w-4 h-4" />
+                          <span>HTTP Security Headers</span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider font-mono ${
+                          isHeadersSecure
+                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                            : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                        }`}>
+                          {isHeadersSecure ? 'PASS' : 'FAIL'}
+                        </span>
+                      </div>
+                      <div className={`text-xs font-mono font-bold ${isHeadersSecure ? 'text-slate-200' : 'text-rose-300'}`}>
+                        {headers}
+                      </div>
+                      <p className="text-[11px] text-[var(--text-muted)]">
+                        {isHeadersSecure ? 'Enforced CSP, HSTS, and X-Frame-Options.' : 'Missing CSP, HSTS, or frame-busting defense.'}
+                      </p>
+                    </div>
+
+                    {/* Secret Exposure Barrier */}
+                    <div className={`p-4 rounded-2xl cdx-card border space-y-2 transition-all ${
+                      isSecretsSecure
+                        ? 'border-emerald-500/30 bg-emerald-500/5'
+                        : 'border-rose-500/40 bg-rose-500/10'
+                    }`}>
+                      <div className="flex items-center justify-between">
+                        <div className={`flex items-center space-x-2 text-xs font-bold font-display ${
+                          isSecretsSecure ? 'text-emerald-400' : 'text-rose-400'
+                        }`}>
+                          <Terminal className="w-4 h-4" />
+                          <span>Secret Exposure Barrier</span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider font-mono ${
+                          isSecretsSecure
+                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                            : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                        }`}>
+                          {isSecretsSecure ? 'PASS' : 'FAIL'}
+                        </span>
+                      </div>
+                      <div className={`text-xs font-mono font-bold ${isSecretsSecure ? 'text-slate-200' : 'text-rose-300'}`}>
+                        {secrets}
+                      </div>
+                      <p className="text-[11px] text-[var(--text-muted)]">
+                        {isSecretsSecure ? 'In-flight token masking and zero leaked keys.' : 'Active secrets or credentials found in source.'}
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-xs font-mono font-bold text-slate-200">
-                    {diagnostics.blackBox.perimeterStatus.secretsExposureStatus}
-                  </div>
-                  <p className="text-[11px] text-[var(--text-muted)]">In-flight token masking and zero leaks.</p>
-                </div>
-              </div>
+                );
+              })()}
 
               {/* API Ingress Route Inventory */}
               <div className="p-5 rounded-2xl cdx-card border border-[var(--border-subtle)] space-y-4">

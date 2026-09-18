@@ -15,7 +15,10 @@ public class FileFilterService {
             ".next", ".turbo", ".nuxt", ".cache", "vendor",
             "venv", ".venv", "env", ".tox", ".pytest_cache",
             "bower_components", ".serverless", ".terraform",
-            "site-packages", "pods", "carthage", ".m2"
+            "site-packages", "pods", "carthage", ".m2",
+            "fixtures", "fixture", "test-fixtures", "__fixtures__",
+            "__tests__", "test", "tests", "spec", "specs",
+            "docs", "doc", "documentation"
     );
 
     private static final Set<String> ALLOWED_SOURCE_EXTENSIONS = Set.of(
@@ -41,15 +44,40 @@ public class FileFilterService {
 
     public boolean isIgnoredDirectory(Path relativePath) {
         String pathStr = relativePath.toString().replace('\\', '/').toLowerCase();
-        if (pathStr.contains("/web-inf/lib/") || pathStr.endsWith("/web-inf/lib") || pathStr.startsWith("web-inf/lib/") || pathStr.equals("web-inf/lib")) {
+
+        if (matchesPath(pathStr, "web-inf/lib") ||
+            matchesPath(pathStr, "src/test") ||
+            matchesPath(pathStr, "fixtures") ||
+            matchesPath(pathStr, "fixture") ||
+            matchesPath(pathStr, "test-fixtures") ||
+            matchesPath(pathStr, "__fixtures__") ||
+            matchesPath(pathStr, "__tests__") ||
+            matchesPath(pathStr, "tests") ||
+            matchesPath(pathStr, "test") ||
+            matchesPath(pathStr, "spec") ||
+            matchesPath(pathStr, "specs") ||
+            matchesPath(pathStr, "static/assets") ||
+            matchesPath(pathStr, "resources/static") ||
+            matchesPath(pathStr, "public/assets") ||
+            matchesPath(pathStr, "dist/assets") ||
+            matchesPath(pathStr, "docs") ||
+            matchesPath(pathStr, "documentation")) {
             return true;
         }
+
         for (Path segment : relativePath) {
-            if (IGNORED_DIRECTORIES.contains(segment.toString())) {
+            if (IGNORED_DIRECTORIES.contains(segment.toString().toLowerCase())) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean matchesPath(String fullPath, String targetSegment) {
+        return fullPath.equals(targetSegment) ||
+               fullPath.startsWith(targetSegment + "/") ||
+               fullPath.endsWith("/" + targetSegment) ||
+               fullPath.contains("/" + targetSegment + "/");
     }
 
     public boolean isSupportedAnalysisFile(String filename) {

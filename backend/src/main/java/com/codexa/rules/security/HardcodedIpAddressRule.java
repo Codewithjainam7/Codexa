@@ -64,6 +64,14 @@ public class HardcodedIpAddressRule implements AnalysisRule {
 
         CompilationUnit cu = parsedFile.getCompilationUnit().get();
         String filename = parsedFile.getRelativePath();
+        String lowerFilename = filename.toLowerCase();
+
+        // Exclude security validators (e.g. SSRF protection), filter classes, rule definitions, and tests
+        if (lowerFilename.contains("validator") || lowerFilename.contains("filter") ||
+            lowerFilename.contains("ssrf") || lowerFilename.contains("rule") ||
+            lowerFilename.contains("test") || lowerFilename.contains("fixture")) {
+            return findings;
+        }
 
         for (StringLiteralExpr sle : cu.findAll(StringLiteralExpr.class)) {
             String val = sle.getValue().trim();
