@@ -20,14 +20,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        List<String> origins = properties.security() != null && properties.security().allowedOrigins() != null
+        List<String> configuredOrigins = properties.security() != null && properties.security().allowedOrigins() != null
                 ? properties.security().allowedOrigins()
-                : List.of("http://localhost:5173");
+                : List.of();
 
-        registry.addMapping("/api/**")
-                .allowedOrigins(origins.toArray(String[]::new))
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("Content-Type", "Authorization", "X-Api-Key", "X-Correlation-ID")
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
+                .allowedHeaders("*")
                 .exposedHeaders("X-Correlation-ID")
                 .allowCredentials(true)
                 .maxAge(3600);

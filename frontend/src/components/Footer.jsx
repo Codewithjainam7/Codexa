@@ -96,7 +96,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <a
-                    href="http://localhost:8080/swagger-ui.html"
+                    href="/swagger-ui.html"
                     target="_blank"
                     rel="noreferrer"
                     className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center space-x-1.5 transition-colors"

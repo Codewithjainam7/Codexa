@@ -67,7 +67,7 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
 
               {/* Quick API Docs Link (Desktop) */}
               <a
-                href="http://localhost:8080/swagger-ui.html"
+                href="/swagger-ui.html"
                 target="_blank"
                 rel="noreferrer"
                 className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[var(--bg-recessed)] hover:bg-[var(--bg-card)] border border-[var(--border-subtle)] text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all whitespace-nowrap shrink-0"

@@ -162,7 +162,7 @@ export default function MobileSidebar({ isOpen, onClose, currentView, setCurrent
                 </span>
 
                 <a
-                  href="http://localhost:8080/swagger-ui.html"
+                  href="/swagger-ui.html"
                   target="_blank"
                   rel="noreferrer"
                   onClick={onClose}
