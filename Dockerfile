@@ -35,4 +35,4 @@ USER codexa
 
 EXPOSE 8080
 ENV PORT=8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-XX:+UseG1GC", "-XX:MaxRAMPercentage=75.0", "-XX:InitialRAMPercentage=30.0", "-XX:+ExitOnOutOfMemoryError", "-jar", "app.jar"]

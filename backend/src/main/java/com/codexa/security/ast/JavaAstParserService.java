@@ -26,7 +26,7 @@ public class JavaAstParserService {
         ParserConfiguration configuration = new ParserConfiguration()
                 .setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_17)
                 .setAttributeComments(true)
-                .setStoreTokens(true);
+                .setStoreTokens(false); // Memory optimization: avoid retaining millions of lexer tokens
         return new JavaParser(configuration);
     });
 
@@ -37,11 +37,40 @@ public class JavaAstParserService {
         String relativePath = rootStagingDir.relativize(filePath).toString().replace('\\', '/');
 
         try {
-            String rawContent = Files.readString(filePath, StandardCharsets.UTF_8);
+            String rawContent = readSourceFileString(filePath);
             return parseContent(rawContent, filePath, relativePath);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.warn("Failed to read Java source file {}: {}", relativePath, e.getMessage());
             return new ParsedJavaFile(filePath, relativePath, "", List.of(), null, false, List.of("Read failure: " + e.getMessage()));
+        }
+    }
+
+    private String readSourceFileString(Path filePath) throws IOException {
+        byte[] bytes = Files.readAllBytes(filePath);
+        if (bytes == null || bytes.length == 0) {
+            return "";
+        }
+        // 1. Detect UTF-16LE BOM
+        if (bytes.length >= 2 && bytes[0] == (byte) 0xFF && bytes[1] == (byte) 0xFE) {
+            return new String(bytes, 2, bytes.length - 2, StandardCharsets.UTF_16LE);
+        }
+        // 2. Detect UTF-16BE BOM
+        if (bytes.length >= 2 && bytes[0] == (byte) 0xFE && bytes[1] == (byte) 0xFF) {
+            return new String(bytes, 2, bytes.length - 2, StandardCharsets.UTF_16BE);
+        }
+        // 3. Detect UTF-8 BOM
+        if (bytes.length >= 3 && bytes[0] == (byte) 0xEF && bytes[1] == (byte) 0xBB && bytes[2] == (byte) 0xBF) {
+            return new String(bytes, 3, bytes.length - 3, StandardCharsets.UTF_8);
+        }
+        // 4. Detect UTF-16LE without BOM (ASCII characters with 0x00 at odd indices)
+        if (bytes.length >= 4 && bytes[1] == 0 && bytes[3] == 0 && bytes[0] != 0 && bytes[2] != 0) {
+            return new String(bytes, StandardCharsets.UTF_16LE);
+        }
+        // 5. Default UTF-8 with ISO-8859-1 fallback
+        try {
+            return new String(bytes, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            return new String(bytes, StandardCharsets.ISO_8859_1);
         }
     }
 
@@ -71,9 +100,35 @@ public class JavaAstParserService {
     }
 
     public List<ParsedJavaFile> parseAll(List<Path> javaFiles, Path rootStagingDir) {
-        List<ParsedJavaFile> results = javaFiles.parallelStream()
-                .map(file -> parseFile(file, rootStagingDir))
-                .toList();
+        if (javaFiles == null || javaFiles.isEmpty()) {
+            return List.of();
+        }
+
+        // Bound concurrency to prevent thread storms and memory spikes on constrained containers
+        int maxThreads = Math.min(4, Math.max(1, Runtime.getRuntime().availableProcessors()));
+        List<ParsedJavaFile> results;
+
+        if (maxThreads <= 1 || javaFiles.size() < 10) {
+            results = javaFiles.stream()
+                    .map(file -> parseFile(file, rootStagingDir))
+                    .toList();
+        } else {
+            java.util.concurrent.ForkJoinPool customPool = new java.util.concurrent.ForkJoinPool(maxThreads);
+            try {
+                results = customPool.submit(() ->
+                        javaFiles.parallelStream()
+                                .map(file -> parseFile(file, rootStagingDir))
+                                .toList()
+                ).get();
+            } catch (Exception e) {
+                log.warn("Parallel AST parsing pool interrupted, falling back to sequential stream: {}", e.getMessage());
+                results = javaFiles.stream()
+                        .map(file -> parseFile(file, rootStagingDir))
+                        .toList();
+            } finally {
+                customPool.shutdown();
+            }
+        }
 
         log.info("AST Parser analyzed {} Java files ({} successfully generated ASTs)",
                 results.size(), results.stream().filter(ParsedJavaFile::isParseSuccessful).count());

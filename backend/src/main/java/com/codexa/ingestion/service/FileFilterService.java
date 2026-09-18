@@ -14,7 +14,8 @@ public class FileFilterService {
             "dist", "bin", "coverage", "__pycache__", ".staging",
             ".next", ".turbo", ".nuxt", ".cache", "vendor",
             "venv", ".venv", "env", ".tox", ".pytest_cache",
-            "bower_components", ".serverless", ".terraform"
+            "bower_components", ".serverless", ".terraform",
+            "site-packages", "pods", "carthage", ".m2"
     );
 
     private static final Set<String> ALLOWED_SOURCE_EXTENSIONS = Set.of(
@@ -39,6 +40,10 @@ public class FileFilterService {
     );
 
     public boolean isIgnoredDirectory(Path relativePath) {
+        String pathStr = relativePath.toString().replace('\\', '/').toLowerCase();
+        if (pathStr.contains("/web-inf/lib/") || pathStr.endsWith("/web-inf/lib") || pathStr.startsWith("web-inf/lib/") || pathStr.equals("web-inf/lib")) {
+            return true;
+        }
         for (Path segment : relativePath) {
             if (IGNORED_DIRECTORIES.contains(segment.toString())) {
                 return true;

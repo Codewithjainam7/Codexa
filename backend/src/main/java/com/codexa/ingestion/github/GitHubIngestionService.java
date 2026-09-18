@@ -93,6 +93,9 @@ public class GitHubIngestionService {
                 if (responseCode >= 200 && responseCode < 300) {
                     try (InputStream in = connection.getInputStream()) {
                         return zipExtractor.extract(in, stagingDir);
+                    } catch (ApiException e) {
+                        log.warn("Archive extraction policy violation from {}: {}", archiveUrl, e.getMessage());
+                        throw e;
                     }
                 }
 
@@ -109,6 +112,8 @@ public class GitHubIngestionService {
                 }
 
                 connection.disconnect();
+            } catch (ApiException e) {
+                throw e;
             } catch (Exception e) {
                 lastException = e;
                 log.warn("Failed fetching from {}: {}, attempting next candidate...", archiveUrl, e.getMessage());
@@ -162,8 +167,8 @@ public class GitHubIngestionService {
         URL url = uri.toURL();
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setInstanceFollowRedirects(false);
-        conn.setConnectTimeout(15000);
-        conn.setReadTimeout(30000);
+        conn.setConnectTimeout(20000);
+        conn.setReadTimeout(120000);
         conn.setRequestProperty("User-Agent", "Codexa-Security-Scanner/1.0");
         conn.setRequestProperty("Accept", "application/vnd.github+json, application/zip, application/octet-stream, */*");
 

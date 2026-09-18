@@ -313,7 +313,9 @@ public class AnalysisJobService {
             else if (f.getSeverity() == Severity.HIGH) highCount++;
             else if (f.getSeverity() == Severity.MEDIUM) mediumCount++;
             else if (f.getSeverity() == Severity.LOW) lowCount++;
-            findingRepository.save(f);
+        }
+        if (findings != null && !findings.isEmpty()) {
+            findingRepository.saveAll(findings);
         }
 
         // Save metric

@@ -114,17 +114,19 @@ export default function AnalysisDetailView({ jobId, onBack }) {
     } catch (err) {
       failCountRef.current += 1;
       if (err.status === 404) {
-        // Stop polling immediately on 404 - nonexistent job will never appear
-        isPollingActiveRef.current = false;
-        if (pollTimeoutRef.current) {
-          clearTimeout(pollTimeoutRef.current);
-          pollTimeoutRef.current = null;
-        }
-        setFetchError('Analysis session expired or job not found. (The server may have restarted or refreshed).');
-        try {
-          localStorage.removeItem('codexa_last_job_id');
-        } catch (e) {
-          // Ignore localStorage errors
+        if (failCountRef.current >= 3) {
+          // Tolerate up to 3 consecutive 404s before concluding job does not exist
+          isPollingActiveRef.current = false;
+          if (pollTimeoutRef.current) {
+            clearTimeout(pollTimeoutRef.current);
+            pollTimeoutRef.current = null;
+          }
+          setFetchError('Analysis session expired or job not found. (The server may have restarted or refreshed).');
+          try {
+            localStorage.removeItem('codexa_last_job_id');
+          } catch (e) {
+            // Ignore localStorage errors
+          }
         }
       } else if (failCountRef.current >= 4) {
         isPollingActiveRef.current = false;

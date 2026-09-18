@@ -4,13 +4,17 @@ import com.codexa.analysis.model.JobStatus;
 import com.codexa.analysis.model.ProductionVerdict;
 import com.codexa.analysis.service.AnalysisJobService;
 import com.codexa.analysis.service.ProjectDiagnosticsCollector;
+import com.codexa.common.error.ApiException;
+import com.codexa.ingestion.github.GitHubIngestionService;
 import com.codexa.ingestion.service.StagingManagerService;
+import com.codexa.ingestion.zip.ExtractionResult;
 import com.codexa.persistence.entity.FindingEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,7 @@ public class AnalysisOrchestrator {
     private final AnalysisJobService jobService;
     private final StagingManagerService stagingManagerService;
     private final ProjectDiagnosticsCollector diagnosticsCollector;
+    private final GitHubIngestionService gitHubIngestionService;
     private final List<PipelineStage> stages;
 
     @org.springframework.beans.factory.annotation.Autowired
@@ -31,12 +36,23 @@ public class AnalysisOrchestrator {
             AnalysisJobService jobService,
             StagingManagerService stagingManagerService,
             ProjectDiagnosticsCollector diagnosticsCollector,
+            GitHubIngestionService gitHubIngestionService,
             List<PipelineStage> stages
     ) {
         this.jobService = jobService;
         this.stagingManagerService = stagingManagerService;
         this.diagnosticsCollector = diagnosticsCollector;
+        this.gitHubIngestionService = gitHubIngestionService;
         this.stages = stages != null ? stages : new ArrayList<>();
+    }
+
+    public AnalysisOrchestrator(
+            AnalysisJobService jobService,
+            StagingManagerService stagingManagerService,
+            ProjectDiagnosticsCollector diagnosticsCollector,
+            List<PipelineStage> stages
+    ) {
+        this(jobService, stagingManagerService, diagnosticsCollector, null, stages);
     }
 
     public AnalysisOrchestrator(
@@ -44,22 +60,69 @@ public class AnalysisOrchestrator {
             StagingManagerService stagingManagerService,
             List<PipelineStage> stages
     ) {
-        this(jobService, stagingManagerService, new ProjectDiagnosticsCollector(), stages);
+        this(jobService, stagingManagerService, new ProjectDiagnosticsCollector(), null, stages);
+    }
+
+    @Async
+    public void runGitHubAnalysisAsync(UUID jobId, String repoUrl) {
+        long startTime = System.currentTimeMillis();
+        log.info("Starting asynchronous GitHub download & analysis for jobId={}, repoUrl={}", jobId, repoUrl);
+
+        Path stagingDir = null;
+        try {
+            // Stage 1: Fast initial progress update
+            jobService.updateProgress(jobId, JobStatus.EXTRACTING, "DOWNLOADING_REPOSITORY", 10);
+
+            // Stage 2: Create isolated staging directory
+            stagingDir = stagingManagerService.createStagingDirectory(jobId);
+
+            if (gitHubIngestionService == null) {
+                throw new IllegalStateException("GitHubIngestionService is not configured");
+            }
+
+            // Stage 3: Download & extract archive securely with SSRF & Zip Slip protections
+            ExtractionResult extractionResult = gitHubIngestionService.downloadAndExtract(repoUrl, stagingDir);
+
+            jobService.updateProgress(jobId, JobStatus.EXTRACTING, "ARCHIVE_UNPACKED", 25);
+
+            // Stage 4: Run the static audit pipeline stages
+            executePipeline(jobId, stagingDir, extractionResult.extractedSourceFiles(), startTime);
+
+        } catch (ApiException e) {
+            log.error("GitHub ingestion rejected for jobId={}: [{}] {}", jobId, e.getErrorCode(), e.getMessage());
+            if (stagingDir != null) {
+                stagingManagerService.cleanDirectory(stagingDir);
+            }
+            jobService.markJobFailed(jobId, e.getErrorCode(), e.getMessage());
+        } catch (IOException e) {
+            log.error("Staging extraction failed for jobId={}: {}", jobId, e.getMessage(), e);
+            if (stagingDir != null) {
+                stagingManagerService.cleanDirectory(stagingDir);
+            }
+            jobService.markJobFailed(jobId, "EXTRACTION_ERROR", "Failed to stage repository: " + e.getMessage());
+        } catch (Exception e) {
+            log.error("Analysis pipeline failed unexpectedly for jobId={}: {}", jobId, e.getMessage(), e);
+            if (stagingDir != null) {
+                stagingManagerService.cleanDirectory(stagingDir);
+            }
+            jobService.markJobFailed(jobId, "PIPELINE_ERROR", "Unexpected analysis error: " + e.getMessage());
+        }
     }
 
     @Async
     public void runAnalysisAsync(UUID jobId, Path stagingDirectory, List<Path> sourceFiles) {
         long startTime = System.currentTimeMillis();
         log.info("Starting asynchronous analysis pipeline for jobId={}", jobId);
+        jobService.updateProgress(jobId, JobStatus.EXTRACTING, "INGESTION", 20);
+        executePipeline(jobId, stagingDirectory, sourceFiles, startTime);
+    }
 
+    private void executePipeline(UUID jobId, Path stagingDirectory, List<Path> sourceFiles, long startTime) {
         PipelineContext context = new PipelineContext(jobId, stagingDirectory);
         context.setSourceFiles(sourceFiles);
         context.setTotalFiles(sourceFiles != null ? sourceFiles.size() : 0);
 
         try {
-            // Stage: INGESTION / PREPARING
-            jobService.updateProgress(jobId, JobStatus.EXTRACTING, "INGESTION", 20);
-
             // Execute all configured pipeline stages
             for (PipelineStage stage : stages) {
                 String stageName = stage.getStageName();
