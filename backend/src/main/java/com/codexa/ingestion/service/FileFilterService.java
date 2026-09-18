@@ -30,7 +30,7 @@ public class FileFilterService {
             ".py", ".go", ".rs", ".php", ".rb", ".cs", ".cpp", ".c", ".h", ".hpp",
             // Web, Markup & Configs
             ".html", ".css", ".xml", ".properties", ".yml", ".yaml",
-            ".json", ".gradle", ".env", ".sql", ".md", ".toml", ".ini"
+            ".json", ".gradle", ".env", ".sql", ".toml", ".ini"
     );
 
     private static final Set<String> IGNORED_EXTENSIONS = Set.of(
@@ -39,10 +39,13 @@ public class FileFilterService {
             ".jpeg", ".gif", ".svg", ".ico", ".pdf", ".mp4", ".mp3",
             ".woff", ".woff2", ".ttf", ".eot", ".lock", ".map",
             ".min.js", ".min.css", ".bundle.js", ".chunk.js", ".webp",
-            ".avif", ".wasm", ".pyc", ".pyo"
+            ".avif", ".wasm", ".pyc", ".pyo", ".md", ".markdown", ".txt"
     );
 
     public boolean isIgnoredDirectory(Path relativePath) {
+        if (relativePath == null) {
+            return false;
+        }
         String pathStr = relativePath.toString().replace('\\', '/').toLowerCase();
 
         if (matchesPath(pathStr, "web-inf/lib") ||
@@ -61,12 +64,15 @@ public class FileFilterService {
             matchesPath(pathStr, "public/assets") ||
             matchesPath(pathStr, "dist/assets") ||
             matchesPath(pathStr, "docs") ||
+            matchesPath(pathStr, "doc") ||
             matchesPath(pathStr, "documentation")) {
             return true;
         }
 
         for (Path segment : relativePath) {
-            if (IGNORED_DIRECTORIES.contains(segment.toString().toLowerCase())) {
+            String segLower = segment.toString().toLowerCase();
+            if (IGNORED_DIRECTORIES.contains(segLower) ||
+                segLower.equals("fixtures") || segLower.equals("test") || segLower.equals("docs")) {
                 return true;
             }
         }

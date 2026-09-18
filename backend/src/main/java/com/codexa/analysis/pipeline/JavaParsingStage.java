@@ -37,6 +37,17 @@ public class JavaParsingStage implements PipelineStage {
 
         List<Path> javaSourceFiles = context.getSourceFiles().stream()
                 .filter(p -> fileFilterService.isJavaSourceFile(p.getFileName().toString()))
+                .filter(p -> {
+                    if (context.getStagingDirectory() != null) {
+                        try {
+                            Path rel = context.getStagingDirectory().relativize(p.toAbsolutePath().normalize());
+                            return !fileFilterService.isIgnoredDirectory(rel);
+                        } catch (Exception ignored) {
+                            return !fileFilterService.isIgnoredDirectory(p);
+                        }
+                    }
+                    return !fileFilterService.isIgnoredDirectory(p);
+                })
                 .collect(Collectors.toList());
 
         List<ParsedJavaFile> parsedFiles = astParserService.parseAll(javaSourceFiles, context.getStagingDirectory());

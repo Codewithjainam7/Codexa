@@ -64,6 +64,13 @@ public class ErrorHandlingRule implements AnalysisRule {
         cu.findAll(CatchClause.class).forEach(clause -> {
             boolean isEmpty = clause.getBody().isEmpty() || clause.getBody().getStatements().isEmpty();
             String paramType = clause.getParameter().getTypeAsString();
+            String paramName = clause.getParameter().getNameAsString().toLowerCase();
+
+            // Intentionally ignored or expected exceptions are standard Java patterns
+            if (paramName.contains("ignored") || paramName.contains("expected")) {
+                return;
+            }
+
             boolean isBroad = paramType.equals("Exception") || paramType.equals("Throwable");
 
             if (isEmpty || (isBroad && !containsLoggingOrRethrow(clause))) {
@@ -95,7 +102,12 @@ public class ErrorHandlingRule implements AnalysisRule {
     }
 
     private boolean containsLoggingOrRethrow(CatchClause clause) {
+        String paramName = clause.getParameter().getNameAsString().toLowerCase();
+        if (paramName.contains("ignored") || paramName.contains("expected")) {
+            return true;
+        }
         String body = clause.getBody().toString().toLowerCase();
-        return body.contains("log.") || body.contains("logger.") || body.contains("throw ") || body.contains("printstacktrace");
+        return body.contains("log.") || body.contains("logger.") || body.contains("throw ") ||
+               body.contains("printstacktrace") || body.contains("return ") || body.contains("return;");
     }
 }

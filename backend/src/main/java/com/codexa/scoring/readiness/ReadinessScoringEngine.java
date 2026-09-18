@@ -64,35 +64,46 @@ public class ReadinessScoringEngine {
                     securityPenalty += 2.0;
                 }
             } else if (cat == Category.QUALITY) {
-                if (sev == Severity.HIGH) qualityPenalty += 20.0;
-                else if (sev == Severity.MEDIUM) qualityPenalty += 10.0;
-                else qualityPenalty += 3.0;
+                if (sev == Severity.HIGH) qualityPenalty += 12.0;
+                else if (sev == Severity.MEDIUM) qualityPenalty += 3.0;
+                else qualityPenalty += 0.5;
             } else if (cat == Category.OPERATIONS) {
-                if (sev == Severity.HIGH) operationsPenalty += 15.0;
-                else if (sev == Severity.MEDIUM) operationsPenalty += 8.0;
-                else operationsPenalty += 2.0;
+                if (sev == Severity.HIGH) operationsPenalty += 12.0;
+                else if (sev == Severity.MEDIUM) operationsPenalty += 4.0;
+                else operationsPenalty += 1.0;
             }
         }
 
         double securityScore = Math.max(0.0, 100.0 - securityPenalty);
-        double qualityScore = Math.max(0.0, 100.0 - qualityPenalty);
-        double operationsScore = Math.max(0.0, 100.0 - operationsPenalty);
+        double effectiveQualityPenalty = qualityPenalty <= 30.0 ? qualityPenalty : 30.0 + (qualityPenalty - 30.0) * 0.25;
+        double qualityScore = Math.max(0.0, Math.min(100.0, 100.0 - effectiveQualityPenalty));
+        qualityScore = Math.round(qualityScore * 10.0) / 10.0;
 
-        double maintainabilityPenalty = qualityPenalty * 0.7 + operationsPenalty * 0.4 + findings.size() * 1.2;
+        double effectiveOpsPenalty = operationsPenalty <= 30.0 ? operationsPenalty : 30.0 + (operationsPenalty - 30.0) * 0.3;
+        double operationsScore = Math.max(0.0, Math.min(100.0, 100.0 - effectiveOpsPenalty));
+        operationsScore = Math.round(operationsScore * 10.0) / 10.0;
+
+        double maintainabilityPenalty = (100.0 - qualityScore) * 0.5 + (100.0 - operationsScore) * 0.3 + Math.min(25.0, findings.size() * 0.2);
         double maintainabilityScore = Math.max(0.0, Math.min(100.0, 100.0 - maintainabilityPenalty));
         maintainabilityScore = Math.round(maintainabilityScore * 10.0) / 10.0;
 
         double structuralDebt = 0.0;
         for (FindingEntity f : findings) {
             String ruleId = f.getRuleId() != null ? f.getRuleId() : "";
-            if (ruleId.startsWith("CR-ARCH") || ruleId.startsWith("CR-COMPLEX") || ruleId.startsWith("CR-NEST") || ruleId.startsWith("CR-DUP")) {
-                structuralDebt += 12.0;
+            if (ruleId.startsWith("CR-ARCH") || ruleId.startsWith("CR-COMPLEX") || ruleId.startsWith("CR-NEST") || ruleId.startsWith("CR-DUP") || ruleId.startsWith("CR-QUAL-001")) {
+                structuralDebt += 1.5;
             }
         }
-        double architecturalScore = Math.max(0.0, Math.min(100.0, 100.0 - structuralDebt - (qualityPenalty * 0.4)));
+        double architecturalScore = Math.max(0.0, Math.min(100.0, 100.0 - Math.min(40.0, structuralDebt) - ((100.0 - qualityScore) * 0.25)));
         architecturalScore = Math.round(architecturalScore * 10.0) / 10.0;
 
-        double weightedOverall = 0.60 * securityScore + 0.25 * qualityScore + 0.15 * operationsScore;
+        double weightedOverall;
+        if (hasConfirmedCriticalSecurity) {
+            // When critical security vulnerabilities are confirmed, code quality cannot compensate for security failure
+            weightedOverall = 0.60 * securityScore + 0.15 * operationsScore;
+        } else {
+            weightedOverall = 0.60 * securityScore + 0.25 * qualityScore + 0.15 * operationsScore;
+        }
         double overallScore = Math.round(weightedOverall * 10.0) / 10.0;
 
         ProductionVerdict verdict = resolveVerdict(overallScore, hasConfirmedCriticalSecurity, hasHighAuthOrInjectionOrSecrets);

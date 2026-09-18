@@ -188,4 +188,68 @@ class ScannerFalsePositiveRegressionTest {
         assertEquals(1, findings.size(), "Unauthenticated administrative /api/admin/deleteUser endpoint must be flagged");
         assertEquals("CR-AUTH-001", findings.get(0).ruleId());
     }
+
+    @Test
+    void testScoringCalibrationForProductionCleanSecurityRepo() {
+        com.codexa.scoring.readiness.ReadinessScoringEngine engine = new com.codexa.scoring.readiness.ReadinessScoringEngine();
+        java.util.List<com.codexa.persistence.entity.FindingEntity> findings = new java.util.ArrayList<>();
+
+        // Add 15 moderate quality findings (complexity, long methods, defensive patterns)
+        for (int i = 0; i < 15; i++) {
+            com.codexa.persistence.entity.FindingEntity q = new com.codexa.persistence.entity.FindingEntity();
+            q.setRuleId("CR-QUAL-001");
+            q.setCategory(com.codexa.analysis.model.Category.QUALITY);
+            q.setSeverity(com.codexa.analysis.model.Severity.LOW);
+            findings.add(q);
+        }
+
+        var result = engine.computeScores(findings);
+        assertTrue(result.overallScore() >= 85.0, "Production repository with clean security must score >= 85.0, got: " + result.overallScore());
+        assertEquals(100.0, result.securityScore(), "Security score must be 100.0 when 0 security vulnerabilities exist");
+        assertEquals(com.codexa.analysis.model.ProductionVerdict.REVIEW_COMPLETE, result.verdict(), "Verdict must be REVIEW_COMPLETE");
+    }
+
+    @Test
+    void testScoringCalibrationForCriticalVulnerableRepo() {
+        com.codexa.scoring.readiness.ReadinessScoringEngine engine = new com.codexa.scoring.readiness.ReadinessScoringEngine();
+        java.util.List<com.codexa.persistence.entity.FindingEntity> findings = new java.util.ArrayList<>();
+
+        // Add CRITICAL security findings matching vulnerable repository profile (SQLi, RCE, Secrets, Traversal)
+        com.codexa.persistence.entity.FindingEntity sql = new com.codexa.persistence.entity.FindingEntity();
+        sql.setRuleId("CR-SQL-001");
+        sql.setCategory(com.codexa.analysis.model.Category.SECURITY);
+        sql.setSeverity(com.codexa.analysis.model.Severity.CRITICAL);
+        findings.add(sql);
+
+        com.codexa.persistence.entity.FindingEntity cmd = new com.codexa.persistence.entity.FindingEntity();
+        cmd.setRuleId("CR-CMD-001");
+        cmd.setCategory(com.codexa.analysis.model.Category.SECURITY);
+        cmd.setSeverity(com.codexa.analysis.model.Severity.CRITICAL);
+        findings.add(cmd);
+
+        com.codexa.persistence.entity.FindingEntity sec = new com.codexa.persistence.entity.FindingEntity();
+        sec.setRuleId("CR-SEC-001");
+        sec.setCategory(com.codexa.analysis.model.Category.SECURITY);
+        sec.setSeverity(com.codexa.analysis.model.Severity.CRITICAL);
+        findings.add(sec);
+
+        com.codexa.persistence.entity.FindingEntity path = new com.codexa.persistence.entity.FindingEntity();
+        path.setRuleId("CR-PATH-001");
+        path.setCategory(com.codexa.analysis.model.Category.SECURITY);
+        path.setSeverity(com.codexa.analysis.model.Severity.CRITICAL);
+        findings.add(path);
+
+        // Add operations penalty (missing rate limit, security headers, unmonitored endpoints)
+        for (int i = 0; i < 8; i++) {
+            com.codexa.persistence.entity.FindingEntity op = new com.codexa.persistence.entity.FindingEntity();
+            op.setRuleId("CR-OPS-001");
+            op.setCategory(com.codexa.analysis.model.Category.OPERATIONS);
+            op.setSeverity(com.codexa.analysis.model.Severity.MEDIUM);
+            findings.add(op);
+        }
+
+        var result = engine.computeScores(findings);
+        assertTrue(result.overallScore() <= 15.0, "Vulnerable repository with critical flaws must score <= 15.0, got: " + result.overallScore());
+        assertEquals(com.codexa.analysis.model.ProductionVerdict.NOT_READY, result.verdict(), "Verdict must be NOT_READY");
+    }
 }

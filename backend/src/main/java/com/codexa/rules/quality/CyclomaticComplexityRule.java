@@ -72,10 +72,12 @@ public class CyclomaticComplexityRule implements AnalysisRule {
                 int endLine = method.getRange().map(r -> r.end.line).orElse(startLine);
                 String evidence = snippetExtractor.extractNodeSnippet(method, parsedFile.getLines());
 
+                Severity severity = complexity > 25 ? Severity.MEDIUM : Severity.LOW;
+
                 findings.add(RuleFinding.builder()
                         .ruleId(getRuleId())
                         .category(getCategory())
-                        .severity(getSeverity())
+                        .severity(severity)
                         .confidence(getDefaultConfidence())
                         .title("High cyclomatic complexity (" + complexity + " > " + COMPLEXITY_THRESHOLD + ") in '" + method.getNameAsString() + "'")
                         .description("Method '" + method.getNameAsString() + "' has a cyclomatic complexity of " + complexity + ". High complexity indicates excessive branching, making the method difficult to unit-test and prone to regression defects.")
