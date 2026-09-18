@@ -343,4 +343,55 @@ class UniversalMultiLanguageRuleTest {
         assertTrue(foundPin, "Should detect CR-RAND-001 inside generateSecurePin helper");
         assertTrue(foundToken, "Should detect CR-RAND-002 inside generateSecureToken helper");
     }
+
+    @Test
+    void testParameterSecurityRulesDetected(@TempDir Path tempDir) throws IOException {
+        Path apiDir = tempDir.resolve("src/routes");
+        Files.createDirectories(apiDir);
+        Path routeFile = apiDir.resolve("userRoutes.ts");
+        Files.writeString(routeFile, """
+                import { Router } from 'express';
+                const router = Router();
+
+                // CR-PARAM-001: Mass assignment
+                router.post('/register', async (req, res) => {
+                    const user = await prisma.user.create(req.body);
+                    res.json(user);
+                });
+
+                // CR-PARAM-002: IDOR
+                router.delete('/documents/:id', async (req, res) => {
+                    await db.document.delete(req.params.id);
+                    res.sendStatus(204);
+                });
+
+                // CR-PARAM-003: Open redirect
+                router.get('/login-redirect', (req, res) => {
+                    res.redirect(req.query.returnUrl);
+                });
+
+                // CR-PARAM-004: Unbounded pagination
+                router.get('/items', async (req, res) => {
+                    const limit = parseInt(req.query.limit);
+                    const items = await db.items.findMany({ take: limit });
+                    res.json(items);
+                });
+
+                // CR-PARAM-005: Prototype pollution
+                router.patch('/profile', (req, res) => {
+                    const target = {};
+                    Object.assign(target, req.body);
+                    res.json(target);
+                });
+                """);
+
+        RuleContext ctx = new RuleContext(null, new PipelineContext(UUID.randomUUID(), tempDir));
+        List<RuleFinding> findings = rule.evaluate(ctx);
+
+        assertTrue(findings.stream().anyMatch(f -> "CR-PARAM-001".equals(f.ruleId())), "Must detect CR-PARAM-001 Mass Assignment");
+        assertTrue(findings.stream().anyMatch(f -> "CR-PARAM-002".equals(f.ruleId())), "Must detect CR-PARAM-002 IDOR on Resource Parameter");
+        assertTrue(findings.stream().anyMatch(f -> "CR-PARAM-003".equals(f.ruleId())), "Must detect CR-PARAM-003 Open Redirect");
+        assertTrue(findings.stream().anyMatch(f -> "CR-PARAM-004".equals(f.ruleId())), "Must detect CR-PARAM-004 Unbounded Pagination");
+        assertTrue(findings.stream().anyMatch(f -> "CR-PARAM-005".equals(f.ruleId())), "Must detect CR-PARAM-005 Prototype Pollution");
+    }
 }

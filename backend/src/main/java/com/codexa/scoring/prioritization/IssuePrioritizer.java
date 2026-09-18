@@ -59,8 +59,8 @@ public class IssuePrioritizer {
         if (ruleId.startsWith("CR-SQL") || ruleId.startsWith("CR-CMD") || ruleId.startsWith("CR-SEC") ||
                 ruleId.startsWith("CR-AUTH") || ruleId.startsWith("CR-PASS") || ruleId.startsWith("CR-CRYPTO") ||
                 ruleId.startsWith("CR-LEAK") || ruleId.startsWith("CR-RLS") || ruleId.startsWith("CR-EDGE") ||
-                ruleId.startsWith("CR-RAND") || ruleId.startsWith("CR-ARCH")) {
-            return 1.00; // auth / secrets / payment / PII / architecture impact
+                ruleId.startsWith("CR-RAND") || ruleId.startsWith("CR-ARCH") || ruleId.startsWith("CR-PARAM")) {
+            return 1.00; // auth / secrets / payment / PII / architecture / parameter impact
         }
         if (ruleId.startsWith("CR-XSS") || ruleId.startsWith("CR-DEP") || ruleId.startsWith("CR-QUAL-001")) {
             return 0.70; // normal business data impact

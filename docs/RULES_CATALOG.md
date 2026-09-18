@@ -1,6 +1,6 @@
 # Codexa Complete Static Analysis & Security Rule Catalog 🛡️
 
-> Codexa analyzes source code against **30+ deterministic static rules** spanning cryptographic security, injection vulnerabilities, structural code quality, operational readiness, and polyglot architecture patterns. Every rule is mapped to **OWASP Top 10 (2021)** and the **MITRE Common Weakness Enumeration (CWE)**.
+> Codexa analyzes source code against **35+ deterministic static rules** spanning cryptographic security, injection vulnerabilities, structural code quality, operational readiness, and polyglot architecture patterns. Every rule is mapped to **OWASP Top 10 (2021)** and the **MITRE Common Weakness Enumeration (CWE)**.
 
 ---
 
@@ -41,7 +41,19 @@
 
 ---
 
-## 3. Structural Quality & Maintainability Rules
+## 3. Parameter & Input Validation Security Rules
+
+| Rule ID | Title | Severity | OWASP Top 10 | CWE ID | Detection Target & Logic |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `CR-PARAM-001` | Mass Assignment / DTO Over-Posting | HIGH | A04:2021-Insecure Design | CWE-915 | Detects unvalidated raw request body payloads (`req.body`, `data: req.body`, `...req.body`) passed directly to ORM entity creation or database mutations (`prisma.create()`, `supabase.insert()`, Mongoose, TypeORM), allowing attackers to overwrite sensitive administrative fields (e.g. `role`, `isAdmin`, `verified`). |
+| `CR-PARAM-002` | IDOR & Missing Tenant Ownership on Resource Parameters | HIGH | A01:2021-Broken Access Control | CWE-639 | Detects destructive or lookup queries driven solely by user-supplied identifier parameters (`req.params.id`) without scoping by the authenticated user's ID or tenant ID, enabling Insecure Direct Object References. |
+| `CR-PARAM-003` | Open Redirect via Unvalidated Destination Parameter | MEDIUM | A01:2021-Broken Access Control | CWE-601 | Detects HTTP redirect responses (`res.redirect()`, `window.location.href`) driven directly by client-controlled URL parameters (`?returnUrl=`, `?redirect=`, `?next=`) without allowlist validation or relative path enforcement. |
+| `CR-PARAM-004` | Unbounded Pagination Parameter (Potential Memory DoS) | MEDIUM | A04:2021-Insecure Design | CWE-770 | Flags pagination query parameters (`req.query.limit`, `size`, `pageSize`) parsed and passed to database queries without enforcing a strict maximum ceiling clamp (`Math.min(limit, 100)`), exposing systems to Out-Of-Memory (OOM) crashes. |
+| `CR-PARAM-005` | Prototype Pollution via Unsafe Request Parameter Merging | HIGH | A03:2021-Injection | CWE-1321 | Detects recursive merging of untrusted request payloads (`req.body`) into internal objects using `Object.assign()`, `lodash.merge()`, or direct bracket keys, allowing attackers to pollute `Object.prototype`. |
+
+---
+
+## 4. Structural Quality & Maintainability Rules
 
 | Rule ID | Title | Severity | Category | CWE ID | Detection Target & Logic |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -54,7 +66,7 @@
 
 ---
 
-## 4. Operational Readiness & Performance Rules
+## 5. Operational Readiness & Performance Rules
 
 | Rule ID | Title | Severity | Category | CWE ID | Detection Target & Logic |
 | :--- | :--- | :--- | :--- | :--- | :--- |

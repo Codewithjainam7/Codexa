@@ -91,6 +91,22 @@ Codexa identified **18 critical and high-severity security vulnerabilities, arch
   - Re-weighted `IssuePrioritizer` to assign **1.00 exposure** to perimeter configuration files, database migrations, SQL schemas, and state stores.
   - Assigned **1.00 impact** to PRNG security tokens (`CR-RAND`) and dev-server middleware 404 traps (`CR-ARCH`), guaranteeing critical perimeter risks rank at the absolute top of prioritized audits.
 
+#### 7. Universal Parameter Security & Input Validation Suite (`CR-PARAM-001` to `CR-PARAM-005`)
+* **Vulnerability Scope**: Modern web APIs frequently suffer from untrusted parameter manipulation, including over-posting mass assignment, missing tenant isolation in resource parameters, unvalidated redirects, unbounded pagination DoS, and prototype pollution.
+* **Codexa Achievement**:
+  - `CR-PARAM-001` (Mass Assignment / DTO Over-Posting): Identifies raw `req.body` passed directly to ORMs (`prisma.create()`, `supabase.insert()`, TypeORM, Mongoose).
+  - `CR-PARAM-002` (IDOR & Missing Tenant Ownership): Detects single-key lookup/mutation queries driven solely by `req.params.id` without tenant/user ownership checks.
+  - `CR-PARAM-003` (Open Redirect via Parameters): Flags browser and server redirects driven by unvalidated query parameters (`?returnUrl=`, `?next=`).
+  - `CR-PARAM-004` (Unbounded Pagination & Memory DoS): Identifies query limits/sizes parsed without `Math.min` ceiling clamps.
+  - `CR-PARAM-005` (Prototype Pollution): Detects dangerous recursive merging of untrusted request payloads into object prototypes.
+
+#### 8. Deep Polyglot White-Box & Black-Box Diagnostics Engine
+* **Engineering Problem**: Diagnostic dashboards previously relied exclusively on JavaParser AST compilation units. When scanning polyglot repositories (TypeScript, React, Supabase, Python, Next.js), the White-Box and Black-Box tabs rendered empty tables and default metrics.
+* **Codexa Achievement**:
+  - **Polyglot White-Box Metrics**: Lexical and structural analyzer accurately calculates classes, interfaces, types, functions, McCabe cyclomatic complexity, and max AST nesting depth across TypeScript, JavaScript, Python, and Go. Automatically populates the Top Complex Files Leaderboard with actual LOC, method counts, complexity, and findings.
+  - **Automated Black-Box Ingress Mapping**: Discovers Supabase Edge Functions (`/functions/v1/<name>`), Next.js App Router and Pages Router API routes, Vite development server middlewares, Express routes, and FastAPI endpoints. Checks functional authorization headers to calculate real attack surface risk.
+  - **Zero Leaked Secrets Perimeter Verification**: Upgraded perimeter status telemetry to verify both `CR-SEC` and `CR-LEAK-001` credentials across the repository.
+
 ---
 
 ## 2. Test Suite & Reliability Milestones
@@ -99,12 +115,13 @@ Codexa enforces continuous automated regression testing across all ingestion, ru
 
 ```
 [INFO] Results:
-[INFO] Tests run: 116, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 118, Failures: 0, Errors: 0, Skipped: 0
 [INFO] BUILD SUCCESS
 ```
 
-### Test Suite Breakdown (116 Total Tests)
-- **Multi-Language & Polyglot Rule Tests**: 12 tests verifying UTF-16LE decoding, BOM handling, fallback secrets, dev middleware detection, Edge Function zero-trust checks, multi-line SQL migration RLS bypasses, and function-scoped PRNG PINs/tokens.
+### Test Suite Breakdown (118 Total Tests)
+- **Multi-Language & Polyglot Rule Tests**: 13 tests verifying UTF-16LE decoding, BOM handling, fallback secrets, dev middleware detection, Edge Function zero-trust checks, multi-line SQL migration RLS bypasses, function-scoped PRNG PINs/tokens, and the complete parameter security suite (`CR-PARAM-001` through `CR-PARAM-005`).
+- **Polyglot Diagnostics & AST Collector Tests**: 2 tests verifying Spring Controller endpoint mapping and multi-file polyglot repository diagnostics (TypeScript AST metrics + Supabase Edge Function discovery).
 - **Java AST & Security Rule Tests**: 42 tests verifying SQLi, Command Injection, Insecure Deserialization, SSRF, Path Traversal, Weak Hashes, and Disabled TLS validation.
 - **Defensive Ingestion & Sandboxing Tests**: 12 tests verifying Zip Slip canonical path checking, zip bomb quota limits, directory depth bounds, and empty archive rejection.
 - **SSRF & Network Boundary Tests**: 16 tests verifying IP range validation, loopback blocking, private CIDR rejection, and cloud metadata defense.

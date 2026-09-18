@@ -300,19 +300,19 @@ export default function AnalysisDetailView({ jobId, onBack }) {
           { httpMethod: 'POST', path: '/api/v1/analyses/github', controllerClass: 'GitHubAnalysisController', methodName: 'submitGitHubAnalysis', requiresAuth: true, attackSurfaceRisk: 'MEDIUM' }
         ],
         perimeterStatus: {
-          corsStatus: findings.some(f => f.ruleId === 'CR-CONFIG-001') ? 'PERMISSIVE ORIGIN (CR-CONFIG-001)' : 'RESTRICTED ALLOW-LIST (SECURE)',
+          corsStatus: findings.some(f => f.ruleId === 'CR-CONFIG-001' || f.ruleId === 'CR-CORS-001') ? 'PERMISSIVE ORIGIN (CR-CONFIG-001)' : 'RESTRICTED ALLOW-LIST (SECURE)',
           rateLimitingStatus: 'RATE-LIMITED (SLIDING-WINDOW BUCKET)',
           securityHeadersStatus: 'ACTIVE (CSP, HSTS, X-FRAME-OPTIONS)',
-          secretsExposureStatus: findings.some(f => f.ruleId === 'CR-SEC-001') ? 'EXPOSURE DETECTED (ACTION REQUIRED)' : 'ZERO LEAKED CREDENTIALS (PASSED)'
+          secretsExposureStatus: findings.some(f => f.ruleId?.startsWith('CR-SEC') || f.ruleId === 'CR-LEAK-001') ? 'EXPOSURE DETECTED (ACTION REQUIRED)' : 'ZERO LEAKED CREDENTIALS (PASSED)'
         }
       },
       complianceChecklist: [
         { title: 'Zero Critical Severity Vulnerabilities', category: 'SECURITY', status: critCount === 0 ? 'PASS' : 'FAIL', detail: critCount === 0 ? 'No critical vulnerabilities detected.' : `${critCount} critical flaw(s) require remediation.` },
         { title: 'Zero High Severity Vulnerabilities', category: 'SECURITY', status: highCount === 0 ? 'PASS' : 'WARN', detail: highCount === 0 ? 'High-risk security checks cleared.' : `${highCount} high severity issue(s) detected.` },
-        { title: 'Secret Vault & Credential Isolation', category: 'SECURITY', status: findings.some(f => f.ruleId === 'CR-SEC-001') ? 'FAIL' : 'PASS', detail: findings.some(f => f.ruleId === 'CR-SEC-001') ? 'Hardcoded secrets identified in source.' : 'Zero plaintext secrets detected.' },
+        { title: 'Secret Vault & Credential Isolation', category: 'SECURITY', status: findings.some(f => f.ruleId?.startsWith('CR-SEC') || f.ruleId === 'CR-LEAK-001') ? 'FAIL' : 'PASS', detail: findings.some(f => f.ruleId?.startsWith('CR-SEC') || f.ruleId === 'CR-LEAK-001') ? 'Hardcoded secrets identified in source.' : 'Zero plaintext secrets detected.' },
         { title: 'Deterministic AST Complexity Bounds', category: 'MAINTAINABILITY', status: 'PASS', detail: 'Peak method cyclomatic complexity within safety bounds.' },
         { title: 'API Ingress Route Protection', category: 'SURFACE', status: 'PASS', detail: 'Explicit security boundaries enforced on HTTP endpoints.' },
-        { title: 'CORS Allow-List Perimeter', category: 'OPERATIONS', status: findings.some(f => f.ruleId === 'CR-CONFIG-001') ? 'WARN' : 'PASS', detail: 'Strict origin allow-list policy active.' },
+        { title: 'CORS Allow-List Perimeter', category: 'OPERATIONS', status: findings.some(f => f.ruleId === 'CR-CONFIG-001' || f.ruleId === 'CR-CORS-001') ? 'WARN' : 'PASS', detail: 'Strict origin allow-list policy active.' },
         { title: 'Exception Boundary Integrity', category: 'QUALITY', status: (job?.metrics?.qualityScore || 100) >= 75 ? 'PASS' : 'WARN', detail: `Code quality readiness index: ${job?.metrics?.qualityScore || 100}/100` },
         { title: 'Operational Observability & Logging', category: 'OPERATIONS', status: 'PASS', detail: 'Structured telemetry and security event auditing.' }
       ]
@@ -322,12 +322,13 @@ export default function AnalysisDetailView({ jobId, onBack }) {
   // OWASP Top 10 breakdown
   const owaspMatrix = useMemo(() => {
     const categories = [
-      { code: 'A01:2021', name: 'Broken Access Control', count: 0, rules: ['CR-AUTH-001', 'CR-SEC-003', 'CR-SEC-006'] },
-      { code: 'A02:2021', name: 'Cryptographic Failures', count: 0, rules: ['CR-PASS-001', 'CR-CRYPTO-001'] },
-      { code: 'A03:2021', name: 'Injection (SQL, Command, XSS)', count: 0, rules: ['CR-SQL-001', 'CR-CMD-001', 'CR-XSS-001'] },
-      { code: 'A05:2021', name: 'Security Misconfiguration', count: 0, rules: ['CR-CONFIG-001'] },
+      { code: 'A01:2021', name: 'Broken Access Control', count: 0, rules: ['CR-AUTH-001', 'CR-AUTH-002', 'CR-SEC-003', 'CR-SEC-006', 'CR-PARAM-002', 'CR-PARAM-003', 'CR-EDGE-001', 'CR-RLS-001'] },
+      { code: 'A02:2021', name: 'Cryptographic Failures', count: 0, rules: ['CR-PASS-001', 'CR-CRYPTO-001', 'CR-RAND-001', 'CR-RAND-002'] },
+      { code: 'A03:2021', name: 'Injection (SQL, Command, XSS)', count: 0, rules: ['CR-SQL-001', 'CR-CMD-001', 'CR-XSS-001', 'CR-PARAM-005'] },
+      { code: 'A04:2021', name: 'Insecure Design', count: 0, rules: ['CR-PARAM-001', 'CR-PARAM-004', 'CR-ARCH-001'] },
+      { code: 'A05:2021', name: 'Security Misconfiguration', count: 0, rules: ['CR-CONFIG-001', 'CR-CORS-001'] },
       { code: 'A06:2021', name: 'Vulnerable & Outdated Components', count: 0, rules: ['CR-DEP-001'] },
-      { code: 'A07:2021', name: 'Identification & Auth Failures', count: 0, rules: ['CR-SEC-001'] },
+      { code: 'A07:2021', name: 'Identification & Auth Failures', count: 0, rules: ['CR-SEC-001', 'CR-LEAK-001'] },
       { code: 'A08:2021', name: 'Software & Data Integrity', count: 0, rules: ['CR-SEC-005'] },
       { code: 'A09:2021', name: 'Security Logging & Monitoring', count: 0, rules: ['CR-LOG-001', 'CR-OPS-002'] },
       { code: 'A10:2021', name: 'Server-Side Request Forgery', count: 0, rules: ['CR-SEC-004'] }
@@ -967,7 +968,14 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[var(--border-subtle)]">
-                      {diagnostics.whiteBox.topComplexFiles.map((file, idx) => (
+                      {diagnostics.whiteBox.topComplexFiles.length === 0 ? (
+                        <tr>
+                          <td colSpan={7} className="py-6 text-center text-slate-500 font-mono">
+                            No source files analyzed for complexity.
+                          </td>
+                        </tr>
+                      ) : (
+                        diagnostics.whiteBox.topComplexFiles.map((file, idx) => (
                         <tr key={idx} className="hover:bg-slate-800/20 transition-colors">
                           <td className="py-3 px-3 text-slate-200 font-semibold truncate max-w-xs">{file.filePath}</td>
                           <td className="py-3 px-3 text-center text-slate-400">{file.loc}</td>
@@ -995,7 +1003,8 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                             </span>
                           </td>
                         </tr>
-                      ))}
+                      ))
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -1105,7 +1114,14 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[var(--border-subtle)]">
-                      {diagnostics.blackBox.exposedEndpoints.map((ep, idx) => {
+                      {diagnostics.blackBox.exposedEndpoints.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="py-6 text-center text-slate-500 font-mono">
+                            No API endpoints detected in this repository.
+                          </td>
+                        </tr>
+                      ) : (
+                        diagnostics.blackBox.exposedEndpoints.map((ep, idx) => {
                         const methodColors = {
                           GET: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
                           POST: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
@@ -1145,7 +1161,8 @@ export default function AnalysisDetailView({ jobId, onBack }) {
                             </td>
                           </tr>
                         );
-                      })}
+                      })
+                      )}
                     </tbody>
                   </table>
                 </div>

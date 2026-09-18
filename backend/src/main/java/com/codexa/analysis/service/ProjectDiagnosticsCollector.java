@@ -6,6 +6,7 @@ import com.codexa.analysis.model.ProjectDiagnostics;
 import com.codexa.analysis.model.ProjectDiagnostics.*;
 import com.codexa.analysis.pipeline.PipelineContext;
 import com.codexa.persistence.entity.FindingEntity;
+import com.codexa.rules.universal.UniversalMultiLanguageRule;
 import com.codexa.security.ast.ParsedJavaFile;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -41,6 +42,22 @@ public class ProjectDiagnosticsCollector {
 
     private static final Pattern EXPRESS_ROUTE_PATTERN = Pattern.compile("(?i)(?:app|router)\\.(get|post|put|delete|patch)\\(\\s*['\"]([^'\"]+)['\"]");
     private static final Pattern FASTAPI_ROUTE_PATTERN = Pattern.compile("(?i)@(app|router)\\.(get|post|put|delete|patch)\\(\\s*['\"]([^'\"]+)['\"]");
+    private static final Pattern REAL_EDGE_AUTH_PATTERN = Pattern.compile(
+            "(?i)(?:headers\\.get\\s*\\(\\s*['\"]authorization['\"]|auth\\.getUser|auth\\.getSession|verifyUser|verifyJwt|jwt\\.verify|supabaseClient\\.auth)"
+    );
+    private static final Pattern VITE_MIDDLEWARE_PATTERN = Pattern.compile(
+            "(?i)(?:middlewares\\.use\\s*\\(\\s*['\"]([^'\"]+)['\"]|req\\.url\\s*===?\\s*['\"]([^'\"]+)['\"])"
+    );
+    private static final Pattern CLIENT_FETCH_PATTERN = Pattern.compile(
+            "(?i)(?:fetch|axios\\.(?:get|post|put|delete|patch))\\s*\\(\\s*['\"](/api/[^'\"]+|https?://[^'\"]+)['\"]"
+    );
+    private static final Pattern CLASS_DECL_PATTERN = Pattern.compile("(?i)\\bclass\\s+([A-Za-z0-9_$]+)");
+    private static final Pattern INTERFACE_DECL_PATTERN = Pattern.compile("(?i)(?:\\b(?:interface|struct)\\s+([A-Za-z0-9_$]+)|\\btype\\s+([A-Za-z0-9_$]+)\\s*=)");
+    private static final Pattern FUNCTION_DECL_PATTERN = Pattern.compile(
+            "(?i)(?:(?:async\\s+)?function(?:\\s+([A-Za-z0-9_$]+))?\\s*\\(|(?:const|let|var)\\s+([A-Za-z0-9_$]+)\\s*=\\s*(?:async\\s*)?(?:\\([^)]*\\)|[a-zA-Z0-9_$]+)\\s*=>|(?:async\\s+)?def\\s+([A-Za-z0-9_]+)\\s*\\(|func\\s+(?:\\([^)]+\\)\\s+)?([A-Za-z0-9_]+)\\s*\\(|^\\s*(?:public|private|protected|async|static|\\*)*\\s*([a-zA-Z0-9_$]+)\\s*\\([^)]*\\)\\s*\\{)"
+    );
+    private static final Pattern BRANCH_KEYWORD_PATTERN = Pattern.compile("(?i)\\b(if|else\\s+if|elif|for|while|catch|except|case)\\b");
+    private static final Pattern NEXTJS_EXPORT_METHOD_PATTERN = Pattern.compile("(?m)^export\\s+(?:async\\s+)?function\\s+(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS)\\b");
 
     public ProjectDiagnostics collect(PipelineContext context) {
         log.info("Collecting deep project diagnostics for jobId={}", context.getJobId());
@@ -65,11 +82,14 @@ public class ProjectDiagnosticsCollector {
         List<Path> sourceFiles = context.getSourceFiles() != null ? context.getSourceFiles() : List.of();
 
         for (Path file : sourceFiles) {
-            String lang = detectLanguage(file.getFileName().toString());
+            String fname = file.getFileName().toString();
+            if (isIgnoredFile(fname)) continue;
+
+            String lang = detectLanguage(fname);
             languageFiles.put(lang, languageFiles.getOrDefault(lang, 0) + 1);
 
             try {
-                List<String> lines = Files.readAllLines(file, StandardCharsets.UTF_8);
+                List<String> lines = UniversalMultiLanguageRule.readFileLines(file);
                 int fileLoc = 0;
                 for (String line : lines) {
                     totalLines++;
@@ -85,7 +105,6 @@ public class ProjectDiagnosticsCollector {
                 }
                 languageLoc.put(lang, languageLoc.getOrDefault(lang, 0) + fileLoc);
             } catch (Exception ignored) {
-                // If binary or unreadable, count minimal estimate
                 totalLines += 10;
                 codeLines += 10;
                 languageLoc.put(lang, languageLoc.getOrDefault(lang, 0) + 10);
@@ -123,6 +142,7 @@ public class ProjectDiagnosticsCollector {
             findingCountByFile.put(path, findingCountByFile.getOrDefault(path, 0) + 1);
         }
 
+        Set<String> processedFiles = new HashSet<>();
         List<ParsedJavaFile> parsedFiles = context.getParsedJavaFiles() != null ? context.getParsedJavaFiles() : List.of();
 
         for (ParsedJavaFile pjf : parsedFiles) {
@@ -166,6 +186,101 @@ public class ProjectDiagnosticsCollector {
                     fileMethodCount,
                     fileMaxComp,
                     Math.round(avgComp * 10.0) / 10.0,
+                    findingsInFile
+            ));
+            processedFiles.add(pjf.getRelativePath());
+        }
+
+        // Polyglot analysis for JS/TS/Python/Go/etc. or Java files without AST
+        List<Path> sourceFiles = context.getSourceFiles() != null ? context.getSourceFiles() : List.of();
+        Path stagingDir = context.getStagingDirectory();
+
+        for (Path file : sourceFiles) {
+            String filename = file.getFileName().toString().toLowerCase();
+            if (isIgnoredFile(filename)) continue;
+
+            String relPath = stagingDir != null && file.startsWith(stagingDir)
+                    ? stagingDir.relativize(file).toString().replace("\\", "/")
+                    : file.getFileName().toString();
+
+            if (relPath.startsWith(".git") || relPath.contains("node_modules") || relPath.contains(".next") ||
+                    relPath.contains("dist") || relPath.contains("build") || processedFiles.contains(relPath)) {
+                continue;
+            }
+            processedFiles.add(relPath);
+
+            List<String> lines = UniversalMultiLanguageRule.readFileLines(file);
+            if (lines.isEmpty()) continue;
+
+            int fileLoc = 0;
+            int fileClasses = 0;
+            int fileInterfaces = 0;
+            int fileMethods = 0;
+            int fileBranches = 0;
+            int currentDepth = 0;
+            int fileMaxDepth = 1;
+
+            for (String line : lines) {
+                String trimmed = line.trim();
+                if (trimmed.isEmpty() || trimmed.startsWith("//") || trimmed.startsWith("#") || trimmed.startsWith("/*") || trimmed.startsWith("*")) {
+                    continue;
+                }
+                fileLoc++;
+
+                if (CLASS_DECL_PATTERN.matcher(trimmed).find()) fileClasses++;
+                if (INTERFACE_DECL_PATTERN.matcher(trimmed).find()) fileInterfaces++;
+                if (FUNCTION_DECL_PATTERN.matcher(trimmed).find()) fileMethods++;
+
+                Matcher branchMatcher = BRANCH_KEYWORD_PATTERN.matcher(trimmed);
+                while (branchMatcher.find()) {
+                    fileBranches++;
+                }
+                if (trimmed.contains("&&")) fileBranches++;
+                if (trimmed.contains("||")) fileBranches++;
+                if (trimmed.contains("??")) fileBranches++;
+                if (trimmed.contains(" ? ") || (trimmed.contains("?") && trimmed.contains(":") && !trimmed.contains("?:"))) fileBranches++;
+
+                for (int i = 0; i < trimmed.length(); i++) {
+                    char c = trimmed.charAt(i);
+                    if (c == '{') {
+                        currentDepth++;
+                        if (currentDepth > fileMaxDepth) fileMaxDepth = currentDepth;
+                    } else if (c == '}') {
+                        if (currentDepth > 0) currentDepth--;
+                    }
+                }
+            }
+
+            if (fileLoc == 0) continue;
+
+            totalClasses += fileClasses;
+            totalInterfaces += fileInterfaces;
+            int effectiveMethods = Math.max(fileMethods, (fileBranches > 0 ? 1 : 0));
+            totalMethods += effectiveMethods;
+
+            int safeMethodDivisor = Math.max(1, effectiveMethods);
+            int fileMaxComp = Math.max(1, (fileBranches / safeMethodDivisor) + (fileBranches % safeMethodDivisor != 0 ? 2 : 1));
+            if (fileBranches > 0 && fileMaxComp == 1) fileMaxComp = 2;
+            if (fileBranches >= 10 && fileMaxComp < 5) fileMaxComp = Math.min(15, 3 + fileBranches / 3);
+
+            double fileAvgComp = Math.max(1.0, 1.0 + ((double) fileBranches / safeMethodDivisor));
+            totalComplexitySum += (long) (fileAvgComp * safeMethodDivisor);
+
+            if (fileMaxComp > peakComplexity || "N/A".equals(peakComplexityFile)) {
+                peakComplexity = fileMaxComp;
+                peakComplexityFile = relPath;
+            }
+            if (fileMaxDepth > maxNestingDepth) {
+                maxNestingDepth = Math.min(10, fileMaxDepth);
+            }
+
+            int findingsInFile = findingCountByFile.getOrDefault(relPath, 0);
+            fileMetrics.add(new FileComplexityMetric(
+                    relPath,
+                    fileLoc,
+                    effectiveMethods,
+                    fileMaxComp,
+                    Math.round(fileAvgComp * 10.0) / 10.0,
                     findingsInFile
             ));
         }
@@ -260,35 +375,134 @@ public class ProjectDiagnosticsCollector {
             }
         }
 
-        // Multi-language fallback: inspect TS/JS/Python files if no Spring endpoints discovered
-        if (endpoints.isEmpty() && context.getSourceFiles() != null) {
-            for (Path file : context.getSourceFiles()) {
-                String fname = file.getFileName().toString().toLowerCase();
-                if (fname.endsWith(".js") || fname.endsWith(".ts") || fname.endsWith(".py")) {
-                    try {
-                        String content = Files.readString(file, StandardCharsets.UTF_8);
-                        Matcher m = EXPRESS_ROUTE_PATTERN.matcher(content);
-                        while (m.find()) {
-                            String method = m.group(1).toUpperCase();
-                            String path = m.group(2);
-                            endpoints.add(new ApiEndpointItem(method, path, file.getFileName().toString(), "handler", false, "MEDIUM"));
-                            unauthCount++;
-                        }
-                        Matcher mPy = FASTAPI_ROUTE_PATTERN.matcher(content);
-                        while (mPy.find()) {
-                            String method = mPy.group(2).toUpperCase();
-                            String path = mPy.group(3);
-                            endpoints.add(new ApiEndpointItem(method, path, file.getFileName().toString(), "route", false, "MEDIUM"));
-                            unauthCount++;
-                        }
-                    } catch (Exception ignored) {}
+        // Multi-language & polyglot endpoint discovery: Supabase, Next.js, Express, FastAPI, Vite
+        Path stagingDir = context.getStagingDirectory();
+        List<Path> sourceFiles = context.getSourceFiles() != null ? context.getSourceFiles() : List.of();
+
+        for (Path file : sourceFiles) {
+            String fname = file.getFileName().toString().toLowerCase();
+            if (isIgnoredFile(fname)) continue;
+
+            String relPath = stagingDir != null && file.startsWith(stagingDir)
+                    ? stagingDir.relativize(file).toString().replace("\\", "/")
+                    : file.getFileName().toString();
+
+            if (relPath.startsWith(".git") || relPath.contains("node_modules") || relPath.contains(".next") ||
+                    relPath.contains("dist") || relPath.contains("build")) {
+                continue;
+            }
+
+            // 1. Supabase Edge Functions: supabase/functions/<name>/index.ts
+            if ((relPath.contains("supabase/functions/") || relPath.contains("edge-functions/")) &&
+                    (fname.endsWith(".ts") || fname.endsWith(".js"))) {
+                String funcName = extractEdgeFunctionName(relPath);
+                if (funcName != null && !funcName.isEmpty()) {
+                    String content = readFileContentSafely(file);
+                    boolean hasAuth = REAL_EDGE_AUTH_PATTERN.matcher(content).find();
+                    if (!hasAuth) unauthCount++;
+                    String risk = hasAuth ? "LOW" : "HIGH";
+                    endpoints.add(new ApiEndpointItem(
+                            "POST/GET",
+                            "/functions/v1/" + funcName,
+                            "SupabaseEdgeFunction",
+                            funcName,
+                            hasAuth,
+                            risk
+                    ));
+                    continue;
+                }
+            }
+
+            // 2. Next.js App Router (app/api/**/route.ts) or Pages Router (pages/api/**.ts)
+            if (relPath.matches(".*(?:app/api|pages/api)/.*\\.[tj]sx?")) {
+                String routePath = extractNextJsRoutePath(relPath);
+                String content = readFileContentSafely(file);
+                boolean hasAuth = REAL_EDGE_AUTH_PATTERN.matcher(content).find() ||
+                        content.contains("getServerSession") || content.contains("auth(");
+
+                List<String> httpMethods = extractExportedHttpMethods(content);
+                if (httpMethods.isEmpty()) httpMethods = List.of("ALL");
+
+                for (String m : httpMethods) {
+                    if (!hasAuth) unauthCount++;
+                    String risk = determineEndpointRisk(m, routePath, hasAuth);
+                    endpoints.add(new ApiEndpointItem(
+                            m,
+                            routePath,
+                            file.getFileName().toString(),
+                            "handler",
+                            hasAuth,
+                            risk
+                    ));
+                }
+                continue;
+            }
+
+            // 3. Express / Fastify / FastAPI / Vite Middleware
+            if (fname.endsWith(".js") || fname.endsWith(".ts") || fname.endsWith(".py")) {
+                String content = readFileContentSafely(file);
+
+                Matcher mExp = EXPRESS_ROUTE_PATTERN.matcher(content);
+                while (mExp.find()) {
+                    String method = mExp.group(1).toUpperCase();
+                    String path = mExp.group(2);
+                    boolean hasAuth = content.contains("authenticate") || content.contains("requireAuth") ||
+                            content.contains("verifyToken") || REAL_EDGE_AUTH_PATTERN.matcher(content).find();
+                    if (!hasAuth) unauthCount++;
+                    String risk = determineEndpointRisk(method, path, hasAuth);
+                    endpoints.add(new ApiEndpointItem(method, path, file.getFileName().toString(), "handler", hasAuth, risk));
+                }
+
+                Matcher mPy = FASTAPI_ROUTE_PATTERN.matcher(content);
+                while (mPy.find()) {
+                    String method = mPy.group(2).toUpperCase();
+                    String path = mPy.group(3);
+                    boolean hasAuth = content.contains("Depends") || content.contains("security") || content.contains("current_user");
+                    if (!hasAuth) unauthCount++;
+                    String risk = determineEndpointRisk(method, path, hasAuth);
+                    endpoints.add(new ApiEndpointItem(method, path, file.getFileName().toString(), "route", hasAuth, risk));
+                }
+
+                Matcher mVite = VITE_MIDDLEWARE_PATTERN.matcher(content);
+                while (mVite.find()) {
+                    String path = mVite.group(1) != null ? mVite.group(1) : mVite.group(2);
+                    if (path != null && path.startsWith("/api")) {
+                        boolean hasAuth = REAL_EDGE_AUTH_PATTERN.matcher(content).find();
+                        if (!hasAuth) unauthCount++;
+                        endpoints.add(new ApiEndpointItem("ALL", path, file.getFileName().toString(), "viteMiddleware", hasAuth, hasAuth ? "LOW" : "MEDIUM"));
+                    }
                 }
             }
         }
 
+        // 4. Fallback client dispatches (if no server endpoints found, scan frontend API dispatches)
+        if (endpoints.isEmpty()) {
+            for (Path file : sourceFiles) {
+                String fname = file.getFileName().toString().toLowerCase();
+                if (!fname.endsWith(".js") && !fname.endsWith(".jsx") && !fname.endsWith(".ts") && !fname.endsWith(".tsx")) continue;
+                String relPath = stagingDir != null && file.startsWith(stagingDir)
+                        ? stagingDir.relativize(file).toString().replace("\\", "/")
+                        : file.getFileName().toString();
+                if (relPath.startsWith(".git") || relPath.contains("node_modules") || relPath.contains("dist")) continue;
+
+                String content = readFileContentSafely(file);
+                Matcher mFetch = CLIENT_FETCH_PATTERN.matcher(content);
+                while (mFetch.find()) {
+                    String url = mFetch.group(1);
+                    if (endpoints.stream().noneMatch(e -> e.path().equals(url))) {
+                        endpoints.add(new ApiEndpointItem("DISPATCH", url, file.getFileName().toString(), "clientIngress", false, "LOW"));
+                    }
+                    if (endpoints.size() >= 10) break;
+                }
+                if (endpoints.size() >= 10) break;
+            }
+        }
+
         // Perimeter status
-        boolean hasCorsIssue = context.getFindings().stream().anyMatch(f -> "CR-CONFIG-001".equals(f.getRuleId()));
-        boolean hasSecrets = context.getFindings().stream().anyMatch(f -> "CR-SEC-001".equals(f.getRuleId()));
+        boolean hasCorsIssue = context.getFindings().stream().anyMatch(f ->
+                "CR-CONFIG-001".equals(f.getRuleId()) || "CR-CORS-001".equals(f.getRuleId()));
+        boolean hasSecrets = context.getFindings().stream().anyMatch(f ->
+                f.getRuleId().startsWith("CR-SEC") || "CR-LEAK-001".equals(f.getRuleId()));
 
         PerimeterStatus perimeter = new PerimeterStatus(
                 hasCorsIssue ? "PERMISSIVE ORIGIN (CR-CONFIG-001)" : "RESTRICTED ALLOW-LIST (SECURE)",
@@ -305,7 +519,8 @@ public class ProjectDiagnosticsCollector {
 
         long criticalCount = context.getFindings().stream().filter(f -> f.getSeverity().name().equals("CRITICAL")).count();
         long highCount = context.getFindings().stream().filter(f -> f.getSeverity().name().equals("HIGH")).count();
-        boolean hasSecrets = context.getFindings().stream().anyMatch(f -> "CR-SEC-001".equals(f.getRuleId()));
+        boolean hasSecrets = context.getFindings().stream().anyMatch(f ->
+                f.getRuleId().startsWith("CR-SEC") || "CR-LEAK-001".equals(f.getRuleId()));
 
         checklist.add(new ComplianceCheckItem(
                 "Zero Critical Severity Vulnerabilities",
@@ -512,8 +727,8 @@ public class ProjectDiagnosticsCollector {
         endpoints.add(new ApiEndpointItem("POST", "/api/v1/analyses/zip", "ZipAnalysisController", "analyzeZip", true, "MEDIUM"));
         endpoints.add(new ApiEndpointItem("POST", "/api/v1/analyses/github", "GitHubAnalysisController", "analyzeGitHub", true, "MEDIUM"));
 
-        boolean hasCors = safeFindings.stream().anyMatch(f -> "CR-CONFIG-001".equals(f.getRuleId()));
-        boolean hasSecrets = safeFindings.stream().anyMatch(f -> "CR-SEC-001".equals(f.getRuleId()));
+        boolean hasCors = safeFindings.stream().anyMatch(f -> "CR-CONFIG-001".equals(f.getRuleId()) || "CR-CORS-001".equals(f.getRuleId()));
+        boolean hasSecrets = safeFindings.stream().anyMatch(f -> f.getRuleId().startsWith("CR-SEC") || "CR-LEAK-001".equals(f.getRuleId()));
 
         PerimeterStatus perimeter = new PerimeterStatus(
                 hasCors ? "PERMISSIVE ORIGIN (CR-CONFIG-001)" : "RESTRICTED ALLOW-LIST (SECURE)",
@@ -542,6 +757,51 @@ public class ProjectDiagnosticsCollector {
         return new ProjectDiagnostics(comp, wb, bb, checklist);
     }
 
+    private static boolean isIgnoredFile(String filename) {
+        String lower = filename.toLowerCase();
+        return lower.endsWith(".class") || lower.endsWith(".jar") || lower.endsWith(".png") ||
+                lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".gif") ||
+                lower.endsWith(".svg") || lower.endsWith(".ico") || lower.endsWith(".woff") ||
+                lower.endsWith(".woff2") || lower.endsWith(".ttf") || lower.endsWith(".eot") ||
+                lower.endsWith(".lock") || lower.endsWith(".map") || lower.endsWith(".min.js") ||
+                lower.endsWith(".min.css") || lower.endsWith(".pdf") || lower.endsWith(".zip") ||
+                lower.endsWith(".tar") || lower.endsWith(".gz");
+    }
+
+    private static String readFileContentSafely(Path file) {
+        List<String> lines = UniversalMultiLanguageRule.readFileLines(file);
+        return String.join("\n", lines);
+    }
+
+    private static String extractEdgeFunctionName(String relPath) {
+        Pattern p = Pattern.compile("(?:supabase/functions|edge-functions)/([^/]+)/");
+        Matcher m = p.matcher(relPath);
+        if (m.find()) {
+            return m.group(1);
+        }
+        return null;
+    }
+
+    private static String extractNextJsRoutePath(String relPath) {
+        String path = relPath;
+        int idx = path.indexOf("api/");
+        if (idx != -1) {
+            path = "/" + path.substring(idx);
+            path = path.replaceAll("/route\\.[a-zA-Z0-9]+$", "");
+            path = path.replaceAll("\\.[a-zA-Z0-9]+$", "");
+            return path;
+        }
+        return "/api";
+    }
+
+    private static List<String> extractExportedHttpMethods(String content) {
+        List<String> methods = new ArrayList<>();
+        Matcher m = NEXTJS_EXPORT_METHOD_PATTERN.matcher(content);
+        while (m.find()) {
+            methods.add(m.group(1));
+        }
+        return methods;
+    }
 
     /**
      * Gathers JVM runtime telemetry and host machine core concurrency metadata.
@@ -554,6 +814,4 @@ public class ProjectDiagnosticsCollector {
             "jvmVersion", System.getProperty("java.version", "17")
         );
     }
-    // Runtime host architecture telemetry
-
 }

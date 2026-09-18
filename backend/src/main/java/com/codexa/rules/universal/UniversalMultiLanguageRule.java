@@ -104,7 +104,33 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
             "(?i)(?:DISABLE\\s+ROW\\s+LEVEL\\s+SECURITY|CREATE\\s+POLICY.*?(?:USING|WITH\\s+CHECK)\\s*\\(\\s*true\\s*\\)|(?:USING|WITH\\s+CHECK)\\s*\\(\\s*true\\s*\\))"
     );
 
-    // 17. Quality & Maintainability
+    // 18. Parameter Security & Input Validation Patterns
+    // 18a. Mass Assignment / DTO Over-Posting
+    private static final Pattern MASS_ASSIGNMENT_PATTERN = Pattern.compile(
+            "(?i)(?:\\.(?:create|update|insert|save|upsert)\\s*\\(\\s*req\\.body|data\\s*:\\s*req\\.body|\\.\\.\\.req\\.body|prisma\\.[a-zA-Z0-9_]+\\.(?:create|update)\\s*\\(\\s*\\{\\s*data:\\s*req\\.body|supabase\\.from\\([^)]+\\)\\.(?:insert|update|upsert)\\s*\\(\\s*req\\.body)"
+    );
+
+    // 18b. IDOR on Resource Parameters
+    private static final Pattern IDOR_PARAM_QUERY_PATTERN = Pattern.compile(
+            "(?i)(?:(?:find(?:ByPk|ById|Unique|One)|delete(?:ById)?|remove(?:ById)?|findByIdAndDelete|findByIdAndUpdate)\\s*\\(\\s*(?:req\\.params|params)\\.[a-zA-Z0-9_]+|\\.eq\\s*\\(\\s*['\"]id['\"]\\s*,\\s*(?:req\\.params|params)\\.[a-zA-Z0-9_]+\\s*\\))"
+    );
+
+    // 18c. Open Redirect via Parameters
+    private static final Pattern OPEN_REDIRECT_PARAM_PATTERN = Pattern.compile(
+            "(?i)(?:res\\.redirect\\s*\\(\\s*(?:req\\.(?:query|params)|params|searchParams\\.get)\\.[a-zA-Z0-9_.]*(?:url|redirect|return|next|target|dest|goto|callback)|window\\.location\\.(?:href|replace|assign)\\s*=\\s*(?:new\\s+URLSearchParams\\([^)]*\\)\\.get|params\\.get|searchParams\\.get)\\s*\\(\\s*['\"](?:url|redirect|return|next|target|dest|goto|callback)['\"]|return\\s+['\"]redirect:\\s*['\"]\\s*\\+\\s*(?:redirectUrl|targetUrl|url|returnUrl))"
+    );
+
+    // 18d. Unbounded Pagination Parameter (DoS)
+    private static final Pattern UNBOUNDED_PAGINATION_PATTERN = Pattern.compile(
+            "(?i)(?:\\.(?:limit|take)\\s*\\(\\s*(?:parseInt|Number)?\\s*\\(?\\s*req\\.query\\.(?:limit|size|pageSize|count)|(?:const|let|var)\\s+[a-zA-Z0-9_]*(?:limit|size|pageSize)\\s*=\\s*(?:parseInt|Number)\\s*\\(\\s*(?:req\\.query\\.(?:limit|size|pageSize)|params\\.(?:limit|size))\\s*(?:\\|\\|\\s*\\d+)?\\s*\\)\\s*;?\\s*(?!.*Math\\.min))"
+    );
+
+    // 18e. Prototype Pollution via Parameter Merging
+    private static final Pattern PROTOTYPE_POLLUTION_PATTERN = Pattern.compile(
+            "(?i)(?:Object\\.assign\\s*\\(\\s*[^,)]+\\s*,\\s*req\\.(?:body|query|params)|(?:lodash|_)\\.(?:merge|extend|defaultsDeep)\\s*\\(\\s*[^,)]+\\s*,\\s*req\\.(?:body|query|params)|for\\s*\\(\\s*(?:const|let|var)?\\s*[a-zA-Z0-9_]+\\s+in\\s+req\\.(?:body|query)\\s*\\)\\s*\\{\\s*[a-zA-Z0-9_.]+\\[[a-zA-Z0-9_]+\\]\\s*=)"
+    );
+
+    // 19. Quality & Maintainability
     private static final Pattern EMPTY_CATCH_PATTERN = Pattern.compile("(?:catch\\s*\\([a-zA-Z0-9_\\s]*\\)|except(?:\\s+[a-zA-Z0-9_]+)?\\s*:)\\s*\\{\\s*\\}");
     private static final Pattern DEBUG_CONSOLE_PATTERN = Pattern.compile("(?<![a-zA-Z0-9_.])console\\.(?:log|debug|trace)\\s*\\(");
     private static final Pattern TECH_DEBT_PATTERN = Pattern.compile("(?:\\/\\/|#|\\/\\*)\\s*(?:TODO|FIXME|HACK|XXX):?\\s*(.+)");
@@ -712,6 +738,116 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
                                 .build()
                         );
                     }
+                }
+
+                // 14g. Check Mass Assignment / DTO Over-Posting (CR-PARAM-001)
+                if (MASS_ASSIGNMENT_PATTERN.matcher(line).find()) {
+                    findings.add(RuleFinding.builder()
+                            .ruleId("CR-PARAM-001")
+                            .category(Category.SECURITY)
+                            .severity(Severity.HIGH)
+                            .confidence(Confidence.HIGH)
+                            .title("Mass Assignment / DTO Over-Posting via Unfiltered Request Body")
+                            .description("Passing unvalidated client request bodies (req.body) directly into database mutations allows attackers to inject sensitive or privileged attributes (e.g. role, is_admin, verified, balance).")
+                            .impact("Privilege escalation, unauthorized role assignment, and alteration of sensitive internal data fields.")
+                            .remediation("Sanitize and pick only permitted fields using a strict allowlist or schema validator (Zod, Joi, or DTO). Never pass raw req.body into database mutations.")
+                            .owaspMapping("A01:2021-Broken Access Control")
+                            .filePath(relPath)
+                            .startLine(lineNum)
+                            .endLine(lineNum)
+                            .evidence(SecretMasker.maskSecrets(line.trim()))
+                            .suggestedFix("// Sanitize input with explicit field picking:\nconst { name, email, bio } = req.body;\nawait db.user.update({ where: { id }, data: { name, email, bio } });")
+                            .references(List.of("https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html", "https://cwe.mitre.org/data/definitions/915.html"))
+                            .build()
+                    );
+                }
+
+                // 14h. Check IDOR on Resource Parameters (CR-PARAM-002)
+                if (IDOR_PARAM_QUERY_PATTERN.matcher(line).find()) {
+                    findings.add(RuleFinding.builder()
+                            .ruleId("CR-PARAM-002")
+                            .category(Category.SECURITY)
+                            .severity(Severity.HIGH)
+                            .confidence(Confidence.HIGH)
+                            .title("Insecure Direct Object Reference (IDOR) on Resource Parameter")
+                            .description("Resource fetched, updated, or deleted directly by client-supplied route or query parameter ID without verifying that the requesting user owns the object or belongs to the target tenant.")
+                            .impact("Attackers can read, modify, or delete arbitrary customer or tenant records simply by iterating or guessing numeric/UUID identifiers.")
+                            .remediation("Scope database queries to the authenticated user's session or tenant ID (e.g. WHERE id = :id AND tenant_id = :authTenantId).")
+                            .owaspMapping("A01:2021-Broken Access Control")
+                            .filePath(relPath)
+                            .startLine(lineNum)
+                            .endLine(lineNum)
+                            .evidence(SecretMasker.maskSecrets(line.trim()))
+                            .suggestedFix("// Scope query by user/tenant identity:\nawait db.record.delete({ where: { id: req.params.id, userId: req.user.id } });")
+                            .references(List.of("https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_References_Prevention_Cheat_Sheet.html", "https://cwe.mitre.org/data/definitions/639.html"))
+                            .build()
+                    );
+                }
+
+                // 14i. Check Open Redirect via Parameters (CR-PARAM-003)
+                if (OPEN_REDIRECT_PARAM_PATTERN.matcher(line).find()) {
+                    findings.add(RuleFinding.builder()
+                            .ruleId("CR-PARAM-003")
+                            .category(Category.SECURITY)
+                            .severity(Severity.MEDIUM)
+                            .confidence(Confidence.HIGH)
+                            .title("Open Redirect via Unvalidated Destination Parameter")
+                            .description("Application redirects browser navigation using an untrusted user-controlled parameter (e.g. ?redirectUrl=, ?next=, ?returnTo=) without validating against an allowlist or verifying it is a relative path.")
+                            .impact("Phishing attacks where attackers construct legitimate-looking links under your domain that silently redirect victims to credential-harvesting websites.")
+                            .remediation("Enforce relative redirects (e.g. ensuring target starts with a single '/' and not '//') or validate target URLs against a strict allowlist of authorized hostnames.")
+                            .owaspMapping("A01:2021-Broken Access Control")
+                            .filePath(relPath)
+                            .startLine(lineNum)
+                            .endLine(lineNum)
+                            .evidence(SecretMasker.maskSecrets(line.trim()))
+                            .suggestedFix("// Validate relative URL:\nconst target = req.query.redirectUrl;\nconst safeRedirect = (target && target.startsWith('/') && !target.startsWith('//')) ? target : '/dashboard';\nres.redirect(safeRedirect);")
+                            .references(List.of("https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html", "https://cwe.mitre.org/data/definitions/601.html"))
+                            .build()
+                    );
+                }
+
+                // 14j. Check Unbounded Pagination Parameter (CR-PARAM-004)
+                if (UNBOUNDED_PAGINATION_PATTERN.matcher(line).find()) {
+                    findings.add(RuleFinding.builder()
+                            .ruleId("CR-PARAM-004")
+                            .category(Category.SECURITY)
+                            .severity(Severity.MEDIUM)
+                            .confidence(Confidence.HIGH)
+                            .title("Unbounded Pagination Parameter (Potential Memory Denial of Service)")
+                            .description("Pagination parameters (limit, size, pageSize) are parsed directly from client request query parameters without enforcing a maximum ceiling clamp (e.g. Math.min(limit, 100)). Attackers can request ?limit=10000000 to trigger severe database load and OutOfMemory (OOM) crashes.")
+                            .impact("Denial of Service (DoS) through database query timeouts, thread pool starvation, and application server heap memory exhaustion.")
+                            .remediation("Clamp user-requested page sizes to a safe upper bound (e.g. Math.min(Math.max(1, limit), 100)).")
+                            .owaspMapping("A04:2021-Insecure Design")
+                            .filePath(relPath)
+                            .startLine(lineNum)
+                            .endLine(lineNum)
+                            .evidence(SecretMasker.maskSecrets(line.trim()))
+                            .suggestedFix("// Clamp pagination limit:\nconst requestedLimit = parseInt(req.query.limit || '20', 10);\nconst safeLimit = Math.min(Math.max(1, isNaN(requestedLimit) ? 20 : requestedLimit), 100);")
+                            .references(List.of("https://cwe.mitre.org/data/definitions/770.html", "https://owasp.org/Top10/A04_2021-Insecure_Design/"))
+                            .build()
+                    );
+                }
+
+                // 14k. Check Prototype Pollution via Parameter Merging (CR-PARAM-005)
+                if (PROTOTYPE_POLLUTION_PATTERN.matcher(line).find()) {
+                    findings.add(RuleFinding.builder()
+                            .ruleId("CR-PARAM-005")
+                            .category(Category.SECURITY)
+                            .severity(Severity.HIGH)
+                            .confidence(Confidence.HIGH)
+                            .title("Prototype Pollution via Unsafe Request Parameter Merging")
+                            .description("Unsafe merging of user-controlled request parameters (req.body / req.query) into existing objects using Object.assign, lodash.merge, or direct bracket indexing allows attackers to inject properties into Object.prototype (e.g. __proto__, constructor).")
+                            .impact("Prototype pollution can bypass access controls, alter application-wide properties, cause Denial of Service, or lead to Remote Code Execution (RCE).")
+                            .remediation("Do not recursively merge untrusted input. Use Object.create(null) for dictionary lookups, sanitize keys (blocking __proto__ and constructor), or validate payloads with strict schema validators.")
+                            .owaspMapping("A03:2021-Injection")
+                            .filePath(relPath)
+                            .startLine(lineNum)
+                            .endLine(lineNum)
+                            .evidence(SecretMasker.maskSecrets(line.trim()))
+                            .suggestedFix("// Prevent prototype pollution:\nconst safeData = Object.create(null);\nfor (const [key, val] of Object.entries(req.body)) {\n  if (key !== '__proto__' && key !== 'constructor' && key !== 'prototype') {\n    safeData[key] = val;\n  }\n}")
+                            .references(List.of("https://cwe.mitre.org/data/definitions/1321.html", "https://owasp.org/www-community/attacks/Prototype_Pollution"))
+                            .build()
+                    );
                 }
 
                 // 15. Check Empty / Swallowed Catch Blocks (Code Quality)
