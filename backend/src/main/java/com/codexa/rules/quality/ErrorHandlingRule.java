@@ -67,7 +67,7 @@ public class ErrorHandlingRule implements AnalysisRule {
             String paramName = clause.getParameter().getNameAsString().toLowerCase();
 
             // Intentionally ignored or expected exceptions are standard Java patterns
-            if (paramName.contains("ignored") || paramName.contains("expected")) {
+            if (paramName.contains("ignored") || paramName.contains("expected") || paramName.startsWith("_")) {
                 return;
             }
 
@@ -103,7 +103,7 @@ public class ErrorHandlingRule implements AnalysisRule {
 
     private boolean containsLoggingOrRethrow(CatchClause clause) {
         String paramName = clause.getParameter().getNameAsString().toLowerCase();
-        if (paramName.contains("ignored") || paramName.contains("expected")) {
+        if (paramName.contains("ignored") || paramName.contains("expected") || paramName.startsWith("_")) {
             return true;
         }
         String body = clause.getBody().toString().toLowerCase();

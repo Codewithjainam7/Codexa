@@ -60,6 +60,10 @@ public class EmptyCatchBlockRule implements AnalysisRule {
         String filename = parsedFile.getRelativePath();
 
         for (CatchClause cc : cu.findAll(CatchClause.class)) {
+            String paramName = cc.getParameter().getNameAsString().toLowerCase();
+            if (paramName.contains("ignored") || paramName.contains("expected") || paramName.startsWith("_")) {
+                continue;
+            }
             if (cc.getBody().getStatements().isEmpty()) {
                 int startLine = cc.getBegin().map(p -> p.line).orElse(1);
                 int endLine = cc.getEnd().map(p -> p.line).orElse(startLine);

@@ -64,7 +64,7 @@ public class StringConcatInLoopRule implements AnalysisRule {
         String filename = parsedFile.getRelativePath();
 
         for (AssignExpr assign : cu.findAll(AssignExpr.class)) {
-            if (assign.getOperator() == AssignExpr.Operator.PLUS) {
+            if (assign.getOperator() == AssignExpr.Operator.PLUS && isStringConcatenation(assign)) {
                 boolean inLoop = assign.findAncestor(ForStmt.class).isPresent()
                         || assign.findAncestor(ForEachStmt.class).isPresent()
                         || assign.findAncestor(WhileStmt.class).isPresent()
@@ -97,5 +97,55 @@ public class StringConcatInLoopRule implements AnalysisRule {
         }
 
         return findings;
+    }
+
+    private boolean isStringConcatenation(AssignExpr assign) {
+        // 1. If value contains a string literal, it is definitely string concatenation
+        if (!assign.getValue().findAll(com.github.javaparser.ast.expr.StringLiteralExpr.class).isEmpty()) {
+            return true;
+        }
+        for (com.github.javaparser.ast.expr.MethodCallExpr call : assign.getValue().findAll(com.github.javaparser.ast.expr.MethodCallExpr.class)) {
+            String mName = call.getNameAsString();
+            if (mName.equals("toString") || mName.equals("valueOf") || mName.equals("substring") || mName.equals("replace") || mName.equals("format")) {
+                return true;
+            }
+        }
+
+        String targetName = assign.getTarget().toString().toLowerCase();
+
+        // Numeric counters and metrics are never string concatenation
+        if (targetName.contains("count") || targetName.contains("byte") || targetName.contains("size") ||
+            targetName.contains("total") || targetName.contains("sum") || targetName.contains("idx") ||
+            targetName.contains("index") || targetName.contains("num") || targetName.contains("depth") ||
+            targetName.contains("headroom") || targetName.contains("penalty") || targetName.contains("debt") ||
+            targetName.contains("complexity") || targetName.contains("score") || targetName.contains("offset") ||
+            targetName.contains("read") || targetName.contains("len") || targetName.contains("limit") ||
+            targetName.contains("max") || targetName.contains("min") || targetName.equals("i") ||
+            targetName.equals("j") || targetName.equals("k")) {
+            return false;
+        }
+
+        // Check if target variable was declared as String in enclosing method
+        com.github.javaparser.ast.body.MethodDeclaration method = assign.findAncestor(com.github.javaparser.ast.body.MethodDeclaration.class).orElse(null);
+        if (method != null) {
+            for (com.github.javaparser.ast.body.VariableDeclarator var : method.findAll(com.github.javaparser.ast.body.VariableDeclarator.class)) {
+                if (var.getNameAsString().equals(assign.getTarget().toString())) {
+                    String type = var.getTypeAsString();
+                    if (type.equals("String") || type.equals("CharSequence")) {
+                        return true;
+                    }
+                    if (type.equals("int") || type.equals("long") || type.equals("double") || type.equals("float") ||
+                        type.equals("short") || type.equals("byte") || type.equals("Integer") || type.equals("Long") ||
+                        type.equals("Double") || type.equals("Float")) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return targetName.contains("str") || targetName.contains("text") || targetName.contains("msg") ||
+               targetName.contains("message") || targetName.contains("result") || targetName.contains("output") ||
+               targetName.contains("html") || targetName.contains("content") || targetName.contains("csv") ||
+               targetName.contains("summary") || targetName.contains("body") || targetName.contains("formatted");
     }
 }

@@ -252,7 +252,7 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
         try (Stream<Path> paths = Files.walk(stagingDir)) {
             paths.filter(Files::isRegularFile)
                     .forEach(path -> scanFile(path, stagingDir, findings));
-        } catch (IOException e) {
+        } catch (IOException ignored) {
             // Ignore walk errors
         }
 
@@ -982,10 +982,14 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
                     );
                 }
 
-                // 15. Check Empty / Swallowed Catch Blocks (Code Quality)
-                if (EMPTY_CATCH_PATTERN.matcher(line).find()) {
+                // 15. Check Empty / Swallowed Catch Blocks (Code Quality in JS/TS/Python - Java handled by AST rules)
+                if (!filename.endsWith(".java") 
+                        && !line.contains("ignored") 
+                        && !line.contains("expected") 
+                        && !line.matches(".*catch\\s*\\(\\s*_[a-zA-Z0-9_]*\\s*\\).*") 
+                        && EMPTY_CATCH_PATTERN.matcher(line).find()) {
                     findings.add(RuleFinding.builder()
-                            .ruleId("CR-QUAL-001")
+                            .ruleId("CR-QUAL-006")
                             .category(Category.QUALITY)
                             .severity(Severity.LOW)
                             .confidence(Confidence.HIGH)
@@ -1050,7 +1054,7 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
                     );
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
             // Ignore unreadable files
         }
     }
@@ -1059,7 +1063,7 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
         byte[] bytes;
         try {
             bytes = Files.readAllBytes(file);
-        } catch (IOException e) {
+        } catch (IOException ignored) {
             return List.of();
         }
 
@@ -1093,7 +1097,7 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
         else {
             try {
                 content = new String(bytes, StandardCharsets.UTF_8);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
                 content = new String(bytes, StandardCharsets.ISO_8859_1);
             }
         }

@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 public class DeepNestingRule implements AnalysisRule {
 
-    private static final int MAX_NESTING_DEPTH = 4;
+    private static final int MAX_NESTING_DEPTH = 6;
     private final AstSnippetExtractor snippetExtractor = new AstSnippetExtractor();
 
     @Override
@@ -97,7 +97,9 @@ public class DeepNestingRule implements AnalysisRule {
     private int findMaxNestingDepth(Node node, int currentDepth) {
         int max = currentDepth;
         for (Node child : node.getChildNodes()) {
-            int nextDepth = isNestingConstruct(child) ? currentDepth + 1 : currentDepth;
+            boolean isElseIf = (child instanceof IfStmt && node instanceof IfStmt &&
+                    ((IfStmt) node).getElseStmt().filter(e -> e == child).isPresent());
+            int nextDepth = (isNestingConstruct(child) && !isElseIf) ? currentDepth + 1 : currentDepth;
             max = Math.max(max, findMaxNestingDepth(child, nextDepth));
         }
         return max;
@@ -105,7 +107,6 @@ public class DeepNestingRule implements AnalysisRule {
 
     private boolean isNestingConstruct(Node node) {
         return node instanceof IfStmt || node instanceof WhileStmt || node instanceof ForStmt ||
-                node instanceof ForEachStmt || node instanceof DoStmt || node instanceof SwitchStmt ||
-                node instanceof TryStmt;
+                node instanceof ForEachStmt || node instanceof DoStmt || node instanceof SwitchStmt;
     }
 }

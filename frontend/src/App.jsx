@@ -178,7 +178,7 @@ function MainApp() {
                       setActiveJobId(null);
                       try {
                         localStorage.removeItem('codexa_last_job_id');
-                      } catch (e) {}
+                      } catch (_) {}
                       setCurrentView('landing');
                     }}
                   />

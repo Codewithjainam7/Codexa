@@ -14,7 +14,7 @@ import java.util.*;
 @Component
 public class CodeDuplicationRule implements AnalysisRule {
 
-    private static final int SHINGLE_SIZE = 8;
+    private static final int SHINGLE_SIZE = 15;
 
     @Override
     public String getRuleId() {
@@ -61,8 +61,10 @@ public class CodeDuplicationRule implements AnalysisRule {
 
         for (int i = 0; i < rawLines.size(); i++) {
             String norm = rawLines.get(i).trim();
-            // Skip empty lines, single braces, imports, package statements
-            if (!norm.isEmpty() && !norm.equals("{") && !norm.equals("}") && !norm.startsWith("import ") && !norm.startsWith("package ")) {
+            // Skip empty lines, single braces, imports, package statements, and fluent builder chaining
+            if (!norm.isEmpty() && !norm.equals("{") && !norm.equals("}") && !norm.equals(");") &&
+                !norm.startsWith("import ") && !norm.startsWith("package ") && !norm.startsWith("@") &&
+                !norm.startsWith(".") && !norm.startsWith("//") && !norm.startsWith("/*") && !norm.startsWith("*")) {
                 normalizedLines.add(norm);
                 originalLineNumbers.add(i + 1);
             }

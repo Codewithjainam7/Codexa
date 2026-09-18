@@ -86,25 +86,7 @@ public class AnalysisJobService {
     @Transactional(readOnly = true)
     public AnalysisJobResponse getJobResponse(UUID jobId) {
         AnalysisJobEntity entity = getJobOrThrow(jobId);
-        AnalysisMetricResponse metricResponse = null;
-
-        if (entity.getMetric() != null) {
-            AnalysisMetricEntity m = entity.getMetric();
-            metricResponse = new AnalysisMetricResponse(
-                    m.getSecurityScore(),
-                    m.getQualityScore(),
-                    m.getOperationsScore(),
-                    m.getMaintainabilityScore() > 0 ? m.getMaintainabilityScore() : m.getQualityScore(),
-                    m.getArchitecturalScore() > 0 ? m.getArchitecturalScore() : m.getQualityScore(),
-                    m.getTotalFiles(),
-                    m.getAnalyzedFiles(),
-                    m.getCriticalCount(),
-                    m.getHighCount(),
-                    m.getMediumCount(),
-                    m.getLowCount(),
-                    m.getDurationMs()
-            );
-        }
+        AnalysisMetricResponse metricResponse = toMetricResponse(entity.getMetric());
 
         List<FindingEntity> topEntities = findingRepository.findByJob_IdOrderByPriorityScoreDesc(jobId);
         List<FindingResponse> topFindings = topEntities.stream()
@@ -181,25 +163,7 @@ public class AnalysisJobService {
     public AnalysisReportResponse generateReport(UUID jobId) {
         AnalysisJobEntity entity = getJobOrThrow(jobId);
         List<FindingEntity> findings = findingRepository.findByJob_IdOrderByPriorityScoreDesc(jobId);
-
-        AnalysisMetricResponse metricResponse = null;
-        if (entity.getMetric() != null) {
-            AnalysisMetricEntity m = entity.getMetric();
-            metricResponse = new AnalysisMetricResponse(
-                    m.getSecurityScore(),
-                    m.getQualityScore(),
-                    m.getOperationsScore(),
-                    m.getMaintainabilityScore() > 0 ? m.getMaintainabilityScore() : m.getQualityScore(),
-                    m.getArchitecturalScore() > 0 ? m.getArchitecturalScore() : m.getQualityScore(),
-                    m.getTotalFiles(),
-                    m.getAnalyzedFiles(),
-                    m.getCriticalCount(),
-                    m.getHighCount(),
-                    m.getMediumCount(),
-                    m.getLowCount(),
-                    m.getDurationMs()
-            );
-        }
+        AnalysisMetricResponse metricResponse = toMetricResponse(entity.getMetric());
 
         List<FindingResponse> findingResponses = findings.stream()
                 .map(this::toFindingResponse)
@@ -340,6 +304,24 @@ public class AnalysisJobService {
         entity.setMetric(metric);
 
         jobRepository.save(entity);
+    }
+
+    private AnalysisMetricResponse toMetricResponse(AnalysisMetricEntity m) {
+        if (m == null) return null;
+        return new AnalysisMetricResponse(
+                m.getSecurityScore(),
+                m.getQualityScore(),
+                m.getOperationsScore(),
+                m.getMaintainabilityScore() > 0 ? m.getMaintainabilityScore() : m.getQualityScore(),
+                m.getArchitecturalScore() > 0 ? m.getArchitecturalScore() : m.getQualityScore(),
+                m.getTotalFiles(),
+                m.getAnalyzedFiles(),
+                m.getCriticalCount(),
+                m.getHighCount(),
+                m.getMediumCount(),
+                m.getLowCount(),
+                m.getDurationMs()
+        );
     }
 
     private FindingResponse toFindingResponse(FindingEntity f) {
