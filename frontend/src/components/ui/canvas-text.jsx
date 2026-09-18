@@ -10,6 +10,7 @@ export const CanvasText = ({
 }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
+  const measureRef = useRef(null);
   const animationRef = useRef(null);
   const offsetRef = useRef(0);
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -18,36 +19,67 @@ export const CanvasText = ({
   const activeColors = colors && colors.length > 0
     ? colors
     : [
-        "rgba(37, 99, 235, 1)",      // Ochre #D97706
-        "rgba(29, 78, 216, 0.95)",    // Deep Amber #B45309
-        "rgba(15, 23, 42, 0.95)",    // Slate 900 #0F172A
-        "rgba(59, 130, 246, 0.9)",   // Amber #F59E0B
-        "rgba(96, 165, 250, 0.85)",
+        "rgba(37, 99, 235, 1)",      // Royal Blue
+        "rgba(29, 78, 216, 0.95)",   // Deep Blue
+        "rgba(15, 23, 42, 0.95)",    // Slate 900
+        "rgba(59, 130, 246, 0.9)",   // Vibrant Blue
+        "rgba(96, 165, 250, 0.85)",  // Sky Blue
         "rgba(15, 23, 42, 0.9)",
       ];
 
   const updateDimensions = useCallback(() => {
-    if (!containerRef.current || !canvasRef.current) return;
+    if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = typeof window !== "undefined" ? Math.min(window.devicePixelRatio || 1, 2) : 1;
     
-    const w = Math.ceil(rect.width);
-    const h = Math.ceil(rect.height);
+    let w = Math.ceil(rect.width);
+    let h = Math.ceil(rect.height);
+
+    // Fallback to measureRef if container has zero bounding rect during layout transition
+    if ((w === 0 || h === 0) && measureRef.current) {
+      w = Math.ceil(measureRef.current.offsetWidth || measureRef.current.scrollWidth || 0);
+      h = Math.ceil(measureRef.current.offsetHeight || measureRef.current.scrollHeight || 0);
+    }
 
     if (w > 0 && h > 0) {
-      canvasRef.current.width = w * dpr;
-      canvasRef.current.height = h * dpr;
-      setSize({ width: w, height: h });
+      if (canvasRef.current) {
+        canvasRef.current.width = w * dpr;
+        canvasRef.current.height = h * dpr;
+      }
+      setSize((prev) => {
+        if (prev.width === w && prev.height === h) return prev;
+        return { width: w, height: h };
+      });
     }
   }, []);
 
   useEffect(() => {
     updateDimensions();
+
+    let resizeObserver;
+    const container = containerRef.current;
+    if (container && typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(() => {
+        updateDimensions();
+      });
+      resizeObserver.observe(container);
+    }
+
     window.addEventListener("resize", updateDimensions);
-    const timer = setTimeout(updateDimensions, 80);
+    window.addEventListener("orientationchange", updateDimensions);
+
+    // Multiple staggered timers to catch CSS media query / hidden-to-visible transitions
+    const timer1 = setTimeout(updateDimensions, 60);
+    const timer2 = setTimeout(updateDimensions, 200);
+    const timer3 = setTimeout(updateDimensions, 500);
+
     return () => {
+      if (resizeObserver) resizeObserver.disconnect();
       window.removeEventListener("resize", updateDimensions);
-      clearTimeout(timer);
+      window.removeEventListener("orientationchange", updateDimensions);
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
     };
   }, [updateDimensions, text]);
 
@@ -58,7 +90,7 @@ export const CanvasText = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = typeof window !== "undefined" ? Math.min(window.devicePixelRatio || 1, 2) : 1;
     const w = size.width;
     const h = size.height;
 
@@ -115,22 +147,28 @@ export const CanvasText = ({
       ref={containerRef}
       className={cn("relative inline-block align-middle select-none", className)}
     >
-      {/* Hidden text measuring node */}
+      {/* Measuring / Fallback text: Never leaves a blank hole if canvas is mounting */}
       <span
-        className="invisible font-extrabold font-display whitespace-nowrap block"
+        ref={measureRef}
+        className={cn(
+          "font-extrabold font-display whitespace-nowrap block transition-opacity duration-200",
+          size.width > 0 ? "invisible" : "visible bg-gradient-to-r from-blue-500 to-indigo-400 bg-clip-text text-transparent"
+        )}
         style={{ fontSize: "inherit", lineHeight: "inherit" }}
-        aria-hidden="true"
+        aria-hidden={size.width > 0}
       >
         {text}
       </span>
 
       {/* Canvas rendering view */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        style={{ width: "100%", height: "100%" }}
-        aria-label={text}
-      />
+      {size.width > 0 && (
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full pointer-events-none block"
+          style={{ width: "100%", height: "100%" }}
+          aria-label={text}
+        />
+      )}
     </span>
   );
 };

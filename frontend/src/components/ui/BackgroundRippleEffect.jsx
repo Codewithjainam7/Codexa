@@ -14,11 +14,28 @@ export default function BackgroundRippleEffect({
 
   useEffect(() => {
     const checkMobile = () => {
+      if (typeof window === "undefined") return;
       setIsMobile(window.innerWidth < 768);
     };
     checkMobile();
+
+    let observer;
+    const container = containerRef.current;
+    if (container && typeof ResizeObserver !== "undefined") {
+      observer = new ResizeObserver(() => {
+        checkMobile();
+      });
+      observer.observe(container);
+    }
+
     window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    window.addEventListener("orientationchange", checkMobile);
+
+    return () => {
+      if (observer) observer.disconnect();
+      window.removeEventListener("resize", checkMobile);
+      window.removeEventListener("orientationchange", checkMobile);
+    };
   }, []);
 
   useEffect(() => {

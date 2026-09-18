@@ -7,7 +7,7 @@ export const FlickeringGrid = ({
   squareSize = 4,
   gridGap = 6,
   flickerChance = 0.12,
-  color = "#F59E0B",
+  color = "#3B82F6",
   width,
   height,
   className,
@@ -15,57 +15,92 @@ export const FlickeringGrid = ({
 }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    return typeof window !== "undefined" ? window.innerWidth < 768 : false;
+  });
   const [canvasSize, setCanvasSize] = useState(() => ({
     width: typeof window !== "undefined" ? window.innerWidth : 1440,
     height: typeof window !== "undefined" ? window.innerHeight : 900,
   }));
 
-  // Parse color
+  // Parse color to RGBA prefix
   const memoizedColor = useMemo(() => {
     if (typeof window === "undefined") {
-      return "rgba(245, 158, 11,";
+      return "rgba(59, 130, 246,";
     }
     try {
       const canvas = document.createElement("canvas");
       canvas.width = canvas.height = 1;
       const ctx = canvas.getContext("2d", { willReadFrequently: true });
-      if (!ctx) return "rgba(245, 158, 11,";
+      if (!ctx) return "rgba(59, 130, 246,";
       ctx.fillStyle = color;
       ctx.fillRect(0, 0, 1, 1);
       const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
       return `rgba(${r}, ${g}, ${b},`;
     } catch (e) {
-      return "rgba(245, 158, 11,";
+      return "rgba(59, 130, 246,";
     }
   }, [color]);
 
   const updateCanvasSize = useCallback(() => {
-    const mobileCheck = typeof window !== "undefined" && window.innerWidth < 768;
+    if (typeof window === "undefined") return;
+    const mobileCheck = window.innerWidth < 768;
     setIsMobile(mobileCheck);
 
     if (width && height) {
       setCanvasSize({ width, height });
       return;
     }
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const w = width || rect.width || (typeof window !== "undefined" ? window.innerWidth : 1440);
-      const h = height || rect.height || (typeof window !== "undefined" ? window.innerHeight : 900);
-      if (w > 0 && h > 0) {
-        setCanvasSize({ width: Math.floor(w), height: Math.floor(h) });
-      }
+
+    const container = containerRef.current;
+    let w = 0;
+    let h = 0;
+
+    if (container) {
+      const rect = container.getBoundingClientRect();
+      w = rect.width;
+      h = rect.height;
+    }
+
+    if (!w || !h) {
+      w = typeof window !== "undefined" ? window.innerWidth : 1440;
+      h = typeof window !== "undefined" ? window.innerHeight : 900;
+    }
+
+    if (w > 0 && h > 0) {
+      setCanvasSize((prev) => {
+        const nw = Math.floor(w);
+        const nh = Math.floor(h);
+        if (prev.width === nw && prev.height === nh) return prev;
+        return { width: nw, height: nh };
+      });
     }
   }, [width, height]);
 
   useEffect(() => {
     updateCanvasSize();
+
+    let resizeObserver;
+    const container = containerRef.current;
+    if (container && typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(() => {
+        updateCanvasSize();
+      });
+      resizeObserver.observe(container);
+    }
+
     window.addEventListener("resize", updateCanvasSize);
-    return () => window.removeEventListener("resize", updateCanvasSize);
+    window.addEventListener("orientationchange", updateCanvasSize);
+
+    return () => {
+      if (resizeObserver) resizeObserver.disconnect();
+      window.removeEventListener("resize", updateCanvasSize);
+      window.removeEventListener("orientationchange", updateCanvasSize);
+    };
   }, [updateCanvasSize]);
 
   useEffect(() => {
-    // Disable canvas animation loop on mobile for 60fps performance
+    // Disable heavy canvas animation loop on mobile for 60fps performance
     if (isMobile) return;
 
     const canvas = canvasRef.current;
@@ -79,7 +114,7 @@ export const FlickeringGrid = ({
     const w = canvasSize.width;
     const h = canvasSize.height;
 
-    if (w === 0 || h === 0) return;
+    if (w <= 0 || h <= 0) return;
 
     canvas.width = Math.floor(w * dpr);
     canvas.height = Math.floor(h * dpr);
@@ -142,39 +177,33 @@ export const FlickeringGrid = ({
     memoizedColor,
   ]);
 
-  if (isMobile) {
-    // Ultra-lightweight 0-overhead static CSS grid pattern on mobile
-    return (
-      <div
-        className={cn(
-          "w-full h-full pointer-events-none select-none opacity-20",
-          className
-        )}
-        style={{
-          backgroundImage: `radial-gradient(${color} 1px, transparent 1px)`,
-          backgroundSize: `${squareSize + gridGap * 2}px ${squareSize + gridGap * 2}px`,
-        }}
-      />
-    );
-  }
-
   return (
     <div
       ref={containerRef}
-      className={cn("w-full h-full pointer-events-none select-none", className)}
+      className={cn("w-full h-full pointer-events-none select-none relative", className)}
       style={{
         width: width ? `${width}px` : "100%",
         height: height ? `${height}px` : "100%",
       }}
     >
-      <canvas
-        ref={canvasRef}
-        className="w-full h-full block"
-        style={{
-          width: width ? `${width}px` : "100%",
-          height: height ? `${height}px` : "100%",
-        }}
-      />
+      {isMobile ? (
+        <div
+          className="w-full h-full pointer-events-none select-none opacity-20"
+          style={{
+            backgroundImage: `radial-gradient(${color} 1px, transparent 1px)`,
+            backgroundSize: `${squareSize + gridGap * 2}px ${squareSize + gridGap * 2}px`,
+          }}
+        />
+      ) : (
+        <canvas
+          ref={canvasRef}
+          className="w-full h-full block"
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+        />
+      )}
     </div>
   );
 };

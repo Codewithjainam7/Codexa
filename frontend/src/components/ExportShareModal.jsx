@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   X, Share2, Copy, Check, Download, ExternalLink, 
   Printer, FileText, Shield, CheckCircle2, AlertTriangle,
@@ -19,6 +20,16 @@ export default function ExportShareModal({
   const [shareSuccess, setShareSuccess] = useState(false);
   const [activeTab, setActiveTab] = useState('actions');
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (!isOpen || typeof document === 'undefined') return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isOpen]);
+
   // Close modal on Escape key press
   useEffect(() => {
     if (!isOpen) return;
@@ -27,7 +38,7 @@ export default function ExportShareModal({
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]); // 'actions' | 'preview'
+  }, [isOpen, onClose]);
 
   // Synchronize format when initialFormat changes
   useEffect(() => {
@@ -264,8 +275,11 @@ _Audited deterministically by CODEXA AST Engine_`;
   const rawPreview = getRawContent();
   const previewLines = rawPreview.split('\n').slice(0, 16).join('\n');
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200 select-none">
+  const modalContent = (
+    <div 
+      className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200 select-none"
+      onClick={onClose}
+    >
       <div 
         className="w-full sm:max-w-lg bg-[#0D121F] rounded-t-3xl sm:rounded-3xl border border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh] pb-[max(1.25rem,env(safe-area-inset-bottom))]"
         onClick={(e) => e.stopPropagation()}
@@ -443,4 +457,9 @@ _Audited deterministically by CODEXA AST Engine_`;
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined' && document.body) {
+    return createPortal(modalContent, document.body);
+  }
+  return modalContent;
 }
