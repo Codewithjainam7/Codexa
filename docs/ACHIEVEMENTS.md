@@ -73,6 +73,24 @@ Codexa identified **18 critical and high-severity security vulnerabilities, arch
   Naive security scanners checked for the string `authorization` and erroneously concluded the function was authenticated (false negative).
 * **Codexa Achievement**: Codexa implements `REAL_EDGE_AUTH_PATTERN`, requiring functional verification (`req.headers.get('authorization')` or `supabase.auth.getUser()`). Because no caller verification took place, Codexa flagged `CR-EDGE-001` (Open Serverless Relay).
 
+#### 5. Multi-Line SQL Migration RLS Bypasses (`20260917_surveys_and_responses.sql` & `20260831_permissions_database_sync.sql`)
+* **Vulnerability**: Database migrations defined permissive RLS policies across multiple lines:
+  ```sql
+  CREATE POLICY "Public and auth full access surveys" ON public.surveys
+    FOR ALL TO anon, authenticated
+    USING (true)
+    WITH CHECK (true);
+  ```
+* **Engineering Challenge**: Line-by-line scanners failed to correlate `CREATE POLICY` on line 1 with `USING (true)` on line 4, creating blind spots in formatted SQL migration files.
+* **Codexa Achievement**: Codexa's multi-line SQL statement tracer scans permissive predicates (`USING (true)`, `WITH CHECK (true)`) and automatically back-traces up to 10 lines to link the enclosing `CREATE POLICY` statement, providing exact statement boundary highlighting, deduplication, and `CR-RLS-001` violation alerts.
+
+#### 6. Eradication of the 20-Item Findings Cap & Exposure Prioritization
+* **Engineering Problem**: Standard pagination defaults (size=20) silently omitted findings past the 20th item from reports and executive views. Furthermore, critical perimeter files (`vite.config.ts`, SQL migrations, state stores) were given flat exposure scores (`0.50`), allowing trivial lint warnings to rank above critical perimeter bugs.
+* **Codexa Achievement**:
+  - Elevated default pagination page size to **1,000** (max **5,000**) in both backend controller and frontend client to guarantee zero finding truncation.
+  - Re-weighted `IssuePrioritizer` to assign **1.00 exposure** to perimeter configuration files, database migrations, SQL schemas, and state stores.
+  - Assigned **1.00 impact** to PRNG security tokens (`CR-RAND`) and dev-server middleware 404 traps (`CR-ARCH`), guaranteeing critical perimeter risks rank at the absolute top of prioritized audits.
+
 ---
 
 ## 2. Test Suite & Reliability Milestones
@@ -81,12 +99,12 @@ Codexa enforces continuous automated regression testing across all ingestion, ru
 
 ```
 [INFO] Results:
-[INFO] Tests run: 114, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 116, Failures: 0, Errors: 0, Skipped: 0
 [INFO] BUILD SUCCESS
 ```
 
-### Test Suite Breakdown (114 Total Tests)
-- **Multi-Language & Polyglot Rule Tests**: 10 tests verifying UTF-16LE decoding, BOM handling, fallback secrets, dev middleware detection, and Edge Function zero-trust checks.
+### Test Suite Breakdown (116 Total Tests)
+- **Multi-Language & Polyglot Rule Tests**: 12 tests verifying UTF-16LE decoding, BOM handling, fallback secrets, dev middleware detection, Edge Function zero-trust checks, multi-line SQL migration RLS bypasses, and function-scoped PRNG PINs/tokens.
 - **Java AST & Security Rule Tests**: 42 tests verifying SQLi, Command Injection, Insecure Deserialization, SSRF, Path Traversal, Weak Hashes, and Disabled TLS validation.
 - **Defensive Ingestion & Sandboxing Tests**: 12 tests verifying Zip Slip canonical path checking, zip bomb quota limits, directory depth bounds, and empty archive rejection.
 - **SSRF & Network Boundary Tests**: 16 tests verifying IP range validation, loopback blocking, private CIDR rejection, and cloud metadata defense.

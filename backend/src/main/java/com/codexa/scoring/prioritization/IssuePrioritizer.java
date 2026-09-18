@@ -43,8 +43,10 @@ public class IssuePrioritizer {
         String path = (finding.getFilePath() != null ? finding.getFilePath() : "").toLowerCase();
         String desc = (finding.getDescription() != null ? finding.getDescription() : "").toLowerCase();
 
-        if (path.contains("controller") || desc.contains("endpoint") || desc.contains("cors") || desc.contains("http") || path.contains("functions/")) {
-            return 1.00; // public endpoint exposure
+        if (path.contains("controller") || desc.contains("endpoint") || desc.contains("cors") || desc.contains("http")
+                || path.contains("functions/") || path.contains("config") || path.contains("migration")
+                || path.contains("sql") || path.contains("store") || path.contains("router") || path.contains("api")) {
+            return 1.00; // public endpoint / perimeter / database / config exposure
         }
         if (path.contains("service") || path.contains("auth")) {
             return 0.75; // internal authenticated service
@@ -56,8 +58,9 @@ public class IssuePrioritizer {
         String ruleId = finding.getRuleId() != null ? finding.getRuleId() : "";
         if (ruleId.startsWith("CR-SQL") || ruleId.startsWith("CR-CMD") || ruleId.startsWith("CR-SEC") ||
                 ruleId.startsWith("CR-AUTH") || ruleId.startsWith("CR-PASS") || ruleId.startsWith("CR-CRYPTO") ||
-                ruleId.startsWith("CR-LEAK") || ruleId.startsWith("CR-RLS") || ruleId.startsWith("CR-EDGE")) {
-            return 1.00; // auth / secrets / payment / PII impact
+                ruleId.startsWith("CR-LEAK") || ruleId.startsWith("CR-RLS") || ruleId.startsWith("CR-EDGE") ||
+                ruleId.startsWith("CR-RAND") || ruleId.startsWith("CR-ARCH")) {
+            return 1.00; // auth / secrets / payment / PII / architecture impact
         }
         if (ruleId.startsWith("CR-XSS") || ruleId.startsWith("CR-DEP") || ruleId.startsWith("CR-QUAL-001")) {
             return 0.70; // normal business data impact

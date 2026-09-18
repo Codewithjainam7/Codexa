@@ -264,4 +264,83 @@ class UniversalMultiLanguageRuleTest {
         boolean found = findings.stream().anyMatch(f -> "CR-EDGE-001".equals(f.ruleId()));
         assertTrue(found, "Edge function with authorization header in CORS must still be flagged if no real auth check is performed");
     }
+
+    @Test
+    void testMultiLineSqlMigrationRlsBypassDetected(@TempDir Path tempDir) throws IOException {
+        Path migDir = tempDir.resolve("supabase/migrations");
+        Files.createDirectories(migDir);
+        Path surveyMig = migDir.resolve("20260917_surveys_and_responses.sql");
+        Files.writeString(surveyMig, """
+                ALTER TABLE public.surveys ENABLE ROW LEVEL SECURITY;
+                
+                DROP POLICY IF EXISTS "Public and auth full access surveys" ON public.surveys;
+                CREATE POLICY "Public and auth full access surveys" ON public.surveys
+                  FOR ALL TO anon, authenticated
+                  USING (true)
+                  WITH CHECK (true);
+                  
+                DROP POLICY IF EXISTS "Public and auth full access survey_responses" ON public.survey_responses;
+                CREATE POLICY "Public and auth full access survey_responses" ON public.survey_responses
+                  FOR ALL TO anon, authenticated
+                  USING (true)
+                  WITH CHECK (true);
+                """);
+
+        Path permMig = migDir.resolve("20260831_permissions_database_sync.sql");
+        Files.writeString(permMig, """
+                ALTER TABLE public.role_permissions ENABLE ROW LEVEL SECURITY;
+                
+                DROP POLICY IF EXISTS "Allow authenticated read role_permissions" ON public.role_permissions;
+                CREATE POLICY "Allow authenticated read role_permissions" 
+                ON public.role_permissions FOR SELECT TO authenticated USING (true);
+                
+                DROP POLICY IF EXISTS "Allow authenticated insert/update role_permissions" ON public.role_permissions;
+                CREATE POLICY "Allow authenticated insert/update role_permissions" 
+                ON public.role_permissions FOR ALL TO authenticated USING (true) WITH CHECK (true);
+                """);
+
+        RuleContext ctx = new RuleContext(null, new PipelineContext(UUID.randomUUID(), tempDir));
+        List<RuleFinding> findings = rule.evaluate(ctx);
+
+        List<RuleFinding> rlsFindings = findings.stream().filter(f -> "CR-RLS-001".equals(f.ruleId())).toList();
+        assertTrue(rlsFindings.size() >= 4, "Should detect at least 4 CR-RLS-001 findings across both multi-line migration scripts (actual: " + rlsFindings.size() + ")");
+        
+        boolean foundSurveyMig = rlsFindings.stream().anyMatch(f -> f.filePath().contains("20260917_surveys_and_responses.sql"));
+        boolean foundPermMig = rlsFindings.stream().anyMatch(f -> f.filePath().contains("20260831_permissions_database_sync.sql"));
+        assertTrue(foundSurveyMig, "Must flag multi-line RLS bypass in 20260917_surveys_and_responses.sql");
+        assertTrue(foundPermMig, "Must flag multi-line RLS bypass in 20260831_permissions_database_sync.sql");
+    }
+
+    @Test
+    void testFunctionScopedPrngPinDetected(@TempDir Path tempDir) throws IOException {
+        Path storeDir = tempDir.resolve("src/store");
+        Files.createDirectories(storeDir);
+        Path storeFile = storeDir.resolve("smartLotStore.ts");
+        Files.writeString(storeFile, """
+                function generateSecurePin(min = 1000, max = 9999): string {
+                  if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+                    const arr = new Uint32Array(1);
+                    window.crypto.getRandomValues(arr);
+                    const range = max - min + 1;
+                    return (min + (arr[0] % range)).toString();
+                  }
+                  return Math.floor(min + Math.random() * (max - min + 1)).toString();
+                }
+                
+                function generateSecureToken(prefix = 'INV'): string {
+                  if (typeof window !== 'undefined' && window.crypto && window.crypto.randomUUID) {
+                    return `${prefix}-${window.crypto.randomUUID().replace(/-/g, '').substring(0, 10).toUpperCase()}`;
+                  }
+                  return `${prefix}-${Date.now().toString(36).toUpperCase()}`;
+                }
+                """);
+
+        RuleContext ctx = new RuleContext(null, new PipelineContext(UUID.randomUUID(), tempDir));
+        List<RuleFinding> findings = rule.evaluate(ctx);
+
+        boolean foundPin = findings.stream().anyMatch(f -> "CR-RAND-001".equals(f.ruleId()));
+        boolean foundToken = findings.stream().anyMatch(f -> "CR-RAND-002".equals(f.ruleId()));
+        assertTrue(foundPin, "Should detect CR-RAND-001 inside generateSecurePin helper");
+        assertTrue(foundToken, "Should detect CR-RAND-002 inside generateSecureToken helper");
+    }
 }

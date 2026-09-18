@@ -63,6 +63,9 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
     private static final Pattern PREDICTABLE_TIMESTAMP_TOKEN_PATTERN = Pattern.compile(
             "(?i)(?:const|let|var)?\\s*[a-zA-Z0-9_]*(?:token|invite|magic|access|auth|code|session|link)\\w*\\s*[:=].*?(?:`[^`]*\\$\\{.*?Date\\.now\\(\\).*?\\}[^`]*`|Date\\.now\\(\\))"
     );
+    private static final Pattern SECURITY_FN_CONTEXT_PATTERN = Pattern.compile(
+            "(?i)(?:function|const|let|var|def)\\s+[a-zA-Z0-9_]*(?:token|secret|password|nonce|otp|auth|salt|key|pin|code|access|passcode|invite|magic)"
+    );
 
     // 11. Insecure Deserialization
     private static final Pattern INSECURE_DESERIALIZATION_PATTERN = Pattern.compile("(?:pickle\\.loads|yaml\\.load\\s*\\([^,)]*Loader\\s*=\\s*yaml\\.Loader|unserialize\\s*\\(|java\\.io\\.ObjectInputStream)");
@@ -83,7 +86,7 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
 
     // 14. Dev Server Middleware API Route (Vite configureServer 404 trap)
     private static final Pattern DEV_MIDDLEWARE_API_PATTERN = Pattern.compile(
-            "(?i)(?:server\\.middlewares\\.use\\s*\\(\\s*['\"]/api/|(?:req\\.url|url)\\s*(?:===?|\\.startsWith\\s*\\()\\s*['\"]/api/[a-zA-Z0-9_.-]+|req\\.url\\s*&&\\s*req\\.url\\.includes\\s*\\(\\s*['\"]/api/)"
+            "(?i)(?:server\\.middlewares\\.use\\s*\\(|(?:req\\.(?:url|originalUrl)|url)\\s*(?:===?|\\?\\.startsWith|\\.startsWith|\\?\\.includes|\\.includes)\\s*\\(?\\s*['\"]/api/[a-zA-Z0-9_.-]*|req\\.url\\s*&&\\s*req\\.url\\.includes\\s*\\(\\s*['\"]/api/)"
     );
 
     // 15. Real Supabase / Edge Function Authorization Check
@@ -98,7 +101,7 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
 
     // 17. Insecure Database Scripts (RLS Disabled / Permissive Policy)
     private static final Pattern INSECURE_RLS_DISABLE_PATTERN = Pattern.compile(
-            "(?i)(?:DISABLE\\s+ROW\\s+LEVEL\\s+SECURITY|CREATE\\s+POLICY[^\n;]+USING\\s*\\(\\s*true\\s*\\)|CREATE\\s+POLICY[^\n;]+WITH\\s+CHECK\\s*\\(\\s*true\\s*\\))"
+            "(?i)(?:DISABLE\\s+ROW\\s+LEVEL\\s+SECURITY|CREATE\\s+POLICY.*?(?:USING|WITH\\s+CHECK)\\s*\\(\\s*true\\s*\\)|(?:USING|WITH\\s+CHECK)\\s*\\(\\s*true\\s*\\))"
     );
 
     // 17. Quality & Maintainability
@@ -424,7 +427,16 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
                 }
 
                 // 10. Check Insecure Randomness (Math.random in security/PIN contexts)
-                if (INSECURE_RANDOM_PATTERN.matcher(line).find()) {
+                boolean isRandomPin = INSECURE_RANDOM_PATTERN.matcher(line).find();
+                if (!isRandomPin && line.contains("Math.random")) {
+                    for (int k = Math.max(0, i - 10); k < i; k++) {
+                        if (SECURITY_FN_CONTEXT_PATTERN.matcher(lines.get(k)).find()) {
+                            isRandomPin = true;
+                            break;
+                        }
+                    }
+                }
+                if (isRandomPin) {
                     findings.add(RuleFinding.builder()
                             .ruleId("CR-RAND-001")
                             .category(Category.SECURITY)
@@ -446,7 +458,16 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
                 }
 
                 // 10b. Check Predictable Timestamp Tokens (Date.now())
-                if (PREDICTABLE_TIMESTAMP_TOKEN_PATTERN.matcher(line).find()) {
+                boolean isTimestampToken = PREDICTABLE_TIMESTAMP_TOKEN_PATTERN.matcher(line).find();
+                if (!isTimestampToken && line.contains("Date.now()")) {
+                    for (int k = Math.max(0, i - 10); k < i; k++) {
+                        if (SECURITY_FN_CONTEXT_PATTERN.matcher(lines.get(k)).find()) {
+                            isTimestampToken = true;
+                            break;
+                        }
+                    }
+                }
+                if (isTimestampToken) {
                     findings.add(RuleFinding.builder()
                             .ruleId("CR-RAND-002")
                             .category(Category.SECURITY)
@@ -645,24 +666,52 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
 
                 // 14f. Check Insecure Database Scripts Disabling Row Level Security (RLS)
                 if (INSECURE_RLS_DISABLE_PATTERN.matcher(line).find()) {
-                    findings.add(RuleFinding.builder()
-                            .ruleId("CR-RLS-001")
-                            .category(Category.SECURITY)
-                            .severity(Severity.CRITICAL)
-                            .confidence(Confidence.HIGH)
-                            .title("Insecure Database Script Disabling Row Level Security (RLS Bypass)")
-                            .description("Database migration or SQL script contains statements disabling Row Level Security ('DISABLE ROW LEVEL SECURITY') or creating globally permissive policies ('USING (true)' / 'WITH CHECK (true)').")
-                            .impact("Bypasses multi-tenant data isolation and row-level authorization, allowing any anonymous or low-privileged user to read, modify, or delete arbitrary rows across the database.")
-                            .remediation("Enable Row Level Security ('ENABLE ROW LEVEL SECURITY') and specify restrictive policy predicates based on auth.uid() or tenant identifiers.")
-                            .owaspMapping("A01:2021-Broken Access Control")
-                            .filePath(relPath)
-                            .startLine(lineNum)
-                            .endLine(lineNum)
-                            .evidence(SecretMasker.maskSecrets(line.trim()))
-                            .suggestedFix("ALTER TABLE table_name ENABLE ROW LEVEL SECURITY;\nCREATE POLICY \"Users can view own data\" ON table_name FOR SELECT USING (auth.uid() = user_id);")
-                            .references(List.of("https://supabase.com/docs/guides/auth/row-level-security"))
-                            .build()
+                    int startLine = lineNum;
+                    int endLine = lineNum;
+                    String evidenceText = line.trim();
+
+                    // If line is a multi-line policy clause (e.g. USING (true) or WITH CHECK (true)), trace backwards to find CREATE POLICY
+                    if (!line.toUpperCase().contains("CREATE POLICY") && !line.toUpperCase().contains("DISABLE")) {
+                        for (int k = i - 1; k >= Math.max(0, i - 10); k--) {
+                            String prev = lines.get(k).trim();
+                            if (prev.toUpperCase().contains("CREATE POLICY")) {
+                                startLine = k + 1;
+                                evidenceText = prev + " ... " + line.trim();
+                                break;
+                            }
+                            if (prev.endsWith(";")) {
+                                break;
+                            }
+                        }
+                    }
+
+                    final int finalStartLine = startLine;
+                    boolean alreadyFlagged = findings.stream().anyMatch(f ->
+                            "CR-RLS-001".equals(f.ruleId()) &&
+                            relPath.equals(f.filePath()) &&
+                            f.startLine() == finalStartLine
                     );
+
+                    if (!alreadyFlagged) {
+                        findings.add(RuleFinding.builder()
+                                .ruleId("CR-RLS-001")
+                                .category(Category.SECURITY)
+                                .severity(Severity.CRITICAL)
+                                .confidence(Confidence.HIGH)
+                                .title("Insecure Database Script Disabling Row Level Security (RLS Bypass)")
+                                .description("Database migration or SQL script contains statements disabling Row Level Security ('DISABLE ROW LEVEL SECURITY') or creating globally permissive policies ('USING (true)' / 'WITH CHECK (true)').")
+                                .impact("Bypasses multi-tenant data isolation and row-level authorization, allowing any anonymous or low-privileged user to read, modify, or delete arbitrary rows across the database.")
+                                .remediation("Enable Row Level Security ('ENABLE ROW LEVEL SECURITY') and specify restrictive policy predicates based on auth.uid() or tenant identifiers.")
+                                .owaspMapping("A01:2021-Broken Access Control")
+                                .filePath(relPath)
+                                .startLine(startLine)
+                                .endLine(endLine)
+                                .evidence(SecretMasker.maskSecrets(evidenceText))
+                                .suggestedFix("ALTER TABLE table_name ENABLE ROW LEVEL SECURITY;\nCREATE POLICY \"Users can view own data\" ON table_name FOR SELECT USING (auth.uid() = user_id);")
+                                .references(List.of("https://supabase.com/docs/guides/auth/row-level-security"))
+                                .build()
+                        );
+                    }
                 }
 
                 // 15. Check Empty / Swallowed Catch Blocks (Code Quality)

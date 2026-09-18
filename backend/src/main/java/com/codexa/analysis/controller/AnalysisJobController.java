@@ -41,10 +41,10 @@ public class AnalysisJobController {
             @RequestParam(required = false) Confidence confidence,
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
+            @RequestParam(defaultValue = "1000") int size
     ) {
         int sanitizedPage = Math.max(0, page);
-        int sanitizedSize = Math.min(Math.max(1, size), 200);
+        int sanitizedSize = Math.min(Math.max(1, size), 5000);
         return ResponseEntity.ok(jobService.getFindings(jobId, category, severity, confidence, search, sanitizedPage, sanitizedSize));
     }
 

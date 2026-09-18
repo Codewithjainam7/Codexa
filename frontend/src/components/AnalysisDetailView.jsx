@@ -175,7 +175,9 @@ export default function AnalysisDetailView({ jobId, onBack }) {
       getFindings(jobId, {
         category: categoryFilter,
         severity: severityFilter,
-        search: searchFilter
+        search: searchFilter,
+        page: 0,
+        size: 1000
       }).then(fData => {
         if (active) {
           setFindings(fData.content || []);

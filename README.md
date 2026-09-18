@@ -6,7 +6,7 @@
 [![Vite + React](https://img.shields.io/badge/Frontend-React%2018%20%2B%20Vite%205-blue.svg)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4-38bdf8.svg)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-114%20Passing%20(100%25)-emerald.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-116%20Passing%20(100%25)-emerald.svg)]()
 [![Rules](https://img.shields.io/badge/Rules-30%2B%20AST%20%26%20Polyglot-purple.svg)](docs/RULES_CATALOG.md)
 [![Scale](https://img.shields.io/badge/Ingestion-3%20GB%20%7C%2050%2C000%20Files-blue.svg)](docs/BENCHMARKS.md)
 [![SARIF](https://img.shields.io/badge/SARIF-v2.1.0%20GitHub%20Ready-green.svg)](docs/SARIF_INTEGRATION.md)
