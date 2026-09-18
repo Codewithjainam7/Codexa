@@ -39,8 +39,8 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
     private static final Pattern TLS_VERIFY_DISABLED_PATTERN = Pattern.compile("(?i)rejectUnauthorized\\s*:\\s*false|verify\\s*=\\s*False|InsecureSkipVerify\\s*:\\s*true|NODE_TLS_REJECT_UNAUTHORIZED\\s*=\\s*['\"]?0['\"]?");
 
     // 5. Secrets & Fallback Secrets
-    private static final Pattern FALLBACK_SECRET_PATTERN = Pattern.compile("(?i)(?:process\\.env\\.[A-Z0-9_]*(?:SECRET|KEY|PASSWORD|TOKEN)|os\\.getenv\\([\"'][A-Z0-9_]*(?:SECRET|KEY|PASSWORD)[\"']\\))\\s*\\|\\|\\s*[\"']([^\"']{4,})[\"']");
-    private static final Pattern HARDCODED_SECRET_PATTERN = Pattern.compile("(?i)(?:const|let|var|String|val)\\s+(?:jwtSecret|api_?key|secretKey|auth_?token|app_?secret)\\s*=\\s*[\"'][a-zA-Z0-9_\\-+=]{8,}[\"']");
+    private static final Pattern FALLBACK_SECRET_PATTERN = Pattern.compile("(?i)(?:process\\.env|import\\.meta\\.env)\\.[A-Z0-9_]*(?:SECRET|KEY|PASSWORD|TOKEN|API|MAILTRAP|RESEND|SENDGRID|GEMINI|OPENAI|INBOX|CLIENT_ID|AUTH)[A-Z0-9_]*\\s*(?:\\|\\|\\s*['\"]([^'\"]{4,})['\"]|\\?\\?\\s*['\"]([^'\"]{4,})['\"])");
+    private static final Pattern HARDCODED_SECRET_PATTERN = Pattern.compile("(?i)(?:const|let|var|String|val)\\s+(?:jwtSecret|api_?key|secretKey|auth_?token|app_?secret|mailtrap_?token|mailtrapToken|token|apiKey|apiSecret|secretToken)\\s*=\\s*[\"'][a-zA-Z0-9_\\-+=]{8,}[\"']");
     private static final Pattern PEM_PRIVATE_KEY_PATTERN = Pattern.compile("-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----");
     private static final Pattern DB_CONN_STRING_SECRET_PATTERN = Pattern.compile("(?:mongodb(?:\\+srv)?|postgres(?:ql)?|mysql|redis):\\/\\/[a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.-]+");
 
@@ -56,9 +56,13 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
     // 9. ReDoS (Catastrophic Regular Expression Backtracking)
     private static final Pattern REDOS_PATTERN = Pattern.compile("RegExp\\s*\\([\"'][^\"']*(?:\\([^)]+\\+\\)\\+|\\([^)]+\\*\\)\\*|\\([^)]+\\+\\)\\*)[^\"']*[\"']\\)|/(?:\\([^)]+\\+\\)\\+|\\([^)]+\\*\\)\\*|\\([^)]+\\+\\)\\*)/");
 
-    // 10. Insecure Randomness in Security Contexts
-    private static final Pattern INSECURE_RANDOM_PATTERN = Pattern.compile("(?i)(?:token|secret|password|nonce|otp|auth|salt|key|pin|code|accessPin|randomPin|passcode|invite|magic)\\s*[:=].*?(?:Math\\.random\\s*\\(|random\\.random\\s*\\(|rand\\.Int\\s*\\()");
-    private static final Pattern PREDICTABLE_TIMESTAMP_TOKEN_PATTERN = Pattern.compile("(?i)(?:const|let|var|token|inviteToken|magicToken|accessToken|refreshToken|accessCode|auth)\\s*[:=].*?(?:`[^`]*\\$\\{Date\\.now\\(\\)\\}[^`]*`|['\"][^'\"]*['\"]\\s*\\+\\s*Date\\.now\\(\\))");
+    // 10. Insecure Randomness in Security Contexts (Weak PINs & PRNG)
+    private static final Pattern INSECURE_RANDOM_PATTERN = Pattern.compile(
+            "(?i)(?:const|let|var)?\\s*[a-zA-Z0-9_]*(?:token|secret|password|nonce|otp|auth|salt|key|pin|code|accessPin|randomPin|passcode|invite|magic)\\w*\\s*[:=].*?Math\\.random"
+    );
+    private static final Pattern PREDICTABLE_TIMESTAMP_TOKEN_PATTERN = Pattern.compile(
+            "(?i)(?:const|let|var)?\\s*[a-zA-Z0-9_]*(?:token|invite|magic|access|auth|code|session|link)\\w*\\s*[:=].*?(?:`[^`]*\\$\\{.*?Date\\.now\\(\\).*?\\}[^`]*`|Date\\.now\\(\\))"
+    );
 
     // 11. Insecure Deserialization
     private static final Pattern INSECURE_DESERIALIZATION_PATTERN = Pattern.compile("(?:pickle\\.loads|yaml\\.load\\s*\\([^,)]*Loader\\s*=\\s*yaml\\.Loader|unserialize\\s*\\(|java\\.io\\.ObjectInputStream)");
@@ -79,15 +83,20 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
 
     // 14. Dev Server Middleware API Route (Vite configureServer 404 trap)
     private static final Pattern DEV_MIDDLEWARE_API_PATTERN = Pattern.compile(
-            "(?i)(?:req\\.url|url)\\s*(?:===?|\\.startsWith\\s*\\()\\s*['\"]/api/[a-zA-Z0-9_.-]+"
+            "(?i)(?:server\\.middlewares\\.use\\s*\\(\\s*['\"]/api/|(?:req\\.url|url)\\s*(?:===?|\\.startsWith\\s*\\()\\s*['\"]/api/[a-zA-Z0-9_.-]+|req\\.url\\s*&&\\s*req\\.url\\.includes\\s*\\(\\s*['\"]/api/)"
     );
 
-    // 15. Hardcoded Signed JWT Tokens in scripts or source
+    // 15. Real Supabase / Edge Function Authorization Check
+    private static final Pattern REAL_EDGE_AUTH_PATTERN = Pattern.compile(
+            "(?i)(?:headers\\.get\\s*\\(\\s*['\"]authorization['\"]|auth\\.getUser|auth\\.getSession|verifyUser|verifyJwt|jwt\\.verify|supabaseClient\\.auth)"
+    );
+
+    // 16. Hardcoded Signed JWT Tokens in scripts or source
     private static final Pattern JWT_TOKEN_PATTERN = Pattern.compile(
             "eyJhbGciOi[a-zA-Z0-9_-]{10,}\\.[a-zA-Z0-9_-]{10,}\\.[a-zA-Z0-9_-]{10,}"
     );
 
-    // 16. Insecure Database Scripts (RLS Disabled / Permissive Policy)
+    // 17. Insecure Database Scripts (RLS Disabled / Permissive Policy)
     private static final Pattern INSECURE_RLS_DISABLE_PATTERN = Pattern.compile(
             "(?i)(?:DISABLE\\s+ROW\\s+LEVEL\\s+SECURITY|CREATE\\s+POLICY[^\n;]+USING\\s*\\(\\s*true\\s*\\)|CREATE\\s+POLICY[^\n;]+WITH\\s+CHECK\\s*\\(\\s*true\\s*\\))"
     );
@@ -161,16 +170,7 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
             return;
         }
 
-        List<String> lines;
-        try {
-            lines = Files.readAllLines(file, StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            try {
-                lines = Files.readAllLines(file, StandardCharsets.ISO_8859_1);
-            } catch (Exception ex) {
-                return;
-            }
-        }
+        List<String> lines = readFileLines(file);
         if (lines.isEmpty()) {
             return;
         }
@@ -185,8 +185,7 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
             boolean performsAction = entireFileContent.contains("json(") || entireFileContent.contains("fetch(") || entireFileContent.contains("email") ||
                     entireFileContent.contains("send") || entireFileContent.contains("resend") || entireFileContent.contains("mailtrap") ||
                     entireFileContent.contains("insert") || entireFileContent.contains("update") || entireFileContent.contains("delete");
-            boolean checksAuth = entireFileContent.contains("Authorization") || entireFileContent.contains("authorization") ||
-                    entireFileContent.contains("getUser") || entireFileContent.contains("getSession") || entireFileContent.contains("verifyUser");
+            boolean checksAuth = REAL_EDGE_AUTH_PATTERN.matcher(entireFileContent).find();
 
             if (handlesRequests && performsAction && !checksAuth) {
                 int targetLine = 1;
@@ -737,5 +736,56 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
         } catch (Exception e) {
             // Ignore unreadable files
         }
+    }
+
+    public static List<String> readFileLines(Path file) {
+        byte[] bytes;
+        try {
+            bytes = Files.readAllBytes(file);
+        } catch (IOException e) {
+            return List.of();
+        }
+
+        if (bytes == null || bytes.length == 0) {
+            return List.of();
+        }
+
+        String content;
+
+        // 1. Detect UTF-16LE BOM (FF FE)
+        if (bytes.length >= 2 && bytes[0] == (byte) 0xFF && bytes[1] == (byte) 0xFE) {
+            content = new String(bytes, 2, bytes.length - 2, StandardCharsets.UTF_16LE);
+        }
+        // 2. Detect UTF-16BE BOM (FE FF)
+        else if (bytes.length >= 2 && bytes[0] == (byte) 0xFE && bytes[1] == (byte) 0xFF) {
+            content = new String(bytes, 2, bytes.length - 2, StandardCharsets.UTF_16BE);
+        }
+        // 3. Detect UTF-8 BOM (EF BB BF)
+        else if (bytes.length >= 3 && bytes[0] == (byte) 0xEF && bytes[1] == (byte) 0xBB && bytes[2] == (byte) 0xBF) {
+            content = new String(bytes, 3, bytes.length - 3, StandardCharsets.UTF_8);
+        }
+        // 4. Detect UTF-16LE without BOM (ASCII characters with 0x00 at odd indices)
+        else if (bytes.length >= 4 && bytes[1] == 0 && bytes[3] == 0 && bytes[0] != 0 && bytes[2] != 0) {
+            content = new String(bytes, StandardCharsets.UTF_16LE);
+        }
+        // 5. Detect UTF-16BE without BOM (ASCII characters with 0x00 at even indices)
+        else if (bytes.length >= 4 && bytes[0] == 0 && bytes[2] == 0 && bytes[1] != 0 && bytes[3] != 0) {
+            content = new String(bytes, StandardCharsets.UTF_16BE);
+        }
+        // 6. Default: try UTF-8, then fallback to ISO-8859-1
+        else {
+            try {
+                content = new String(bytes, StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                content = new String(bytes, StandardCharsets.ISO_8859_1);
+            }
+        }
+
+        // Clean any lingering null bytes from binary/corrupted streams
+        if (content.indexOf('\0') != -1) {
+            content = content.replace("\0", "");
+        }
+
+        return List.of(content.split("\\r?\\n", -1));
     }
 }

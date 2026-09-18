@@ -187,4 +187,81 @@ class UniversalMultiLanguageRuleTest {
         assertTrue(foundJwt, "Should detect CR-SEC-013 hardcoded JWT in seed.mjs");
         assertTrue(foundRls, "Should detect CR-RLS-001 insecure RLS disable in disable_rls.sql");
     }
+
+    @Test
+    void testUtf16LeEncodedDisableRlsDetected(@TempDir Path tempDir) throws IOException {
+        String sql = """
+                CREATE POLICY "Allow anon access" ON public.schemes FOR ALL USING (true);
+                CREATE POLICY "Allow anon access" ON public.members FOR ALL USING (true);
+                CREATE POLICY "Allow anon access" ON public.units FOR ALL USING (true);
+                CREATE POLICY "Allow anon access" ON public.resident_requests FOR ALL USING (true);
+                CREATE POLICY "Allow anon access" ON public.profiles FOR ALL USING (true);
+                """;
+        Path sqlFile = tempDir.resolve("disable_rls.sql");
+        byte[] contentBytes = sql.getBytes(java.nio.charset.StandardCharsets.UTF_16LE);
+        byte[] withBom = new byte[contentBytes.length + 2];
+        withBom[0] = (byte) 0xFF;
+        withBom[1] = (byte) 0xFE;
+        System.arraycopy(contentBytes, 0, withBom, 2, contentBytes.length);
+        Files.write(sqlFile, withBom);
+
+        RuleContext ctx = new RuleContext(null, new PipelineContext(UUID.randomUUID(), tempDir));
+        List<RuleFinding> findings = rule.evaluate(ctx);
+
+        List<RuleFinding> rlsFindings = findings.stream().filter(f -> "CR-RLS-001".equals(f.ruleId())).toList();
+        assertFalse(rlsFindings.isEmpty(), "Must detect CR-RLS-001 in UTF-16LE encoded SQL files");
+    }
+
+    @Test
+    void testViteConfigFallbackTokenAndDevApiDetected(@TempDir Path tempDir) throws IOException {
+        Path viteConfig = tempDir.resolve("vite.config.ts");
+        Files.writeString(viteConfig, """
+                import { defineConfig } from 'vite';
+                export default defineConfig({
+                    plugins: [{
+                        name: 'dev-api',
+                        configureServer(server) {
+                            const token = process.env.MAILTRAP_API_TOKEN || 'b68d42639db12dd9c3a52f87968d94de';
+                            const inboxId = process.env.MAILTRAP_INBOX_ID || '4900976';
+                            server.middlewares.use('/api/email', async (req, res) => {
+                                res.end('ok');
+                            });
+                        }
+                    }]
+                });
+                """);
+
+        RuleContext ctx = new RuleContext(null, new PipelineContext(UUID.randomUUID(), tempDir));
+        List<RuleFinding> findings = rule.evaluate(ctx);
+
+        boolean foundToken = findings.stream().anyMatch(f -> "CR-SEC-002".equals(f.ruleId()));
+        boolean foundDevApi = findings.stream().anyMatch(f -> "CR-ARCH-001".equals(f.ruleId()));
+        assertTrue(foundToken, "Must detect CR-SEC-002 for process.env.MAILTRAP_API_TOKEN / MAILTRAP_INBOX_ID fallback");
+        assertTrue(foundDevApi, "Must detect CR-ARCH-001 for dev middleware API route");
+    }
+
+    @Test
+    void testSupabaseEdgeFunctionWithCorsHeadersStillFlaggedAsOpenRelay(@TempDir Path tempDir) throws IOException {
+        Path funcDir = tempDir.resolve("supabase/functions/send-activity-email");
+        Files.createDirectories(funcDir);
+        Path funcFile = funcDir.resolve("index.ts");
+        Files.writeString(funcFile, """
+                import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+                };
+                serve(async (req) => {
+                    const { email, message } = await req.json();
+                    await fetch("https://api.mailtrap.io/v1/send", { method: "POST" });
+                    return new Response("Sent", { headers: corsHeaders });
+                });
+                """);
+
+        RuleContext ctx = new RuleContext(null, new PipelineContext(UUID.randomUUID(), tempDir));
+        List<RuleFinding> findings = rule.evaluate(ctx);
+
+        boolean found = findings.stream().anyMatch(f -> "CR-EDGE-001".equals(f.ruleId()));
+        assertTrue(found, "Edge function with authorization header in CORS must still be flagged if no real auth check is performed");
+    }
 }
