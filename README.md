@@ -6,8 +6,10 @@
 [![Vite + React](https://img.shields.io/badge/Frontend-React%2018%20%2B%20Vite%205-blue.svg)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4-38bdf8.svg)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-76%20Passing%20(100%25)-emerald.svg)]()
-[![Scale](https://img.shields.io/badge/Ingestion-3%20GB%20%7C%2050%2C000%20Files-blue.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-114%20Passing%20(100%25)-emerald.svg)]()
+[![Rules](https://img.shields.io/badge/Rules-30%2B%20AST%20%26%20Polyglot-purple.svg)](docs/RULES_CATALOG.md)
+[![Scale](https://img.shields.io/badge/Ingestion-3%20GB%20%7C%2050%2C000%20Files-blue.svg)](docs/BENCHMARKS.md)
+[![SARIF](https://img.shields.io/badge/SARIF-v2.1.0%20GitHub%20Ready-green.svg)](docs/SARIF_INTEGRATION.md)
 [![OWASP](https://img.shields.io/badge/Security-OWASP%20Top%2010%20Aligned-red.svg)](https://owasp.org/www-project-top-ten/)
 [![Container](https://img.shields.io/badge/Docker-Non--Root%20Hardened-2496ED.svg)](Dockerfile)
 
@@ -28,6 +30,13 @@ The emergence of AI coding assistants (GitHub Copilot, Cursor, Claude Code, Chat
 Codexa functions as an autonomous, pre-deployment static security, structural quality, and operational readiness gatekeeper. Users submit untrusted repositories via **ZIP archive (up to 3.0 GB / 50,000 files)** or a **public GitHub repository URL**. Codexa safely stages the code in an isolated sandbox, executes high-throughput parallel AST static analysis with zero dynamic code execution, collects deep **White-Box AST structural complexity** and **Black-Box API attack surface mappings**, calculates an explainable **Production Readiness Score (0–100)** across 5 dimensions, enriches critical findings with AI-assisted remediation diffs, and provides an interactive 5-tab dashboard alongside executive audit reports in **PDF, HTML, Markdown, and JSON**.
 
 > **⚠️ Advisory Disclaimer**: Codexa is an advisory static analysis, educational audit, and pre-deployment gatekeeper platform. It is not a formal legal security certification. A clean scan does not guarantee the absence of all vulnerabilities or zero-day exploits. All automated remediations and code patches must undergo human peer review and regression testing prior to production rollout.
+
+### 📖 Key Documentation Links
+- 🛡️ **[Complete Technical Capabilities](docs/CAPABILITIES.md)**: Exhaustive breakdown of ingestion, AST parsing, polyglot analysis, and scoring.
+- 🏆 **[Achievements, Milestones & SmartLot Case Study](docs/ACHIEVEMENTS.md)**: Real-world production audit findings, 114 passing tests, and monorepo benchmarks.
+- 📋 **[Static Rule Catalog](docs/RULES_CATALOG.md)**: Complete guide to all 30+ rules mapped to OWASP Top 10 and CWE.
+- ⚡ **[Scale & Performance Benchmarks](docs/BENCHMARKS.md)**: 3GB Monorepo ingestion, 64KB buffer scaling, and throughput metrics.
+- 📚 **[Master Documentation Index](docs/INDEX.md)**: Central directory linking all 40+ architectural and operational guides.
 
 ---
 
@@ -133,26 +142,37 @@ Simulates an external penetration tester mapping out the application's attack su
 
 ---
 
-## 🛡️ 4. Static Rule Catalog (23+ Built-in Rules)
+## 🛡️ 4. Static Rule Catalog (30+ Built-in & Polyglot Rules)
 
-Codexa's rule engine evaluates every AST node against 23+ deterministic rules mapped to **OWASP Top 10 (2021)** and **MITRE Common Weakness Enumeration (CWE)**:
+Codexa's rule engine evaluates every AST node against **30+ deterministic static rules** mapped to **OWASP Top 10 (2021)** and **MITRE Common Weakness Enumeration (CWE)**. For the exhaustive catalog, see **[RULES_CATALOG.md](docs/RULES_CATALOG.md)**:
 
 | Rule ID | Rule Name | Category | Severity | OWASP Top 10 | CWE ID | Detection Logic |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | `CR-SQL-001` | SQL Injection via Concatenation | SECURITY | CRITICAL | A03:2021-Injection | CWE-89 | Unsanitized string concatenation or dynamic formatting in `Statement.executeQuery()`, JPA native queries, or raw SQL strings. |
 | `CR-CMD-001` | Command Injection & Process Exec | SECURITY | CRITICAL | A03:2021-Injection | CWE-78 | Execution of OS commands via `Runtime.getRuntime().exec()` or `ProcessBuilder` with unsanitized parameters. |
 | `CR-SEC-005` | Insecure Object Deserialization | SECURITY | CRITICAL | A08:2021-Software and Data Integrity | CWE-502 | Direct deserialization of untrusted byte streams using `ObjectInputStream.readObject()` without type filtering. |
+| `CR-RLS-001` | Insecure Row-Level Security Policy | SECURITY | CRITICAL | A01:2021-Broken Access Control | CWE-862 | Administrative SQL scripts granting unconditional anonymous access (`CREATE POLICY ... FOR ALL USING (true)`). Decodes UTF-16LE/BE and UTF-8. |
+| `CR-SEC-010` | Disabled TLS/SSL Certificate Validation | SECURITY | CRITICAL | A02:2021-Cryptographic Failures | CWE-295 | Empty `checkServerTrusted()` or `checkClientTrusted()` implementations in custom `X509TrustManager` instances. |
 | `CR-SEC-001` | Hardcoded Secrets & API Keys | SECURITY | HIGH | A07:2021-Identification & Auth | CWE-798 | Entropy analysis and regex matching for embedded AWS keys (`AKIA...`), GitHub tokens (`ghp_...`), JWT secrets, and private keys. |
+| `CR-SEC-002` | Fallback Secret Assignment | SECURITY | HIGH | A07:2021-Identification & Auth | CWE-798 | Embedded fallback tokens in logical OR (`\|\|`) or nullish coalescing (`??`) assignments (`process.env.TOKEN \|\| 'secret'`). |
 | `CR-SEC-003` | Path Traversal & Arbitrary File Access | SECURITY | HIGH | A01:2021-Broken Access Control | CWE-22 | Instantiation of `File` or `Path` using external request parameters without canonical containment validation. |
 | `CR-SEC-004` | Server-Side Request Forgery (SSRF) | SECURITY | HIGH | A10:2021-SSRF | CWE-918 | Outbound HTTP requests (`HttpURLConnection`, `HttpClient`, `RestTemplate`) constructed with user-controllable target URLs. |
 | `CR-SEC-006` | CSRF & State Mutation in Safe GET | SECURITY | HIGH | A01:2021-Broken Access Control | CWE-352 | State modification (database writes, deletions, updates) invoked within HTTP GET endpoint handlers. |
+| `CR-SEC-007` | Insecure Random Number Generator | SECURITY | HIGH | A02:2021-Cryptographic Failures | CWE-330 | Predictable PRNGs (`java.util.Random`, `Math.random()`) for security tokens, session keys, or visitor access PINs. |
+| `CR-SEC-009` | Weak Cryptographic Hash Function | SECURITY | HIGH | A02:2021-Cryptographic Failures | CWE-328 | Obsolete hashing algorithms (`MD5`, `MD2`, `SHA-1`) initialized in `MessageDigest.getInstance(...)`. |
+| `CR-SEC-013` | Hardcoded JSON Web Token (JWT) | SECURITY | HIGH | A07:2021-Identification & Auth | CWE-798 | Hardcoded JWT authorization tokens (`eyJhbGci...`) in source code, configuration files, or database seed scripts. |
+| `CR-EDGE-001` | Unauthenticated Serverless Edge Function | SECURITY | HIGH | A07:2021-Identification & Auth | CWE-306 | Supabase/Deno Edge Functions performing mutating operations without functional caller auth (`headers.get('authorization')` or `auth.getUser`). |
+| `CR-ARCH-001` | Dev Middleware Production Trap | ARCHITECTURE | HIGH | Clean Architecture | CWE-1068 | Development server middleware route handlers (e.g. Vite `configureServer`) that result in 404 traps when built for production. |
 | `CR-AUTH-001` | Missing Access Control on Endpoints | SECURITY | HIGH | A01:2021-Broken Access Control | CWE-862 | HTTP controller endpoints lacking authorization annotations (`@PreAuthorize`, `@Secured`, `@RolesAllowed`). |
 | `CR-XSS-001` | Cross-Site Scripting in Controllers | SECURITY | HIGH | A03:2021-Injection | CWE-79 | Unescaped user input echoed directly into HTTP responses, raw HTML templates, or `@ResponseBody` payloads. |
 | `CR-PASS-001` | Weak Password Hashing Algorithm | SECURITY | HIGH | A02:2021-Cryptographic Failures | CWE-328 | Utilization of obsolete cryptographic hashing algorithms (`MD5`, `SHA-1`) for password storage or verification. |
-| `CR-CRYPTO-001`| Insecure Cryptography / Weak PRNG | SECURITY | MEDIUM | A02:2021-Cryptographic Failures | CWE-327 | Use of `DES`, `3DES`, `AES/ECB` cipher modes, or non-cryptographic pseudo-random number generators (`java.util.Random`). |
-| `CR-LOG-001` | Sensitive Data Logging | SECURITY | MEDIUM | A09:2021-Security Logging & Monitoring | CWE-532 | Passing sensitive variable names (passwords, tokens, credentials, SSNs) directly into logger method invocations. |
+| `CR-OPS-003` | Unbounded Thread Pool Construction | OPERATIONS | HIGH | Concurrency Safety | CWE-400 | Instantiation of `Executors.newCachedThreadPool()` risking OS thread starvation and Out-of-Memory crashes. |
+| `CR-CRYPTO-001`| Insecure Cryptography / Weak PRNG | SECURITY | MEDIUM | A02:2021-Cryptographic Failures | CWE-327 | Use of `DES`, `3DES`, `AES/ECB` cipher modes, or non-cryptographic pseudo-random number generators. |
+| `CR-SEC-008` | Hardcoded Internal IP Address | SECURITY | MEDIUM | A05:2021-Security Misconfiguration | CWE-668 | Embedded RFC 1918 private IPv4 addresses (`10.x`, `192.168.x`, `172.16-31.x`) exposing internal infrastructure topology. |
 | `CR-CONFIG-001`| Insecure Permissive CORS | SECURITY | MEDIUM | A05:2021-Security Misconfiguration | CWE-942 | Wildcard CORS configuration (`allowedOrigins("*")` or `allowedOriginPatterns("*")`) paired with credential support. |
 | `CR-DEP-001` | Outdated / Vulnerable Dependency | SECURITY | MEDIUM | A06:2021-Vulnerable Components | CWE-1395 | Detection of obsolete or known-vulnerable dependencies declared in `pom.xml` or `package.json`. |
+| `CR-LOG-001` | Sensitive Data Logging | SECURITY | MEDIUM | A09:2021-Security Logging & Monitoring | CWE-532 | Passing sensitive variable names (passwords, tokens, credentials, SSNs) directly into logger method invocations. |
+| `CR-PERF-001` | Quadratic String Concatenation in Loops| PERFORMANCE | MEDIUM | Resource Management | CWE-400 | String `+=` concatenation inside loop bodies causing $O(N^2)$ memory re-allocations instead of using `StringBuilder`. |
 | `CR-QUAL-001` | High Cyclomatic Complexity | QUALITY | MEDIUM | Maintainability | CWE-1074 | Methods exhibiting cyclomatic complexity score $CC > 15$, signaling high maintenance cost and defect propensity. |
 | `CR-QUAL-002` | Long Method Code Smell | QUALITY | LOW | Clean Architecture | CWE-1075 | Monolithic method bodies spanning more than 50 executable lines of code. |
 | `CR-QUAL-003` | Deep Control Flow Nesting | QUALITY | LOW | Code Readability | CWE-1075 | AST block statements nested deeper than 4 levels (`if/for/while/try`). |
@@ -161,8 +181,6 @@ Codexa's rule engine evaluates every AST node against 23+ deterministic rules ma
 | `CR-QUAL-006` | Swallowed / Broad Exception Catch | QUALITY | MEDIUM | Robust Error Handling | CWE-390 | Empty catch blocks or catching raw `Exception`/`Throwable` without re-throwing or structured logging. |
 | `CR-OPS-002` | Unstructured Request Logging | OPERATIONS | LOW | Observability | CWE-778 | Controller methods performing ingress mutations without request contextual correlation logging. |
 | `CR-OPS-004` | Missing Input Validation | OPERATIONS | MEDIUM | Defensive Coding | CWE-20 | Missing `@Valid` or `@Validated` annotations on `@RequestBody` parameters in mutating endpoints. |
-| `CR-SEC-007` | Insecure Random Number Generator | SECURITY | HIGH | A02:2021-Cryptographic Failures | CWE-330 | Utilization of predictable PRNGs (`java.util.Random`, `Math.random()`) for security tokens, session keys, or cryptography. |
-| `CR-SEC-008` | Hardcoded Internal IP Address | SECURITY | MEDIUM | A05:2021-Security Misconfiguration | CWE-668 | Embedded RFC 1918 private IPv4 addresses (`10.x`, `192.168.x`, `172.16-31.x`) exposing internal infrastructure topology. |
 | `CR-MULTI-001` | Universal Polyglot Security Scan | UNIVERSAL | HIGH | Multi-Language Security | CWE-699 | Polyglot fallback engine scanning non-Java assets (TypeScript, Python, Go, PHP, C#) for hardcoded secrets and SQLi. |
 
 ---
@@ -486,7 +504,7 @@ docker run -d \
 
 Codexa enforces strict quality controls across both backend and frontend:
 
-- **Backend Unit & Integration Tests**: 76 passing tests (100% pass rate).
+- **Backend Unit & Integration Tests**: 114 passing tests (100% pass rate).
   ```bash
   cd backend && mvn test
   ```
