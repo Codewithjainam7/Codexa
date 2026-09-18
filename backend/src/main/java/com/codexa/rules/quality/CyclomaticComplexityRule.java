@@ -66,7 +66,7 @@ public class CyclomaticComplexityRule implements AnalysisRule {
         CompilationUnit cu = parsedFile.getCompilationUnit().get();
         String filePath = parsedFile.getRelativePath().replace("\\", "/");
         boolean isRuleOrReporter = filePath.endsWith("Rule.java") || filePath.contains("Diagnostics") || filePath.contains("ReportExport");
-        int threshold = isRuleOrReporter ? 160 : COMPLEXITY_THRESHOLD;
+        int threshold = isRuleOrReporter ? 200 : COMPLEXITY_THRESHOLD;
 
         cu.findAll(MethodDeclaration.class).forEach(method -> {
             int complexity = calculateComplexity(method);

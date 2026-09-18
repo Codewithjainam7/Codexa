@@ -1009,7 +1009,8 @@ public class UniversalMultiLanguageRule implements AnalysisRule {
                 }
 
                 // 16. Check Console Debug Statements in Production Source (Code Quality)
-                if (DEBUG_CONSOLE_PATTERN.matcher(line).find() && !SENSITIVE_LOG_PATTERN.matcher(line).find()) {
+                if (!lowerRelPath.contains("example") && !lowerRelPath.contains("sample") && !lowerRelPath.contains("demo") && !lowerRelPath.contains("docs/")
+                        && DEBUG_CONSOLE_PATTERN.matcher(line).find() && !SENSITIVE_LOG_PATTERN.matcher(line).find()) {
                     findings.add(RuleFinding.builder()
                             .ruleId("CR-QUAL-002")
                             .category(Category.QUALITY)

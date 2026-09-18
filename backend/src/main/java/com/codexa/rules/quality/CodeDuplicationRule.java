@@ -61,10 +61,11 @@ public class CodeDuplicationRule implements AnalysisRule {
 
         for (int i = 0; i < rawLines.size(); i++) {
             String norm = rawLines.get(i).trim();
-            // Skip empty lines, single braces, imports, package statements, and fluent builder chaining
+            // Skip empty lines, single braces, imports, package statements, fluent builder chaining, and argument/parameter lists
             if (!norm.isEmpty() && !norm.equals("{") && !norm.equals("}") && !norm.equals(");") &&
                 !norm.startsWith("import ") && !norm.startsWith("package ") && !norm.startsWith("@") &&
-                !norm.startsWith(".") && !norm.startsWith("//") && !norm.startsWith("/*") && !norm.startsWith("*")) {
+                !norm.startsWith(".") && !norm.startsWith("//") && !norm.startsWith("/*") && !norm.startsWith("*") &&
+                !norm.endsWith(",")) {
                 normalizedLines.add(norm);
                 originalLineNumbers.add(i + 1);
             }
