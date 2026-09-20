@@ -6,96 +6,88 @@ Codexa provides high-performance REST APIs for continuous static security analys
 
 ## 1. Primary Analysis Endpoints
 
-### 1.1 Ingest ZIP Archive
-- **Endpoint:** `POST /api/v1/analysis/zip`
-- **Content-Type:** `multipart/form-data`
-- **Parameters:** `file` (Binary `.zip` archive, max 500 MB)
-- **Response:** `202 Accepted`
-  ```json
-  {
-    "id": "7b0d9124-7f13-432d-9477-7ff7b12ec099",
-    "status": "QUEUED",
-    "sourceType": "ZIP",
-    "sourceIdentifier": "my-service.zip",
-    "createdAt": "2026-09-07T00:00:00Z"
-  }
-  ```
-
-### 1.2 Ingest Public GitHub Repository
-- **Endpoint:** `POST /api/v1/analysis/github`
+### 1.1 Ingest Public GitHub Repository
+- **Endpoint:** `POST /api/v1/analyses/github`
 - **Content-Type:** `application/json`
-- **Body:**
+- **Request Body:**
   ```json
   {
-    "url": "https://github.com/owner/repository"
+    "repoUrl": "https://github.com/owner/repository"
   }
   ```
-- **Response:** `202 Accepted`
+- **Response:** `200 OK` / `202 Accepted`
+  ```json
+  {
+    "id": "4fe10a8a-a1e2-4057-b7f6-f6aafa24764d",
+    "sourceType": "GITHUB",
+    "sourceIdentifier": "https://github.com/owner/repository",
+    "status": "EXTRACTING",
+    "progressStage": "QUEUED_FOR_DOWNLOAD",
+    "progressPercent": 5,
+    "createdAt": "2026-09-20T12:00:00Z"
+  }
+  ```
 
-### 1.3 Poll Analysis Job Status
-- **Endpoint:** `GET /api/v1/analysis/jobs/{jobId}`
+### 1.2 Ingest ZIP Archive
+- **Endpoint:** `POST /api/v1/analyses/zip`
+- **Content-Type:** `multipart/form-data`
+- **Parameters:** `file` (Binary `.zip` archive, max 3.0 GB / 50,000 files)
+- **Response:** `200 OK` / `202 Accepted`
+
+### 1.3 Get Analysis Job Status & Metrics
+- **Endpoint:** `GET /api/v1/analyses/{jobId}`
 - **Response:** `200 OK`
   ```json
   {
-    "id": "7b0d9124-7f13-432d-9477-7ff7b12ec099",
+    "id": "4fe10a8a-a1e2-4057-b7f6-f6aafa24764d",
+    "sourceType": "GITHUB",
+    "sourceIdentifier": "https://github.com/owner/repository",
     "status": "COMPLETED",
     "progressStage": "COMPLETED",
     "progressPercent": 100,
-    "overallScore": 92.5,
-    "verdict": "GENERALLY_PROMISING",
+    "overallScore": 100.0,
+    "verdict": "REVIEW_COMPLETE",
+    "createdAt": "2026-09-20T12:00:00Z",
+    "completedAt": "2026-09-20T12:00:15Z",
     "metrics": {
-      "securityScore": 95.0,
-      "qualityScore": 88.0,
-      "operationsScore": 90.0,
-      "maintainabilityScore": 91.5,
-      "architecturalScore": 89.0,
-      "totalFiles": 128,
-      "analyzedFiles": 128,
+      "securityScore": 100.0,
+      "qualityScore": 100.0,
+      "operationsScore": 100.0,
+      "maintainabilityScore": 100.0,
+      "architecturalScore": 100.0,
+      "totalFiles": 125,
+      "analyzedFiles": 125,
       "criticalCount": 0,
-      "highCount": 1,
-      "mediumCount": 3,
-      "lowCount": 5,
-      "durationMs": 4200
-    }
+      "highCount": 0,
+      "mediumCount": 0,
+      "lowCount": 0,
+      "durationMs": 4850
+    },
+    "topFindings": []
   }
   ```
 
-### 1.4 Retrieve Full Audit Report
-- **Endpoint:** `GET /api/v1/analysis/jobs/{jobId}/report`
-- **Response:** `200 OK` (JSON Report Object)
-
 ---
 
-## 2. Multi-Format Report Export Endpoints
+## 2. Findings & Export Endpoints
 
-| Format | Endpoint | Content-Type |
-| :--- | :--- | :--- |
-| **HTML** | `GET /api/v1/analysis/jobs/{jobId}/export/html` | `text/html; charset=UTF-8` |
-| **Markdown** | `GET /api/v1/analysis/jobs/{jobId}/export/markdown` | `text/markdown; charset=UTF-8` |
-| **JSON** | `GET /api/v1/analysis/jobs/{jobId}/export/json` | `application/json; charset=UTF-8` |
-| **PDF** | Dedicated Client Print Dialog | `application/pdf` |
+### 2.1 Paginated Findings Search
+- **Endpoint:** `GET /api/v1/analyses/{jobId}/findings?page=0&size=20&severity=CRITICAL`
+- **Query Parameters:**
+  - `page`: Page index (default: `0`)
+  - `size`: Items per page (default: `20`, max: `100`)
+  - `severity`: Filter by `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `INFO`
+  - `category`: Filter by `SECURITY`, `QUALITY`, `OPERATIONS`
 
----
+### 2.2 Export Full Audit Report (JSON)
+- **Endpoint:** `GET /api/v1/analyses/{jobId}/reports/json`
+- **Response:** Application JSON audit report adhering to schema `https://codexa.dev/schemas/audit-report-v1.json`.
 
-## 3. Limits & Platform Configuration
+### 2.3 Export SARIF v2.1.0 (GitHub Code Scanning)
+- **Endpoint:** `GET /api/v1/analyses/{jobId}/reports/sarif`
+- **Content-Type:** `application/json`
+- Compatible with GitHub Code Scanning alerts and SonarQube imports.
 
-- **Endpoint:** `GET /api/v1/config/limits`
-- **Response:**
-  ```json
-  {
-    "maxZipSizeBytes": 524288000,
-    "maxExtractedSizeBytes": 1048576000,
-    "maxFileCount": 20000,
-    "maxDirectoryDepth": 30,
-    "maxSingleFileSizeBytes": 104857600
-  }
-  ```
-
-
-### Report Export API Endpoint
-- **GET** `/api/v1/analyses/{id}/export`
-- **Parameters**:
-  - `format`: `pdf` | `html` | `markdown` | `json`
-  - `view`: `true` to view inline, `false` to download
-  - `print`: `true` to auto-trigger print dialog for PDF
-- **Responses**: 200 OK with content-type matching requested format, 404 if job not found.
+### 2.4 Export Markdown Executive Summary
+- **Endpoint:** `GET /api/v1/analyses/{jobId}/reports/markdown`
+- **Content-Type:** `text/markdown; charset=UTF-8`
