@@ -6,13 +6,18 @@
 <style>
   @page {
     size: A4 portrait;
-    margin: 10mm 11mm 10mm 11mm;
+    margin: 11mm 12mm 11mm 12mm;
     @bottom-center {
       content: "Codexa: Autonomous SAST & Production Readiness Platform | Page " counter(page) " of " counter(pages);
       font-size: 7.6pt;
       color: #64748b;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
+  }
+
+  @page:first {
+    @bottom-center { content: ""; }
+    margin: 0;
   }
 
   *, *:before, *:after {
@@ -23,67 +28,293 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     color: #0f172a;
     background-color: #ffffff;
-    line-height: 1.38;
-    font-size: 8.4pt;
+    line-height: 1.40;
+    font-size: 8.5pt;
     margin: 0;
     padding: 0;
   }
 
-  /* Document Cover Banner */
-  .cover-banner {
-    background: linear-gradient(135deg, #090d16 0%, #0f172a 60%, #1e293b 100%);
+  /* ========================================================================= */
+  /* COVER PAGE STYLING (PAGE 1)                                               */
+  /* ========================================================================= */
+  .cover-page {
+    height: 297mm;
+    padding: 24mm 20mm 20mm 20mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 45%, #090d16 100%);
     color: #ffffff;
-    padding: 14px 18px 12px 18px;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    border-left: 5px solid #38bdf8;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    box-sizing: border-box;
+    page-break-after: always;
   }
 
-  .cover-header {
+  .cover-top-bar {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     border-bottom: 1px solid rgba(255,255,255,0.15);
-    padding-bottom: 6px;
-    margin-bottom: 6px;
+    padding-bottom: 12px;
   }
 
-  .title-group h1 {
-    font-size: 19pt;
-    font-weight: 800;
-    margin: 0;
-    letter-spacing: -0.5px;
-    color: #f8fafc;
+  .cover-academic-label {
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #38bdf8;
+    text-transform: uppercase;
+  }
+
+  .cover-academic-year {
+    font-size: 8.5pt;
+    color: #94a3b8;
+    font-weight: 600;
+  }
+
+  .cover-hero {
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .cover-shield-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px auto;
+    background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+    border-radius: 16px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    box-shadow: 0 10px 25px rgba(2,132,199,0.35);
   }
 
-  .title-group h1 span.logo-badge {
-    background: #38bdf8;
-    color: #090d16;
-    font-size: 9pt;
-    padding: 2px 6px;
-    border-radius: 4px;
+  .cover-shield-icon svg {
+    width: 36px;
+    height: 36px;
+    fill: #ffffff;
+  }
+
+  .cover-title {
+    font-size: 34pt;
+    font-weight: 900;
+    letter-spacing: -1px;
+    margin: 0 0 6px 0;
+    color: #f8fafc;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
+
+  .cover-version-tag {
+    display: inline-block;
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 9.5pt;
     font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
     letter-spacing: 0.5px;
   }
 
-  .title-group p.tagline {
-    font-size: 8.8pt;
-    color: #94a3b8;
-    margin: 2px 0 0 0;
+  .cover-subtitle {
+    font-size: 11.5pt;
     font-weight: 500;
-  }
-
-  .meta-badges {
-    text-align: right;
-    font-size: 7.5pt;
     color: #cbd5e1;
-    line-height: 1.35;
+    max-width: 580px;
+    margin: 0 auto;
+    line-height: 1.45;
   }
 
+  .cover-badges-row {
+    margin-top: 18px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  /* Academic Project Info Cards on Cover */
+  .cover-details-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 16px 20px;
+    backdrop-filter: blur(8px);
+  }
+
+  .cover-card-section h4 {
+    color: #38bdf8;
+    font-size: 8.5pt;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 0 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 4px;
+  }
+
+  .member-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 8.8pt;
+    color: #f1f5f9;
+  }
+  .member-row .member-name { font-weight: 700; }
+  .member-row .member-roll {
+    color: #94a3b8;
+    font-family: 'Consolas', monospace;
+    font-size: 8.2pt;
+    background: rgba(255,255,255,0.08);
+    padding: 1.5px 6px;
+    border-radius: 4px;
+  }
+
+  .guide-name {
+    font-size: 10.5pt;
+    font-weight: 800;
+    color: #f8fafc;
+    margin-top: 2px;
+  }
+  .guide-role {
+    font-size: 8pt;
+    color: #94a3b8;
+    margin-top: 2px;
+  }
+
+  .cover-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding-top: 12px;
+    font-size: 7.8pt;
+    color: #64748b;
+  }
+  .cover-footer-left a {
+    color: #38bdf8;
+    text-decoration: none;
+  }
+
+  /* ========================================================================= */
+  /* COMMON SECTION & TYPOGRAPHY STYLING (PAGE 2+)                             */
+  /* ========================================================================= */
+  .section {
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-size: 9.6pt;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 1.5px solid #e2e8f0;
+    padding-bottom: 2px;
+    margin: 6px 0 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .section-title .section-num {
+    background: #0f172a;
+    color: #ffffff;
+    font-size: 6.8pt;
+    padding: 1px 4.5px;
+    border-radius: 3px;
+    font-weight: 700;
+  }
+
+  h3.sub-heading {
+    font-size: 8.4pt;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 4px 0 2px 0;
+  }
+
+  p {
+    margin: 0 0 3.5px 0;
+    text-align: justify;
+  }
+
+  /* Stat and Metric Cards */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin: 8px 0 10px 0;
+  }
+
+  .stat-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    padding: 5px 7px;
+    text-align: center;
+  }
+
+  .stat-card .stat-val {
+    font-size: 12.5pt;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
+  }
+  .stat-card.primary .stat-val { color: #0284c7; }
+  .stat-card.success .stat-val { color: #059669; }
+  .stat-card.purple .stat-val { color: #7c3aed; }
+
+  .stat-card .stat-label {
+    font-size: 6.6pt;
+    color: #64748b;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  /* Two Column Layout */
+  .columns-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+
+  /* Tables */
+  table.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.3pt;
+    margin: 5px 0 7px 0;
+  }
+
+  table.custom-table th {
+    background: #0f172a;
+    color: #ffffff;
+    font-weight: 700;
+    text-align: left;
+    padding: 4px 6.5px;
+    font-size: 6.8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border: 1px solid #0f172a;
+  }
+
+  table.custom-table td {
+    padding: 3px 6px;
+    border: 1px solid #cbd5e1;
+    vertical-align: middle;
+  }
+
+  table.custom-table tr:nth-child(even) {
+    background: #f8fafc;
+  }
+
+  table.custom-table tr.highlight-row {
+    background: #eff6ff;
+    font-weight: 600;
+  }
+
+  /* Badges */
   .badge {
     display: inline-block;
     padding: 1.5px 5.5px;
@@ -99,150 +330,12 @@
   .badge-purple { background: #4c1d95; color: #d8b4fe; border: 1px solid #6d28d9; }
   .badge-slate { background: #334155; color: #e2e8f0; border: 1px solid #475569; }
 
-  .project-meta-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    padding-top: 2px;
-  }
-
-  .meta-item {
-    font-size: 7.5pt;
-  }
-  .meta-item .meta-label {
-    color: #64748b;
-    text-transform: uppercase;
-    font-size: 6.4pt;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-  .meta-item .meta-value {
-    color: #f1f5f9;
-    font-weight: 600;
-    margin-top: 1px;
-  }
-
-  /* Section Styling */
-  .section {
-    margin-bottom: 9px;
-  }
-
-  .section-title {
-    font-size: 9.8pt;
-    font-weight: 800;
-    color: #0f172a;
-    border-bottom: 1.5px solid #e2e8f0;
-    padding-bottom: 2.5px;
-    margin: 7px 0 5px 0;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .section-title .section-num {
-    background: #0f172a;
-    color: #ffffff;
-    font-size: 7pt;
-    padding: 1px 4.5px;
-    border-radius: 3px;
-    font-weight: 700;
-  }
-
-  h3.sub-heading {
-    font-size: 8.5pt;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 4px 0 2px 0;
-  }
-
-  p {
-    margin: 0 0 4px 0;
-    text-align: justify;
-  }
-
-  /* Stat and Metric Cards */
-  .stat-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 5px;
-    margin: 6px 0 8px 0;
-  }
-
-  .stat-card {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 5px;
-    padding: 4.5px 6px;
-    text-align: center;
-  }
-
-  .stat-card .stat-val {
-    font-size: 12pt;
-    font-weight: 800;
-    color: #0f172a;
-    line-height: 1.1;
-  }
-  .stat-card.primary .stat-val { color: #0284c7; }
-  .stat-card.success .stat-val { color: #059669; }
-  .stat-card.purple .stat-val { color: #7c3aed; }
-
-  .stat-card .stat-label {
-    font-size: 6.4pt;
-    color: #64748b;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-top: 1px;
-  }
-
-  /* Two Column Layout */
-  .columns-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 9px;
-    margin-bottom: 4px;
-  }
-
-  /* Tables */
-  table.custom-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 7.2pt;
-    margin: 4px 0 6px 0;
-  }
-
-  table.custom-table th {
-    background: #0f172a;
-    color: #ffffff;
-    font-weight: 700;
-    text-align: left;
-    padding: 3.5px 6px;
-    font-size: 6.6pt;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    border: 1px solid #0f172a;
-  }
-
-  table.custom-table td {
-    padding: 3.2px 6px;
-    border: 1px solid #cbd5e1;
-    vertical-align: middle;
-  }
-
-  table.custom-table tr:nth-child(even) {
-    background: #f8fafc;
-  }
-
-  table.custom-table tr.highlight-row {
-    background: #eff6ff;
-    font-weight: 600;
-  }
-
   /* Pipeline Cards */
   .pipeline-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    margin: 5px 0 7px 0;
+    gap: 7px;
+    margin: 6px 0 8px 0;
   }
 
   .stage-card {
@@ -250,7 +343,7 @@
     border: 1px solid #cbd5e1;
     border-top: 3.5px solid #0284c7;
     border-radius: 5px;
-    padding: 6px 5.5px;
+    padding: 6.5px 6px;
     font-size: 6.8pt;
     display: flex;
     flex-direction: column;
@@ -263,7 +356,7 @@
   .stage-header {
     font-weight: 800;
     color: #0f172a;
-    font-size: 7.2pt;
+    font-size: 7.3pt;
     margin-bottom: 3px;
     text-transform: uppercase;
     display: flex;
@@ -276,11 +369,11 @@
     color: #fff;
     padding: 1px 3.5px;
     border-radius: 3px;
-    font-size: 6pt;
+    font-size: 6.2pt;
   }
 
   .stage-card ul {
-    margin: 2px 0 0 10px;
+    margin: 2px 0 0 11px;
     padding: 0;
   }
   .stage-card li {
@@ -313,7 +406,7 @@
   .algo-card .algo-title .complexity-badge {
     background: #e2e8f0;
     color: #334155;
-    padding: 0.5px 4px;
+    padding: 0.5px 4.5px;
     border-radius: 3px;
     font-family: 'Consolas', monospace;
     font-size: 6.6pt;
@@ -326,27 +419,27 @@
     border: 1px solid #e2e8f0;
     border-left: 3px solid #0284c7;
     border-radius: 4px;
-    padding: 4.5px 7px;
-    margin: 3px 0 4px 0;
+    padding: 5px 8px;
+    margin: 3px 0 5px 0;
     font-family: 'Consolas', 'Courier New', monospace;
-    font-size: 7.4pt;
+    font-size: 7.5pt;
     color: #0f172a;
   }
   .formula-box .formula-title {
     font-weight: 700;
     color: #0369a1;
-    font-size: 6.8pt;
+    font-size: 7pt;
     text-transform: uppercase;
-    margin-bottom: 1px;
+    margin-bottom: 2px;
     font-family: -apple-system, sans-serif;
   }
 
   ul, ol {
-    margin: 2px 0 3px 12px;
+    margin: 2px 0 4px 13px;
     padding: 0;
   }
   li {
-    margin-bottom: 1.2px;
+    margin-bottom: 1.5px;
   }
 
   .page-break {
@@ -356,52 +449,231 @@
   .footer-sign {
     display: flex;
     justify-content: space-between;
-    margin-top: 8px;
-    padding-top: 5px;
+    margin-top: 6px;
+    padding-top: 4px;
     border-top: 1px dashed #cbd5e1;
-    font-size: 7pt;
+    font-size: 7.2pt;
     color: #64748b;
+  }
+
+  /* INDEX / TABLE OF CONTENTS STYLING */
+  .toc-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+  .toc-table th {
+    background: #0f172a;
+    color: #ffffff;
+    font-weight: 700;
+    text-align: left;
+    padding: 5px 8px;
+    font-size: 7.2pt;
+    text-transform: uppercase;
+    border: 1px solid #0f172a;
+  }
+  .toc-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 8pt;
+    vertical-align: middle;
+  }
+  .toc-table tr:hover {
+    background: #f1f5f9;
+  }
+  .toc-sec-num {
+    font-weight: 800;
+    color: #0284c7;
+    font-family: 'Consolas', monospace;
+    font-size: 8.5pt;
+    width: 8%;
+  }
+  .toc-sec-title {
+    font-weight: 700;
+    color: #0f172a;
+    width: 38%;
+  }
+  .toc-sec-desc {
+    color: #64748b;
+    font-size: 7.5pt;
+    width: 44%;
+  }
+  .toc-sec-page {
+    text-align: right;
+    font-weight: 800;
+    color: #0f172a;
+    width: 10%;
   }
 </style>
 </head>
 <body>
 
 <!-- ========================================================================= -->
-<!-- PAGE 1: EXECUTIVE SUMMARY, PROBLEM STATEMENT, OBJECTIVES                  -->
+<!-- PAGE 1: OFFICIAL COVER & PROJECT TITLE PAGE                               -->
 <!-- ========================================================================= -->
-<div class="cover-banner">
-  <div class="cover-header">
-    <div class="title-group">
-      <h1>CODEXA <span class="logo-badge">v1.3.0</span></h1>
-      <p class="tagline">Autonomous Static Application Security Testing (SAST), Structural Quality & Production Readiness Platform</p>
+<div class="cover-page">
+  <div class="cover-top-bar">
+    <div class="cover-academic-label">ENGINEERING PROJECT SYNOPSIS & TECHNICAL SPECIFICATION</div>
+    <div class="cover-academic-year">ACADEMIC YEAR 2026 – 2027</div>
+  </div>
+
+  <div class="cover-hero">
+    <div class="cover-shield-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+      </svg>
     </div>
-    <div class="meta-badges">
-      <span class="badge badge-emerald">100.0 / 100 Readiness</span>&nbsp;
-      <span class="badge badge-cyan">135 Tests Passing</span><br>
-      <span class="badge badge-purple">Zero False Positives</span>&nbsp;
-      <span class="badge badge-slate">OWASP Top 10 Aligned</span>
+    <div class="cover-title">CODEXA</div>
+    <div class="cover-version-tag">VERSION 1.3.0 &bull; PRODUCTION-READY MILESTONE</div>
+    <div class="cover-subtitle">
+      An Autonomous, AI-Assisted Static Application Security Testing (SAST), Structural Quality, and Production Readiness Assessment Platform
+    </div>
+
+    <div class="cover-badges-row">
+      <span class="badge badge-emerald">100.0 / 100 Self-Audit</span>
+      <span class="badge badge-cyan">135 Passing Tests</span>
+      <span class="badge badge-purple">Zero False Positives</span>
+      <span class="badge badge-slate">OWASP Top 10:2021</span>
     </div>
   </div>
-  <div class="project-meta-grid">
-    <div class="meta-item">
-      <div class="meta-label">Project Author / Lead</div>
-      <div class="meta-value">Jainam Jain (@Codewithjainam7)</div>
+
+  <div class="cover-details-container">
+    <div class="cover-card-section">
+      <h4>Under the Guidance of</h4>
+      <div class="guide-name">Mrs. Mohini Ma'am</div>
+      <div class="guide-role">Project Guide & Mentor &bull; Department of Computer Engineering</div>
+      <div style="margin-top: 10px; font-size: 7.8pt; color: #94a3b8;">
+        <strong>Focus Areas:</strong> Application Security, Program Analysis, Abstract Syntax Trees, Secure Software Lifecycle
+      </div>
     </div>
-    <div class="meta-item">
-      <div class="meta-label">Domain & Discipline</div>
-      <div class="meta-value">AppSec, SAST, DevSecOps, Static AST</div>
+
+    <div class="cover-card-section">
+      <h4>Project Team Members</h4>
+      <div class="member-row">
+        <span class="member-name">Jagrat Mogaveera</span>
+        <span class="member-roll">Roll No: 261712</span>
+      </div>
+      <div class="member-row">
+        <span class="member-name">Jainam Jain</span>
+        <span class="member-roll">Roll No: 261714</span>
+      </div>
+      <div style="margin-top: 8px; font-size: 7.8pt; color: #94a3b8;">
+        <strong>Discipline:</strong> Computer Engineering / Software Engineering<br>
+        <strong>Domain:</strong> Automated Vulnerability Auditing & DevSecOps
+      </div>
     </div>
-    <div class="meta-item">
-      <div class="meta-label">Target Languages</div>
-      <div class="meta-value">Java, Python, TS/JS, Go, Rust, C#, PHP</div>
+  </div>
+
+  <div class="cover-footer">
+    <div class="cover-footer-left">
+      <div><strong>Repository:</strong> <a href="https://github.com/Codewithjainam7/Codexa">github.com/Codewithjainam7/Codexa</a></div>
+      <div><strong>Live Platform:</strong> <a href="https://codexa-ye85.onrender.com">codexa-ye85.onrender.com</a></div>
     </div>
-    <div class="meta-item">
-      <div class="meta-label">Deployment Architecture</div>
-      <div class="meta-value">Spring Boot 3 + React 18 (Docker / Render)</div>
+    <div style="text-align: right;">
+      <div><strong>Technology Core:</strong> Java 21, Spring Boot 3.3, React 18, Vite 5, JavaParser 3.26</div>
+      <div><strong>Status:</strong> Validated & Production Deployed (September 2026)</div>
     </div>
   </div>
 </div>
 
+<!-- ========================================================================= -->
+<!-- PAGE 2: TABLE OF CONTENTS / INDEX                                         -->
+<!-- ========================================================================= -->
+<div class="section" style="padding: 10px 0;">
+  <div style="text-align: center; margin-bottom: 14px;">
+    <h2 style="font-size: 16pt; font-weight: 800; color: #0f172a; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px;">TABLE OF CONTENTS / INDEX</h2>
+    <p style="font-size: 8.5pt; color: #64748b; margin: 0;">Comprehensive architectural and algorithmic synopsis of the Codexa Platform</p>
+  </div>
+
+  <table class="toc-table">
+    <thead>
+      <tr>
+        <th>Sec #</th>
+        <th>Section Title</th>
+        <th>Topics & Engineering Content Covered</th>
+        <th style="text-align: right;">Page</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="toc-sec-num">01</td>
+        <td class="toc-sec-title">Abstract & Executive Summary</td>
+        <td class="toc-sec-desc">Emergence of vibe coding, latent security risks, autonomous readiness gatekeeper, key performance indicators.</td>
+        <td class="toc-sec-page">Page 3</td>
+      </tr>
+      <tr>
+        <td class="toc-sec-num">02</td>
+        <td class="toc-sec-title">Problem Statement & Industry Pain Points</td>
+        <td class="toc-sec-desc">Vibe-coding security paradox, shortcomings of legacy SAST tools, false positive fatigue, lack of unified verdict.</td>
+        <td class="toc-sec-page">Page 3</td>
+      </tr>
+      <tr>
+        <td class="toc-sec-num">03</td>
+        <td class="toc-sec-title">Key Project Objectives & Engineering Scope</td>
+        <td class="toc-sec-desc">High-scale defensive ingestion, zero-code-execution SAST, readiness scoring, AI remediation diffs, compliance exports.</td>
+        <td class="toc-sec-page">Page 3</td>
+      </tr>
+      <tr>
+        <td class="toc-sec-num">04</td>
+        <td class="toc-sec-title">System Architecture & 4-Stage Analysis Pipeline</td>
+        <td class="toc-sec-desc">Ingestion & Sandboxing, Parallel AST Analysis, Scoring & Prioritization, Dual Persistence & Multi-Channel Delivery.</td>
+        <td class="toc-sec-page">Page 4</td>
+      </tr>
+      <tr>
+        <td class="toc-sec-num">05</td>
+        <td class="toc-sec-title">Core Algorithms, Data Structures & CS Methodologies</td>
+        <td class="toc-sec-desc">McCabe cyclomatic complexity, Shannon entropy, N-gram shingling, source-to-sink taint DAG, Zip Slip defense, SSRF filter, token bucket rate limiter, work-stealing ForkJoinPool.</td>
+        <td class="toc-sec-page">Pages 4–5</td>
+      </tr>
+      <tr>
+        <td class="toc-sec-num">06</td>
+        <td class="toc-sec-title">Mathematical Readiness Scoring Engine</td>
+        <td class="toc-sec-desc">Asymptotic quality curves, critical security overrides, maintainability index, priority calculation, production verdict decision table.</td>
+        <td class="toc-sec-page">Page 5</td>
+      </tr>
+      <tr>
+        <td class="toc-sec-num">07</td>
+        <td class="toc-sec-title">Static Rule Catalog & OWASP Top 10 (2021) Mapping</td>
+        <td class="toc-sec-desc">Comprehensive matrix across 30+ rules covering Broken Access Control, Cryptographic Failures, Injection, SSRF, Deserialization, etc.</td>
+        <td class="toc-sec-page">Page 6</td>
+      </tr>
+      <tr>
+        <td class="toc-sec-num">08</td>
+        <td class="toc-sec-title">Technology Stack & Subsystem Implementation</td>
+        <td class="toc-sec-desc">Backend Spring Boot 3.3, JavaParser 3.26, PostgreSQL/Flyway, React 18 5-tab dashboard, Capacitor Android, Docker containerization.</td>
+        <td class="toc-sec-page">Page 7</td>
+      </tr>
+      <tr>
+        <td class="toc-sec-num">09</td>
+        <td class="toc-sec-title">Verification, Benchmarks & Experimental Results</td>
+        <td class="toc-sec-desc">135-test automated regression suite, 100.0/100 Codexa self-audit, demo vulnerable fixture, real-world Nova monorepo benchmark.</td>
+        <td class="toc-sec-page">Page 7</td>
+      </tr>
+      <tr>
+        <td class="toc-sec-num">10</td>
+        <td class="toc-sec-title">Future Scope & Engineering Roadmap</td>
+        <td class="toc-sec-desc">VS Code/JetBrains IDE extensions, custom rule DSL, GitHub PR Review Bot, dynamic application security testing (DAST) correlation.</td>
+        <td class="toc-sec-page">Page 7</td>
+      </tr>
+      <tr>
+        <td class="toc-sec-num">11</td>
+        <td class="toc-sec-title">Conclusion, Acknowledgments & Citations</td>
+        <td class="toc-sec-desc">Formal summary of achievements, guide acknowledgment (Mrs. Mohini Ma'am), MITRE CWE / OWASP citations, formal verification block.</td>
+        <td class="toc-sec-page">Page 7</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 25px; padding: 12px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 7.8pt; color: #475569;">
+    <strong style="color: #0f172a;">Executive Reading Guide:</strong> This synopsis provides a complete technical dissertation of the Codexa Static Application Security Testing platform. Evaluators, engineers, and researchers can consult Section 04 and 05 for low-level algorithm implementations, Section 06 for mathematical scoring rigor, Section 07 for security compliance mapping, and Section 09 for verified empirical benchmarks.
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- PAGE 3: ABSTRACT, PROBLEM STATEMENT & KEY OBJECTIVES                      -->
+<!-- ========================================================================= -->
 <div class="section">
   <div class="section-title"><span class="section-num">01</span> ABSTRACT & EXECUTIVE SUMMARY</div>
   <p>
@@ -464,7 +736,7 @@
 </div>
 
 <div class="section">
-  <div class="section-title"><span class="section-num">03</span> KEY PROJECT OBJECTIVES</div>
+  <div class="section-title"><span class="section-num">03</span> KEY PROJECT OBJECTIVES & ENGINEERING SCOPE</div>
   <table class="custom-table">
     <thead>
       <tr>
@@ -506,7 +778,7 @@
 <div class="page-break"></div>
 
 <!-- ========================================================================= -->
-<!-- PAGE 2: PIPELINE ARCHITECTURE & CORE ALGORITHMS (PART 1)                 -->
+<!-- PAGE 4: PIPELINE ARCHITECTURE & CORE ALGORITHMS (PART 1)                 -->
 <!-- ========================================================================= -->
 <div class="section">
   <div class="section-title"><span class="section-num">04</span> SYSTEM ARCHITECTURE & 4-STAGE ANALYSIS PIPELINE</div>
@@ -611,7 +883,7 @@
 <div class="page-break"></div>
 
 <!-- ========================================================================= -->
-<!-- PAGE 3: CORE ALGORITHMS (PART 2) & MATHEMATICAL READINESS SCORING         -->
+<!-- PAGE 5: CORE ALGORITHMS (PART 2) & MATHEMATICAL READINESS SCORING         -->
 <!-- ========================================================================= -->
 <div class="section">
   <div class="section-title"><span class="section-num">05</span> CORE ALGORITHMS & TECHNICAL METHODOLOGIES (CONTINUED)</div>
@@ -737,7 +1009,7 @@
 <div class="page-break"></div>
 
 <!-- ========================================================================= -->
-<!-- PAGE 4: STATIC RULE CATALOG & OWASP TOP 10 COMPLIANCE MATRIX              -->
+<!-- PAGE 6: STATIC RULE CATALOG & OWASP TOP 10 COMPLIANCE MATRIX              -->
 <!-- ========================================================================= -->
 <div class="section">
   <div class="section-title"><span class="section-num">07</span> STATIC RULE CATALOG & OWASP TOP 10 MAPPING</div>
@@ -914,7 +1186,7 @@
 <div class="page-break"></div>
 
 <!-- ========================================================================= -->
-<!-- PAGE 5: TECH STACK, EXPERIMENTAL BENCHMARKS, ROADMAP & REFERENCES         -->
+<!-- PAGE 7: TECH SPECS, BENCHMARKS, ROADMAP & CONCLUSION                      -->
 <!-- ========================================================================= -->
 <div class="section">
   <div class="section-title"><span class="section-num">08</span> TECHNOLOGY STACK & ARCHITECTURAL SPECIFICATIONS</div>
@@ -1049,12 +1321,16 @@
 </div>
 
 <div class="section">
-  <div class="section-title"><span class="section-num">11</span> CONCLUSION & FORMAL REFERENCES</div>
+  <div class="section-title"><span class="section-num">11</span> CONCLUSION, ACKNOWLEDGMENTS & FORMAL REFERENCES</div>
   <p>
     Codexa delivers a robust, high-performance static application security testing and production readiness platform tailored for the modern software engineering lifecycle. By uniting deep Abstract Syntax Tree parsing with polyglot regex scanning, defensive ingestion sandboxing, mathematically grounded readiness scoring, and AI-assisted remediations, Codexa eliminates the friction of traditional SAST tools and provides developers and tech leads with an authoritative, trustworthy deployment gate.
   </p>
 
-  <h3 class="sub-heading" style="font-size: 7.6pt;">Standards & Citations:</h3>
+  <p style="font-size: 7.6pt; color: #334155; margin-top: 4px;">
+    <strong>Acknowledgments:</strong> We extend our sincere gratitude to our project guide, <strong>Mrs. Mohini Ma'am</strong>, for her invaluable guidance, critical technical suggestions, and constant encouragement throughout the architecture, design, and implementation phases of Codexa.
+  </p>
+
+  <h3 class="sub-heading" style="font-size: 7.5pt;">Standards & Citations:</h3>
   <ol style="font-size: 6.8pt; color: #475569; margin-bottom: 2px;">
     <li><strong>OWASP Top 10 (2021)</strong>: The Ten Most Critical Web Application Security Risks, Open Web Application Security Project.</li>
     <li><strong>MITRE Common Weakness Enumeration (CWE)</strong>: A Community-Developed List of Software Weakness Types, MITRE Corporation.</li>
@@ -1064,9 +1340,8 @@
   </ol>
 
   <div class="footer-sign">
-    <div><strong>Platform Project:</strong> Codexa Security & Production Readiness (v1.3.0)</div>
-    <div><strong>Engineering Lead:</strong> Jainam Jain (@Codewithjainam7)</div>
-    <div><strong>Verification Date:</strong> September 2026</div>
+    <div><strong>Project Title:</strong> CODEXA Platform (v1.3.0) &bull; <strong>Guide:</strong> Mrs. Mohini Ma'am</div>
+    <div><strong>Team Members:</strong> Jagrat Mogaveera (261712), Jainam Jain (261714) &bull; September 2026</div>
   </div>
 </div>
 
