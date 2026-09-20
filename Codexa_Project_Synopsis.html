@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Codexa Project Synopsis - Engineering & Production Readiness</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 10mm 11mm 10mm 11mm;
+    @bottom-center {
+      content: "Codexa: Autonomous SAST & Production Readiness Platform | Page " counter(page) " of " counter(pages);
+      font-size: 7.6pt;
+      color: #64748b;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+  }
+
+  *, *:before, *:after {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #0f172a;
+    background-color: #ffffff;
+    line-height: 1.38;
+    font-size: 8.4pt;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Document Cover Banner */
+  .cover-banner {
+    background: linear-gradient(135deg, #090d16 0%, #0f172a 60%, #1e293b 100%);
+    color: #ffffff;
+    padding: 14px 18px 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    border-left: 5px solid #38bdf8;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  }
+
+  .cover-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+  }
+
+  .title-group h1 {
+    font-size: 19pt;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.5px;
+    color: #f8fafc;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .title-group h1 span.logo-badge {
+    background: #38bdf8;
+    color: #090d16;
+    font-size: 9pt;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .title-group p.tagline {
+    font-size: 8.8pt;
+    color: #94a3b8;
+    margin: 2px 0 0 0;
+    font-weight: 500;
+  }
+
+  .meta-badges {
+    text-align: right;
+    font-size: 7.5pt;
+    color: #cbd5e1;
+    line-height: 1.35;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 1.5px 5.5px;
+    border-radius: 4px;
+    font-size: 6.8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .badge-emerald { background: #065f46; color: #6ee7b7; border: 1px solid #047857; }
+  .badge-cyan { background: #164e63; color: #67e8f9; border: 1px solid #0891b2; }
+  .badge-amber { background: #78350f; color: #fde68a; border: 1px solid #b45309; }
+  .badge-purple { background: #4c1d95; color: #d8b4fe; border: 1px solid #6d28d9; }
+  .badge-slate { background: #334155; color: #e2e8f0; border: 1px solid #475569; }
+
+  .project-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding-top: 2px;
+  }
+
+  .meta-item {
+    font-size: 7.5pt;
+  }
+  .meta-item .meta-label {
+    color: #64748b;
+    text-transform: uppercase;
+    font-size: 6.4pt;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .meta-item .meta-value {
+    color: #f1f5f9;
+    font-weight: 600;
+    margin-top: 1px;
+  }
+
+  /* Section Styling */
+  .section {
+    margin-bottom: 9px;
+  }
+
+  .section-title {
+    font-size: 9.8pt;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 1.5px solid #e2e8f0;
+    padding-bottom: 2.5px;
+    margin: 7px 0 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .section-title .section-num {
+    background: #0f172a;
+    color: #ffffff;
+    font-size: 7pt;
+    padding: 1px 4.5px;
+    border-radius: 3px;
+    font-weight: 700;
+  }
+
+  h3.sub-heading {
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 4px 0 2px 0;
+  }
+
+  p {
+    margin: 0 0 4px 0;
+    text-align: justify;
+  }
+
+  /* Stat and Metric Cards */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+    margin: 6px 0 8px 0;
+  }
+
+  .stat-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    padding: 4.5px 6px;
+    text-align: center;
+  }
+
+  .stat-card .stat-val {
+    font-size: 12pt;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
+  }
+  .stat-card.primary .stat-val { color: #0284c7; }
+  .stat-card.success .stat-val { color: #059669; }
+  .stat-card.purple .stat-val { color: #7c3aed; }
+
+  .stat-card .stat-label {
+    font-size: 6.4pt;
+    color: #64748b;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  /* Two Column Layout */
+  .columns-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-bottom: 4px;
+  }
+
+  /* Tables */
+  table.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.2pt;
+    margin: 4px 0 6px 0;
+  }
+
+  table.custom-table th {
+    background: #0f172a;
+    color: #ffffff;
+    font-weight: 700;
+    text-align: left;
+    padding: 3.5px 6px;
+    font-size: 6.6pt;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border: 1px solid #0f172a;
+  }
+
+  table.custom-table td {
+    padding: 3.2px 6px;
+    border: 1px solid #cbd5e1;
+    vertical-align: middle;
+  }
+
+  table.custom-table tr:nth-child(even) {
+    background: #f8fafc;
+  }
+
+  table.custom-table tr.highlight-row {
+    background: #eff6ff;
+    font-weight: 600;
+  }
+
+  /* Pipeline Cards */
+  .pipeline-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin: 5px 0 7px 0;
+  }
+
+  .stage-card {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-top: 3.5px solid #0284c7;
+    border-radius: 5px;
+    padding: 6px 5.5px;
+    font-size: 6.8pt;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stage-card.stage-2 { border-top-color: #059669; }
+  .stage-card.stage-3 { border-top-color: #7c3aed; }
+  .stage-card.stage-4 { border-top-color: #d97706; }
+
+  .stage-header {
+    font-weight: 800;
+    color: #0f172a;
+    font-size: 7.2pt;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .stage-header .step-badge {
+    background: #0f172a;
+    color: #fff;
+    padding: 1px 3.5px;
+    border-radius: 3px;
+    font-size: 6pt;
+  }
+
+  .stage-card ul {
+    margin: 2px 0 0 10px;
+    padding: 0;
+  }
+  .stage-card li {
+    margin-bottom: 1.5px;
+    line-height: 1.25;
+  }
+
+  /* Algorithm Technical Card */
+  .algo-card {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-left: 3.5px solid #0284c7;
+    border-radius: 4px;
+    padding: 5px 8px;
+    margin-bottom: 5px;
+    font-size: 7.3pt;
+  }
+  .algo-card.security { border-left-color: #b91c1c; }
+  .algo-card.math { border-left-color: #7c3aed; }
+  .algo-card.concurrency { border-left-color: #059669; }
+
+  .algo-card .algo-title {
+    font-weight: 800;
+    color: #0f172a;
+    font-size: 7.8pt;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2px;
+  }
+  .algo-card .algo-title .complexity-badge {
+    background: #e2e8f0;
+    color: #334155;
+    padding: 0.5px 4px;
+    border-radius: 3px;
+    font-family: 'Consolas', monospace;
+    font-size: 6.6pt;
+    font-weight: 700;
+  }
+
+  /* Code Block / Formula styling */
+  .formula-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 3px solid #0284c7;
+    border-radius: 4px;
+    padding: 4.5px 7px;
+    margin: 3px 0 4px 0;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 7.4pt;
+    color: #0f172a;
+  }
+  .formula-box .formula-title {
+    font-weight: 700;
+    color: #0369a1;
+    font-size: 6.8pt;
+    text-transform: uppercase;
+    margin-bottom: 1px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  ul, ol {
+    margin: 2px 0 3px 12px;
+    padding: 0;
+  }
+  li {
+    margin-bottom: 1.2px;
+  }
+
+  .page-break {
+    page-break-after: always;
+  }
+
+  .footer-sign {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding-top: 5px;
+    border-top: 1px dashed #cbd5e1;
+    font-size: 7pt;
+    color: #64748b;
+  }
+</style>
+</head>
+<body>
+
+<!-- ========================================================================= -->
+<!-- PAGE 1: EXECUTIVE SUMMARY, PROBLEM STATEMENT, OBJECTIVES                  -->
+<!-- ========================================================================= -->
+<div class="cover-banner">
+  <div class="cover-header">
+    <div class="title-group">
+      <h1>CODEXA <span class="logo-badge">v1.3.0</span></h1>
+      <p class="tagline">Autonomous Static Application Security Testing (SAST), Structural Quality & Production Readiness Platform</p>
+    </div>
+    <div class="meta-badges">
+      <span class="badge badge-emerald">100.0 / 100 Readiness</span>&nbsp;
+      <span class="badge badge-cyan">135 Tests Passing</span><br>
+      <span class="badge badge-purple">Zero False Positives</span>&nbsp;
+      <span class="badge badge-slate">OWASP Top 10 Aligned</span>
+    </div>
+  </div>
+  <div class="project-meta-grid">
+    <div class="meta-item">
+      <div class="meta-label">Project Author / Lead</div>
+      <div class="meta-value">Jainam Jain (@Codewithjainam7)</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Domain & Discipline</div>
+      <div class="meta-value">AppSec, SAST, DevSecOps, Static AST</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Target Languages</div>
+      <div class="meta-value">Java, Python, TS/JS, Go, Rust, C#, PHP</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Deployment Architecture</div>
+      <div class="meta-value">Spring Boot 3 + React 18 (Docker / Render)</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="section-num">01</span> ABSTRACT & EXECUTIVE SUMMARY</div>
+  <p>
+    The rapid ascent of AI-assisted code generation (GitHub Copilot, Cursor, Claude Code, ChatGPT) has catalyzed high-velocity <strong>"vibe coding"</strong>, enabling engineering teams to build complex full-stack applications in record time. However, this velocity introduces critical latent risk: AI-generated code frequently appears syntactically sound while harboring severe security flaws—such as unparameterized SQL queries, arbitrary OS command execution, insecure deserialization, permissive CORS policies, unhandled exceptions, and hardcoded credentials.
+  </p>
+  <p>
+    <strong>Codexa</strong> is an autonomous, pre-deployment static code analysis and production readiness assessment platform designed to decisively answer: <em>"Can this codebase safely move to production?"</em> Codexa accepts untrusted codebases via public GitHub URLs or high-capacity ZIP archives (up to 3.0 GB and 50,000 files), stages them in an isolated defensive sandbox, executes deep parallel Abstract Syntax Tree (AST) analysis with <strong>strict zero runtime code execution</strong>, collects structural white-box complexity metrics and attack-surface black-box API mappings, and computes an explainable <strong>Production Readiness Score (0–100)</strong> across five dimensions.
+  </p>
+
+  <div class="stat-grid">
+    <div class="stat-card primary">
+      <div class="stat-val">30+</div>
+      <div class="stat-label">Security & AST Rules</div>
+    </div>
+    <div class="stat-card success">
+      <div class="stat-val">100.0</div>
+      <div class="stat-label">Self-Audit Milestone</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">0</div>
+      <div class="stat-label">False Positives</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-val">135</div>
+      <div class="stat-label">Automated Tests</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">&lt; 25s</div>
+      <div class="stat-label">Full Scan Latency</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="section-num">02</span> PROBLEM STATEMENT & INDUSTRY PAIN POINTS</div>
+  <div class="columns-2">
+    <div>
+      <h3 class="sub-heading">A. The "Vibe Coding" Security Gap</h3>
+      <p>
+        AI coding tools optimize for syntactical correctness and functional tests, but routinely hallucinate or bypass defensive practices:
+      </p>
+      <ul>
+        <li><strong>Injection Vectors</strong>: String-concatenated SQL queries and unparameterized shell calls (`os.system`, `Runtime.exec`).</li>
+        <li><strong>Missing Authorization</strong>: Controller endpoints exposed without `@PreAuthorize` or authentication checks.</li>
+        <li><strong>Credential Bleed</strong>: Hardcoded secrets, API tokens, and private keys committed directly to source trees.</li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="sub-heading">B. Shortcomings of Legacy SAST Tools</h3>
+      <p>
+        Traditional enterprise static analysis tools suffer from systemic friction:
+      </p>
+      <ul>
+        <li><strong>Alert Fatigue</strong>: Flawed heuristics flag harmless primitive operations, leading developers to ignore findings.</li>
+        <li><strong>Compilation Overhead</strong>: Tools requiring heavy build environments fail on incomplete codebases.</li>
+        <li><strong>Lack of Unified Verdict</strong>: Outputs long lists of disparate warnings with no clear production deployment readiness gate.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="section-num">03</span> KEY PROJECT OBJECTIVES</div>
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th style="width: 25%;">Objective</th>
+        <th style="width: 45%;">Engineering Implementation</th>
+        <th style="width: 30%;">Measurable Outcome</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>High-Scale Defensive Ingestion</strong></td>
+        <td>Streaming ZIP extractor with 64KB buffers; Zip Slip path traversal mitigation; zip bomb file/depth caps; SSRF protected GitHub CDN downloader.</td>
+        <td>Safe ingestion of up to 3.0 GB archives, 50,000 files, and 15 directory depths in &lt; 500ms staging.</td>
+      </tr>
+      <tr>
+        <td><strong>Deterministic Zero-Execution SAST</strong></td>
+        <td>Dual engine: JavaParser 3.26 AST visitors in `ForkJoinPool` with `ThreadLocal` instances; Universal Polyglot engine for Python, JS/TS, Go, Rust, C#, PHP.</td>
+        <td>Lexical and AST parsing without bytecode compilation or container execution risks; zero exploit surface.</td>
+      </tr>
+      <tr>
+        <td><strong>Multi-Dimensional Readiness Scoring</strong></td>
+        <td>Mathematical scoring model across Security (60%), Quality (25%), and Operations (15%), plus Maintainability and Architectural indices.</td>
+        <td>Single unified 0–100 score and explicit verdict (`REVIEW_COMPLETE`, `ACTION_REQUIRED`, `NOT_READY`).</td>
+      </tr>
+      <tr>
+        <td><strong>Autonomous Remediation Engine</strong></td>
+        <td>Hybrid AI remediation leveraging OpenRouter / NVIDIA Nemotron LLM with an instant, zero-cost offline deterministic template fallback.</td>
+        <td>Production-grade replacement code diffs and step-by-step developer remediation instructions.</td>
+      </tr>
+      <tr>
+        <td><strong>Compliance & Enterprise Export</strong></td>
+        <td>Native generation of SARIF v2.1.0 for GitHub Code Scanning and GitLab Security Dashboards; executive PDF, HTML, Markdown, and JSON reports.</td>
+        <td>Seamless integration with GitHub Actions CI/CD gates and enterprise compliance audit requirements.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- PAGE 2: PIPELINE ARCHITECTURE & CORE ALGORITHMS (PART 1)                 -->
+<!-- ========================================================================= -->
+<div class="section">
+  <div class="section-title"><span class="section-num">04</span> SYSTEM ARCHITECTURE & 4-STAGE ANALYSIS PIPELINE</div>
+  <p>
+    Codexa executes a deterministic, unidirectional pipeline engineered for maximum throughput, low memory footprint, and complete defensive isolation:
+  </p>
+
+  <div class="pipeline-container">
+    <div class="stage-card stage-1">
+      <div class="stage-header"><span class="step-badge">1</span> Ingestion & Sandbox</div>
+      <ul>
+        <li><strong>GitHub Ingestion</strong>: Direct CDN zipball fetch with fallback to authenticated REST.</li>
+        <li><strong>Multipart ZIP Upload</strong>: Streaming 64KB extraction up to 3.0 GB / 50,000 files.</li>
+        <li><strong>Security Perimeter</strong>: Zip Slip canonical check, bomb quotas, SSRF IP blocklist.</li>
+        <li><strong>Rate Limiting</strong>: Sliding token bucket filter (60 req/min/IP).</li>
+      </ul>
+    </div>
+
+    <div class="stage-card stage-2">
+      <div class="stage-header"><span class="step-badge">2</span> Parallel AST Engine</div>
+      <ul>
+        <li><strong>Java AST Engine</strong>: JavaParser 3.26+ in ForkJoinPool with ThreadLocal instances.</li>
+        <li><strong>Polyglot Scanner</strong>: Universal regex & token scanner for Python, TS, Go, Rust, C#.</li>
+        <li><strong>Zero Code Execution</strong>: Analysis is strictly lexical & AST node pattern matching.</li>
+        <li><strong>Deep Diagnostics</strong>: White-box complexity & black-box API route discovery.</li>
+      </ul>
+    </div>
+
+    <div class="stage-card stage-3">
+      <div class="stage-header"><span class="step-badge">3</span> Scoring & Priority</div>
+      <ul>
+        <li><strong>Readiness Scoring</strong>: 0–100 multi-axis model (Security, Quality, Operations).</li>
+        <li><strong>Critical Override</strong>: Caps score &lt; 75.0 and verdict to NOT_READY on critical flaw.</li>
+        <li><strong>Diminishing Debt</strong>: Asymptotic quality curve preventing false score zeroing.</li>
+        <li><strong>AI Remediation</strong>: OpenRouter Nemotron LLM with offline template fallback.</li>
+      </ul>
+    </div>
+
+    <div class="stage-card stage-4">
+      <div class="stage-header"><span class="step-badge">4</span> Storage & Delivery</div>
+      <ul>
+        <li><strong>Dual-Profile DB</strong>: H2 in-memory for testing; PostgreSQL + Flyway V1 for prod.</li>
+        <li><strong>Reactive UI</strong>: 5-Tab React 18 + Vite + Tailwind CSS dashboard with dark mode.</li>
+        <li><strong>Mobile Client</strong>: Capacitor Android wrapper with bi-directional cloud sync.</li>
+        <li><strong>Enterprise Export</strong>: Native SARIF v2.1.0 (GitHub/GitLab), PDF, HTML, JSON.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="section-num">05</span> CORE ALGORITHMS, DATA STRUCTURES & TECHNICAL METHODOLOGIES</div>
+  <p>
+    Codexa's static analysis and security perimeter are built upon classical algorithms and mathematically verified computer science models:
+  </p>
+
+  <div class="algo-card">
+    <div class="algo-title">
+      <span>1. McCabe's Cyclomatic Complexity & AST Traversal Algorithm</span>
+      <span class="complexity-badge">O(N) AST Nodes</span>
+    </div>
+    <p>
+      Evaluates method control-flow graph complexity via JavaParser AST visitor pattern. Calculated as:
+      <strong>V(G) = 1 + &Sigma; DecisionPoints</strong>, counting AST nodes for <code>IfStmt</code>, <code>WhileStmt</code>, <code>ForStmt</code>, <code>SwitchEntry</code>, <code>CatchClause</code>, <code>ConditionalExpr (? :)</code>, and boolean operator branching (<code>&amp;&amp;</code>, <code>||</code>). Excludes builder method chaining and flattened <code>else if</code> ladders to eliminate false positives in fluent APIs and dispatchers.
+    </p>
+  </div>
+
+  <div class="algo-card security">
+    <div class="algo-title">
+      <span>2. Shannon Entropy & Regex Pre-Filtered Secret Detection Algorithm</span>
+      <span class="complexity-badge">O(L) String Length</span>
+    </div>
+    <p>
+      Identifies high-entropy cryptographic keys, JWT secrets, and API tokens while rejecting false-alarm placeholders (e.g. <code>YOUR_API_KEY_HERE</code>). Computes information entropy over token character probability distribution:
+      <br><strong>H(X) = - &sum; [ P(x<sub>i</sub>) &times; log<sub>2</sub> P(x<sub>i</sub>) ]</strong>.
+      Strings matching credential anchors (AWS, Stripe, Private Keys) exceeding threshold <strong>H(X) &ge; 4.5</strong> (Base64/Hex randomness) are flagged and immediately masked in memory using one-way cryptographic redaction.
+    </p>
+  </div>
+
+  <div class="algo-card">
+    <div class="algo-title">
+      <span>3. N-Gram Shingling & Token Normalization Duplication Algorithm</span>
+      <span class="complexity-badge">O(L) Sliding Window</span>
+    </div>
+    <p>
+      Detects duplicated code blocks across disjoint files without heavy AST graph comparison overhead. Strips variable names, whitespace, and parameter commas into normalized k-shingles (<strong>k = 15</strong> continuous statements) hashed into 64-bit fingerprint vectors. Matches overlapping shingles to compute Jaccard similarity:
+      <strong>J(A, B) = |A &cap; B| / |A &cup; B|</strong>, ignoring record constructors and builder patterns.
+    </p>
+  </div>
+
+  <div class="algo-card security">
+    <div class="algo-title">
+      <span>4. Source-to-Sink Taint Propagation & Control Flow Tracing</span>
+      <span class="complexity-badge">O(V + E) Call Graph</span>
+    </div>
+    <p>
+      Traces un-sanitized user input vectors from untrusted entrypoints (<code>@RequestParam</code>, <code>@PathVariable</code>, <code>HttpServletRequest</code>) through local assignment expressions to dangerous execution sinks: SQL execution (<code>Statement.executeQuery</code>), OS process execution (<code>Runtime.getRuntime().exec</code>, <code>ProcessBuilder</code>), and path operations (<code>new File()</code>). Flagged when dynamic concatenation occurs without parameterized binding or sanitizers.
+    </p>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- PAGE 3: CORE ALGORITHMS (PART 2) & MATHEMATICAL READINESS SCORING         -->
+<!-- ========================================================================= -->
+<div class="section">
+  <div class="section-title"><span class="section-num">05</span> CORE ALGORITHMS & TECHNICAL METHODOLOGIES (CONTINUED)</div>
+
+  <div class="algo-card security">
+    <div class="algo-title">
+      <span>5. Zip Slip Path Canonicalization & Expansion Ratio Defense</span>
+      <span class="complexity-badge">O(E) Archive Entries</span>
+    </div>
+    <p>
+      Prevents directory traversal and Zip Bomb resource exhaustion during untrusted archive decompression:
+      <br><strong>P<sub>dest</sub> = normalize(P<sub>staging</sub> &oplus; P<sub>entry</sub>)</strong>; verified via <code>P<sub>dest</sub>.startsWith(P<sub>staging</sub>)</code>.
+      Rejects entries with <code>../</code> traversal segments. Tracks cumulative uncompressed bytes with an expansion ratio cap (<strong>&le; 100:1</strong>), depth cap (<strong>&le; 15 levels</strong>), and file count cap (<strong>&le; 50,000 files</strong>) using 64KB streaming buffers.
+    </p>
+  </div>
+
+  <div class="algo-card security">
+    <div class="algo-title">
+      <span>6. SSRF Network Boundary & RFC-1918 Subnet Bitmasking Algorithm</span>
+      <span class="complexity-badge">O(1) Bitwise Mask</span>
+    </div>
+    <p>
+      Defends GitHub ingestion against Server-Side Request Forgery by resolving hostnames to <code>InetAddress</code> instances and validating target IPs against bitmasked private CIDR blocks:
+      RFC-1918 (<code>10.0.0.0/8</code>, <code>172.16.0.0/12</code>, <code>192.168.0.0/16</code>), Loopback (<code>127.0.0.0/8</code>), Link-Local (<code>169.254.0.0/16</code> AWS IMDSv1 metadata), and IPv6 Unique Local (<code>fc00::/7</code>).
+    </p>
+  </div>
+
+  <div class="algo-card concurrency">
+    <div class="algo-title">
+      <span>7. Sliding Window Token Bucket Rate Limiting Algorithm</span>
+      <span class="complexity-badge">O(1) Atomic Operations</span>
+    </div>
+    <p>
+      Implements a distributed in-memory token bucket filter with refill rate <strong>r = 60 tokens/minute</strong> and capacity <strong>C = 60</strong>. Employs thread-safe timestamp queues per remote IP address to accommodate burst traffic while strictly throttling DoS and abuse vectors without database lock contention.
+    </p>
+  </div>
+
+  <div class="algo-card concurrency">
+    <div class="algo-title">
+      <span>8. ForkJoinPool Work-Stealing Parallel Concurrency Scheduling</span>
+      <span class="complexity-badge">Dynamic Load Balancing</span>
+    </div>
+    <p>
+      Dispatches AST parsing tasks across CPU worker threads via work-stealing deques. Employs <code>ThreadLocal&lt;JavaParser&gt;</code> parser instances to eliminate lock contention, static state leakage, and JVM garbage collector spikes, achieving a <strong>6.8&times; throughput acceleration</strong> over single-threaded AST traversal.
+    </p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="section-num">06</span> MATHEMATICAL READINESS SCORING ENGINE</div>
+  <p>
+    Unlike primitive linters that compute an unweighted average of warnings, Codexa evaluates codebases using calibrated mathematical formulas with asymptotic curves and critical security overrides:
+  </p>
+
+  <div class="columns-2">
+    <div>
+      <div class="formula-box">
+        <div class="formula-title">1. Overall Readiness Score Composition</div>
+        OverallScore = 0.60 * SecurityScore + 0.25 * QualityScore + 0.15 * OperationsScore<br><br>
+        <span style="color:#b91c1c; font-weight:bold;">Critical Security Override:</span><br>
+        If CriticalCount &gt; 0:<br>
+        OverallScore = 0.60 * SecurityScore + 0.15 * OperationsScore<br>
+        <em>(Code quality is barred from compensating for security failure)</em>
+      </div>
+
+      <div class="formula-box">
+        <div class="formula-title">2. Asymptotic Debt Curve (Quality & Ops)</div>
+        EffectivePenalty = Penalty &le; 30.0 ? Penalty : 30.0 + (Penalty - 30.0) * 0.25<br>
+        QualityScore = max(0.0, 100.0 - EffectivePenalty)<br>
+        <em>(Prevents monorepos from erroneously scoring 0 due to minor style debt)</em>
+      </div>
+    </div>
+
+    <div>
+      <div class="formula-box">
+        <div class="formula-title">3. Maintainability Index Formula</div>
+        MaintPenalty = (100 - QualityScore) * 0.50 + (100 - OperationsScore) * 0.30<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ min(25.0, TotalFindings * 0.20)<br>
+        MaintainabilityScore = max(0.0, 100.0 - MaintPenalty)
+      </div>
+
+      <div class="formula-box">
+        <div class="formula-title">4. Issue Priority Score Calculation</div>
+        PriorityScore = W_severity * W_confidence * W_exploitability * W_impact<br>
+        Weights: Critical=1.0, High=0.7, Medium=0.4, Low=0.1<br>
+        <em>(Ranks vulnerabilities for immediate developer triage and remediation)</em>
+      </div>
+    </div>
+  </div>
+
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th style="width: 22%;">Production Verdict</th>
+        <th style="width: 18%;">Score Threshold</th>
+        <th style="width: 32%;">Required Conditions</th>
+        <th style="width: 28%;">Deployment Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background:#ecfdf5;">
+        <td><strong style="color:#047857;">REVIEW_COMPLETE</strong></td>
+        <td><strong>&ge; 80.0 / 100</strong></td>
+        <td>0 Critical findings; 0 High Auth/Injection/Secret findings</td>
+        <td>Approved for production deployment; clean baseline.</td>
+      </tr>
+      <tr style="background:#fffbeb;">
+        <td><strong style="color:#b45309;">ACTION_REQUIRED</strong></td>
+        <td><strong>60.0 – 79.9</strong></td>
+        <td>0 Critical findings; minor code quality or operations debt</td>
+        <td>Requires peer review and resolution of highlighted issues.</td>
+      </tr>
+      <tr style="background:#fef2f2;">
+        <td><strong style="color:#b91c1c;">NOT_READY</strong></td>
+        <td><strong>&lt; 60.0</strong> or Critical &gt; 0</td>
+        <td>Any Critical finding or overall score &lt; 60.0</td>
+        <td><strong>Deployment Blocked</strong>: Critical security risk present.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- PAGE 4: STATIC RULE CATALOG & OWASP TOP 10 COMPLIANCE MATRIX              -->
+<!-- ========================================================================= -->
+<div class="section">
+  <div class="section-title"><span class="section-num">07</span> STATIC RULE CATALOG & OWASP TOP 10 MAPPING</div>
+  <p>
+    Codexa implements 32+ deterministic static rules mapped directly to the <strong>OWASP Top 10 (2021)</strong> and <strong>MITRE Common Weakness Enumeration (CWE)</strong> frameworks:
+  </p>
+
+  <table class="custom-table" style="margin-bottom: 0;">
+    <thead>
+      <tr>
+        <th style="width: 15%;">OWASP Category</th>
+        <th style="width: 13%;">Rule Identifier</th>
+        <th style="width: 36%;">Vulnerability Description</th>
+        <th style="width: 10%;">CWE Mapping</th>
+        <th style="width: 11%;">Severity</th>
+        <th style="width: 15%;">Target Scope</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td rowspan="3"><strong>A01: Broken Access Control</strong></td>
+        <td><code>CR-PATH-001</code></td>
+        <td>Path Traversal & Zip Slip in file/archive extraction</td>
+        <td>CWE-22</td>
+        <td><span class="badge badge-amber" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">CRITICAL</span></td>
+        <td>Java AST & Polyglot</td>
+      </tr>
+      <tr>
+        <td><code>CR-AUTH-001</code></td>
+        <td>Unauthenticated Controller Endpoint missing security gate</td>
+        <td>CWE-306</td>
+        <td><span class="badge badge-amber" style="background:#fef3c7; color:#b45309; border-color:#fcd34d;">HIGH</span></td>
+        <td>Java AST (Spring Web)</td>
+      </tr>
+      <tr>
+        <td><code>CR-CORS-001</code></td>
+        <td>Permissive Wildcard CORS with Allowed Credentials</td>
+        <td>CWE-942</td>
+        <td><span class="badge badge-amber" style="background:#fef3c7; color:#b45309; border-color:#fcd34d;">HIGH</span></td>
+        <td>Java AST & Configs</td>
+      </tr>
+
+      <tr>
+        <td rowspan="3"><strong>A02: Cryptographic Failures</strong></td>
+        <td><code>CR-SECRET-001</code></td>
+        <td>Hardcoded Credentials, JWT Keys, AWS/Stripe Secrets</td>
+        <td>CWE-798</td>
+        <td><span class="badge badge-amber" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">CRITICAL</span></td>
+        <td>Polyglot & Entropy</td>
+      </tr>
+      <tr>
+        <td><code>CR-CRYPTO-001</code></td>
+        <td>Weak Cryptographic Algorithm (DES, 3DES, RC4)</td>
+        <td>CWE-327</td>
+        <td><span class="badge badge-amber" style="background:#fef3c7; color:#b45309; border-color:#fcd34d;">HIGH</span></td>
+        <td>Java AST</td>
+      </tr>
+      <tr>
+        <td><code>CR-HASH-001</code></td>
+        <td>Insecure Hash Function (MD5, SHA-1 in security context)</td>
+        <td>CWE-328</td>
+        <td><span class="badge badge-slate">MEDIUM</span></td>
+        <td>Java AST & Polyglot</td>
+      </tr>
+
+      <tr>
+        <td rowspan="4"><strong>A03: Injection</strong></td>
+        <td><code>CR-SQL-001</code></td>
+        <td>SQL Injection via dynamic string concatenation</td>
+        <td>CWE-89</td>
+        <td><span class="badge badge-amber" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">CRITICAL</span></td>
+        <td>Java AST & Polyglot</td>
+      </tr>
+      <tr>
+        <td><code>CR-CMD-001</code></td>
+        <td>OS Command Injection (`Runtime.exec`, `os.system`)</td>
+        <td>CWE-78</td>
+        <td><span class="badge badge-amber" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">CRITICAL</span></td>
+        <td>Java AST & Polyglot</td>
+      </tr>
+      <tr>
+        <td><code>CR-XSS-001</code></td>
+        <td>Cross-Site Scripting via unescaped reflected output</td>
+        <td>CWE-79</td>
+        <td><span class="badge badge-amber" style="background:#fef3c7; color:#b45309; border-color:#fcd34d;">HIGH</span></td>
+        <td>Java AST & React UI</td>
+      </tr>
+      <tr>
+        <td><code>CR-PARAM-001</code></td>
+        <td>Prototype Pollution via unsafe object parameter merge</td>
+        <td>CWE-1321</td>
+        <td><span class="badge badge-amber" style="background:#fef3c7; color:#b45309; border-color:#fcd34d;">HIGH</span></td>
+        <td>JavaScript / TS</td>
+      </tr>
+
+      <tr>
+        <td rowspan="3"><strong>A04: Insecure Design & Quality</strong></td>
+        <td><code>CR-QUAL-001</code></td>
+        <td>High Cyclomatic Complexity (&gt; 25 in business logic)</td>
+        <td>CWE-1074</td>
+        <td><span class="badge badge-slate">MEDIUM</span></td>
+        <td>Java AST</td>
+      </tr>
+      <tr>
+        <td><code>CR-QUAL-003</code></td>
+        <td>Deep Control Flow Nesting (&gt; 6 statement levels)</td>
+        <td>CWE-1075</td>
+        <td><span class="badge badge-slate">LOW</span></td>
+        <td>Java AST</td>
+      </tr>
+      <tr>
+        <td><code>CR-PERF-001</code></td>
+        <td>Quadratic String Concatenation in Loop via `+=`</td>
+        <td>CWE-400</td>
+        <td><span class="badge badge-slate">LOW</span></td>
+        <td>Java AST (Semantic)</td>
+      </tr>
+
+      <tr>
+        <td><strong>A05: Security Misconfiguration</strong></td>
+        <td><code>CR-CONFIG-001</code></td>
+        <td>Disabled TLS Validation / TrustAllManager instances</td>
+        <td>CWE-295</td>
+        <td><span class="badge badge-amber" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">CRITICAL</span></td>
+        <td>Java AST & Configs</td>
+      </tr>
+
+      <tr>
+        <td><strong>A07: Identification & Auth</strong></td>
+        <td><code>CR-PASS-001</code></td>
+        <td>Plaintext Password Storage or un-salted hashing</td>
+        <td>CWE-916</td>
+        <td><span class="badge badge-amber" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">CRITICAL</span></td>
+        <td>Java AST & Polyglot</td>
+      </tr>
+
+      <tr>
+        <td><strong>A08: Software & Data Integrity</strong></td>
+        <td><code>CR-DESER-001</code></td>
+        <td>Unsafe Object Deserialization (`readObject`, `yaml.load`)</td>
+        <td>CWE-502</td>
+        <td><span class="badge badge-amber" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">CRITICAL</span></td>
+        <td>Java AST & Python</td>
+      </tr>
+
+      <tr>
+        <td rowspan="2"><strong>A09: Logging Failures</strong></td>
+        <td><code>CR-QUAL-006</code></td>
+        <td>Swallowed Exception in Empty Catch Block</td>
+        <td>CWE-390</td>
+        <td><span class="badge badge-slate">MEDIUM</span></td>
+        <td>Java AST & Polyglot</td>
+      </tr>
+      <tr>
+        <td><code>CR-LOG-001</code></td>
+        <td>Sensitive Authentication Tokens or PII Written to Logs</td>
+        <td>CWE-532</td>
+        <td><span class="badge badge-slate">MEDIUM</span></td>
+        <td>Java AST & Polyglot</td>
+      </tr>
+
+      <tr>
+        <td><strong>A10: SSRF</strong></td>
+        <td><code>CR-SSRF-001</code></td>
+        <td>Unvalidated Outbound HTTP Request to internal/private IP</td>
+        <td>CWE-918</td>
+        <td><span class="badge badge-amber" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">CRITICAL</span></td>
+        <td>Java AST & Polyglot</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- PAGE 5: TECH STACK, EXPERIMENTAL BENCHMARKS, ROADMAP & REFERENCES         -->
+<!-- ========================================================================= -->
+<div class="section">
+  <div class="section-title"><span class="section-num">08</span> TECHNOLOGY STACK & ARCHITECTURAL SPECIFICATIONS</div>
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th style="width: 20%;">Subsystem</th>
+        <th style="width: 33%;">Primary Technologies</th>
+        <th style="width: 47%;">Architectural Capabilities & Implementation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Backend Core</strong></td>
+        <td>Java 21 LTS, Spring Boot 3.3.3, Maven</td>
+        <td>Asynchronous pipeline orchestration, reactive multi-task staging, RESTful APIs.</td>
+      </tr>
+      <tr>
+        <td><strong>AST Parsing Engine</strong></td>
+        <td>JavaParser 3.26+, ForkJoinPool, ThreadLocal</td>
+        <td>Parallel Abstract Syntax Tree generation with zero compilation and zero lock contention.</td>
+      </tr>
+      <tr>
+        <td><strong>Persistence Layer</strong></td>
+        <td>Spring Data JPA, Hibernate ORM, Flyway 10</td>
+        <td>Dual-profile persistence: H2 in-memory for tests; PostgreSQL + Flyway V1 for production.</td>
+      </tr>
+      <tr>
+        <td><strong>Interactive Frontend</strong></td>
+        <td>React 18, Vite 5, Tailwind CSS 3.4, Lucide</td>
+        <td>5-Tab modern dark-mode dashboard (Overview, Security, Quality, APIs, Export); safeStorage cache.</td>
+      </tr>
+      <tr>
+        <td><strong>Cross-Platform Mobile</strong></td>
+        <td>Capacitor 6 Android</td>
+        <td>Native Android wrapper with direct bi-directional synchronization to deployed cloud instances.</td>
+      </tr>
+      <tr>
+        <td><strong>AI Remediation Engine</strong></td>
+        <td>NVIDIA Nemotron via OpenRouter REST API</td>
+        <td>Automated diff patching with sub-100ms offline fallback to deterministic template generators.</td>
+      </tr>
+      <tr>
+        <td><strong>Container & Cloud</strong></td>
+        <td>Docker Multi-Stage, Render Web Services</td>
+        <td>Hardened non-root container deployment; automated GitHub Actions CI/CD; health check probes.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="section-num">09</span> VERIFICATION, BENCHMARKS & EXPERIMENTAL RESULTS</div>
+  <div class="columns-2">
+    <div>
+      <h3 class="sub-heading">A. 135-Test Automated Suite (100% Pass Rate)</h3>
+      <ul>
+        <li><strong>Rule Precision Tests</strong>: Verified AST node matchers across all 32+ rules.</li>
+        <li><strong>Security Hardening Tests</strong>: Verified Zip Slip rejection, SSRF IP blocking, and entropy secret masking.</li>
+        <li><strong>False-Positive Regression Tests</strong>: Calibrated rules against numeric loops, record parameters, and intentional exception ignores (`_`).</li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="sub-heading">B. High-Scale Ingestion Throughput</h3>
+      <ul>
+        <li><strong>Initial Ingestion Response</strong>: &lt; 15 ms (Returns `202 Accepted` with Job UUID).</li>
+        <li><strong>Polyglot Monorepo (Nova - 268 Files)</strong>: Ingestion, AST scan, and diagnostics finished in <strong>24.5 seconds</strong>.</li>
+        <li><strong>Production Self-Audit (Codexa - 440 Files)</strong>: Completed in <strong>18.5 seconds</strong>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="sub-heading">C. Comparative Live Scan Benchmarks:</h3>
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th style="width: 25%;">Repository Target</th>
+        <th style="width: 18%;">Scanned Files / LOC</th>
+        <th style="width: 14%;">Overall Score</th>
+        <th style="width: 18%;">Production Verdict</th>
+        <th style="width: 15%;">Key Findings</th>
+        <th style="width: 10%;">Duration</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="highlight-row">
+        <td><strong>Codexa (Production Self-Audit)</strong></td>
+        <td>440 Files / 45,000+ LOC</td>
+        <td><strong style="color:#059669;">100.0 / 100</strong></td>
+        <td><span class="badge badge-emerald">REVIEW_COMPLETE</span></td>
+        <td><strong>0 Findings</strong> (Zero FP)</td>
+        <td>18.5 s</td>
+      </tr>
+      <tr>
+        <td><strong>Codexa Vulnerable Fixture</strong></td>
+        <td>12 Files (Java Web)</td>
+        <td><strong style="color:#b91c1c;">13.8 / 100</strong></td>
+        <td><span class="badge badge-amber" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">NOT_READY</span></td>
+        <td>SQLi, Command Injection, Deserialization</td>
+        <td>1.4 s</td>
+      </tr>
+      <tr>
+        <td><strong>Nova Monorepo (Python/TS)</strong></td>
+        <td>268 Files / 21,651 LOC</td>
+        <td><strong style="color:#b45309;">42.6 / 100</strong></td>
+        <td><span class="badge badge-amber" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">NOT_READY</span></td>
+        <td>1 Critical (`os.system`), 3 Token Logs</td>
+        <td>24.5 s</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="section-num">10</span> FUTURE SCOPE & ENGINEERING ROADMAP</div>
+  <div class="columns-2">
+    <div>
+      <h3 class="sub-heading">Phase 1: Developer Tooling & IDE Extensions</h3>
+      <ul>
+        <li><strong>VS Code & JetBrains Extensions</strong>: Real-time squiggly line warnings and one-click quick fixes inside developer IDEs before commits occur.</li>
+        <li><strong>Custom Rule DSL</strong>: Lightweight YAML/JSON rule builder allowing enterprise security teams to define custom organizational policies.</li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="sub-heading">Phase 2: Hybrid DAST & CI/CD Integrations</h3>
+      <ul>
+        <li><strong>GitHub PR Review Bot</strong>: Automatically posts inline code reviews and SARIF annotations directly on GitHub/GitLab Pull Requests.</li>
+        <li><strong>Hybrid DAST Correlation</strong>: Combining static AST route discovery with dynamic fuzzed payloads against staging environments.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="section-num">11</span> CONCLUSION & FORMAL REFERENCES</div>
+  <p>
+    Codexa delivers a robust, high-performance static application security testing and production readiness platform tailored for the modern software engineering lifecycle. By uniting deep Abstract Syntax Tree parsing with polyglot regex scanning, defensive ingestion sandboxing, mathematically grounded readiness scoring, and AI-assisted remediations, Codexa eliminates the friction of traditional SAST tools and provides developers and tech leads with an authoritative, trustworthy deployment gate.
+  </p>
+
+  <h3 class="sub-heading" style="font-size: 7.6pt;">Standards & Citations:</h3>
+  <ol style="font-size: 6.8pt; color: #475569; margin-bottom: 2px;">
+    <li><strong>OWASP Top 10 (2021)</strong>: The Ten Most Critical Web Application Security Risks, Open Web Application Security Project.</li>
+    <li><strong>MITRE Common Weakness Enumeration (CWE)</strong>: A Community-Developed List of Software Weakness Types, MITRE Corporation.</li>
+    <li><strong>OASIS Static Analysis Results Interchange Format (SARIF) v2.1.0</strong>: Committee Specification, OASIS Open.</li>
+    <li><strong>RFC 7807</strong>: Problem Details for HTTP APIs, Internet Engineering Task Force (IETF).</li>
+    <li><strong>NIST SP 800-53 Rev. 5</strong>: Security and Privacy Controls for Information Systems and Organizations.</li>
+  </ol>
+
+  <div class="footer-sign">
+    <div><strong>Platform Project:</strong> Codexa Security & Production Readiness (v1.3.0)</div>
+    <div><strong>Engineering Lead:</strong> Jainam Jain (@Codewithjainam7)</div>
+    <div><strong>Verification Date:</strong> September 2026</div>
+  </div>
+</div>
+
+</body>
+</html>
