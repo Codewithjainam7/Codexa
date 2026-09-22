@@ -1,22 +1,39 @@
-# Codexa AI Provider Resilience & Circuit Breakers
+# Codexa Resilience Patterns & Fault Isolation Architecture
 
-## Overview
-Codexa supports optional AI-assisted code review via OpenRouter, Claude, or GPT models. Because external cloud APIs are subject to latency spikes and outages, Codexa ensures total system reliability through automated circuit breakers.
+This document documents the fault-tolerance and resilience design patterns implemented across Codexa to prevent unexpected scanner crashes, network dropouts, or malicious repository payloads from impacting availability.
 
-## Circuit Breaker States
+---
 
+## 1. Resilience Philosophy
+
+A static analysis engine frequently encounters untrusted, malformed, or hostile inputs (e.g. truncated source files, syntax errors, decompression bombs, or external API timeouts). Codexa is engineered to be **resilient by design**: a failure in an individual file, rule, or external AI API must never crash the analysis job or compromise platform availability.
+
+---
+
+## 2. Key Resilience Patterns
+
+### A. Per-File AST Sandbox & Isolation
+When parsing thousands of files, an unsupported language construct or malformed syntax must not abort the overall pipeline:
+```java
+try {
+    ParseResult<CompilationUnit> result = parser.parse(source);
+    if (result.isSuccessful()) {
+        analyzeCompilationUnit(result.getResult().get(), context);
+    } else {
+        log.warn("Syntax parse warning in {}: fall back to polyglot regex engine", file.getFileName());
+        fallbackPolyglotEngine.scan(file, context);
+    }
+} catch (Exception e) {
+    log.error("Recovered from parser fault in file {}: continuing scan", file, e);
+    // Continue scanning next file without pipeline crash
+}
 ```
-[ CLOSED: Normal Operation ]
-      │ (Failure rate > 50% over 20 requests)
-      ▼
-[ OPEN: Instant Fallback to Offline Rules ]
-      │ (Wait duration: 60s)
-      ▼
-[ HALF-OPEN: Canary Probes (3 trial requests) ]
-      ├── (All succeeded) ──> [ CLOSED ]
-      └── (Any failed)    ──> [ OPEN ]
-```
 
-## Graceful Degradation Guarantees
-1. **Never Fail the Build**: If the AI model endpoint times out or returns HTTP 5xx, Codexa transparently completes the review using offline AST heuristic rules.
-2. **Quality Score Transparency**: The final report clearly marks whether AI synthesis was `ACTIVE` or `DEGRADED_FALLBACK`.
+### B. AI Remediation Circuit Breaker & Two-Tier Fallback
+If the external LLM provider (OpenRouter / NVIDIA) experiences network latency, rate limits, or HTTP 5xx errors:
+1. Codexa's `AIExplanationService` catches the exception.
+2. It switches immediately (&lt; 1ms) to `DeterministicExplanationTemplateService`.
+3. High-quality offline remediation diffs are generated without stalling user requests.
+
+### C. Graceful Degradation on Client Storage
+Frontend safeStorage wraps HTML5 `localStorage` in `try-catch` blocks, gracefully falling back to transient in-memory arrays when private browsing disables persistent cookies/storage.
