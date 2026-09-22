@@ -1,36 +1,65 @@
-# Codexa Server-Sent Events (SSE) Streaming API
+# Codexa Real-Time Server-Sent Events (SSE) Streaming Guide
 
-## Overview
-Codexa provides real-time progress updates for running analysis jobs via Server-Sent Events (SSE) pursuant to the W3C EventSource standard.
+This document specifies the Server-Sent Events (SSE) real-time streaming endpoint, allowing web and CLI clients to receive instant progress notifications without polling HTTP endpoints.
 
-## Connection Endpoint
+---
+
+## 1. Endpoint Overview
+
+- **Endpoint:** `GET /api/v1/analyses/{jobId}/events`
+- **Accept:** `text/event-stream`
+- **Connection:** `keep-alive`
+
+Establishes an HTTP persistent streaming connection. The server pushes JSON progress frames as the analysis pipeline transitions through stages.
+
+---
+
+## 2. Event Types & Lifecycle
+
+| Event Name | Stage | Progress | Description |
+| :--- | :--- | :---: | :--- |
+| `STAGE_TRANSITION` | `EXTRACTING` | 5% | Repository archive downloaded and queued for decompression. |
+| `STAGE_TRANSITION` | `PARSING_AST` | 25% | ForkJoinPool initializing AST compilation units. |
+| `FILE_ANALYZED` | `SCANNING` | 25–85% | Emitted per batch of files scanned with finding counter. |
+| `DIAGNOSTICS_READY`| `SCORING` | 90% | Complexity and API route mappings compiled. |
+| `ANALYSIS_COMPLETE`| `COMPLETED` | 100% | Final readiness score and verdict calculated. |
+| `ANALYSIS_FAILED` | `FAILED` | 100% | Unhandled ingestion error or format violation. |
+
+---
+
+## 3. Sample SSE Wire Format
+
 ```http
-GET /api/v1/analysis/{jobId}/events HTTP/1.1
-Accept: text/event-stream
-Authorization: Bearer <TOKEN>
+HTTP/1.1 200 OK
+Content-Type: text/event-stream
+Cache-Control: no-cache
+Connection: keep-alive
+
+event: STAGE_TRANSITION
+data: {"jobId":"a8eeeb48-e81d-4d18-a587-8288d2277d47","stage":"SECURITY_AND_QUALITY_RULES","progress":65}
+
+event: FILE_ANALYZED
+data: {"jobId":"a8eeeb48-e81d-4d18-a587-8288d2277d47","file":"src/main/java/UserService.java","findingsCount":2}
+
+event: ANALYSIS_COMPLETE
+data: {"jobId":"a8eeeb48-e81d-4d18-a587-8288d2277d47","overallScore":100.0,"verdict":"REVIEW_COMPLETE","durationMs":18500}
 ```
 
-## Event Types
+---
 
-| Event Name | Description | Payload Structure |
-| :--- | :--- | :--- |
-| `stage_changed` | Analysis pipeline transitioned to a new stage | `{"stage": "AST_PARSING", "progressPercent": 25}` |
-| `finding_detected` | A rule violation was flagged in real time | `{"ruleId": "CR-SEC-001", "file": "Auth.java", "line": 42}` |
-| `metrics_updated` | Cyclomatic complexity and lines-of-code updated | `{"loc": 14200, "complexity": 18.4}` |
-| `job_completed` | All pipeline stages successfully concluded | `{"qualityScore": 94, "verdict": "PASSED"}` |
-| `job_failed` | Unrecoverable error occurred | `{"errorCode": "ARCHIVE_CORRUPTED", "reason": "..."}` |
+## 4. JavaScript Client Integration
 
-## Wire Protocol Example
-```text
-event: stage_changed
-data: {"jobId":"job-102","stage":"TOKENIZING","progressPercent":15,"timestamp":"2026-09-15T17:52:00Z"}
+```javascript
+const eventSource = new EventSource('/api/v1/analyses/a8eeeb48-e81d-4d18-a587-8288d2277d47/events');
 
-event: finding_detected
-data: {"jobId":"job-102","ruleId":"CR-SEC-002","severity":"HIGH","message":"Hardcoded API secret found"}
+eventSource.addEventListener('STAGE_TRANSITION', (e) => {
+  const data = JSON.parse(e.data);
+  console.log(`Pipeline stage: ${data.stage} (${data.progress}%)`);
+});
 
-event: job_completed
-data: {"jobId":"job-102","qualityScore":88,"totalViolations":3,"executionTimeMs":1420}
+eventSource.addEventListener('ANALYSIS_COMPLETE', (e) => {
+  const data = JSON.parse(e.data);
+  console.log(`Analysis complete! Score: ${data.overallScore}/100, Verdict: ${data.verdict}`);
+  eventSource.close();
+});
 ```
-
-## Client Reconnection Behavior
-If the TCP connection drops, standard `EventSource` clients will automatically reconnect. Codexa transmits an `id:` field per event, allowing resuming via the `Last-Event-ID` header.
