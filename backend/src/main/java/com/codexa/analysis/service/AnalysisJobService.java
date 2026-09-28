@@ -84,6 +84,12 @@ public class AnalysisJobService {
     }
 
     @Transactional(readOnly = true)
+    public List<FindingEntity> getFindingEntitiesForJob(UUID jobId) {
+        getJobOrThrow(jobId);
+        return findingRepository.findByJob_IdOrderByPriorityScoreDesc(jobId);
+    }
+
+    @Transactional(readOnly = true)
     public AnalysisJobResponse getJobResponse(UUID jobId) {
         AnalysisJobEntity entity = getJobOrThrow(jobId);
         AnalysisMetricResponse metricResponse = toMetricResponse(entity.getMetric());
