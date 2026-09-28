@@ -67,7 +67,7 @@ Welcome to the comprehensive technical documentation for **Codexa**—the AI-aug
 - **[Incremental Delta Analysis & PR Diff Scanning](architecture/delta-analysis.md)**: Scanning only changed lines and modified AST nodes in pull requests.
 - **[Fault-Tolerant Resilience Patterns & Circuit Breakers](architecture/resilience-patterns.md)**: Isolation boundaries, retry decorators, and circuit breaker transitions.
 - **[Custom Rule Provider Plugin SPI Architecture](architecture/plugin-architecture.md)**: Java ServiceLoader SPI and Spring auto-discovery for custom rules.
-- **[SARIF v2.1.0 Schema Mapping Reference](architecture/sarif-v2-mapping.md)**: OASIS SARIF v2.1.0 JSON schema mapping and physical URI normalization.
+- **[Software Bill of Materials (SBOM) & Dependency CVE Scanner](architecture/sbom-cve-scanner.md)**: Multi-ecosystem manifest parsing (Maven, npm, PyPI, Go) and CycloneDX v1.5 JSON generation.
 - **[Data Retention, Ephemeral Staging & Lifecycle Policy](architecture/data-retention-policy.md)**: Zero-Residual Ingestion, directory sweeps, and database pruning.
 
 ---
