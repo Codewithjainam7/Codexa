@@ -1,33 +1,39 @@
 package com.codexa.rules.security;
 
-import com.codexa.analysis.model.Category;
-import com.codexa.analysis.model.Confidence;
-import com.codexa.analysis.model.Severity;
+import com.codexa.analysis.model.*;
+import com.codexa.analysis.service.SbomDependencyService;
 import com.codexa.rules.api.AnalysisRule;
 import com.codexa.rules.api.RuleContext;
 import com.codexa.rules.api.RuleFinding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Static Analysis Rule: CR-DEP-001 (Software Supply Chain Security & Vulnerable Dependencies).
+ * Audits repository manifests (Maven pom.xml, Gradle, npm package.json, PyPI requirements.txt, go.mod)
+ * against known supply chain CVE advisories.
+ */
 @Component
 public class DependencyRiskRule implements AnalysisRule {
 
     private static final Logger log = LoggerFactory.getLogger(DependencyRiskRule.class);
 
-    private static final Map<String, String> VULNERABLE_COORDINATES = Map.of(
-            "log4j-core:2.14.1", "Log4Shell CVE-2021-44228 (Remote Code Execution)",
-            "log4j-core:2.15.0", "Log4j CVE-2021-45046 (Denial of Service / RCE)",
-            "spring-beans:5.3.17", "Spring4Shell CVE-2022-22965 (Remote Code Execution)",
-            "fastjson:1.2.80", "Fastjson Deserialization Vulnerability (RCE)",
-            "commons-collections:3.2.1", "Apache Commons Collections Deserialization RCE"
-    );
+    private final SbomDependencyService sbomService;
+
+    public DependencyRiskRule() {
+        this(new SbomDependencyService());
+    }
+
+    @Autowired
+    public DependencyRiskRule(SbomDependencyService sbomService) {
+        this.sbomService = sbomService != null ? sbomService : new SbomDependencyService();
+    }
 
     @Override
     public String getRuleId() {
@@ -46,7 +52,7 @@ public class DependencyRiskRule implements AnalysisRule {
 
     @Override
     public Severity getSeverity() {
-        return Severity.MEDIUM;
+        return Severity.HIGH;
     }
 
     @Override
@@ -60,46 +66,48 @@ public class DependencyRiskRule implements AnalysisRule {
     }
 
     @Override
+    public String getDescription() {
+        return "Third-party supply chain libraries containing publicly disclosed CVE vulnerabilities or unpatched remote code execution flaws.";
+    }
+
+    @Override
     public List<RuleFinding> evaluate(RuleContext context) {
         List<RuleFinding> findings = new ArrayList<>();
-        List<Path> allFiles = context.getAllSourceFiles();
-        if (allFiles == null) return findings;
+        Path stagingDir = context.getStagingDirectory();
+        if (stagingDir == null) return findings;
 
-        for (Path file : allFiles) {
-            String fileName = file.getFileName().toString().toLowerCase();
-            if (fileName.equals("pom.xml") || fileName.endsWith(".gradle")) {
-                try {
-                    String content = Files.readString(file);
-                    for (Map.Entry<String, String> entry : VULNERABLE_COORDINATES.entrySet()) {
-                        String[] parts = entry.getKey().split(":");
-                        String artifact = parts[0];
-                        String version = parts[1];
+        try {
+            SbomReport report = sbomService.generateSbom(stagingDir, null, "RepositoryAudit");
 
-                        if (content.contains(artifact) && content.contains(version)) {
-                            String relPath = context.getStagingDirectory().relativize(file).toString().replace('\\', '/');
+            for (SbomComponent component : report.components()) {
+                for (CveAdvisory adv : sbomService.getAdvisories()) {
+                    if (component.name().equalsIgnoreCase(adv.componentName())) {
+                        if (sbomService.isVersionVulnerable(component.version(), adv.vulnerableVersionMatcher())) {
+                            String relPath = component.filePath();
+
                             findings.add(RuleFinding.builder()
                                     .ruleId(getRuleId())
                                     .category(getCategory())
-                                    .severity(getSeverity())
+                                    .severity(adv.severity())
                                     .confidence(getDefaultConfidence())
-                                    .title("Known vulnerable dependency version: " + artifact + ":" + version)
-                                    .description("Detected dependency coordinate '" + artifact + ":" + version + "' matching known security advisory: " + entry.getValue())
-                                    .impact("Exploitation of known CVE vulnerabilities in third-party supply chain components.")
-                                    .remediation("Upgrade the dependency to the latest patched stable version in your build configuration.")
-                                    .suggestedFix("Upgrade " + artifact + " to latest secure release.")
-                                    .owaspMapping(getOwaspMapping())
                                     .filePath(relPath)
-                                    .startLine(1)
-                                    .endLine(1)
-                                    .evidence(artifact + ":" + version + " -> " + entry.getValue())
-                                    .references(List.of("https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Security/"))
+                                    .startLine(component.lineNumber() > 0 ? component.lineNumber() : 1)
+                                    .endLine(component.lineNumber() > 0 ? component.lineNumber() : 1)
+                                    .title("Vulnerable Dependency: " + component.name() + ":" + component.version())
+                                    .description("Dependency coordinate " + component.name() + ":" + component.version() + " matches " + adv.cveId() + ": " + adv.summary())
+                                    .impact("Known security vulnerability in supply chain dependency: " + adv.cveId())
+                                    .remediation("Upgrade " + component.name() + " to version " + adv.fixedVersion() + " or higher to patch " + adv.cveId() + ".")
+                                    .suggestedFix("Upgrade " + component.name() + " to version " + adv.fixedVersion())
+                                    .evidence("PURL: " + component.purl() + " | CVE: " + adv.cveId() + " (CVSS " + adv.cvssScore() + ")")
+                                    .owaspMapping(getOwaspMapping())
+                                    .references(List.of(adv.referenceUrl()))
                                     .build());
                         }
                     }
-                } catch (Exception e) {
-                    log.debug("Error reading dependency file {}: {}", file, e.getMessage());
                 }
             }
+        } catch (Exception ex) {
+            log.debug("Dependency risk evaluation encountered error: {}", ex.getMessage());
         }
 
         return findings;
