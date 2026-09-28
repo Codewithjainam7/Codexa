@@ -49,10 +49,21 @@ public class NvidiaNemotronAiClient {
     }
 
     public boolean isConfigured() {
+        if (isLocalOllama()) {
+            return properties.ai() != null && properties.ai().enabled();
+        }
         String apiKey = getApiKey();
         boolean hasKey = apiKey != null && !apiKey.isBlank() && !apiKey.contains("placeholder");
         boolean isEnabled = (properties.ai() != null && properties.ai().enabled()) || hasKey;
         return isEnabled && hasKey;
+    }
+
+    public boolean isLocalOllama() {
+        if (properties.ai() == null) return false;
+        String provider = properties.ai().provider();
+        String endpoint = properties.ai().endpoint();
+        return "ollama".equalsIgnoreCase(provider) || "local".equalsIgnoreCase(provider)
+                || (endpoint != null && endpoint.contains("localhost:11434"));
     }
 
     public record CodeSnippet(String filePath, String content) {}
@@ -200,7 +211,20 @@ public class NvidiaNemotronAiClient {
 
         String apiKey = getApiKey();
         String endpoint = determineEndpoint(apiKey);
-        List<String> modelsToTry = List.of(DEFAULT_MODEL, "meta-llama/llama-3.3-70b-instruct:free");
+        List<String> modelsToTry;
+        if (isLocalOllama()) {
+            modelsToTry = List.of(
+                    properties.ai().model() != null ? properties.ai().model() : "qwen2.5-coder:7b",
+                    "qwen2.5-coder:7b",
+                    "deepseek-coder:6.7b"
+            );
+        } else {
+            modelsToTry = List.of(
+                    properties.ai().model() != null ? properties.ai().model() : DEFAULT_MODEL,
+                    DEFAULT_MODEL,
+                    "meta-llama/llama-3.3-70b-instruct:free"
+            );
+        }
 
         for (String model : modelsToTry) {
             try {
@@ -238,9 +262,14 @@ public class NvidiaNemotronAiClient {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(endpoint))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
                 .timeout(Duration.ofSeconds(4))
                 .POST(HttpRequest.BodyPublishers.ofString(requestJson));
+
+        if (apiKey != null && !apiKey.isBlank()) {
+            builder.header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey);
+        } else if (isLocalOllama()) {
+            builder.header(HttpHeaders.AUTHORIZATION, "Bearer ollama");
+        }
 
         if (endpoint.contains("openrouter.ai")) {
             builder.header("HTTP-Referer", "https://github.com/Codewithjainam7/Codexa");
@@ -277,7 +306,15 @@ public class NvidiaNemotronAiClient {
     }
 
     private String determineEndpoint(String apiKey) {
-        if (properties.ai().endpoint() != null && !properties.ai().endpoint().isBlank()) {
+        if (isLocalOllama()) {
+            if (properties.ai().endpoint() != null && !properties.ai().endpoint().isBlank()
+                    && !properties.ai().endpoint().equals("https://openrouter.ai/api/v1/chat/completions")) {
+                return properties.ai().endpoint();
+            }
+            return "http://localhost:11434/v1/chat/completions";
+        }
+        if (properties.ai().endpoint() != null && !properties.ai().endpoint().isBlank()
+                && !properties.ai().endpoint().equals("https://openrouter.ai/api/v1/chat/completions")) {
             return properties.ai().endpoint();
         }
         if (apiKey != null && apiKey.startsWith("sk-or-")) {
