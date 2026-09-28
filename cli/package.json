@@ -1,0 +1,28 @@
+{
+  "name": "@codexa/cli",
+  "version": "1.0.0",
+  "description": "Autonomous Static Analysis, Security Auditing, SBOM & LSP CLI for Codexa",
+  "main": "bin/codexa.js",
+  "bin": {
+    "codexa": "./bin/codexa.js"
+  },
+  "keywords": [
+    "security",
+    "sast",
+    "static-analysis",
+    "sbom",
+    "cve",
+    "lsp",
+    "sarif",
+    "code-quality",
+    "codexa"
+  ],
+  "author": "Codexa Team",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "test": "node --test test/cli.test.js"
+  }
+}
