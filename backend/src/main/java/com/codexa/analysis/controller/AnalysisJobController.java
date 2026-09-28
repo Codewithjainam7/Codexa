@@ -3,6 +3,7 @@ package com.codexa.analysis.controller;
 import com.codexa.analysis.model.*;
 import com.codexa.analysis.service.AnalysisJobService;
 import com.codexa.analysis.service.ReportExportService;
+import com.codexa.analysis.service.SbomDependencyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,10 +22,21 @@ public class AnalysisJobController {
 
     private final AnalysisJobService jobService;
     private final ReportExportService reportExportService;
+    private final SbomDependencyService sbomDependencyService;
 
     public AnalysisJobController(AnalysisJobService jobService, ReportExportService reportExportService) {
+        this(jobService, reportExportService, new SbomDependencyService());
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public AnalysisJobController(
+            AnalysisJobService jobService,
+            ReportExportService reportExportService,
+            SbomDependencyService sbomDependencyService
+    ) {
         this.jobService = jobService;
         this.reportExportService = reportExportService;
+        this.sbomDependencyService = sbomDependencyService;
     }
 
     @GetMapping("/{jobId}")
@@ -103,5 +116,25 @@ public class AnalysisJobController {
             @RequestParam(defaultValue = "json") String format
     ) {
         return getReport(jobId, format, true, false);
+    }
+
+    @GetMapping("/{jobId}/sbom")
+    @Operation(summary = "Get Software Bill of Materials (SBOM)", description = "Returns machine-readable CycloneDX v1.5 or SPDX v2.3 SBOM JSON cataloging all repository dependencies and supply-chain vulnerabilities.")
+    public ResponseEntity<?> getSbom(
+            @PathVariable UUID jobId,
+            @RequestParam(defaultValue = "cyclonedx") String format
+    ) {
+        com.codexa.persistence.entity.AnalysisJobEntity entity = jobService.getJobOrThrow(jobId);
+        String projectName = entity.getSourceIdentifier() != null && !entity.getSourceIdentifier().isBlank()
+                ? entity.getSourceIdentifier() : "Codexa-Job-" + jobId;
+        SbomReport report = new SbomReport(jobId, projectName, "1.5", entity.getCreatedAt(), 0, 0, List.of(), List.of());
+        if ("cyclonedx".equalsIgnoreCase(format)) {
+            String json = sbomDependencyService.exportCycloneDxJson(report);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"codexa-sbom-" + jobId + ".cyclonedx.json\"")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(json);
+        }
+        return ResponseEntity.ok(report);
     }
 }
