@@ -114,6 +114,7 @@ Welcome to the comprehensive technical documentation for **Codexa**—the AI-aug
 - **[Developer CLI & Language Server Protocol (LSP) Daemon](tools/cli-reference.md)**: Zero-dependency command-line scanner, TUI dashboard, system doctor, and editor LSP daemon.
 - **[GitHub PR Review Bot & Inline Suggestions](integrations/github-pr-bot.md)**: Automated line-by-line PR reviews with 1-click code suggestions.
 - **[OpenRouter AI Gateway Setup & Cascade](integrations/openrouter-setup.md)**: API key provisioning, model hierarchy, and air-gapped guidelines.
+- **[Local GPU AI Remediation with Ollama & NVIDIA RTX](integrations/local-gpu-ollama.md)**: Offline zero-cost AI code remediation on RTX 3050/4060 laptops using Qwen 2.5 Coder.
 - **[GitHub Actions PR Gating Workflow](GITHUB_ACTIONS.md)**: Automated PR security gating workflow.
 - **[GitLab CI Pipeline & Security Dashboard](GITLAB_CI.md)**: GitLab CI/CD integration with security dashboards.
 - **[Azure DevOps Pipelines Integration](integrations/azure-devops-pipeline.md)**: Complete azure-pipelines.yml configuration.
