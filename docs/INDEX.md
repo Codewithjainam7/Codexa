@@ -111,6 +111,7 @@ Welcome to the comprehensive technical documentation for **Codexa**—the AI-aug
 ---
 
 ## 🚀 7. CI/CD & Enterprise Integrations
+- **[Developer CLI & Language Server Protocol (LSP) Daemon](tools/cli-reference.md)**: Zero-dependency command-line scanner, TUI dashboard, system doctor, and editor LSP daemon.
 - **[GitHub PR Review Bot & Inline Suggestions](integrations/github-pr-bot.md)**: Automated line-by-line PR reviews with 1-click code suggestions.
 - **[OpenRouter AI Gateway Setup & Cascade](integrations/openrouter-setup.md)**: API key provisioning, model hierarchy, and air-gapped guidelines.
 - **[GitHub Actions PR Gating Workflow](GITHUB_ACTIONS.md)**: Automated PR security gating workflow.
