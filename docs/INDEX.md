@@ -85,6 +85,7 @@ Welcome to the comprehensive technical documentation for **Codexa**—the AI-aug
 - **[Defensive HTTP Headers Matrix (CSP, COOP, HSTS)](security/defensive-headers-matrix.md)**: Complete security response header configurations.
 - **[Threat Model & Security Boundary Analysis](security/threat-model.md)**: STRIDE threat modeling across all platform entrypoints.
 - **[MITRE CWE Top 25 Coverage Matrix](security/cwe-top25-mapping.md)**: Exhaustive 25-rank coverage table with AST detection heuristics.
+- **[Regulatory Compliance & Audit Attestation Matrix](compliance/compliance-matrix.md)**: Continuous evaluation across SOC 2 Type II, ISO 27001, PCI-DSS v4.0, and OWASP Top 10.
 - **[Cryptographic Baselines & Encryption Standards](security/cryptographic-standards.md)**: NIST SP 800-131A, TLS 1.3 cipher suites, and Argon2id KDF parameters.
 - **[Security Incident Response & Triage Runbook](security/incident-response-runbook.md)**: CVSS v3.1 severity classification, 5-phase lifecycle, and forensic SOPs.
 
