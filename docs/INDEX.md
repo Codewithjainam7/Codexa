@@ -14,7 +14,20 @@ Welcome to the comprehensive technical documentation for **Codexa**—the AI-aug
 
 ---
 
-## 🛡️ 1. Static Rule Specifications (OWASP Top 10 & CWE)
+## 🏛️ 1. Architecture Decision Records (ADRs)
+- **[ADR Overview & Index](adr/README.md)**: Inventory of formal architectural decisions using MADR.
+- **[ADR-0001: Record Architecture Decisions](adr/0001-record-architecture-decisions.md)**: Adopting Markdown Architectural Decision Records (MADR) format.
+- **[ADR-0002: Java 21 LTS & Virtual Threads](adr/0002-java-21-virtual-threads.md)**: Project Loom virtual threads for I/O and ForkJoinPool for CPU tasks.
+- **[ADR-0003: Unified AST Multi-Language Engine](adr/0003-ast-multi-language-engine.md)**: Hybrid engine architecture (JavaParser + Polyglot Token Scanners).
+- **[ADR-0004: SQLite WAL Mode & PostgreSQL Dual-Engine](adr/0004-sqlite-wal-storage.md)**: Zero-config developer SQLite WAL and enterprise PostgreSQL.
+- **[ADR-0005: Standardization on OASIS SARIF v2.1.0](adr/0005-sarif-standard-output.md)**: Universal security reporting standard for GitHub and IDE tools.
+- **[ADR-0006: Monochromatic Luxury Cybersecurity Design System](adr/0006-monochromatic-luxury-ui.md)**: OLED black canvas, subtle micro-borders, and reserved emerald functional accents.
+- **[ADR-0007: Resilient AI Model Cascade & Offline Circuit Breaker](adr/0007-openrouter-resilient-fallback.md)**: Multi-provider cascade and offline deterministic template fallback.
+- **[ADR-0008: Content-Addressable SHA-256 AST & Remediation Caching](adr/0008-content-addressable-ast-cache.md)**: Eliminating redundant AST parses and saving 68%+ AI inference tokens.
+
+---
+
+## 🛡️ 2. Static Rule Specifications (OWASP Top 10 & CWE)
 - **[CR-SQL-001: SQL Injection Detection](rules/CR-SQL-001.md)** (CWE-89, A03:2021)
 - **[CR-CMD-001: OS Command Injection](rules/CR-CMD-001.md)** (CWE-78, A03:2021)
 - **[CR-PATH-001: Path Traversal & Zip Slip](rules/CR-PATH-001.md)** (CWE-22, A01:2021)
@@ -43,9 +56,9 @@ Welcome to the comprehensive technical documentation for **Codexa**—the AI-aug
 
 ---
 
-## 🏗️ 2. Architecture & Engine Internals
+## 🏗️ 3. Architecture & Engine Internals
 - **[High-Level Architecture & Pipeline Stages](architecture/pipeline-stages.md)**: 4-stage pipeline (Ingestion, AST Parsing, Rule Evaluation, Scoring).
-- **[Multi-Language AST Engine](architecture/multi-language-engine.md)**: JavaParser and multi-language scanner polyglot architecture.
+- **[Multi-Language Static Analysis & Polyglot Engine](architecture/multi-language-engine.md)**: 3-tier polyglot architecture (JavaParser + Token Lexers + IaC Auditing).
 - **[AI Model Fallback & Multi-Provider Cascade](architecture/ai-fallback-routing.md)**: 3-tier cascade, OpenRouter routing, and offline deterministic template engine.
 - **[Scoring Mathematics & Asymptotic Penalty Formulas](architecture/scoring-formula.md)**: Exponential decay and asymptotic saturation formulas for readiness score.
 - **[Java Concurrency & Managed ForkJoinPool Work-Stealing](architecture/concurrency-model.md)**: Virtual threads and parallel analysis scheduling.
@@ -59,10 +72,14 @@ Welcome to the comprehensive technical documentation for **Codexa**—the AI-aug
 
 ---
 
-## 🔒 3. Security, Hardening & Compliance
+## 🔒 4. Security, Hardening & Compliance
 - **[Zero-Trust Code Ingestion Architecture](security/zero-trust-architecture.md)**: 5-layer defense-in-depth model and container sandboxing.
 - **[Zip Slip Traversal Protection](security/zip-slip-protection.md)**: Canonical path verification and Zip bomb decompression guards.
-- **[SSRF Defense & IP Whitelisting Architecture](security/ssrf-defense.md)**: RFC 1918 / RFC 3927 metadata blocking and DNS rebinding defense.
+- **[Server-Side Request Forgery (SSRF) Defense](security/ssrf-defense.md)**: RFC 1918 / RFC 3927 metadata blocking and DNS rebinding IP pinning.
+- **[Process Sandboxing & Container Isolation](security/sandboxing-mechanisms.md)**: Seccomp-BPF profiles, cgroups v2, noexec staging, and k8s hardening.
+- **[Software Supply Chain Security, SBOM & SLSA](security/supply-chain-security.md)**: SLSA Level 3 matrix, CycloneDX/SPDX SBOMs, and Sigstore Cosign signing.
+- **[Structured Audit Logging & SIEM Compliance](security/audit-logging-standards.md)**: ECS JSON log format, in-flight secret scrubbing, and WORM storage.
+- **[GDPR & Data Privacy Compliance Guide](security/gdpr-compliance-guide.md)**: Privacy by Design (Art. 25), PII stripping, and Article 17 erasure cascade.
 - **[In-Flight Secret Masking & Shannon Entropy Redaction](security/secret-masking-specs.md)**: Automated token redactor preventing credential leakage to AI APIs.
 - **[Defensive AST Traversal & ReDoS Mitigation](security/ast-sanitization-guide.md)**: Regular expression timeouts and recursion depth bounds.
 - **[Defensive HTTP Headers Matrix (CSP, COOP, HSTS)](security/defensive-headers-matrix.md)**: Complete security response header configurations.
@@ -73,7 +90,7 @@ Welcome to the comprehensive technical documentation for **Codexa**—the AI-aug
 
 ---
 
-## 📡 4. API Reference & Webhooks
+## 📡 5. API Reference & Webhooks
 - **[OpenAPI 3.0 Specifications](api/openapi-specs.md)**: Interactive Swagger/OpenAPI schema documentation.
 - **[Rate Limiting & Token Bucket Algorithms](api/rate-limiting-guide.md)**: Bounded sliding window rate limiters per IP.
 - **[Batch Analysis & Multi-Repository API](api/batch-analysis-api.md)**: Concurrently submitting and orchestrating multi-repo scans.
@@ -86,14 +103,15 @@ Welcome to the comprehensive technical documentation for **Codexa**—the AI-aug
 
 ---
 
-## ⚡ 5. Benchmarks & Real-World Studies
+## ⚡ 6. Benchmarks & Real-World Studies
 - **[Empirical Accuracy & False-Positive Elimination Study](benchmarks/accuracy-and-false-positives.md)**: Empirical precision benchmarks and 0.0% false-positive achievement.
 - **[Enterprise Monorepo Scaling & 100k-File Tuning](benchmarks/monorepo-scaling-guide.md)**: Memory footprint and throughput tuning for 100,000-file repositories.
 - **[Production Benchmark Suite & Case Studies](BENCHMARKS.md)**: Real-world benchmark runs and SmartLot audit case study.
 
 ---
 
-## 🚀 6. CI/CD & Enterprise Integrations
+## 🚀 7. CI/CD & Enterprise Integrations
+- **[OpenRouter AI Gateway Setup & Cascade](integrations/openrouter-setup.md)**: API key provisioning, model hierarchy, and air-gapped guidelines.
 - **[GitHub Actions PR Gating Workflow](GITHUB_ACTIONS.md)**: Automated PR security gating workflow.
 - **[GitLab CI Pipeline & Security Dashboard](GITLAB_CI.md)**: GitLab CI/CD integration with security dashboards.
 - **[Azure DevOps Pipelines Integration](integrations/azure-devops-pipeline.md)**: Complete azure-pipelines.yml configuration.
@@ -102,18 +120,35 @@ Welcome to the comprehensive technical documentation for **Codexa**—the AI-aug
 
 ---
 
-## 🚢 7. Production Deployment, Clustering & Monitoring
+## 🚢 8. Production Deployment, Clustering & Monitoring
 - **[Kubernetes & Helm Deployment Architecture Guide](deployment/kubernetes-helm-guide.md)**: Multi-replica cluster architecture, production values.yaml, and HPA.
 - **[Observability: Prometheus, Grafana & Micrometer Metrics](deployment/monitoring-prometheus-grafana.md)**: Metric taxonomy, scrape configs, and Alertmanager rules.
 - **[High Availability & Multi-Node Clustering Architecture](deployment/high-availability-guide.md)**: Active-Active stateless clustering, ShedLock, and HikariCP pooling.
+- **[AWS ECS Fargate Production Deployment Guide](deployment/aws-ecs-fargate.md)**: Serverless container deployment on AWS ECS with Fargate and ALB.
+- **[Google Cloud Run Serverless Deployment Guide](deployment/gcp-cloud-run.md)**: Knative service spec, Cloud SQL proxy, and Secret Manager.
+- **[Linux Systemd Service Setup & Hardening](deployment/systemd-service-setup.md)**: Sandboxed systemd unit, dedicated user, and journald logging.
+- **[Database Backup, Disaster Recovery & PITR Runbook](deployment/backup-restore-runbook.md)**: PostgreSQL parallel dumps, SQLite WAL snapshots, and restore checklists.
 - **[Docker Setup & Production Images](deployment/docker-setup.md)**: Multi-stage container builds and non-root execution.
-- **[AWS ECS Fargate Deployment Guide](deployment/aws-ecs-fargate.md)**: Serverless container deployment on AWS.
-- **[GCP Cloud Run Deployment Guide](deployment/gcp-cloud-run.md)**: Cloud Run autoscaling deployment on GCP.
 - **[NGINX Reverse Proxy Configuration](deployment/reverse-proxy-nginx.md)**: SSL termination and proxy buffering.
-- **[Backup & Disaster Recovery Runbook](deployment/backup-restore-runbook.md)**: PostgreSQL snapshots and point-in-time recovery.
 
 ---
 
-## 🔮 8. Roadmap & Future Scope
+## 🔧 9. Operations & Forensic Troubleshooting
+- **[SQLite Corruption & WAL Contention Recovery](troubleshooting/corrupt-sqlite-recovery.md)**: Diagnostic commands, .recover salvage, and WAL checkpoint forcing.
+- **[JVM OutOfMemoryError & Heap Dump Forensics](troubleshooting/oom-heap-dumps.md)**: Capturing and analyzing JVM heap dumps under large repository scans.
+- **[Common Operational Issues & Solutions](troubleshooting/common-issues.md)**: Quick resolution matrix for common production deployment questions.
+
+---
+
+## 🤝 10. Contributing & Engineering Standards
+- **[Engineering Coding Standards & Guidelines](contributing/coding-standards.md)**: Java 21 idioms, rule authoring, error handling, and Conventional Commits.
+- **[Backend Testing Conventions & Quality Gates](contributing/unit-testing-standards.md)**: Testing pyramid SLAs, positive/negative fixtures, and JaCoCo gates.
+- **[Frontend Component Architecture & Design System](contributing/frontend-component-guidelines.md)**: Monochromatic luxury design, cn helper, and Framer Motion.
+- **[Release Engineering & Versioning Checklist](contributing/release-process-checklist.md)**: SemVer 2.0.0, 4-phase quality gates, Sigstore signing, and hotfixes.
+- **[Rule Development Tutorial](contributing/rule-development-tutorial.md)**: Step-by-step tutorial for building and testing custom static analysis rules.
+
+---
+
+## 🔮 11. Roadmap & Future Scope
 - **[Codexa v2.0 Architecture Vision & RFC](roadmap/v2-vision-and-rfc.md)**: Language Server Protocol (LSP) IDE integration, enterprise rule DSL, and hybrid DAST fuzzing.
 - **[Milestone Matrix & Release Schedule](roadmap/milestone-matrix.md)**: Multi-quarter engineering delivery roadmap.
