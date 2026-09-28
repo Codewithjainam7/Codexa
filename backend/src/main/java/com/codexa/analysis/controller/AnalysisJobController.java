@@ -23,20 +23,31 @@ public class AnalysisJobController {
     private final AnalysisJobService jobService;
     private final ReportExportService reportExportService;
     private final SbomDependencyService sbomDependencyService;
+    private final com.codexa.compliance.service.ComplianceAuditService complianceAuditService;
 
     public AnalysisJobController(AnalysisJobService jobService, ReportExportService reportExportService) {
-        this(jobService, reportExportService, new SbomDependencyService());
+        this(jobService, reportExportService, new SbomDependencyService(), new com.codexa.compliance.service.ComplianceAuditService());
+    }
+
+    public AnalysisJobController(
+            AnalysisJobService jobService,
+            ReportExportService reportExportService,
+            SbomDependencyService sbomDependencyService
+    ) {
+        this(jobService, reportExportService, sbomDependencyService, new com.codexa.compliance.service.ComplianceAuditService());
     }
 
     @org.springframework.beans.factory.annotation.Autowired
     public AnalysisJobController(
             AnalysisJobService jobService,
             ReportExportService reportExportService,
-            SbomDependencyService sbomDependencyService
+            SbomDependencyService sbomDependencyService,
+            com.codexa.compliance.service.ComplianceAuditService complianceAuditService
     ) {
         this.jobService = jobService;
         this.reportExportService = reportExportService;
         this.sbomDependencyService = sbomDependencyService;
+        this.complianceAuditService = complianceAuditService;
     }
 
     @GetMapping("/{jobId}")
@@ -135,6 +146,19 @@ public class AnalysisJobController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(json);
         }
+        return ResponseEntity.ok(report);
+    }
+
+    @GetMapping("/{jobId}/compliance")
+    @Operation(summary = "Get regulatory compliance audit packet", description = "Evaluates analysis findings against enterprise regulatory standards: SOC 2 Type II, ISO/IEC 27001, PCI-DSS v4.0, and OWASP Top 10.")
+    public ResponseEntity<com.codexa.compliance.model.CompliancePacketReport> getCompliancePacket(
+            @PathVariable UUID jobId,
+            @RequestParam(defaultValue = "soc2") String standard
+    ) {
+        com.codexa.persistence.entity.AnalysisJobEntity entity = jobService.getJobOrThrow(jobId);
+        List<com.codexa.persistence.entity.FindingEntity> findings = jobService.getFindingEntitiesForJob(jobId);
+        var standardEnum = com.codexa.compliance.model.ComplianceStandard.fromString(standard);
+        var report = complianceAuditService.evaluateCompliance(jobId, entity.getSourceIdentifier(), standardEnum, findings);
         return ResponseEntity.ok(report);
     }
 }
