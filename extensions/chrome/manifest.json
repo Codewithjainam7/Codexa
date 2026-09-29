@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Codexa Security & Code Review Auditor",
+  "version": "1.0.0",
+  "description": "Real-time AI code review, deterministic AST security scanning, and instant GitHub PR audit overlays.",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://github.com/*",
+    "https://codexa-ye85.onrender.com/*",
+    "http://localhost:8080/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}

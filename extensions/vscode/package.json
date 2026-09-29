@@ -1,0 +1,65 @@
+{
+  "name": "codexa-security",
+  "displayName": "Codexa AI Code Review & Security Auditor",
+  "description": "Deterministic AST security checks, OWASP Top 10, IaC auditing, and 1-click AI secure fixes directly inside VS Code.",
+  "version": "1.0.0",
+  "publisher": "codexa",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Linters",
+    "Programming Languages",
+    "Security"
+  ],
+  "keywords": [
+    "security",
+    "ast",
+    "owasp",
+    "sast",
+    "audit",
+    "codexa"
+  ],
+  "activationEvents": [
+    "onLanguage:java",
+    "onLanguage:python",
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:dockerfile"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codexa.scanWorkspace",
+        "title": "Codexa: Run Deep AST Security Scan",
+        "category": "Codexa"
+      },
+      {
+        "command": "codexa.openPlayground",
+        "title": "Codexa: Open Security Playground Sandbox",
+        "category": "Codexa"
+      },
+      {
+        "command": "codexa.viewThreatMap",
+        "title": "Codexa: View Attack Surface Threat Map",
+        "category": "Codexa"
+      }
+    ],
+    "configuration": {
+      "title": "Codexa Security",
+      "properties": {
+        "codexa.serverUrl": {
+          "type": "string",
+          "default": "https://codexa-ye85.onrender.com",
+          "description": "Codexa backend server URL (Render cloud or local http://localhost:8080)."
+        },
+        "codexa.scanOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically run AST rule evaluation on active file save."
+        }
+      }
+    }
+  }
+}

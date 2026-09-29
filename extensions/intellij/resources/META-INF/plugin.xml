@@ -1,0 +1,24 @@
+<idea-plugin>
+    <id>com.codexa.intellij</id>
+    <name>Codexa Security &amp; Code Review Platform</name>
+    <version>1.0.0</version>
+    <vendor email="support@codexa.dev" url="https://codexa-ye85.onrender.com">Codexa</vendor>
+
+    <description><![CDATA[
+    <b>Codexa Code Review &amp; Security Auditor</b> provides deterministic Java AST static analysis,
+    OWASP Top 10 auditing, prompt injection guardrails, and automated production readiness scoring.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+
+    <actions>
+        <group id="Codexa.ActionGroup" text="Codexa Security" popup="true" icon="AllIcons.General.Shield">
+            <add-to-group group-id="AnalyzeMenu" anchor="last"/>
+            <action id="Codexa.RunScan" class="com.codexa.intellij.actions.RunScanAction"
+                    text="Run Codexa AST Security Audit" description="Trigger complete static analysis on project"/>
+            <action id="Codexa.OpenPlayground" class="com.codexa.intellij.actions.OpenPlaygroundAction"
+                    text="Open Security Playground" description="Open interactive sandbox in browser"/>
+        </group>
+    </actions>
+</idea-plugin>
