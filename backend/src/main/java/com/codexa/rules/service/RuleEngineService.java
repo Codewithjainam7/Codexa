@@ -36,8 +36,8 @@ public class RuleEngineService {
             RuleContext ruleContext = new RuleContext(parsedFile, pipelineContext);
 
             for (AnalysisRule rule : rules) {
-                // If it's a universal rule, skip per-file iteration and let it run in repoContext
-                if (rule instanceof com.codexa.rules.universal.UniversalMultiLanguageRule) {
+                // If it's a repository-wide rule, skip per-file iteration and let it run in repoContext
+                if (rule.isRepositoryWide() || rule instanceof com.codexa.rules.universal.UniversalMultiLanguageRule) {
                     continue;
                 }
                 try {
@@ -59,7 +59,7 @@ public class RuleEngineService {
         RuleContext repoContext = new RuleContext(null, pipelineContext);
         for (AnalysisRule rule : rules) {
             try {
-                if (rule instanceof com.codexa.rules.universal.UniversalMultiLanguageRule || parsedFiles.isEmpty()) {
+                if (rule.isRepositoryWide() || rule instanceof com.codexa.rules.universal.UniversalMultiLanguageRule || parsedFiles.isEmpty()) {
                     List<RuleFinding> ruleFindings = rule.evaluate(repoContext);
                     for (RuleFinding rf : ruleFindings) {
                         String hash = computeDeduplicationHash(rf.ruleId(), rf.filePath(), rf.startLine(), rf.endLine(), rf.evidence());

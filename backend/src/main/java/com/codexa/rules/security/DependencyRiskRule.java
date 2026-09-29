@@ -61,6 +61,11 @@ public class DependencyRiskRule implements AnalysisRule {
     }
 
     @Override
+    public boolean isRepositoryWide() {
+        return true;
+    }
+
+    @Override
     public String getOwaspMapping() {
         return "A03:2025 - Software Supply Chain Security";
     }

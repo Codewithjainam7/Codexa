@@ -34,6 +34,12 @@ public class ParsedJavaFile {
         this.parseErrors = parseErrors != null ? parseErrors : List.of();
     }
 
+    public ParsedJavaFile(Path absolutePath, String relativePath, CompilationUnit compilationUnit) {
+        this(absolutePath, relativePath, compilationUnit != null ? compilationUnit.toString() : "",
+                compilationUnit != null ? List.of(compilationUnit.toString().split("\\R")) : List.of(),
+                compilationUnit, compilationUnit != null, List.of());
+    }
+
     public Path getAbsolutePath() {
         return absolutePath;
     }

@@ -24,5 +24,9 @@ public interface AnalysisRule {
         return getName();
     }
 
+    default boolean isRepositoryWide() {
+        return false;
+    }
+
     List<RuleFinding> evaluate(RuleContext context);
 }
