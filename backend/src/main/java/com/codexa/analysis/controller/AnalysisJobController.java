@@ -161,4 +161,93 @@ public class AnalysisJobController {
         var report = complianceAuditService.evaluateCompliance(jobId, entity.getSourceIdentifier(), standardEnum, findings);
         return ResponseEntity.ok(report);
     }
+
+    @GetMapping(value = "/{jobId}/badge", produces = "image/svg+xml")
+    @Operation(summary = "Get dynamic SVG compliance or readiness badge", description = "Generates a vector SVG shield badge suitable for embedding in GitHub README or audit documentation.")
+    public ResponseEntity<String> getBadge(
+            @PathVariable UUID jobId,
+            @RequestParam(defaultValue = "soc2") String standard
+    ) {
+        String leftLabel = "codexa";
+        String rightText = "PASS";
+        String rightColor = "#10b981";
+
+        if ("readiness".equalsIgnoreCase(standard) || "score".equalsIgnoreCase(standard)) {
+            var entity = jobService.getJobOrThrow(jobId);
+            double score = entity.getOverallScore() != null ? entity.getOverallScore() : 100.0;
+            leftLabel = "codexa | readiness";
+            rightText = String.format("%.0f/100", score);
+            if (score >= 75) {
+                rightColor = "#10b981";
+            } else if (score >= 50) {
+                rightColor = "#f59e0b";
+            } else {
+                rightColor = "#ef4444";
+            }
+        } else {
+            var entity = jobService.getJobOrThrow(jobId);
+            var findings = jobService.getFindingEntitiesForJob(jobId);
+            var stdEnum = com.codexa.compliance.model.ComplianceStandard.fromString(standard);
+            var packet = complianceAuditService.evaluateCompliance(jobId, entity.getSourceIdentifier(), stdEnum, findings);
+            leftLabel = "codexa | " + standard.toLowerCase().replace("_", " ");
+            switch (packet.overallStatus()) {
+                case AUDIT_READY -> {
+                    rightText = String.format("PASS (%.0f%%)", packet.complianceScore());
+                    rightColor = "#10b981";
+                }
+                case CONDITIONAL_PASS -> {
+                    rightText = String.format("CONDITIONAL (%.0f%%)", packet.complianceScore());
+                    rightColor = "#f59e0b";
+                }
+                case AUDIT_BLOCKED -> {
+                    rightText = "BLOCKED";
+                    rightColor = "#ef4444";
+                }
+            }
+        }
+
+        int leftWidth = Math.max(leftLabel.length() * 7 + 16, 50);
+        int rightWidth = Math.max(rightText.length() * 7 + 16, 40);
+        int totalWidth = leftWidth + rightWidth;
+
+        String svg = String.format("""
+                <svg xmlns="http://www.w3.org/2000/svg" width="%d" height="20" role="img" aria-label="%s: %s">
+                  <title>%s: %s</title>
+                  <linearGradient id="s" x2="0" y2="100%%">
+                    <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+                    <stop offset="1" stop-opacity=".1"/>
+                  </linearGradient>
+                  <clipPath id="r">
+                    <rect width="%d" height="20" rx="3" fill="#fff"/>
+                  </clipPath>
+                  <g clip-path="url(#r)">
+                    <rect width="%d" height="20" fill="#1e293b"/>
+                    <rect x="%d" width="%d" height="20" fill="%s"/>
+                    <rect width="%d" height="20" fill="url(#s)"/>
+                  </g>
+                  <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110">
+                    <text aria-hidden="true" x="%d" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="%d">%s</text>
+                    <text x="%d" y="140" transform="scale(.1)" fill="#fff" textLength="%d">%s</text>
+                    <text aria-hidden="true" x="%d" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="%d">%s</text>
+                    <text x="%d" y="140" transform="scale(.1)" fill="#fff" textLength="%d">%s</text>
+                  </g>
+                </svg>
+                """,
+                totalWidth, leftLabel, rightText,
+                leftLabel, rightText,
+                totalWidth,
+                leftWidth,
+                leftWidth, rightWidth, rightColor,
+                totalWidth,
+                (leftWidth * 10) / 2, (leftWidth - 10) * 10, leftLabel,
+                (leftWidth * 10) / 2, (leftWidth - 10) * 10, leftLabel,
+                (leftWidth + rightWidth / 2) * 10, (rightWidth - 10) * 10, rightText,
+                (leftWidth + rightWidth / 2) * 10, (rightWidth - 10) * 10, rightText
+        );
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CACHE_CONTROL, "max-age=300, s-maxage=300")
+                .contentType(MediaType.parseMediaType("image/svg+xml"))
+                .body(svg);
+    }
 }
