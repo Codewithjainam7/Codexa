@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LayoutGrid, Plus, BarChart3, Settings } from 'lucide-react';
+import { LayoutGrid, Plus, BarChart3, Settings, Terminal } from 'lucide-react';
 
 export default function BottomNav({ currentView, setCurrentView, activeJobId }) {
   const triggerHaptic = () => {
@@ -24,6 +24,11 @@ export default function BottomNav({ currentView, setCurrentView, activeJobId }) 
       icon: Plus,
       isPrimary: true
     },
+    {
+      id: 'playground',
+      label: 'Play',
+      icon: Terminal
+    },
     { 
       id: 'analysis', 
       label: 'Results', 
@@ -43,7 +48,7 @@ export default function BottomNav({ currentView, setCurrentView, activeJobId }) 
         {/* Subtle Ambient Top Accent Line */}
         <div className="absolute top-0 inset-x-8 h-[1px] bg-gradient-to-r from-transparent via-blue-500/40 dark:via-blue-400/30 to-transparent pointer-events-none" />
 
-        <div className="grid grid-cols-4 gap-1 relative z-10 items-center">
+        <div className="grid grid-cols-5 gap-1 relative z-10 items-center">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = currentView === tab.id;

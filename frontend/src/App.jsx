@@ -9,6 +9,7 @@ import AnalysisDetailView from './components/AnalysisDetailView';
 import BottomNav from './components/BottomNav';
 import MobileTopBar from './components/MobileTopBar';
 import MobileSettingsView from './components/MobileSettingsView';
+import PlaygroundView from './components/PlaygroundView';
 import SplashScreen from './components/SplashScreen';
 import { checkHealth, getLimits } from './api/client';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
@@ -221,6 +222,18 @@ function MainApp() {
                   transition={pageTransition.transition}
                 >
                   <MobileSettingsView isConnected={isConnected} limits={limits} />
+                </motion.div>
+              )}
+
+              {currentView === 'playground' && (
+                <motion.div
+                  key="playground-view"
+                  initial={pageTransition.initial}
+                  animate={pageTransition.animate}
+                  exit={pageTransition.exit}
+                  transition={pageTransition.transition}
+                >
+                  <PlaygroundView onStartFullAudit={() => setCurrentView('upload')} />
                 </motion.div>
               )}
             </AnimatePresence>

@@ -63,6 +63,16 @@ export default function Header({ currentView, setCurrentView, isConnected }) {
                 >
                   <span>Audit</span>
                 </button>
+                <button
+                  onClick={() => { setCurrentView('playground'); setMobileSidebarOpen(false); }}
+                  className={`px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold font-display transition-all duration-150 flex items-center space-x-1.5 whitespace-nowrap shrink-0 cursor-pointer ${
+                    currentView === 'playground'
+                      ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 shadow-sm'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  <span>Playground</span>
+                </button>
               </div>
 
               {/* Quick API Docs Link (Desktop) */}
