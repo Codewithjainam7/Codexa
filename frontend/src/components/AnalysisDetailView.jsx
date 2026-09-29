@@ -6,12 +6,14 @@ import LiveReviewPulseLoader from './LiveReviewPulseLoader';
 import ExpandableFindingCards from './ExpandableFindingCards';
 import GlowingEffect from './ui/GlowingEffect';
 import ExportShareModal from './ExportShareModal';
+import SbomDependencyGraph from './SbomDependencyGraph';
+import AttackSurfaceMap from './AttackSurfaceMap';
 import { 
   CheckCircle, AlertTriangle, XCircle, Clock, Shield, 
   ArrowLeft, RefreshCw, FileText, ExternalLink, HelpCircle,
   LayoutGrid, ListFilter, FolderTree, Code, Printer, Download, Share2,
   Server, Cpu, Layers, Terminal, Activity, FileCode, Lock, Unlock,
-  Check, CheckSquare, BarChart3, PieChart, Zap, Copy
+  Check, CheckSquare, BarChart3, PieChart, Zap, Copy, Package, Globe
 } from 'lucide-react';
 
 export default function AnalysisDetailView({ jobId, onBack }) {
@@ -19,6 +21,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
   const [findings, setFindings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copiedJobId, setCopiedJobId] = useState(false);
+  const [copiedBadgeStandard, setCopiedBadgeStandard] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [severityFilter, setSeverityFilter] = useState('');
   useEffect(() => {
@@ -675,6 +678,30 @@ export default function AnalysisDetailView({ jobId, onBack }) {
             </button>
 
             <button
+              onClick={() => setActiveTab('threatmap')}
+              className={`px-3.5 py-2 min-h-[44px] rounded-xl text-xs font-bold font-display flex items-center space-x-2 transition-all cursor-pointer whitespace-nowrap active:scale-98 ${
+                activeTab === 'threatmap'
+                  ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/80 dark:border-slate-700'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Globe className="w-3.5 h-3.5 text-purple-400" />
+              <span>Threat Map</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('sbom')}
+              className={`px-3.5 py-2 min-h-[44px] rounded-xl text-xs font-bold font-display flex items-center space-x-2 transition-all cursor-pointer whitespace-nowrap active:scale-98 ${
+                activeTab === 'sbom'
+                  ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200/80 dark:border-slate-700'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Package className="w-3.5 h-3.5 text-blue-400" />
+              <span>SBOM &amp; Blast Radius</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('compliance')}
               className={`px-3.5 py-2 min-h-[44px] rounded-xl text-xs font-bold font-display flex items-center space-x-2 transition-all cursor-pointer whitespace-nowrap active:scale-98 ${
                 activeTab === 'compliance'
@@ -683,7 +710,7 @@ export default function AnalysisDetailView({ jobId, onBack }) {
               }`}
             >
               <CheckSquare className="w-3.5 h-3.5 text-emerald-400" />
-              <span>OWASP &amp; Checks</span>
+              <span>Compliance &amp; Badges</span>
             </button>
           </div>
 
@@ -1310,9 +1337,89 @@ export default function AnalysisDetailView({ jobId, onBack }) {
             </div>
           )}
 
-          {/* TAB 5: OWASP & COMPLIANCE MATRIX */}
+          {/* TAB 4: ATTACK SURFACE THREAT MAP */}
+          {activeTab === 'threatmap' && (
+            <AttackSurfaceMap job={job} findings={findings} />
+          )}
+
+          {/* TAB 5: SBOM & BLAST RADIUS GRAPH */}
+          {activeTab === 'sbom' && (
+            <SbomDependencyGraph job={job} findings={findings} />
+          )}
+
+          {/* TAB 6: OWASP & COMPLIANCE MATRIX */}
           {activeTab === 'compliance' && (
             <div className="space-y-6">
+              {/* Executive SVG Trust Badges & README Integration */}
+              <div className="p-5 rounded-2xl cdx-card border border-[var(--border-subtle)] space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="space-y-0.5">
+                    <span className="text-[10px] font-mono uppercase font-bold text-emerald-400">Production Attestation</span>
+                    <h3 className="text-sm sm:text-base font-bold text-[var(--text-primary)] font-display">
+                      Executive Trust Badges &amp; Regulatory Attestation
+                    </h3>
+                  </div>
+                  <a
+                    href={`/api/v1/analyses/${jobId}/compliance?standard=soc2`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3 py-1.5 rounded-xl bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 border border-blue-500/30 text-xs font-bold font-display flex items-center space-x-1.5 transition-all self-start sm:self-auto cursor-pointer"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download SOC 2 Audit Packet</span>
+                  </a>
+                </div>
+
+                <p className="text-xs text-[var(--text-secondary)]">
+                  Embed live vector trust badges directly in your repository README or public status page to demonstrate automated static compliance verification.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+                  {[
+                    { std: 'soc2', name: 'SOC 2 Type II', subtitle: 'Security & Confidentiality' },
+                    { std: 'iso27001', name: 'ISO/IEC 27001', subtitle: 'Annex A Controls' },
+                    { std: 'pci-dss', name: 'PCI-DSS v4.0', subtitle: 'Payment Security Standard' }
+                  ].map((badge) => {
+                    const badgeUrl = `/api/v1/analyses/${jobId}/badge?standard=${badge.std}`;
+                    const mdCode = `![Codexa ${badge.name}](https://codexa-ye85.onrender.com/api/v1/analyses/${jobId}/badge?standard=${badge.std})`;
+                    const isCopied = copiedBadgeStandard === badge.std;
+
+                    return (
+                      <div key={badge.std} className="p-3.5 rounded-xl cdx-recessed border border-[var(--border-subtle)] space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold font-display text-[var(--text-primary)]">{badge.name}</span>
+                          <span className="text-[10px] font-mono text-[var(--text-muted)]">{badge.subtitle}</span>
+                        </div>
+
+                        {/* Live SVG Badge Preview */}
+                        <div className="py-1">
+                          <img src={badgeUrl} alt={`${badge.name} Badge`} className="h-5 object-contain" />
+                        </div>
+
+                        {/* Copy Markdown Button */}
+                        <button
+                          onClick={() => {
+                            if (navigator?.clipboard?.writeText) {
+                              navigator.clipboard.writeText(mdCode);
+                              setCopiedBadgeStandard(badge.std);
+                              setTimeout(() => setCopiedBadgeStandard(null), 2000);
+                            }
+                          }}
+                          className={`w-full py-1.5 px-2.5 rounded-lg text-[11px] font-mono font-medium flex items-center justify-center space-x-1 transition-all cursor-pointer ${
+                            isCopied
+                              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                              : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-slate-700'
+                          }`}
+                        >
+                          {isCopied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                          <span>{isCopied ? 'Badge Markdown Copied!' : 'Copy README Markdown'}</span>
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
               <div className="p-5 rounded-2xl cdx-card border border-[var(--border-subtle)] space-y-4">
                 <div className="flex items-center space-x-2">
                   <Shield className="w-4 h-4 text-emerald-500" />
