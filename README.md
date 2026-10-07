@@ -1,19 +1,47 @@
 # Codexa 🛡️
 > **AI-Assisted Code Review, Static Security Auditing & Production-Readiness Platform**
 
-[![Java](https://img.shields.io/badge/Java-17%2B%20%7C%2021-orange.svg)](https://www.oracle.com/java/)
+[![Java](https://img.shields.io/badge/Java-21%20LTS-orange.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.3-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Vite + React](https://img.shields.io/badge/Frontend-React%2018%20%2B%20Vite%205-blue.svg)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4-38bdf8.svg)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-135%20Passing%20(100%25)-emerald.svg)]()
-[![Readiness Audit](https://img.shields.io/badge/Self--Audit%20Score-100.0%20%2F%20100-success.svg)](docs/BENCHMARKS.md)
-[![Verdict](https://img.shields.io/badge/Verdict-REVIEW__COMPLETE-blue.svg)]()
-[![Rules](https://img.shields.io/badge/Rules-30%2B%20AST%20%26%20Polyglot-purple.svg)](docs/RULES_CATALOG.md)
-[![Scale](https://img.shields.io/badge/Ingestion-3%20GB%20%7C%2050%2C000%20Files-blue.svg)](docs/BENCHMARKS.md)
+[![Tests](https://img.shields.io/badge/Tests-152%20Passing%20(100%25)-emerald.svg)]()
+[![Production Status](https://img.shields.io/badge/Render%20Cloud-LIVE%20%7C%20UP-success.svg)](https://codexa-ye85.onrender.com)
+[![Rules](https://img.shields.io/badge/Rules-35%2B%20AST%20%26%20Polyglot-purple.svg)](docs/RULES_CATALOG.md)
+[![Scale](https://img.shields.io/badge/Ingestion-3%20GB%20%7C%2050%2C000%20Files-blue.svg)](docs/benchmarks/performance-targets.md)
 [![SARIF](https://img.shields.io/badge/SARIF-v2.1.0%20GitHub%20Ready-green.svg)](docs/SARIF_INTEGRATION.md)
-[![OWASP](https://img.shields.io/badge/Security-OWASP%20Top%2010%20Aligned-red.svg)](https://owasp.org/www-project-top-ten/)
+[![SBOM](https://img.shields.io/badge/SBOM-CycloneDX%20v1.5-blue.svg)](docs/features/sbom-blast-radius-graph.md)
+[![OWASP](https://img.shields.io/badge/Security-OWASP%20Top%2010%20%2B%20LLM-red.svg)](https://owasp.org/www-project-top-ten/)
 [![Container](https://img.shields.io/badge/Docker-Non--Root%20Hardened-2496ED.svg)](Dockerfile)
+
+---
+
+## 🌐 Live Platform & Ecosystem Links
+
+| Platform Component | Status | Link |
+| :--- | :---: | :--- |
+| 🚀 **Live Production Platform** | `ONLINE` | **[https://codexa-ye85.onrender.com](https://codexa-ye85.onrender.com)** |
+| 🎮 **Interactive Security Playground** | `ONLINE` | **[Launch Sandbox](https://codexa-ye85.onrender.com/#playground)** |
+| 📖 **Interactive Swagger / OpenAPI Docs** | `ONLINE` | **[API Reference](https://codexa-ye85.onrender.com/swagger-ui.html)** |
+| 📚 **Master Documentation Index (140+ Guides)** | `v2.4` | **[`docs/INDEX.md`](docs/INDEX.md)** |
+| 🧩 **Chrome & Chromium Browser Extension** | `v1.0` | **[`extensions/chrome`](extensions/chrome)** |
+| 💻 **Visual Studio Code Extension** | `v1.0` | **[`extensions/vscode`](extensions/vscode)** |
+| ☕ **JetBrains IntelliJ IDEA Plugin** | `v1.0` | **[`extensions/intellij`](extensions/intellij)** |
+| 📊 **Empirical Performance Benchmarks** | `v2.4` | **[`docs/benchmarks/performance-targets.md`](docs/benchmarks/performance-targets.md)** |
+
+---
+
+## ⚡ Overview in 3 Points: What is Codexa?
+
+1. 🛡️ **Deterministic AST & Polyglot Security Engine**  
+   Unlike noisy regex linters, Codexa constructs typed Abstract Syntax Trees (JavaParser + Polyglot) to detect real vulnerabilities—OWASP Top 10 (SQLi, Command Injection, SSRF, Deserialization), Infrastructure-as-Code (Dockerfile root execution, Kubernetes privilege escalation, Terraform open CIDRs), and OWASP LLM 2025 (Prompt Injection). Zero code execution, zero classloader risk.
+
+2. 🎮 **Interactive Security Playground & 1-Click AI Fix**  
+   Developers can test code snippets in real time in our browser sandbox across Java, Python, JavaScript, and Dockerfiles. Instantly observe rule triggers, line-level CWE explanations, and apply 1-click hardened AI refactors (e.g. converting raw SQL concats into parameterized `PreparedStatement` bindings).
+
+3. 📊 **Dual-Spectrum Architecture & Dynamic Trust Badges**  
+   Bridges internal White-Box AST complexity metrics (McCabe CC, nesting depth) with external Black-Box Attack Surface Threat Mapping. Generates downloadable CycloneDX v1.5 / SPDX SBOMs with CVE blast-radius calculations, plus dynamic vector SVG trust badges for your repository README.
 
 ---
 
@@ -35,10 +63,10 @@ Codexa functions as an autonomous, pre-deployment static security, structural qu
 
 ### 📖 Key Documentation Links
 - 🛡️ **[Complete Technical Capabilities](docs/CAPABILITIES.md)**: Exhaustive breakdown of ingestion, AST parsing, polyglot analysis, and scoring.
-- 🏆 **[Achievements, Milestones & SmartLot Case Study](docs/ACHIEVEMENTS.md)**: Real-world production audit findings, 114 passing tests, and monorepo benchmarks.
-- 📋 **[Static Rule Catalog](docs/RULES_CATALOG.md)**: Complete guide to all 30+ rules mapped to OWASP Top 10 and CWE.
-- ⚡ **[Scale & Performance Benchmarks](docs/BENCHMARKS.md)**: 3GB Monorepo ingestion, 64KB buffer scaling, and throughput metrics.
-- 📚 **[Master Documentation Index](docs/INDEX.md)**: Central directory linking all 40+ architectural and operational guides.
+- 🏆 **[Achievements, Milestones & SmartLot Case Study](docs/ACHIEVEMENTS.md)**: Real-world production audit findings, 152 passing tests, and monorepo benchmarks.
+- 📋 **[Static Rule Catalog](docs/RULES_CATALOG.md)**: Complete guide to all 35+ rules mapped to OWASP Top 10 and CWE.
+- ⚡ **[Scale & Performance Benchmarks](docs/benchmarks/performance-targets.md)**: p50/p90/p99 SLAs, 3GB Monorepo ingestion, and throughput metrics.
+- 📚 **[Master Documentation Index](docs/INDEX.md)**: Central directory linking all 140+ architectural and operational guides.
 
 ---
 
@@ -506,9 +534,9 @@ docker run -d \
 
 Codexa enforces strict quality controls across both backend and frontend:
 
-- **Backend Unit & Integration Tests**: 114 passing tests (100% pass rate).
+- **Backend Unit & Integration Tests**: 152 passing tests (100% pass rate across all security rules, AST engines, and filters).
   ```bash
-  cd backend && mvn test
+  cd backend && mvn test -Djacoco.skip=true -Ddependency-check.skip=true
   ```
 - **Code Coverage with JaCoCo**:
   ```bash
@@ -529,7 +557,7 @@ Codexa enforces strict quality controls across both backend and frontend:
 
 For comprehensive guides and specifications, visit the **[Master Documentation Index](docs/INDEX.md)** or explore key sections:
 
-- **[Master Documentation Index](docs/INDEX.md)**: Full navigation matrix across all 40+ guides and runbooks.
+- **[Master Documentation Index](docs/INDEX.md)**: Full navigation matrix across all 140+ guides, benchmarks, and runbooks.
 - **[Architecture Decision Records (ADRs)](docs/adr/README.md)**: Documented architectural choices (Loom, Tree-sitter, SQLite WAL, SARIF).
 - [Pipeline Stages & Throughput Architecture](docs/architecture/pipeline-stages.md)
 - [Scoring Formula & Deduction Weights](docs/architecture/scoring-formula.md)
