@@ -342,6 +342,27 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-LLM-003",
+    title: "Insecure AI Agent Autonomous Tool Execution",
+    category: "SECURITY",
+    severity: "CRITICAL",
+    cwe: "CWE-74",
+    fileExtensions: [".py", ".js", ".ts", ".java"],
+    check: (line, lineNum) => {
+      const patterns = [
+        /(?:BashProcess|PythonREPL|TerminalTool|ShellTool|SystemTool|execute_shell|run_bash|eval_code)\s*\(/i,
+        /(?:child_process\.exec|os\.system|subprocess\.call)\s*\([^)]*(?:response|completion|message|tool_call)/i
+      ];
+      if (patterns.some(p => p.test(line))) {
+        return {
+          description: "Autonomous AI Agent binds LLM completion outputs directly into operating system shells or execution REPLs without human approval.",
+          remediation: "Require Human-in-the-Loop (HITL) approval gates before tool invocation and sandbox execution in ephemeral micro-containers."
+        };
+      }
+      return null;
+    }
   }
 ];
 
