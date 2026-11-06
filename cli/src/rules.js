@@ -249,6 +249,30 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-JWT-001",
+    title: "Insecure JWT Verification / None Algorithm Acceptance",
+    category: "SECURITY",
+    severity: "CRITICAL",
+    cwe: "CWE-347",
+    fileExtensions: [".java", ".py", ".js", ".ts", ".go"],
+    check: (line, lineNum) => {
+      const patterns = [
+        /parseClaimsJwt\s*\(/,
+        /jwt\.decode\s*\([^,)]*\)(?!\s*,\s*verify\s*=\s*True)/,
+        /verify\s*:\s*false/i,
+        /verify_signature\s*=\s*False/i,
+        /algorithms\s*:\s*\[.*['"]none['"].*\]/i
+      ];
+      if (patterns.some(p => p.test(line))) {
+        return {
+          description: "Detected disabled JWT signature verification or acceptance of the insecure 'none' algorithm.",
+          remediation: "Enforce cryptographic signature validation and specify whitelist algorithms (e.g. RS256, HS256)."
+        };
+      }
+      return null;
+    }
   }
 ];
 
