@@ -363,6 +363,29 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-CRYPTO-002",
+    title: "Insecure Cipher Mode (ECB) or Static IV",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-326",
+    fileExtensions: [".java", ".py", ".js", ".ts", ".go"],
+    check: (line, lineNum) => {
+      if (/(?:AES\/ECB|DES\/ECB|Blowfish\/ECB)/i.test(line)) {
+        return {
+          description: "Detected use of ECB cipher mode which preserves plaintext data patterns across blocks.",
+          remediation: "Upgrade to AES-GCM (AES/GCM/NoPadding) authenticated encryption with fresh random IV."
+        };
+      }
+      if (/new\s+IvParameterSpec\s*\(\s*(?:new\s+byte\[|STATIC_IV)/i.test(line)) {
+        return {
+          description: "Static initialization vector (IV) compromises semantic ciphertext confidentiality.",
+          remediation: "Generate a fresh cryptographically random IV per encryption operation via SecureRandom."
+        };
+      }
+      return null;
+    }
   }
 ];
 
