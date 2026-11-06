@@ -8,8 +8,9 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-152%20Passing%20(100%25)-emerald.svg)]()
 [![Production Status](https://img.shields.io/badge/Render%20Cloud-LIVE%20%7C%20UP-success.svg)](https://codexa-ye85.onrender.com)
-[![Rules](https://img.shields.io/badge/Rules-35%2B%20AST%20%26%20Polyglot-purple.svg)](docs/RULES_CATALOG.md)
+[![Rules](https://img.shields.io/badge/Rules-45%2B%20AST%20%26%20Polyglot-purple.svg)](docs/RULES_CATALOG.md)
 [![Scale](https://img.shields.io/badge/Ingestion-3%20GB%20%7C%2050%2C000%20Files-blue.svg)](docs/benchmarks/performance-targets.md)
+[![Taint](https://img.shields.io/badge/Taint%20Analysis-Interprocedural-orange.svg)](docs/architecture/taint-analysis-engine.md)
 [![SARIF](https://img.shields.io/badge/SARIF-v2.1.0%20GitHub%20Ready-green.svg)](docs/SARIF_INTEGRATION.md)
 [![SBOM](https://img.shields.io/badge/SBOM-CycloneDX%20v1.5-blue.svg)](docs/features/sbom-blast-radius-graph.md)
 [![OWASP](https://img.shields.io/badge/Security-OWASP%20Top%2010%20%2B%20LLM-red.svg)](https://owasp.org/www-project-top-ten/)
@@ -24,11 +25,11 @@
 | 🚀 **Live Production Platform** | `ONLINE` | **[https://codexa-ye85.onrender.com](https://codexa-ye85.onrender.com)** |
 | 🎮 **Interactive Security Playground** | `ONLINE` | **[Launch Sandbox](https://codexa-ye85.onrender.com/#playground)** |
 | 📖 **Interactive Swagger / OpenAPI Docs** | `ONLINE` | **[API Reference](https://codexa-ye85.onrender.com/swagger-ui.html)** |
-| 📚 **Master Documentation Index (140+ Guides)** | `v2.4` | **[`docs/INDEX.md`](docs/INDEX.md)** |
+| 📚 **Master Documentation Index (140+ Guides)** | `v2.5` | **[`docs/INDEX.md`](docs/INDEX.md)** |
 | 🧩 **Chrome & Chromium Browser Extension** | `v1.0` | **[`extensions/chrome`](extensions/chrome)** |
 | 💻 **Visual Studio Code Extension** | `v1.0` | **[`extensions/vscode`](extensions/vscode)** |
 | ☕ **JetBrains IntelliJ IDEA Plugin** | `v1.0` | **[`extensions/intellij`](extensions/intellij)** |
-| 📊 **Empirical Performance Benchmarks** | `v2.4` | **[`docs/benchmarks/performance-targets.md`](docs/benchmarks/performance-targets.md)** |
+| 📊 **Empirical Performance Benchmarks** | `v2.5` | **[`docs/benchmarks/performance-targets.md`](docs/benchmarks/performance-targets.md)** |
 
 ---
 
@@ -172,9 +173,9 @@ Simulates an external penetration tester mapping out the application's attack su
 
 ---
 
-## 🛡️ 4. Static Rule Catalog (30+ Built-in & Polyglot Rules)
+## 🛡️ 4. Static Rule Catalog (45+ Built-in & Polyglot Rules)
 
-Codexa's rule engine evaluates every AST node against **30+ deterministic static rules** mapped to **OWASP Top 10 (2021)** and **MITRE Common Weakness Enumeration (CWE)**. For the exhaustive catalog, see **[RULES_CATALOG.md](docs/RULES_CATALOG.md)**:
+Codexa's rule engine evaluates every AST node against **45+ deterministic static rules** mapped to **OWASP Top 10 (2021)**, **CWE Top 25**, **OWASP API Security**, and **OWASP LLM (2025)**. For the exhaustive catalog, see **[RULES_CATALOG.md](docs/RULES_CATALOG.md)**:
 
 | Rule ID | Rule Name | Category | Severity | OWASP Top 10 | CWE ID | Detection Logic |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -212,6 +213,15 @@ Codexa's rule engine evaluates every AST node against **30+ deterministic static
 | `CR-OPS-002` | Unstructured Request Logging | OPERATIONS | LOW | Observability | CWE-778 | Controller methods performing ingress mutations without request contextual correlation logging. |
 | `CR-OPS-004` | Missing Input Validation | OPERATIONS | MEDIUM | Defensive Coding | CWE-20 | Missing `@Valid` or `@Validated` annotations on `@RequestBody` parameters in mutating endpoints. |
 | `CR-MULTI-001` | Universal Polyglot Security Scan | UNIVERSAL | HIGH | Multi-Language Security | CWE-699 | Polyglot fallback engine scanning non-Java assets (TypeScript, Python, Go, PHP, C#) for hardcoded secrets and SQLi. |
+| `CR-XXE-001` | XML External Entity (XXE) Injection | SECURITY | HIGH | A05:2021-Security Misconfiguration | CWE-611 | XML parser factories initialized without explicit restriction of DOCTYPE declarations or external general entities. |
+| `CR-SSTI-001` | Server-Side Template Injection | SECURITY | CRITICAL | A03:2021-Injection | CWE-1336 | Dynamic user input concatenated into template engines (Jinja2, FreeMarker, Velocity, Handlebars), enabling RCE. |
+| `CR-JWT-001` | Insecure JWT Signature / None Algorithm | SECURITY | CRITICAL | A02:2021-Cryptographic Failures | CWE-347 | Acceptance of the insecure 'none' algorithm or parsing tokens via `parseClaimsJwt()` without signature validation. |
+| `CR-REDOS-001` | Regular Expression Denial of Service | SECURITY | HIGH | A06:2021-Vulnerable Components | CWE-1333 | Catastrophic polynomial or exponential backtracking patterns (e.g. `(a+)+`) in compiled regular expressions. |
+| `CR-RSC-001` | Unauthenticated Next.js Server Action | SECURITY | HIGH | A01:2021-Broken Access Control | CWE-306 | Exported Next.js `'use server'` Server Actions performing state mutations without verifying caller session authentication. |
+| `CR-CRYPTO-002`| Insecure Cipher Mode (ECB) & Static IV | SECURITY | HIGH | A02:2021-Cryptographic Failures | CWE-326 | Detection of `AES/ECB` unauthenticated mode, static zeroed IVs, and short RSA key generation (< 2048 bits). |
+| `CR-IAC-007` | Overly Permissive Cloud IAM Wildcard Policy | SECURITY | CRITICAL | A01:2021-Broken Access Control | CWE-732 | IAM policies granting wildcard actions (`Action: "*"`) across cloud service APIs, violating Least Privilege. |
+| `CR-IAC-008` | Public Cloud Storage Bucket Exposure | SECURITY | CRITICAL | A05:2021-Security Misconfiguration | CWE-284 | Cloud storage configurations with public-read ACLs or disabled S3 Block Public Access controls. |
+| `CR-LLM-003` | Insecure Autonomous AI Agent Tool Execution | SECURITY | CRITICAL | LLM07:2025-Insecure Plugin Design | CWE-74 | AI agent frameworks binding model outputs directly into system shells or execution REPLs without human confirmation. |
 
 ---
 
