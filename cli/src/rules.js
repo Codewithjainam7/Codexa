@@ -291,6 +291,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-RSC-001",
+    title: "Unauthenticated Next.js Server Action Mutation",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-306",
+    fileExtensions: [".js", ".ts", ".jsx", ".tsx"],
+    check: (line, lineNum) => {
+      if (line.includes("'use server'") || line.includes('"use server"')) {
+        return {
+          description: "Next.js 'use server' action declared. Ensure all exported server actions strictly enforce caller session checks (auth() / getServerSession()).",
+          remediation: "Wrap server action execution with an authentication guard and validate request parameters with Zod schema parsing."
+        };
+      }
+      return null;
+    }
   }
 ];
 
