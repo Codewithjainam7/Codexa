@@ -225,6 +225,30 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-SSTI-001",
+    title: "Server-Side Template Injection (SSTI)",
+    category: "SECURITY",
+    severity: "CRITICAL",
+    cwe: "CWE-1336",
+    fileExtensions: [".java", ".py", ".js", ".ts"],
+    check: (line, lineNum) => {
+      const patterns = [
+        /(?:render_template_string|Template|jinja2\.Template)\s*\([^)]*(?:\+|req|param|input)/,
+        /nunjucks\.renderString\s*\([^)]*(?:\+|req|param|input)/,
+        /handlebars\.compile\s*\([^)]*(?:\+|req|param|input)/,
+        /pug\.compile\s*\([^)]*(?:\+|req|param|input)/,
+        /cfg\.getTemplate\s*\([^)]*\+/
+      ];
+      if (patterns.some(p => p.test(line))) {
+        return {
+          description: "Dynamic string concatenation in template rendering leads to Server-Side Template Injection (SSTI) and Remote Code Execution.",
+          remediation: "Load static template files and pass dynamic user parameters exclusively through isolated template data models."
+        };
+      }
+      return null;
+    }
   }
 ];
 
