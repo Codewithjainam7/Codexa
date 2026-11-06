@@ -273,6 +273,24 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-REDOS-001",
+    title: "Regular Expression Denial of Service (ReDoS)",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-1333",
+    fileExtensions: [".java", ".py", ".js", ".ts", ".go"],
+    check: (line, lineNum) => {
+      const redosRegex = /(?:\([^)]+[+*]\)[+*]|\([^)]+\|[^)]+\)[+*]|(?:\\[a-zA-Z]|\.)[+*][+*])/;
+      if (redosRegex.test(line) && (line.includes("RegExp") || line.includes("compile") || line.includes("match") || line.includes("/"))) {
+        return {
+          description: "Catastrophic backtracking regular expression containing nested quantifiers risks freezing the process thread (ReDoS).",
+          remediation: "Refactor regex with atomic grouping or possessive quantifiers, and clamp input length prior to regex evaluation."
+        };
+      }
+      return null;
+    }
   }
 ];
 
