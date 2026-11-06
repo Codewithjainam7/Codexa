@@ -202,6 +202,29 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-XXE-001",
+    title: "XML External Entity (XXE) Injection",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-611",
+    fileExtensions: [".java", ".py", ".js", ".ts"],
+    check: (line, lineNum) => {
+      const patterns = [
+        /(?:DocumentBuilderFactory|SAXParserFactory|XMLInputFactory|TransformerFactory)\.newInstance\s*\(\)/,
+        /etree\.parse\s*\(/,
+        /xml\.etree\.ElementTree\.parse\s*\(/,
+        /xml2js\.parseString\s*\(/
+      ];
+      if (patterns.some(p => p.test(line))) {
+        return {
+          description: "XML parser initialized without explicitly disabling DOCTYPE declarations or external entity resolution (XXE).",
+          remediation: "Set feature 'http://apache.org/xml/features/disallow-doctype-decl' to true or configure secure parser features."
+        };
+      }
+      return null;
+    }
   }
 ];
 
