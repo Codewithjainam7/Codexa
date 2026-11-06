@@ -234,6 +234,128 @@ FROM node:20.11.0-alpine3.19`
 }`
       }
     ]
+  },
+  {
+    id: 'xxe-parser',
+    title: 'XML External Entity (XXE) Injection',
+    language: 'java',
+    category: 'SECURITY',
+    code: `public class XmlService {
+    public Document parsePayload(InputStream input) throws Exception {
+        // Vulnerable: DocumentBuilderFactory initialized without disabling DTD / external entities
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        return db.parse(input);
+    }
+}`,
+    findings: [
+      {
+        id: 'CR-XXE-001',
+        title: 'XML External Entity (XXE) Injection',
+        severity: 'HIGH',
+        line: 4,
+        cwe: 'CWE-611',
+        description: 'Unprotected XML parser permits arbitrary local file reads, internal SSRF, and Billion Laughs DoS.',
+        fixSnippet: `public class XmlService {
+    public Document parsePayload(InputStream input) throws Exception {
+        // Fixed: Secure XML parser configuration
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        dbf.setXIncludeAware(false);
+        dbf.setExpandEntityReferences(false);
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        return db.parse(input);
+    }
+}`
+      }
+    ]
+  },
+  {
+    id: 'ssti-jinja',
+    title: 'Server-Side Template Injection (SSTI)',
+    language: 'python',
+    category: 'SECURITY',
+    code: `from flask import Flask, request, render_template_string
+
+app = Flask(__name__)
+
+@app.route("/profile")
+def profile():
+    user_name = request.args.get("name", "Guest")
+    # Vulnerable: Untrusted input concatenated into template string
+    template = f"<h1>Welcome {{ user_name }}!</h1><p>Your profile is active.</p>"
+    return render_template_string(template)`,
+    findings: [
+      {
+        id: 'CR-SSTI-001',
+        title: 'Server-Side Template Injection (SSTI)',
+        severity: 'CRITICAL',
+        line: 9,
+        cwe: 'CWE-1336',
+        description: 'Dynamic user input in template string allows arbitrary expression execution and Remote Code Execution (RCE).',
+        fixSnippet: `from flask import Flask, request, render_template
+
+app = Flask(__name__)
+
+@app.route("/profile")
+def profile():
+    user_name = request.args.get("name", "Guest")
+    # Fixed: Load static template and pass variables via context dictionary
+    return render_template("profile.html", name=user_name)`
+      }
+    ]
+  },
+  {
+    id: 'nextjs-server-action',
+    title: 'Unauthenticated Next.js Server Action',
+    language: 'typescript',
+    category: 'SECURITY',
+    code: `'use server';
+import { db } from '@/lib/db';
+
+// Vulnerable: Exported Server Action executing state mutation without session auth
+export async function updateSubscriptionPlan(userId: string, newPlan: string) {
+    await db.user.update({
+        where: { id: userId },
+        data: { plan: newPlan }
+    });
+    return { success: true };
+}`,
+    findings: [
+      {
+        id: 'CR-RSC-001',
+        title: 'Unauthenticated Server Action Mutation',
+        severity: 'HIGH',
+        line: 5,
+        cwe: 'CWE-306',
+        description: 'Exported server action is directly callable over HTTP without verifying the caller session.',
+        fixSnippet: `'use server';
+import { auth } from '@/auth';
+import { db } from '@/lib/db';
+import { z } from 'zod';
+
+const PlanSchema = z.enum(['free', 'pro', 'enterprise']);
+
+export async function updateSubscriptionPlan(userId: string, newPlan: string) {
+    const session = await auth();
+    if (!session?.user) {
+        throw new Error('401 Unauthorized');
+    }
+    // Tenant ownership authorization check
+    if (session.user.id !== userId && session.user.role !== 'admin') {
+        throw new Error('403 Forbidden');
+    }
+    const validatedPlan = PlanSchema.parse(newPlan);
+    await db.user.update({
+        where: { id: userId },
+        data: { plan: validatedPlan }
+    });
+    return { success: true };
+}`
+      }
+    ]
   }
 ];
 
