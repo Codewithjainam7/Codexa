@@ -101,7 +101,37 @@ function scanFile(filePath, rootDir) {
     }
   }
 
-  return { findings, lineCount: lines.length };
+  return { findings, lineCount: lines.length, halstead: computeHalsteadMetrics(content, lines.length) };
+}
+
+function computeHalsteadMetrics(content, lineCount) {
+  const operators = new Set([
+    "+", "-", "*", "/", "%", "=", "+=", "-=", "*=", "/=",
+    "==", "!=", "<", ">", "<=", ">=", "&&", "||", "!", "&", "|", "^",
+    "?", ":", "->", "=>", ".", ",", ";", "(", ")", "[", "]", "{", "}"
+  ]);
+  const tokens = content.match(/([a-zA-Z_][a-zA-Z0-9_]*)|([0-9]+(?:\.[0-9]+)?)|([+\-*/%=!<>|&^?:.,;()[\]{}]+)/g) || [];
+  let n1 = 0, n2 = 0;
+  const eta1 = new Set(), eta2 = new Set();
+  for (const t of tokens) {
+    if (operators.has(t)) {
+      eta1.add(t);
+      n1++;
+    } else {
+      eta2.add(t);
+      n2++;
+    }
+  }
+  const u1 = Math.max(1, eta1.size);
+  const u2 = Math.max(1, eta2.size);
+  const vocabulary = u1 + u2;
+  const length = n1 + n2;
+  const volume = length > 0 ? length * Math.log2(vocabulary) : 0;
+  const difficulty = (u1 / 2) * (n2 / u2);
+  const effort = difficulty * volume;
+  const rawMI = 171 - (5.2 * Math.log(Math.max(1, volume))) - (16.2 * Math.log(Math.max(1, lineCount)));
+  const mi = Math.max(0, Math.min(100, Math.round((rawMI / 171) * 100)));
+  return { vocabulary, length, volume: Math.round(volume), difficulty: Math.round(difficulty * 10) / 10, effort: Math.round(effort), maintainabilityIndex: mi };
 }
 
 function walkDirectory(dir, fileList = []) {
