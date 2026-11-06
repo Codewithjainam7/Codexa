@@ -123,4 +123,41 @@ test("CLI Binary: should execute help and rules list commands", () => {
 
   const rulesOutput = execSync(`node "${cliPath}" rules list`, { encoding: "utf8" });
   assert(rulesOutput.includes("CR-SQL-001"), "Rules list should display CR-SQL-001");
+  assert(rulesOutput.includes("CR-XXE-001"), "Rules list should display CR-XXE-001");
+  assert(rulesOutput.includes("CR-SSTI-001"), "Rules list should display CR-SSTI-001");
+});
+
+test("Scanner: should detect XXE, SSTI, JWT None, ReDoS and Server Action vulnerabilities", () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "codexa-rules-test-"));
+
+  // 1. XXE test file
+  fs.writeFileSync(path.join(tmpDir, "Parser.java"), `DocumentBuilderFactory.newInstance();\n`);
+
+  // 2. SSTI test file
+  fs.writeFileSync(path.join(tmpDir, "view.py"), `jinja2.Template("Hello " + req.name)\n`);
+
+  // 3. JWT None test file
+  fs.writeFileSync(path.join(tmpDir, "auth.js"), `jwt.decode(token, { verify: false });\n`);
+
+  // 4. ReDoS test file
+  fs.writeFileSync(path.join(tmpDir, "validate.js"), `const r = new RegExp("(a+)+");\n`);
+
+  // 5. Server Action test file
+  fs.writeFileSync(path.join(tmpDir, "action.ts"), `'use server';\nexport async function mutate() {}\n`);
+
+  const result = scanProject(tmpDir);
+  const foundRuleIds = result.findings.map(f => f.ruleId);
+
+  assert(foundRuleIds.includes("CR-XXE-001"), "Expected CR-XXE-001 detection");
+  assert(foundRuleIds.includes("CR-SSTI-001"), "Expected CR-SSTI-001 detection");
+  assert(foundRuleIds.includes("CR-JWT-001"), "Expected CR-JWT-001 detection");
+  assert(foundRuleIds.includes("CR-REDOS-001"), "Expected CR-REDOS-001 detection");
+  assert(foundRuleIds.includes("CR-RSC-001"), "Expected CR-RSC-001 detection");
+
+  // Verify Halstead metrics were computed
+  const singleFileResult = scanFile(path.join(tmpDir, "Parser.java"), tmpDir);
+  assert(singleFileResult.halstead, "Expected Halstead metrics on scanFile");
+  assert(singleFileResult.halstead.maintainabilityIndex > 0, "Expected non-zero Maintainability Index");
+
+  fs.rmSync(tmpDir, { recursive: true, force: true });
 });
