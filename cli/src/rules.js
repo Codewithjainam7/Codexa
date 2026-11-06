@@ -308,6 +308,40 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-IAC-007",
+    title: "Overly Permissive IAM Wildcard Policy",
+    category: "SECURITY",
+    severity: "CRITICAL",
+    cwe: "CWE-732",
+    fileExtensions: [".tf", ".json", ".yml", ".yaml"],
+    check: (line, lineNum) => {
+      if (/(?:["']Action["']\s*:\s*(?:\[\s*["']\*["']\s*\]|["']\*["'])|action\s*=\s*\[?["']\*["']\]?)/i.test(line)) {
+        return {
+          description: "IAM policy grants wildcard permissions ('*'), violating the principle of least privilege.",
+          remediation: "Scope IAM actions to specific API operations required by the service."
+        };
+      }
+      return null;
+    }
+  },
+  {
+    id: "CR-IAC-008",
+    title: "Public Cloud Storage Bucket Exposure",
+    category: "SECURITY",
+    severity: "CRITICAL",
+    cwe: "CWE-284",
+    fileExtensions: [".tf", ".json", ".yml", ".yaml"],
+    check: (line, lineNum) => {
+      if (/(?:acl\s*=\s*["']public-read["']|block_public_acls\s*=\s*false)/i.test(line)) {
+        return {
+          description: "Storage bucket configured with public-read permissions or disabled S3 block public access.",
+          remediation: "Enforce aws_s3_bucket_public_access_block with all block flags set to true."
+        };
+      }
+      return null;
+    }
   }
 ];
 
