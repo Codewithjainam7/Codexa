@@ -62,6 +62,14 @@ const RULES = [
       const awsRegex = /(?:AKIA|ASIA)[0-9A-Z]{16}/;
       const genericSecretRegex = /(?:password|secret|api_key|apikey|private_key|token)\s*[:=]\s*["']([A-Za-z0-9_\-.~+/=]{16,})["']/i;
       const jwtRegex = /eyJ[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*/;
+      const cloudTokenRegex = /(?:sk-proj-[A-Za-z0-9_\-]{32,}|sk-ant-[A-Za-z0-9_\-]{32,}|AIzaSy[A-Za-z0-9_\-]{33}|(?:sk|rk)_live_[A-Za-z0-9]{24,}|xox[baprs]-[A-Za-z0-9\-]{20,}|ghp_[A-Za-z0-9]{36})/;
+
+      if (cloudTokenRegex.test(line)) {
+        return {
+          description: "Detected exposed high-entropy Cloud Provider API token (OpenAI/Anthropic/Gemini/Stripe/Slack/GitHub).",
+          remediation: "Immediately revoke exposed token and migrate to environment variables or Cloud Secrets Manager."
+        };
+      }
 
       if (awsRegex.test(line)) {
         return {

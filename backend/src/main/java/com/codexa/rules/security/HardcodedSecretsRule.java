@@ -23,6 +23,9 @@ public class HardcodedSecretsRule implements AnalysisRule {
             "(?i)(?:api[_-]?key|secret[_-]?key|jwt[_-]?secret|access[_-]?token|db[_-]?password|password)\\s*=\\s*[\"']([^\"'\\s]{8,})[\"']"
     );
     private static final Pattern PRIVATE_KEY_PATTERN = Pattern.compile("-----BEGIN (?:RSA |EC |DSA )?PRIVATE KEY-----");
+    private static final Pattern CLOUD_API_TOKEN_PATTERN = Pattern.compile(
+            "(?:sk-proj-[A-Za-z0-9_\\-]{32,}|sk-admin-[A-Za-z0-9_\\-]{32,}|sk-ant-[A-Za-z0-9_\\-]{32,}|AIzaSy[A-Za-z0-9_\\-]{33}|(?:sk|rk)_live_[A-Za-z0-9]{24,}|xox[baprs]-[A-Za-z0-9\\-]{20,}|ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{50,})"
+    );
 
     @Override
     public String getRuleId() {
@@ -91,6 +94,15 @@ public class HardcodedSecretsRule implements AnalysisRule {
             if (PRIVATE_KEY_PATTERN.matcher(line).find()) {
                 findings.add(buildSecretFinding(parsedFile.getRelativePath(), lineNumber, "Private Key Header in source code",
                         "-----BEGIN PRIVATE KEY----- [REDACTED]"));
+                continue;
+            }
+
+            // Check for cloud provider tokens (OpenAI, Anthropic, Gemini, Stripe, Slack, GitHub)
+            Matcher cloudMatcher = CLOUD_API_TOKEN_PATTERN.matcher(line);
+            if (cloudMatcher.find()) {
+                String token = cloudMatcher.group();
+                String masked = maskSecretInLine(line, token);
+                findings.add(buildSecretFinding(parsedFile.getRelativePath(), lineNumber, "High-Entropy Cloud API Token in source code", masked));
                 continue;
             }
 
