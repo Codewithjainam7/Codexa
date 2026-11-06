@@ -46,6 +46,16 @@ Welcome to the definitive documentation portal for **Codexa: Deterministic AST C
 * [CR-IAC-003: Kubernetes Privileged Container Escalation](rules/CR-IAC-003.md)
 * [CR-IAC-005: Terraform Unrestricted Ingress (0.0.0.0/0)](rules/CR-IAC-005.md)
 * [CR-IAC-006: Terraform Unencrypted Storage Volumes](rules/CR-IAC-006.md)
+* [CR-IAC-007: Overly Permissive Cloud IAM Wildcard Policy](rules/CR-IAC-007.md)
+* [CR-IAC-008: Public Cloud Storage Bucket Exposure](rules/CR-IAC-008.md)
+
+### Advanced Web & Modern Architecture
+* [CR-XXE-001: XML External Entity (XXE) Injection](rules/CR-XXE-001.md)
+* [CR-SSTI-001: Server-Side Template Injection (SSTI)](rules/CR-SSTI-001.md)
+* [CR-JWT-001: Insecure JWT Validation & Algorithm Confusion](rules/CR-JWT-001.md)
+* [CR-REDOS-001: Regular Expression Denial of Service (ReDoS)](rules/CR-REDOS-001.md)
+* [CR-RSC-001: Unauthenticated Next.js Server Action Mutation](rules/CR-RSC-001.md)
+* [CR-CRYPTO-002: Insecure Cipher Mode (ECB), Static IV & Weak Keys](rules/CR-CRYPTO-002.md)
 
 ### OWASP API Security Top 10 (2023)
 * [CR-API-001: Mass Assignment & BOPLA](rules/CR-API-001.md)
@@ -55,6 +65,7 @@ Welcome to the definitive documentation portal for **Codexa: Deterministic AST C
 ### OWASP Top 10 for Large Language Models (LLMs)
 * [CR-LLM-001: Direct Prompt Injection](rules/CR-LLM-001.md)
 * [CR-LLM-002: Insecure Output Handling & Sinks](rules/CR-LLM-002.md)
+* [CR-LLM-003: Insecure Autonomous AI Agent Tool Execution](rules/CR-LLM-003.md)
 
 ### Open-Source Legal Compliance
 * [CR-LIC-001: Viral Copyleft License Detection (GPL/AGPL)](rules/CR-LIC-001.md)
@@ -85,6 +96,7 @@ Welcome to the definitive documentation portal for **Codexa: Deterministic AST C
 * [Content-Addressable Storage (CAS) & AST Hash Caching](architecture/content-addressable-storage.md)
 * [Spring Boot 3 Bean Lifecycle & Dependency Injection](architecture/dependency-injection-framework.md)
 * [Multi-Stage Ingestion & Analysis Orchestrator](architecture/pipeline-orchestrator.md)
+* [Interprocedural Taint Flow Analysis Engine](architecture/taint-analysis-engine.md)
 * [SBOM & CVE Dependency Scanner](architecture/sbom-cve-scanner.md)
 
 ---

@@ -1,6 +1,6 @@
 # Codexa Complete Static Analysis & Security Rule Catalog 🛡️
 
-> Codexa analyzes source code against **35+ deterministic static rules** spanning cryptographic security, injection vulnerabilities, structural code quality, operational readiness, and polyglot architecture patterns. Every rule is mapped to **OWASP Top 10 (2021)** and the **MITRE Common Weakness Enumeration (CWE)**.
+> Codexa analyzes source code against **45+ deterministic static rules** spanning cryptographic security, injection vulnerabilities, structural code quality, operational readiness, cloud infrastructure, AI agent boundaries, and polyglot architecture patterns. Every rule is mapped to **OWASP Top 10 (2021)**, **CWE Top 25**, **OWASP API Security**, and **OWASP LLM (2025)**.
 
 ---
 
@@ -75,3 +75,41 @@
 | `CR-OPS-003` | Unbounded Cached Thread Pool Creation | HIGH | OPERATIONS | CWE-400 | Flags instantiation of `Executors.newCachedThreadPool()` which creates unbounded threads leading to OS thread exhaustion and OOM. |
 | `CR-OPS-004` | Missing Input Validation Annotations | MEDIUM | OPERATIONS | CWE-20 | Flags mutating `@RequestBody` controller parameters lacking `@Valid` or `@Validated` annotations. |
 | `CR-PERF-001` | Quadratic String Concatenation in Loops | MEDIUM | PERFORMANCE | CWE-400 | Detects string `+=` concatenation inside loop bodies (`for`, `while`), causing $O(N^2)$ memory re-allocations instead of using `StringBuilder`. |
+
+---
+
+## 6. Advanced Web & Modern Framework Rules
+
+| Rule ID | Title | Severity | OWASP Top 10 | CWE ID | Detection Target & Logic |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `CR-XXE-001` | XML External Entity (XXE) Injection | HIGH | A05:2021-Security Misconfiguration | CWE-611 | Detects XML parsers (`DocumentBuilderFactory`, `SAXParserFactory`, `XMLInputFactory`, `lxml`) initialized without disabling DOCTYPE declarations or external entity expansion. |
+| `CR-SSTI-001` | Server-Side Template Injection (SSTI) | CRITICAL | A03:2021-Injection | CWE-1336 | Detects untrusted user input concatenated into template engines (Jinja2, FreeMarker, Velocity, Handlebars), enabling Remote Code Execution. |
+| `CR-JWT-001` | Insecure JWT Signature & Algorithm None | CRITICAL | A02:2021-Cryptographic Failures | CWE-347 | Detects disabled JWT signature verification (`verify=false`, `parseClaimsJwt`) or acceptance of the insecure 'none' algorithm. |
+| `CR-REDOS-001`| Regular Expression Denial of Service (ReDoS) | HIGH | A06:2021-Vulnerable Components | CWE-1333 | Detects catastrophic exponential/polynomial backtracking patterns (nested quantifiers like `(a+)+`) in compiled regular expressions. |
+| `CR-RSC-001` | Unauthenticated Next.js Server Action | HIGH | A01:2021-Broken Access Control | CWE-306 | Detects exported `'use server'` Server Actions performing database mutations or payments without verifying caller session authentication (`auth()`). |
+| `CR-CRYPTO-002`| Insecure Cipher Mode (ECB), Static IV & Weak Keys | HIGH | A02:2021-Cryptographic Failures | CWE-326 / CWE-329 | Detects `AES/ECB` unauthenticated mode, static zero-filled IV byte arrays in `IvParameterSpec`, and short RSA key sizes (< 2048-bit). |
+
+---
+
+## 7. Cloud Infrastructure-as-Code (IaC) Rules
+
+| Rule ID | Title | Severity | Category | CWE ID | Detection Target & Logic |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `CR-IAC-001` | Dockerfile Implicit Root User Execution | HIGH | OPERATIONS | CWE-250 | Flags Dockerfiles that do not specify a non-root `USER` directive before the container entrypoint. |
+| `CR-IAC-002` | Dockerfile Untagged Base Image (:latest) | MEDIUM | OPERATIONS | CWE-1104 | Flags `FROM image:latest` declarations in Dockerfiles that cause non-deterministic production deployments. |
+| `CR-IAC-003` | Kubernetes Privileged Container Escalation | CRITICAL | SECURITY | CWE-250 | Flags Kubernetes pod manifests specifying `securityContext.privileged: true` or `allowPrivilegeEscalation: true`. |
+| `CR-IAC-005` | Terraform Unrestricted Ingress (0.0.0.0/0) | HIGH | SECURITY | CWE-284 | Flags security group ingress rules permitting unrestricted global access (`0.0.0.0/0`) on sensitive administrative ports (22, 3389, 5432, 3306). |
+| `CR-IAC-006` | Terraform Unencrypted Cloud Storage Volumes | MEDIUM | SECURITY | CWE-311 | Flags cloud storage volumes (`aws_ebs_volume`, RDS, GCS) provisioned with encryption disabled. |
+| `CR-IAC-007` | Overly Permissive Cloud IAM Wildcard Policy | CRITICAL | SECURITY | CWE-732 | Flags IAM policies granting wildcard actions (`Action: "*"`) across cloud service APIs, violating Least Privilege. |
+| `CR-IAC-008` | Public Cloud Storage Bucket Exposure | CRITICAL | SECURITY | CWE-284 | Flags storage buckets configured with public-read ACLs or disabled S3 Block Public Access controls. |
+
+---
+
+## 8. OWASP Top 10 for LLMs & AI Agent Rules (2025)
+
+| Rule ID | Title | Severity | OWASP LLM | CWE ID | Detection Target & Logic |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `CR-LLM-001` | Direct Prompt Injection via String Formatting | HIGH | LLM01:2025 | CWE-20 | Detects untrusted user input directly concatenated into LLM system prompts without role separation. |
+| `CR-LLM-002` | Insecure LLM Output Handling & Sinks | HIGH | LLM02:2025 | CWE-79 / CWE-78 | Detects model outputs passed directly to HTML rendering, SQL queries, or command sinks without sanitization. |
+| `CR-LLM-003` | Insecure Autonomous AI Agent Tool Execution | CRITICAL | LLM07:2025 | CWE-74 | Flags autonomous AI agent systems binding model outputs directly into system shells or execution REPLs without human confirmation (HITL). |
+
