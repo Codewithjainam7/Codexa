@@ -219,3 +219,18 @@ test("Baseline Delta Engine: should compute new and fixed findings against basel
 
   fs.rmSync(tmpDir, { recursive: true, force: true });
 });
+
+test("Autofix Engine: should apply deterministic code patches in place", () => {
+  const { applyAutofix } = require("../src/autofix");
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "codexa-autofix-test-"));
+  const targetFile = path.join(tmpDir, "token.js");
+
+  fs.writeFileSync(targetFile, `const token = Math.random();\n`);
+  const fixed = applyAutofix(targetFile, { ruleId: "CR-RAND-001", line: 1 });
+  assert.strictEqual(fixed, true);
+
+  const updatedContent = fs.readFileSync(targetFile, "utf8");
+  assert(updatedContent.includes("crypto.randomBytes"));
+
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+});
