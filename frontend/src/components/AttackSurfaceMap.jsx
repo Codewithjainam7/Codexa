@@ -18,16 +18,16 @@ export default function AttackSurfaceMap({ job, findings = [] }) {
         icon: Globe,
         color: 'from-blue-600/20 to-sky-600/20',
         borderColor: 'border-blue-500/40',
-        matches: (f) => f.ruleId?.includes('TLS') || f.ruleId?.includes('CORS') || f.ruleId?.includes('IP') || f.title?.toLowerCase().includes('tls')
+        matches: (f) => f.ruleId?.includes('TLS') || f.ruleId?.includes('CORS') || f.ruleId?.includes('IP') || f.ruleId?.includes('WEBSOCKET') || f.title?.toLowerCase().includes('tls')
       },
       {
         id: 'layer-api',
-        name: '2. API Gateway & Controllers',
-        subtitle: 'RestControllers, Auth Filters & Routing',
+        name: '2. API Gateway, GraphQL & Controllers',
+        subtitle: 'RestControllers, GraphQL, gRPC & Auth Filters',
         icon: Server,
         color: 'from-purple-600/20 to-indigo-600/20',
         borderColor: 'border-purple-500/40',
-        matches: (f) => f.ruleId?.includes('API') || f.ruleId?.includes('ACCESS') || f.ruleId?.includes('CSRF') || f.ruleId?.includes('XSS') || f.category === 'SECURITY' && (f.filePath?.toLowerCase().includes('controller') || f.filePath?.toLowerCase().includes('api'))
+        matches: (f) => f.ruleId?.includes('API') || f.ruleId?.includes('ACCESS') || f.ruleId?.includes('CSRF') || f.ruleId?.includes('XSS') || f.ruleId?.includes('GRAPHQL') || f.ruleId?.includes('GRPC') || f.category === 'SECURITY' && (f.filePath?.toLowerCase().includes('controller') || f.filePath?.toLowerCase().includes('api'))
       },
       {
         id: 'layer-service',
@@ -36,16 +36,16 @@ export default function AttackSurfaceMap({ job, findings = [] }) {
         icon: Cpu,
         color: 'from-emerald-600/20 to-teal-600/20',
         borderColor: 'border-emerald-500/40',
-        matches: (f) => f.ruleId?.includes('LLM') || f.ruleId?.includes('CMD') || f.ruleId?.includes('DESERIAL') || f.ruleId?.includes('THREAD') || f.filePath?.toLowerCase().includes('service')
+        matches: (f) => f.ruleId?.includes('LLM') || f.ruleId?.includes('CMD') || f.ruleId?.includes('DESERIAL') || f.ruleId?.includes('THREAD') || f.ruleId?.includes('RACE') || f.filePath?.toLowerCase().includes('service')
       },
       {
         id: 'layer-data',
-        name: '4. Data Sinks & Cloud Resources',
-        subtitle: 'Postgres DB, Secret Stores & IaC Configs',
+        name: '4. Data Sinks, Redis & Cloud Resources',
+        subtitle: 'Postgres DB, MongoDB, Redis, Secrets & IaC',
         icon: Database,
         color: 'from-amber-600/20 to-orange-600/20',
         borderColor: 'border-amber-500/40',
-        matches: (f) => f.ruleId?.includes('SQL') || f.ruleId?.includes('SECRET') || f.ruleId?.includes('IAC') || f.ruleId?.includes('SSRF') || f.filePath?.toLowerCase().includes('repo') || f.filePath?.toLowerCase().includes('docker')
+        matches: (f) => f.ruleId?.includes('SQL') || f.ruleId?.includes('NOSQL') || f.ruleId?.includes('REDIS') || f.ruleId?.includes('SECRET') || f.ruleId?.includes('IAC') || f.ruleId?.includes('K8S') || f.ruleId?.includes('HELM') || f.ruleId?.includes('SSRF') || f.filePath?.toLowerCase().includes('repo') || f.filePath?.toLowerCase().includes('docker')
       }
     ];
 
