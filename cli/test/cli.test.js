@@ -161,3 +161,20 @@ test("Scanner: should detect XXE, SSTI, JWT None, ReDoS and Server Action vulner
 
   fs.rmSync(tmpDir, { recursive: true, force: true });
 });
+
+test("Entropy Engine: should calculate accurate Shannon entropy and identify secrets", () => {
+  const { calculateShannonEntropy, isHighEntropyToken } = require("../src/entropy");
+
+  // Low entropy repetitive string
+  const lowEntropy = calculateShannonEntropy("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+  assert.strictEqual(lowEntropy, 0);
+
+  // Standard identifier
+  const identifierEntropy = calculateShannonEntropy("getUserProfileByAccountIdentifier");
+  assert(identifierEntropy < 4.2);
+
+  // High entropy cryptographic API key
+  const secretKey = "4f8a9b2c3d1e0f7a6b5c4d3e2f1a0b9c";
+  assert(calculateShannonEntropy(secretKey) > 3.2);
+  assert.strictEqual(isHighEntropyToken(secretKey), true);
+});
