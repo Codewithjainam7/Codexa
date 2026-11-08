@@ -253,3 +253,20 @@ test("Policy Engine: should enforce CI/CD threshold rules and exit codes", () =>
   assert.strictEqual(policy2.passed, true);
   assert.strictEqual(policy2.exitCode, 0);
 });
+
+test("HTML Exporter: should generate valid self-contained HTML audit report", () => {
+  const { generateHtmlReport } = require("../src/htmlReport");
+  const html = generateHtmlReport({
+    target: "my-service",
+    score: 85,
+    grade: "B",
+    findings: [
+      { severity: "HIGH", ruleId: "CR-SEC-001", title: "Hardcoded secret", file: "app.js", line: 12, snippet: "apiKey='xyz'", remediation: "Use env var" }
+    ]
+  });
+
+  assert(html.includes("<!DOCTYPE html>"));
+  assert(html.includes("Codexa Static Security Audit Report"));
+  assert(html.includes("CR-SEC-001"));
+  assert(html.includes("85</span>/100"));
+});
