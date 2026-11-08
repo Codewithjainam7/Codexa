@@ -559,6 +559,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-SUPPLY-001",
+    title: "Dependency Confusion & Supply Chain Insecurity",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-829",
+    fileExtensions: [".conf", ".txt", ".npmrc", ".json"],
+    check: (line, lineNum) => {
+      if (/extra-index-url\s*=\s*https?:\/\/pypi\.org/i.test(line)) {
+        return {
+          description: "Using extra-index-url with public PyPI risks Dependency Confusion package substitution.",
+          remediation: "Use a single unified internal package repository proxy instead of extra-index-url."
+        };
+      }
+      return null;
+    }
   }
 ];
 
