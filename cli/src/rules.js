@@ -394,6 +394,29 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-GRAPHQL-001",
+    title: "GraphQL Depth Limiting & Introspection Exposure",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-770",
+    fileExtensions: [".js", ".ts", ".java", ".py"],
+    check: (line, lineNum) => {
+      if (/(?:ApolloServer|createYoga|graphqlHTTP)\s*\(/.test(line)) {
+        return {
+          description: "GraphQL server declared. Ensure query depth limiting (graphql-depth-limit) is configured to prevent recursive query DoS.",
+          remediation: "Add validationRules: [depthLimit(6)] and disable schema introspection in production."
+        };
+      }
+      if (/introspection\s*:\s*true/i.test(line)) {
+        return {
+          description: "GraphQL introspection enabled. Disclose entire internal API schema to unauthenticated clients.",
+          remediation: "Disable introspection in production (e.g. process.env.NODE_ENV !== 'production')."
+        };
+      }
+      return null;
+    }
   }
 ];
 
