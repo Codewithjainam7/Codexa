@@ -491,6 +491,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-RACE-001",
+    title: "TOCTOU Race Condition on Shared Resources",
+    category: "SECURITY",
+    severity: "MEDIUM",
+    cwe: "CWE-367",
+    fileExtensions: [".js", ".ts", ".java", ".py"],
+    check: (line, lineNum) => {
+      if (/(?:existsSync|exists\(\)|os\.path\.exists)/i.test(line)) {
+        return {
+          description: "File or resource presence check immediately before write risks Time-of-Check to Time-of-Use (TOCTOU) race condition.",
+          remediation: "Perform atomic create operations (e.g. O_EXCL / 'wx' flags) and catch collision errors."
+        };
+      }
+      return null;
+    }
   }
 ];
 
