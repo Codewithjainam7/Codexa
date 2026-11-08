@@ -417,6 +417,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-WEBSOCKET-001",
+    title: "Insecure WebSocket Origin Validation (CSWSH)",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-1385",
+    fileExtensions: [".js", ".ts", ".java", ".go"],
+    check: (line, lineNum) => {
+      if (/(?:setAllowedOrigins\s*\(\s*["']\*["']\)|origin\s*:\s*["']\*["']|checkOrigin\s*=\s*nil)/i.test(line)) {
+        return {
+          description: "WebSocket connection allows wildcard origin ('*'), exposing users to Cross-Site WebSocket Hijacking (CSWSH).",
+          remediation: "Validate the incoming Origin header against an explicit domain allowlist during handshake."
+        };
+      }
+      return null;
+    }
   }
 ];
 
