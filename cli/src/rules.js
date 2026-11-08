@@ -576,6 +576,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-DEAD-001",
+    title: "Dead Code & Unreachable Branch Detection",
+    category: "QUALITY",
+    severity: "LOW",
+    cwe: "CWE-561",
+    fileExtensions: [".js", ".ts", ".java", ".py", ".go"],
+    check: (line, lineNum) => {
+      if (/if\s*\(\s*(?:false|0\s*==\s*1)\s*\)/i.test(line)) {
+        return {
+          description: "Branch guarded by constant false condition will never execute (Dead Code).",
+          remediation: "Remove dead branch and unreachable statements."
+        };
+      }
+      return null;
+    }
   }
 ];
 
