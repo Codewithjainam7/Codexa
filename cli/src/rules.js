@@ -525,6 +525,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-K8S-001",
+    title: "Kubernetes HostPath Mount & Node Escapes",
+    category: "SECURITY",
+    severity: "CRITICAL",
+    cwe: "CWE-284",
+    fileExtensions: [".yaml", ".yml"],
+    check: (line, lineNum) => {
+      if (/hostPath\s*:\s*(?:\{|\n)?/i.test(line) || /path\s*:\s*["']?\/(?:etc|var\/run\/docker\.sock|proc|sys)/i.test(line)) {
+        return {
+          description: "Kubernetes hostPath volume mount exposes worker node host filesystem directly to container.",
+          remediation: "Replace hostPath with dedicated PersistentVolumeClaims (PVC) and block host access."
+        };
+      }
+      return null;
+    }
   }
 ];
 
