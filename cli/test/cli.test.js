@@ -193,3 +193,29 @@ test("Cache Engine: should store and retrieve content hashes", () => {
 
   fs.rmSync(tmpDir, { recursive: true, force: true });
 });
+
+test("Baseline Delta Engine: should compute new and fixed findings against baseline", () => {
+  const { computeDelta } = require("../src/baseline");
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "codexa-baseline-test-"));
+  const sarifFile = path.join(tmpDir, "baseline.sarif");
+
+  fs.writeFileSync(sarifFile, JSON.stringify({
+    runs: [{
+      results: [
+        { ruleId: "CR-SQL-001", locations: [{ physicalLocation: { artifactLocation: { uri: "User.java" }, region: { startLine: 10 } } }] }
+      ]
+    }]
+  }));
+
+  const currentFindings = [
+    { ruleId: "CR-SQL-001", file: "User.java", line: 10 },
+    { ruleId: "CR-XXE-001", file: "Parser.java", line: 5 } // New regression!
+  ];
+
+  const delta = computeDelta(currentFindings, sarifFile);
+  assert.strictEqual(delta.newFindings.length, 1);
+  assert.strictEqual(delta.newFindings[0].ruleId, "CR-XXE-001");
+  assert.strictEqual(delta.existingFindings.length, 1);
+
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+});
