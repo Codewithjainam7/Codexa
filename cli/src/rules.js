@@ -508,6 +508,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-MEMORY-001",
+    title: "Unclosed Stream or Native Resource Leak",
+    category: "QUALITY",
+    severity: "MEDIUM",
+    cwe: "CWE-775",
+    fileExtensions: [".java", ".py", ".go", ".js", ".ts"],
+    check: (line, lineNum) => {
+      if (/(?:new\s+FileInputStream|new\s+FileOutputStream|open\([^)]+\))\s*(?!.*with)/i.test(line)) {
+        return {
+          description: "Stream resource opened without try-with-resources or 'with' statement risks file descriptor leakage.",
+          remediation: "Wrap file stream operations in a scoped context manager or try-with-resources statement."
+        };
+      }
+      return null;
+    }
   }
 ];
 
