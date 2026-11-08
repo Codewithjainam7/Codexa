@@ -8,9 +8,11 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-152%20Passing%20(100%25)-emerald.svg)]()
 [![Production Status](https://img.shields.io/badge/Render%20Cloud-LIVE%20%7C%20UP-success.svg)](https://codexa-ye85.onrender.com)
-[![Rules](https://img.shields.io/badge/Rules-45%2B%20AST%20%26%20Polyglot-purple.svg)](docs/RULES_CATALOG.md)
+[![Rules](https://img.shields.io/badge/Rules-55%2B%20AST%20%26%20Polyglot-purple.svg)](docs/RULES_CATALOG.md)
 [![Scale](https://img.shields.io/badge/Ingestion-3%20GB%20%7C%2050%2C000%20Files-blue.svg)](docs/benchmarks/performance-targets.md)
 [![Taint](https://img.shields.io/badge/Taint%20Analysis-Interprocedural-orange.svg)](docs/architecture/taint-analysis-engine.md)
+[![CallGraph](https://img.shields.io/badge/Call%20Graph-Interprocedural-blue.svg)](docs/architecture/call-graph-engine.md)
+[![Cognitive](https://img.shields.io/badge/Cognitive%20Complexity-SonarQube%20Spec-emerald.svg)](docs/architecture/cognitive-complexity.md)
 [![SARIF](https://img.shields.io/badge/SARIF-v2.1.0%20GitHub%20Ready-green.svg)](docs/SARIF_INTEGRATION.md)
 [![SBOM](https://img.shields.io/badge/SBOM-CycloneDX%20v1.5-blue.svg)](docs/features/sbom-blast-radius-graph.md)
 [![OWASP](https://img.shields.io/badge/Security-OWASP%20Top%2010%20%2B%20LLM-red.svg)](https://owasp.org/www-project-top-ten/)
@@ -173,9 +175,9 @@ Simulates an external penetration tester mapping out the application's attack su
 
 ---
 
-## 🛡️ 4. Static Rule Catalog (45+ Built-in & Polyglot Rules)
+## 🛡️ 4. Static Rule Catalog (55+ Built-in & Polyglot Rules)
 
-Codexa's rule engine evaluates every AST node against **45+ deterministic static rules** mapped to **OWASP Top 10 (2021)**, **CWE Top 25**, **OWASP API Security**, and **OWASP LLM (2025)**. For the exhaustive catalog, see **[RULES_CATALOG.md](docs/RULES_CATALOG.md)**:
+Codexa's rule engine evaluates every AST node against **55+ deterministic static rules** mapped to **OWASP Top 10 (2021)**, **CWE Top 25**, **OWASP API Security**, and **OWASP LLM (2025)**. For the exhaustive catalog, see **[RULES_CATALOG.md](docs/RULES_CATALOG.md)**:
 
 | Rule ID | Rule Name | Category | Severity | OWASP Top 10 | CWE ID | Detection Logic |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -222,6 +224,17 @@ Codexa's rule engine evaluates every AST node against **45+ deterministic static
 | `CR-IAC-007` | Overly Permissive Cloud IAM Wildcard Policy | SECURITY | CRITICAL | A01:2021-Broken Access Control | CWE-732 | IAM policies granting wildcard actions (`Action: "*"`) across cloud service APIs, violating Least Privilege. |
 | `CR-IAC-008` | Public Cloud Storage Bucket Exposure | SECURITY | CRITICAL | A05:2021-Security Misconfiguration | CWE-284 | Cloud storage configurations with public-read ACLs or disabled S3 Block Public Access controls. |
 | `CR-LLM-003` | Insecure Autonomous AI Agent Tool Execution | SECURITY | CRITICAL | LLM07:2025-Insecure Plugin Design | CWE-74 | AI agent frameworks binding model outputs directly into system shells or execution REPLs without human confirmation. |
+| `CR-GRAPHQL-001` | GraphQL Query Depth Limiting & Introspection | SECURITY | HIGH | A04:2021-Insecure Design | CWE-770 | Flags GraphQL servers lacking maximum query depth validation (DoS risk) or exposing schema introspection in production. |
+| `CR-WEBSOCKET-001`| Insecure WebSocket Origin Validation (CSWSH) | SECURITY | HIGH | A01:2021-Broken Access Control | CWE-1385 | Detects WebSocket handlers accepting connections from wildcard origins (`*`), enabling Cross-Site WebSocket Hijacking. |
+| `CR-GRPC-001` | gRPC Plaintext Channel & Insecure Credentials | SECURITY | HIGH | A02:2021-Cryptographic Failures | CWE-319 | Detects gRPC channels initialized via `usePlaintext()` or `insecure.NewCredentials()` transmitting payloads without TLS. |
+| `CR-REDIS-001` | Redis Command & Lua Script Injection | SECURITY | HIGH | A03:2021-Injection | CWE-94 | Detects dynamic string concatenation into Redis `eval()` or `evalsha()` enabling cache poisoning and Lua escapes. |
+| `CR-NOSQL-001` | NoSQL Operator Injection & $where Execution | SECURITY | CRITICAL | A03:2021-Injection | CWE-943 | Flags raw `req.body` passed directly to NoSQL queries allowing query operator bypass (`{"$ne": null}`) or dynamic `$where` evaluation. |
+| `CR-RACE-001` | Time-of-Check to Time-of-Use (TOCTOU) | SECURITY | MEDIUM | A04:2021-Insecure Design | CWE-367 | Detects non-atomic file presence checks immediately preceding operations without locks or atomic primitives. |
+| `CR-MEMORY-001` | Unclosed Stream & Native Resource Leak | QUALITY | MEDIUM | Resource Management | CWE-775 | Detects AutoCloseable streams or buffers instantiated outside try-with-resources blocks, risking descriptor leaks. |
+| `CR-DEAD-001` | Dead Code & Unreachable Branch Detection | QUALITY | LOW | Clean Architecture | CWE-561 | Detects statements placed after unconditional returns/throws, `if (false)` clauses, and uninvoked private methods. |
+| `CR-K8S-001` | Kubernetes HostPath Mount Node Escapes | SECURITY | CRITICAL | A05:2021-Security Misconfiguration | CWE-284 | Detects hostPath mounts targeting sensitive worker node paths (`/var/run/docker.sock`, `/etc`), risking node escape. |
+| `CR-HELM-001` | Hardcoded Secrets in Helm Chart Values | SECURITY | HIGH | A02:2021-Cryptographic Failures | CWE-312 | Detects plaintext database credentials and tokens committed into Helm `values.yaml` files. |
+| `CR-SUPPLY-001` | Dependency Confusion & Insecure Registry | SECURITY | HIGH | A06:2021-Vulnerable Components | CWE-829 | Flags pip or npm configs using `extra-index-url` with public registries, exposing builds to malicious package substitution. |
 
 ---
 
