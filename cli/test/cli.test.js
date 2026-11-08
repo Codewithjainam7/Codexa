@@ -234,3 +234,22 @@ test("Autofix Engine: should apply deterministic code patches in place", () => {
 
   fs.rmSync(tmpDir, { recursive: true, force: true });
 });
+
+test("Policy Engine: should enforce CI/CD threshold rules and exit codes", () => {
+  const { evaluatePolicy } = require("../src/policy");
+
+  const findings = [
+    { severity: "CRITICAL" },
+    { severity: "HIGH" }
+  ];
+
+  // Default: fails on > 0 critical
+  const policy1 = evaluatePolicy(findings, 70);
+  assert.strictEqual(policy1.passed, false);
+  assert.strictEqual(policy1.exitCode, 1);
+
+  // Relaxed policy: max 1 critical allowed, min score 65
+  const policy2 = evaluatePolicy(findings, 70, { maxCritical: 1, minScore: 65 });
+  assert.strictEqual(policy2.passed, true);
+  assert.strictEqual(policy2.exitCode, 0);
+});
