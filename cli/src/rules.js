@@ -451,6 +451,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-REDIS-001",
+    title: "Redis Command & Lua Script Injection",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-94",
+    fileExtensions: [".java", ".js", ".ts", ".py"],
+    check: (line, lineNum) => {
+      if (/(?:redis|jedis|client)\.(?:eval|evalsha)\s*\([^)]*(?:\+|`.*\$\{)/i.test(line)) {
+        return {
+          description: "Dynamic string concatenation in Redis eval() enables Lua injection and cache poisoning.",
+          remediation: "Pass variables via dedicated KEYS and ARGV argument arrays instead of string concatenation."
+        };
+      }
+      return null;
+    }
   }
 ];
 
