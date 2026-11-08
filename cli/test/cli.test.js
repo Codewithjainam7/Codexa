@@ -178,3 +178,18 @@ test("Entropy Engine: should calculate accurate Shannon entropy and identify sec
   assert(calculateShannonEntropy(secretKey) > 3.2);
   assert.strictEqual(isHighEntropyToken(secretKey), true);
 });
+
+test("Cache Engine: should store and retrieve content hashes", () => {
+  const { computeHash, loadCache, saveCache } = require("../src/cache");
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "codexa-cache-test-"));
+
+  const hash1 = computeHash("console.log('hello world');");
+  const hash2 = computeHash("console.log('hello world');");
+  assert.strictEqual(hash1, hash2);
+
+  saveCache(tmpDir, { "test.js": { hash: hash1, findings: [] } });
+  const loaded = loadCache(tmpDir);
+  assert.strictEqual(loaded["test.js"].hash, hash1);
+
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+});
