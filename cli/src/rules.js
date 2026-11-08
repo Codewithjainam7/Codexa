@@ -468,6 +468,29 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-NOSQL-001",
+    title: "NoSQL Operator Injection & $where Execution",
+    category: "SECURITY",
+    severity: "CRITICAL",
+    cwe: "CWE-943",
+    fileExtensions: [".js", ".ts", ".py", ".java"],
+    check: (line, lineNum) => {
+      if (/\$where\s*:\s*(?:`[^`]*\$\{|f["'][^"']*\{|["'][^"']*["']\s*\+)/i.test(line)) {
+        return {
+          description: "Dynamic string concatenation inside MongoDB $where clause allows arbitrary server-side JavaScript execution.",
+          remediation: "Never concatenate strings into $where. Use standard declarative query operators."
+        };
+      }
+      if (/(?:\.findOne|\.find|\.deleteMany)\s*\(\s*req\.body\b/i.test(line)) {
+        return {
+          description: "Raw req.body passed directly to NoSQL query allows operator injection ({ $ne: null }) to bypass auth.",
+          remediation: "Explicitly extract validated fields or sanitize objects with express-mongo-sanitize."
+        };
+      }
+      return null;
+    }
   }
 ];
 
