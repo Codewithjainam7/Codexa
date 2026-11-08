@@ -1,6 +1,6 @@
 # Codexa Complete Static Analysis & Security Rule Catalog 🛡️
 
-> Codexa analyzes source code against **45+ deterministic static rules** spanning cryptographic security, injection vulnerabilities, structural code quality, operational readiness, cloud infrastructure, AI agent boundaries, and polyglot architecture patterns. Every rule is mapped to **OWASP Top 10 (2021)**, **CWE Top 25**, **OWASP API Security**, and **OWASP LLM (2025)**.
+> Codexa analyzes source code against **55+ deterministic static rules** spanning cryptographic security, injection vulnerabilities, structural code quality, operational readiness, cloud infrastructure, AI agent boundaries, and polyglot architecture patterns. Every rule is mapped to **OWASP Top 10 (2021)**, **CWE Top 25**, **OWASP API Security**, and **OWASP LLM (2025)**.
 
 ---
 
@@ -112,4 +112,30 @@
 | `CR-LLM-001` | Direct Prompt Injection via String Formatting | HIGH | LLM01:2025 | CWE-20 | Detects untrusted user input directly concatenated into LLM system prompts without role separation. |
 | `CR-LLM-002` | Insecure LLM Output Handling & Sinks | HIGH | LLM02:2025 | CWE-79 / CWE-78 | Detects model outputs passed directly to HTML rendering, SQL queries, or command sinks without sanitization. |
 | `CR-LLM-003` | Insecure Autonomous AI Agent Tool Execution | CRITICAL | LLM07:2025 | CWE-74 | Flags autonomous AI agent systems binding model outputs directly into system shells or execution REPLs without human confirmation (HITL). |
+
+---
+
+## 9. Distributed Protocols, Microservices & Data Stores
+
+| Rule ID | Title | Severity | OWASP Top 10 | CWE ID | Detection Target & Logic |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `CR-GRAPHQL-001` | GraphQL Query Depth Limiting & Introspection | HIGH | A04:2021-Insecure Design | CWE-770 / CWE-200 | Flags GraphQL servers initialized without query depth limiting (DoS vulnerability) or exposing schema introspection in production. |
+| `CR-WEBSOCKET-001`| Insecure WebSocket Origin Validation (CSWSH) | HIGH | A01:2021-Broken Access Control | CWE-1385 | Detects WebSocket handlers with wildcard origin (`*`), enabling Cross-Site WebSocket Hijacking. |
+| `CR-GRPC-001` | gRPC Plaintext Channel & Unauthenticated Service | HIGH | A02:2021-Cryptographic Failures | CWE-319 | Detects gRPC channels instantiated via `.usePlaintext()` or `insecure.NewCredentials()` transmitting payloads without TLS. |
+| `CR-REDIS-001` | Redis Command & Lua Script Injection | HIGH | A03:2021-Injection | CWE-94 | Detects dynamic string concatenation into Redis `eval()` or `evalsha()` enabling cache poisoning and Lua sandbox escapes. |
+| `CR-NOSQL-001` | NoSQL Operator Injection & $where Execution | CRITICAL | A03:2021-Injection | CWE-943 | Flags raw `req.body` passed directly to NoSQL queries allowing query operator bypass (`{"$ne": null}`) or dynamic `$where` evaluation. |
+| `CR-RACE-001` | Time-of-Check to Time-of-Use (TOCTOU) | MEDIUM | A04:2021-Insecure Design | CWE-367 | Detects non-atomic file/resource presence checks immediately preceding operations without locks or exclusive creation flags. |
+| `CR-MEMORY-001` | Unclosed Stream & Native Resource Leak | MEDIUM | Maintainability | CWE-775 | Detects `AutoCloseable` streams or buffers instantiated outside try-with-resources blocks, risking descriptor leaks. |
+| `CR-DEAD-001` | Dead Code & Unreachable Branch Detection | LOW | Maintainability | CWE-561 | Detects statements placed after unconditional return/throw, `if (false)` clauses, and uninvoked private methods. |
+| `CR-CONF-002` | Multi-Environment Configuration Drift | HIGH | A05:2021-Security Misconfiguration | CWE-16 | Detects destructive database configurations (`ddl-auto: create`) or disabled security controls inside production profiles. |
+
+---
+
+## 10. Kubernetes & Supply Chain Hardening
+
+| Rule ID | Title | Severity | Category | CWE ID | Detection Target & Logic |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `CR-K8S-001` | Kubernetes HostPath Mount & Node Escapes | CRITICAL | SECURITY | CWE-284 | Detects hostPath mounts targeting sensitive node paths (`/var/run/docker.sock`, `/etc`, `/proc`), risking node breakout. |
+| `CR-HELM-001` | Hardcoded Secrets in Helm Chart Values | HIGH | SECURITY | CWE-312 | Detects plaintext database credentials and tokens committed into Helm `values.yaml` files. |
+| `CR-SUPPLY-001` | Dependency Confusion & Insecure Registry | HIGH | SECURITY | CWE-829 | Flags pip or npm configs using `extra-index-url` with public registries, exposing builds to malicious package substitution. |
 

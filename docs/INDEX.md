@@ -56,6 +56,19 @@ Welcome to the definitive documentation portal for **Codexa: Deterministic AST C
 * [CR-REDOS-001: Regular Expression Denial of Service (ReDoS)](rules/CR-REDOS-001.md)
 * [CR-RSC-001: Unauthenticated Next.js Server Action Mutation](rules/CR-RSC-001.md)
 * [CR-CRYPTO-002: Insecure Cipher Mode (ECB), Static IV & Weak Keys](rules/CR-CRYPTO-002.md)
+* [CR-GRAPHQL-001: GraphQL Query Depth Limiting & Production Introspection](rules/CR-GRAPHQL-001.md)
+* [CR-WEBSOCKET-001: Insecure WebSocket Origin Validation (CSWSH)](rules/CR-WEBSOCKET-001.md)
+* [CR-GRPC-001: gRPC Plaintext Channel & Unauthenticated Service](rules/CR-GRPC-001.md)
+* [CR-REDIS-001: Redis Command & Lua Script Injection](rules/CR-REDIS-001.md)
+* [CR-NOSQL-001: NoSQL Operator Injection & $where Execution](rules/CR-NOSQL-001.md)
+* [CR-RACE-001: Time-of-Check to Time-of-Use (TOCTOU) Race Condition](rules/CR-RACE-001.md)
+* [CR-MEMORY-001: Unclosed Stream & Native Resource Leak](rules/CR-MEMORY-001.md)
+* [CR-DEAD-001: Dead Code & Unreachable Branch Detection](rules/CR-DEAD-001.md)
+
+### Kubernetes & Supply Chain Hardening
+* [CR-K8S-001: Kubernetes HostPath Mount & Insecure SecurityContext](rules/CR-K8S-001.md)
+* [CR-HELM-001: Hardcoded Secrets in Helm Chart Values](rules/CR-HELM-001.md)
+* [CR-SUPPLY-001: Dependency Confusion & Supply Chain Insecurity](rules/CR-SUPPLY-001.md)
 
 ### OWASP API Security Top 10 (2023)
 * [CR-API-001: Mass Assignment & BOPLA](rules/CR-API-001.md)
@@ -73,6 +86,8 @@ Welcome to the definitive documentation portal for **Codexa: Deterministic AST C
 ---
 
 ## 6. Enterprise Regulatory Compliance
+* [NIST SP 800-53 Rev. 5 Technical Controls Mapping](compliance/nist-800-53.md)
+* [OWASP ASVS v4.0 Application Security Verification Standard](compliance/asvs-mapping.md)
 * [SOC 2 Type II Audit Readiness Guide](compliance/soc2-type2-audit-guide.md)
 * [ISO/IEC 27001:2022 Annex A Controls Mapping](compliance/iso27001-annex-a.md)
 * [PCI-DSS v4.0 Secure Software Lifecycle Mapping](compliance/pci-dss-v4.md)
