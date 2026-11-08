@@ -356,6 +356,89 @@ export async function updateSubscriptionPlan(userId: string, newPlan: string) {
 }`
       }
     ]
+  },
+  {
+    id: 'nosql-operator',
+    title: 'NoSQL Operator Injection (MongoDB)',
+    language: 'javascript',
+    category: 'SECURITY',
+    code: `const express = require('express');
+const router = express.Router();
+const User = require('../models/User');
+
+router.post('/login', async (req, res) => {
+    // Vulnerable: Passing req.body directly enables operator injection ({ "$ne": null })
+    const user = await User.findOne({ 
+        username: req.body.username,
+        password: req.body.password 
+    });
+    if (user) return res.json({ token: 'auth-token' });
+    res.status(401).json({ error: 'Invalid' });
+});`,
+    findings: [
+      {
+        id: 'CR-NOSQL-001',
+        title: 'NoSQL Operator Injection',
+        severity: 'CRITICAL',
+        line: 7,
+        cwe: 'CWE-943',
+        description: 'Directly querying with user-supplied objects allows MongoDB query operators to bypass authentication.',
+        fixSnippet: `const express = require('express');
+const router = express.Router();
+const User = require('../models/User');
+
+router.post('/login', async (req, res) => {
+    // Fixed: Cast fields to string primitives
+    const username = String(req.body.username || '');
+    const password = String(req.body.password || '');
+    const user = await User.findOne({ username });
+    if (user && await bcrypt.compare(password, user.passwordHash)) {
+        return res.json({ token: 'auth-token' });
+    }
+    res.status(401).json({ error: 'Invalid' });
+});`
+      }
+    ]
+  },
+  {
+    id: 'graphql-depth',
+    title: 'GraphQL Nested Query Denial of Service',
+    language: 'javascript',
+    category: 'SECURITY',
+    code: `const { ApolloServer } = require('apollo-server');
+const typeDefs = require('./schema');
+const resolvers = require('./resolvers');
+
+// Vulnerable: Apollo Server without query depth limiting or introspection guard
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    introspection: true
+});
+server.listen().then(({ url }) => console.log(\`Server ready at \${url}\`));`,
+    findings: [
+      {
+        id: 'CR-GRAPHQL-001',
+        title: 'Missing Query Depth Limit in GraphQL',
+        severity: 'HIGH',
+        line: 6,
+        cwe: 'CWE-770',
+        description: 'Unconstrained query nesting permits recursive DoS attacks that exhaust server CPU and database connections.',
+        fixSnippet: `const { ApolloServer } = require('apollo-server');
+const depthLimit = require('graphql-depth-limit');
+const typeDefs = require('./schema');
+const resolvers = require('./resolvers');
+
+// Fixed: Depth limiting configured and introspection disabled in production
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    validationRules: [depthLimit(6)],
+    introspection: process.env.NODE_ENV !== 'production'
+});
+server.listen().then(({ url }) => console.log(\`Server ready at \${url}\`));`
+      }
+    ]
   }
 ];
 
