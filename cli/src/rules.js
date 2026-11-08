@@ -434,6 +434,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-GRPC-001",
+    title: "gRPC Plaintext Channel & Unauthenticated Service",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-319",
+    fileExtensions: [".java", ".go", ".py", ".ts"],
+    check: (line, lineNum) => {
+      if (/(?:\.usePlaintext\s*\(\)|insecure\.NewCredentials\(\))/i.test(line)) {
+        return {
+          description: "gRPC channel configured without TLS encryption (usePlaintext / insecure credentials).",
+          remediation: "Enforce TLS channel credentials or Mutual TLS (mTLS) for all gRPC communications."
+        };
+      }
+      return null;
+    }
   }
 ];
 
