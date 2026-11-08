@@ -542,6 +542,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-HELM-001",
+    title: "Hardcoded Secrets in Helm values.yaml",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-312",
+    fileExtensions: [".yaml", ".yml"],
+    check: (line, lineNum) => {
+      if (/(?:password|dbPassword|rootPassword)\s*:\s*["'][a-zA-Z0-9_\-+=]{6,}["']/i.test(line) && !line.includes("{{")) {
+        return {
+          description: "Plaintext database password or token declared in Helm values configuration.",
+          remediation: "Reference external Kubernetes Secrets or utilize helm-secrets (Mozilla SOPS)."
+        };
+      }
+      return null;
+    }
   }
 ];
 
