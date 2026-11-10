@@ -11,7 +11,9 @@ Modern enterprise engineering organizations are subject to mandatory regulatory 
 1. **SOC 2 Type II** (AICPA Trust Services Criteria: Security, Availability, and Confidentiality).
 2. **ISO/IEC 27001:2022** (Information Security Management System - Annex A Controls).
 3. **PCI-DSS v4.0** (Payment Card Industry Data Security Standard).
-4. **OWASP Top 10:2021** (Web Application Security Risks).
+4. **OWASP Top 10:2021 & ASVS v4.0** (Web Application Security Risks & Verification).
+5. **CIS Controls v8** (Center for Internet Security Critical Security Controls IG1/IG2/IG3).
+6. **ENISA Cloud Security / EUCS** (European Union Agency for Cybersecurity Cloud Guidelines).
 
 ---
 
