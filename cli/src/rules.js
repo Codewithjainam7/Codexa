@@ -764,6 +764,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-ARCH-002",
+    title: "Architectural Layer Boundary Inversion",
+    category: "QUALITY",
+    severity: "MEDIUM",
+    cwe: "CWE-1061",
+    fileExtensions: [".java", ".ts", ".js"],
+    check: (line, lineNum) => {
+      if (/import\s+.*(?:repository|dao)\./i.test(line) && /Controller/i.test(line)) {
+        return {
+          description: "Controller directly imports Repository or DAO component, bypassing service domain boundary.",
+          remediation: "Encapsulate data access within Service classes and inject Services into Controllers."
+        };
+      }
+      return null;
+    }
   }
 ];
 
