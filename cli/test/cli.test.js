@@ -316,3 +316,21 @@ test("Suppression Engine: should filter out in-source inline suppressed findings
   assert.strictEqual(suppressedFindings[0].suppressions[0].kind, "inSource");
   assert(suppressedFindings[0].suppressions[0].justification.includes("Verified parameterized"));
 });
+
+test("License Auditor: should classify permissive vs strong copyleft licenses", () => {
+  const { LicenseAuditor } = require("../src/licenseAuditor");
+  const auditor = new LicenseAuditor();
+
+  const mit = auditor.classifyLicense("MIT");
+  assert.strictEqual(mit.type, "PERMISSIVE");
+  assert.strictEqual(mit.risk, "LOW");
+
+  const gpl = auditor.classifyLicense("GPL-3.0");
+  assert.strictEqual(gpl.type, "STRONG_COPYLEFT");
+  assert.strictEqual(gpl.risk, "CRITICAL");
+  assert.strictEqual(gpl.copyleft, true);
+
+  const lgpl = auditor.classifyLicense("LGPL-3.0");
+  assert.strictEqual(lgpl.type, "WEAK_COPYLEFT");
+  assert.strictEqual(lgpl.risk, "MEDIUM");
+});
