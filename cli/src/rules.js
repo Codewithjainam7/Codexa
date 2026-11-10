@@ -593,6 +593,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-HTTP-001",
+    title: "HTTP Request Smuggling & Header Desync",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-444",
+    fileExtensions: [".js", ".ts", ".java", ".conf"],
+    check: (line, lineNum) => {
+      if (/setHeader\s*\(\s*["'](?:Transfer-Encoding|Content-Length)["']/i.test(line) || /proxy_set_header\s+Connection\s+["']?\$http_connection/i.test(line)) {
+        return {
+          description: "Manual Transfer-Encoding / Content-Length setting or unvalidated hop-by-hop forwarding risks HTTP Request Smuggling.",
+          remediation: "Let web server framework handle chunking and framing deterministically; enforce HTTP/2 end-to-end."
+        };
+      }
+      return null;
+    }
   }
 ];
 
