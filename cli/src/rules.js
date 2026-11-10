@@ -747,6 +747,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-CICD-001",
+    title: "CI/CD Pipeline Script Injection & Untrusted Checkout",
+    category: "SECURITY",
+    severity: "CRITICAL",
+    cwe: "CWE-94",
+    fileExtensions: [".yml", ".yaml"],
+    check: (line, lineNum) => {
+      if (/\$\{\{\s*github\.event\.(?:issue|pull_request|comment)\.(?:title|body|head\.ref)/i.test(line)) {
+        return {
+          description: "Untrusted GitHub Actions event context interpolated directly into script block allows command injection.",
+          remediation: "Map the event expression to an intermediate environment variable (env:) and refer to it as $VAR."
+        };
+      }
+      return null;
+    }
   }
 ];
 
