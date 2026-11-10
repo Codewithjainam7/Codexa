@@ -781,6 +781,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-THREAD-001",
+    title: "ThreadLocal Context Leakage & Missing Cleanup",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-404",
+    fileExtensions: [".java"],
+    check: (line, lineNum) => {
+      if (/(?:ThreadLocal|InheritableThreadLocal)<.*>\s+\w+\s*=\s*new/i.test(line)) {
+        return {
+          description: "ThreadLocal variable initialized without explicit try-finally .remove() lifecycle cleanup.",
+          remediation: "Always clean up ThreadLocal state using finally { threadLocal.remove(); } in thread-pool architectures."
+        };
+      }
+      return null;
+    }
   }
 ];
 
