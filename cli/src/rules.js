@@ -713,6 +713,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-IAC-010",
+    title: "Terraform RDS Unencrypted Storage & KMS Rotation Disabled",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-311",
+    fileExtensions: [".tf", ".tfvars"],
+    check: (line, lineNum) => {
+      if (/storage_encrypted\s*=\s*false/i.test(line) || /publicly_accessible\s*=\s*true/i.test(line) || /enable_key_rotation\s*=\s*false/i.test(line)) {
+        return {
+          description: "Terraform configuration disables database storage encryption, exposes RDS publicly, or disables KMS key rotation.",
+          remediation: "Enable storage_encrypted, set publicly_accessible = false, and enable KMS rotation."
+        };
+      }
+      return null;
+    }
   }
 ];
 
