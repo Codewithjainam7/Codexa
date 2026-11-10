@@ -270,3 +270,15 @@ test("HTML Exporter: should generate valid self-contained HTML audit report", ()
   assert(html.includes("CR-SEC-001"));
   assert(html.includes("85</span>/100"));
 });
+
+test("Blame Engine: should annotate findings with git blame metadata", () => {
+  const { BlameEngine } = require("../src/blame");
+  const blameEngine = new BlameEngine(path.resolve(__dirname, ".."));
+  const findings = [
+    { ruleId: "CR-SEC-001", file: "package.json", line: 1 }
+  ];
+  const annotated = blameEngine.annotateFindings(findings);
+  assert.strictEqual(annotated.length, 1);
+  assert(annotated[0].provenance !== undefined);
+  assert(typeof annotated[0].provenance.author === "string");
+});
