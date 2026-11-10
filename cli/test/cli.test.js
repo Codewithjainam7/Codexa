@@ -357,3 +357,27 @@ test("Worker Pool Scanner: should scan files concurrently across worker lanes", 
 
   fs.rmSync(tmpDir, { recursive: true, force: true });
 });
+
+test("CycloneDX SBOM Generator: should emit valid CycloneDX v1.5 JSON spec", () => {
+  const { CycloneDxSbomGenerator } = require("../src/sbomGenerator");
+  const generator = new CycloneDxSbomGenerator(__dirname);
+
+  const sbom = generator.generateSbom(
+    { name: "codexa-core", version: "3.5.0" },
+    [
+      { name: "express", version: "4.19.2", license: "MIT", dev: false },
+      { name: "mocha", version: "10.4.0", dev: true }
+    ],
+    [
+      { ruleId: "CR-DEP-001", cve: "CVE-2024-1234", severity: "HIGH", title: "Test Advisory", purl: "pkg:npm/express@4.19.2" }
+    ]
+  );
+
+  assert.strictEqual(sbom.bomFormat, "CycloneDX");
+  assert.strictEqual(sbom.specVersion, "1.5");
+  assert(sbom.serialNumber.startsWith("urn:uuid:"));
+  assert.strictEqual(sbom.components.length, 2);
+  assert.strictEqual(sbom.components[0].purl, "pkg:npm/express@4.19.2");
+  assert.strictEqual(sbom.vulnerabilities.length, 1);
+  assert.strictEqual(sbom.vulnerabilities[0].id, "CVE-2024-1234");
+});
