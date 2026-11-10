@@ -282,3 +282,14 @@ test("Blame Engine: should annotate findings with git blame metadata", () => {
   assert(annotated[0].provenance !== undefined);
   assert(typeof annotated[0].provenance.author === "string");
 });
+
+test("TUI Renderer: should render interactive triage without throwing", () => {
+  const { renderInteractiveTriage } = require("../src/tui");
+  const findings = [
+    { ruleId: "CR-SEC-001", severity: "HIGH", title: "Test finding", file: "main.js", line: 5, snippet: "token = 123", remediation: "fix it" }
+  ];
+  // Verify it executes cleanly
+  assert.doesNotThrow(() => {
+    renderInteractiveTriage(findings, "HIGH");
+  });
+});

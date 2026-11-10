@@ -138,8 +138,35 @@ function renderTable(findings) {
   }
 }
 
+/**
+ * Interactive TUI Vulnerability Triage and Drill-down View.
+ */
+function renderInteractiveTriage(findings, filterSeverity = null) {
+  renderBanner();
+  console.log(`${colors.bold}${colors.fgWhite}─── CODEXA INTERACTIVE VULNERABILITY TRIAGE ───────────────────${colors.reset}`);
+  
+  const filtered = filterSeverity 
+    ? findings.filter(f => f.severity.toUpperCase() === filterSeverity.toUpperCase())
+    : findings;
+
+  console.log(`${colors.dim}Filtering by: ${filterSeverity ? filterSeverity : "ALL"} (${filtered.length} total matches)${colors.reset}\n`);
+
+  filtered.forEach((f, idx) => {
+    const badge = getSeverityBadge(f.severity);
+    console.log(`[${idx + 1}/${filtered.length}] ${badge} ${colors.bold}${f.title}${colors.reset} (${f.ruleId})`);
+    console.log(`    ${colors.fgCyan}Location: ${f.file}:${f.line}${colors.reset}`);
+    if (f.provenance) {
+      console.log(`    ${colors.fgMuted}Committed by: ${f.provenance.author} (${f.provenance.ageDays} days ago, SHA: ${f.provenance.commit})${colors.reset}`);
+    }
+    console.log(`    ${colors.dim}Evidence: ${f.snippet || "N/A"}${colors.reset}`);
+    console.log(`    ${colors.fgEmerald}Remediation Plan: ${f.remediation || "Follow security handbook"}${colors.reset}`);
+    console.log(`${colors.dim}────────────────────────────────────────────────────────────────${colors.reset}`);
+  });
+}
+
 module.exports = {
   renderBanner,
   renderScanSummary,
-  renderTable
+  renderTable,
+  renderInteractiveTriage
 };
