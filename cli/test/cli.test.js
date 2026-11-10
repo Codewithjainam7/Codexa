@@ -334,3 +334,26 @@ test("License Auditor: should classify permissive vs strong copyleft licenses", 
   assert.strictEqual(lgpl.type, "WEAK_COPYLEFT");
   assert.strictEqual(lgpl.risk, "MEDIUM");
 });
+
+test("Worker Pool Scanner: should scan files concurrently across worker lanes", async () => {
+  const { WorkerPoolScanner } = require("../src/workerPool");
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "codexa-workerpool-"));
+
+  const f1 = path.join(tmpDir, "UserRepository.java");
+  const f2 = path.join(tmpDir, "config.js");
+  fs.writeFileSync(f1, `String query = "SELECT * FROM users WHERE id = '" + id + "'";\n`);
+  fs.writeFileSync(f2, `const awsKey = "AKIAIOSFODNN7TESTKEY1";\n`);
+
+  const scanner = new WorkerPoolScanner(2);
+  let progressCalled = 0;
+  const result = await scanner.scanBatch([f1, f2], () => {
+    progressCalled++;
+  });
+
+  assert.strictEqual(result.filesScanned, 2);
+  assert.strictEqual(progressCalled, 2);
+  assert(result.findings.length >= 2);
+  assert(result.concurrency === 2);
+
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+});

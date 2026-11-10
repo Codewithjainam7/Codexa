@@ -37,7 +37,7 @@ const ADVISORIES = [
   { match: /lodash.*(?:3\.|4\.(?:[0-9]|1[0-6])\.)/, id: "CVE-2021-23337", severity: "HIGH", desc: "Lodash Prototype Pollution via template function" }
 ];
 
-function scanFile(filePath, rootDir) {
+function scanFile(filePath, rootDir = process.cwd()) {
   const ext = path.extname(filePath);
   const relativePath = path.relative(rootDir, filePath).replace(/\\/g, "/");
   const fileName = path.basename(filePath);
