@@ -48,8 +48,19 @@ Welcome to the definitive documentation portal for **Codexa: Deterministic AST C
 * [CR-IAC-006: Terraform Unencrypted Storage Volumes](rules/CR-IAC-006.md)
 * [CR-IAC-007: Overly Permissive Cloud IAM Wildcard Policy](rules/CR-IAC-007.md)
 * [CR-IAC-008: Public Cloud Storage Bucket Exposure](rules/CR-IAC-008.md)
+* [CR-IAC-009: Dockerfile SUID Escalation & Sudo Installation](rules/CR-IAC-009.md)
+* [CR-IAC-010: Terraform RDS Unencrypted Storage & KMS Rotation Disabled](rules/CR-IAC-010.md)
+* [CR-IAC-011: S3 Public Website Hosting & CloudFront Insecure Protocol](rules/CR-IAC-011.md)
 
-### Advanced Web & Modern Architecture
+### Advanced Web, Application Protocols & CI/CD
+* [CR-HTTP-001: HTTP Request Smuggling & Hop-by-Hop Header Injection](rules/CR-HTTP-001.md)
+* [CR-PROTO-001: Server-Side Prototype Pollution via JSON Reviver & Merge](rules/CR-PROTO-001.md)
+* [CR-OAUTH-001: OAuth2 Open Redirect & Missing PKCE](rules/CR-OAUTH-001.md)
+* [CR-DESER-002: Polyglot Insecure Deserialization in Python & Node.js](rules/CR-DESER-002.md)
+* [CR-CORS-002: Insecure CORS Policy & Credential Leakage](rules/CR-CORS-002.md)
+* [CR-CICD-001: CI/CD Pipeline Script Injection & Untrusted PR Checkout](rules/CR-CICD-001.md)
+* [CR-ARCH-002: Architectural Layer Boundary Inversion](rules/CR-ARCH-002.md)
+* [CR-THREAD-001: ThreadLocal Context Leakage & Missing Cleanup](rules/CR-THREAD-001.md)
 * [CR-XXE-001: XML External Entity (XXE) Injection](rules/CR-XXE-001.md)
 * [CR-SSTI-001: Server-Side Template Injection (SSTI)](rules/CR-SSTI-001.md)
 * [CR-JWT-001: Insecure JWT Validation & Algorithm Confusion](rules/CR-JWT-001.md)
@@ -67,6 +78,7 @@ Welcome to the definitive documentation portal for **Codexa: Deterministic AST C
 
 ### Kubernetes & Supply Chain Hardening
 * [CR-K8S-001: Kubernetes HostPath Mount & Insecure SecurityContext](rules/CR-K8S-001.md)
+* [CR-K8S-002: Kubernetes Secret Ingestion via Environment Variables](rules/CR-K8S-002.md)
 * [CR-HELM-001: Hardcoded Secrets in Helm Chart Values](rules/CR-HELM-001.md)
 * [CR-SUPPLY-001: Dependency Confusion & Supply Chain Insecurity](rules/CR-SUPPLY-001.md)
 
@@ -86,6 +98,8 @@ Welcome to the definitive documentation portal for **Codexa: Deterministic AST C
 ---
 
 ## 6. Enterprise Regulatory Compliance
+* [CIS Controls v8 Technical Safeguards Matrix](compliance/cis-controls-v8.md)
+* [ENISA Cloud Security Guidelines & EUCS Compliance Matrix](compliance/enisa-cloud-security.md)
 * [NIST SP 800-53 Rev. 5 Technical Controls Mapping](compliance/nist-800-53.md)
 * [OWASP ASVS v4.0 Application Security Verification Standard](compliance/asvs-mapping.md)
 * [SOC 2 Type II Audit Readiness Guide](compliance/soc2-type2-audit-guide.md)
@@ -99,6 +113,7 @@ Welcome to the definitive documentation portal for **Codexa: Deterministic AST C
 ---
 
 ## 7. Architecture & Internal Systems
+* [ADR-0009: Interprocedural Taint Flow & Call Graph Architecture](adr/0009-interprocedural-taint-and-call-graph.md)
 * [Deterministic AST Parser Engine & Rule Lifecycle](architecture/ast-parser-engine.md)
 * [Multi-Engine Threat Modeling & Surface Discovery](architecture/multi-engine-threat-modeling.md)
 * [Production Readiness Scoring Formula](architecture/scoring-formula.md)

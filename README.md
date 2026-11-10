@@ -8,7 +8,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-152%20Passing%20(100%25)-emerald.svg)]()
 [![Production Status](https://img.shields.io/badge/Render%20Cloud-LIVE%20%7C%20UP-success.svg)](https://codexa-ye85.onrender.com)
-[![Rules](https://img.shields.io/badge/Rules-55%2B%20AST%20%26%20Polyglot-purple.svg)](docs/RULES_CATALOG.md)
+[![Rules](https://img.shields.io/badge/Rules-65%2B%20AST%20%26%20Polyglot-purple.svg)](docs/RULES_CATALOG.md)
 [![Scale](https://img.shields.io/badge/Ingestion-3%20GB%20%7C%2050%2C000%20Files-blue.svg)](docs/benchmarks/performance-targets.md)
 [![Taint](https://img.shields.io/badge/Taint%20Analysis-Interprocedural-orange.svg)](docs/architecture/taint-analysis-engine.md)
 [![CallGraph](https://img.shields.io/badge/Call%20Graph-Interprocedural-blue.svg)](docs/architecture/call-graph-engine.md)
@@ -175,9 +175,9 @@ Simulates an external penetration tester mapping out the application's attack su
 
 ---
 
-## 🛡️ 4. Static Rule Catalog (55+ Built-in & Polyglot Rules)
+## 🛡️ 4. Static Rule Catalog (65+ Built-in & Polyglot Rules)
 
-Codexa's rule engine evaluates every AST node against **55+ deterministic static rules** mapped to **OWASP Top 10 (2021)**, **CWE Top 25**, **OWASP API Security**, and **OWASP LLM (2025)**. For the exhaustive catalog, see **[RULES_CATALOG.md](docs/RULES_CATALOG.md)**:
+Codexa's rule engine evaluates every AST node against **65+ deterministic static rules** mapped to **OWASP Top 10 (2021)**, **CWE Top 25**, **OWASP API Security**, **CIS Controls v8**, and **OWASP LLM (2025)**. For the exhaustive catalog, see **[RULES_CATALOG.md](docs/RULES_CATALOG.md)**:
 
 | Rule ID | Rule Name | Category | Severity | OWASP Top 10 | CWE ID | Detection Logic |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -235,6 +235,18 @@ Codexa's rule engine evaluates every AST node against **55+ deterministic static
 | `CR-K8S-001` | Kubernetes HostPath Mount Node Escapes | SECURITY | CRITICAL | A05:2021-Security Misconfiguration | CWE-284 | Detects hostPath mounts targeting sensitive worker node paths (`/var/run/docker.sock`, `/etc`), risking node escape. |
 | `CR-HELM-001` | Hardcoded Secrets in Helm Chart Values | SECURITY | HIGH | A02:2021-Cryptographic Failures | CWE-312 | Detects plaintext database credentials and tokens committed into Helm `values.yaml` files. |
 | `CR-SUPPLY-001` | Dependency Confusion & Insecure Registry | SECURITY | HIGH | A06:2021-Vulnerable Components | CWE-829 | Flags pip or npm configs using `extra-index-url` with public registries, exposing builds to malicious package substitution. |
+| `CR-HTTP-001` | HTTP Request Smuggling & Hop-by-Hop | SECURITY | CRITICAL | A04:2021-Insecure Design | CWE-444 | Ambiguous Transfer-Encoding vs Content-Length or proxying hop-by-hop Connection headers leading to front-end desync. |
+| `CR-PROTO-001` | Server-Side Prototype Pollution | SECURITY | HIGH | A03:2021-Injection | CWE-1321 | Unsanitized JSON revivers, lodash merge, or recursive object assignment allowing global Object.prototype mutation and RCE. |
+| `CR-OAUTH-001` | OAuth2 Open Redirect & Missing PKCE | SECURITY | HIGH | A01:2021-Broken Access Control | CWE-601 | OAuth2 flows without PKCE code_challenge or validating redirect_uri with wildcards, permitting token theft. |
+| `CR-DESER-002` | Polyglot Deserialization (Python/Node) | SECURITY | CRITICAL | A08:2021-Software and Data Integrity | CWE-502 | Insecure Python `pickle.loads` or `yaml.load` without SafeLoader, and Node.js `node-serialize` unserialize. |
+| `CR-CORS-002` | Insecure CORS Origin & Credential Leak | SECURITY | HIGH | A01:2021-Broken Access Control | CWE-942 | Dynamic reflection of incoming Origin header combined with `Allow-Credentials: true` or weak origin substring checks. |
+| `CR-K8S-002` | Kubernetes Secrets in Environment Variables | SECURITY | MEDIUM | A05:2021-Security Misconfiguration | CWE-526 | Secrets exposed to container environment variables leaking via crash dumps, child processes, and `/proc/$PID/environ`. |
+| `CR-IAC-009` | Dockerfile SUID Escalation & Sudo | SECURITY | HIGH | A05:2021-Security Misconfiguration | CWE-250 | Setting SUID/SGID bits (`chmod +s`) or installing the `sudo` binary inside container images. |
+| `CR-IAC-010` | Terraform RDS Unencrypted & KMS Rotation | SECURITY | HIGH | A02:2021-Cryptographic Failures | CWE-311 | Terraform `aws_db_instance` with `storage_encrypted = false` or `aws_kms_key` with automatic rotation disabled. |
+| `CR-IAC-011` | S3 Public Website & CloudFront HTTP | SECURITY | HIGH | A02:2021-Cryptographic Failures | CWE-319 | CloudFront `viewer_protocol_policy = "allow-all"` permitting plain HTTP, or S3 public-read bucket ACLs. |
+| `CR-CICD-001` | CI/CD Pipeline Context Script Injection | SECURITY | CRITICAL | A03:2021-Injection | CWE-94 | Direct interpolation of untrusted `${{ github.event... }}` contexts into workflow shell scripts. |
+| `CR-ARCH-002` | Architectural Layer Boundary Inversion | QUALITY | MEDIUM | Clean Architecture | CWE-1061 | Presentation layer Controllers directly injecting database Repositories or DAOs, bypassing domain Services. |
+| `CR-THREAD-001` | ThreadLocal Context Leakage | SECURITY | HIGH | A04:2021-Insecure Design | CWE-404 | ThreadLocal variables in thread-pooled web containers lacking explicit `.remove()` in finally blocks. |
 
 ---
 
@@ -473,6 +485,46 @@ curl -X POST http://localhost:8080/api/v1/analyses/zip \
 #### 3. Fetch Paginated Critical Findings
 ```bash
 curl "http://localhost:8080/api/v1/analyses/7adcbfd0-6de6-4895-a263-c158eeba8259/findings?severity=CRITICAL&page=0&size=10"
+```
+
+---
+
+## ⚡ 11. Codexa High-Throughput Autonomous CLI
+
+Codexa includes an ultra-fast, zero-dependency Node.js CLI binary designed for local terminal development, developer pre-commit hooks, and CI/CD pull request gating.
+
+### CLI Key Capabilities
+- 🚀 **Multi-Threaded Worker Pool**: Concurrent file analysis distributed across CPU worker lanes with real-time throughput metrics.
+- 🎯 **OASIS SARIF v2.1.0 Ready**: Native output compatible with GitHub Code Scanning alerts, GitLab SAST, and DefectDojo.
+- 📦 **CycloneDX v1.5 SBOM**: Automated Software Bill of Materials generation with component dependency trees.
+- ⚖️ **OSS License Compliance**: Detects and enforces licensing policies against GPL-2.0, GPL-3.0, and AGPL copyleft contamination.
+- 🕒 **Git Blame Vulnerability Age Attribution**: Traces commit author, commit SHA, and age in days for every security finding.
+- 🛡️ **In-Source Suppressions**: Support for `// codexa-ignore CR-RULE-ID: reason` comments and `.codexaignore` configuration files.
+- 🖥️ **Interactive OLED TUI Triage**: Terminal-native drill-down mode for reviewing code evidence and remediation plans.
+- 🔧 **Deterministic In-Place Autofix**: Safe 1-click refactoring patches applied directly to source files.
+
+### CLI Usage Commands
+```bash
+# Scan current directory with terminal summary
+codexa scan .
+
+# Scan large monorepo with 8 parallel worker lanes and SARIF output
+codexa scan /path/to/repo --workers 8 --format sarif --out codexa-results.sarif
+
+# Enforce CI policy gates (fail build if score < 85 or critical findings > 0)
+codexa scan . --min-score 85 --max-critical 0
+
+# Interactive terminal vulnerability triage
+codexa triage .
+
+# Audit open-source dependencies for strong copyleft licenses (GPL/AGPL)
+codexa licenses .
+
+# Generate CycloneDX v1.5 Software Bill of Materials (SBOM)
+codexa sbom . --out bom.json
+
+# Apply automated in-place deterministic code fixes
+codexa fix . --rule CR-RAND-001
 ```
 
 ---

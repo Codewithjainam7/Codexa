@@ -1,6 +1,6 @@
 # Codexa Complete Static Analysis & Security Rule Catalog 🛡️
 
-> Codexa analyzes source code against **55+ deterministic static rules** spanning cryptographic security, injection vulnerabilities, structural code quality, operational readiness, cloud infrastructure, AI agent boundaries, and polyglot architecture patterns. Every rule is mapped to **OWASP Top 10 (2021)**, **CWE Top 25**, **OWASP API Security**, and **OWASP LLM (2025)**.
+> Codexa analyzes source code against **65+ deterministic static rules** spanning cryptographic security, injection vulnerabilities, structural code quality, operational readiness, cloud infrastructure, AI agent boundaries, and polyglot architecture patterns. Every rule is mapped to **OWASP Top 10 (2021)**, **CWE Top 25**, **OWASP API Security**, **CIS Controls v8**, and **OWASP LLM (2025)**.
 
 ---
 
@@ -138,4 +138,24 @@
 | `CR-K8S-001` | Kubernetes HostPath Mount & Node Escapes | CRITICAL | SECURITY | CWE-284 | Detects hostPath mounts targeting sensitive node paths (`/var/run/docker.sock`, `/etc`, `/proc`), risking node breakout. |
 | `CR-HELM-001` | Hardcoded Secrets in Helm Chart Values | HIGH | SECURITY | CWE-312 | Detects plaintext database credentials and tokens committed into Helm `values.yaml` files. |
 | `CR-SUPPLY-001` | Dependency Confusion & Insecure Registry | HIGH | SECURITY | CWE-829 | Flags pip or npm configs using `extra-index-url` with public registries, exposing builds to malicious package substitution. |
+
+---
+
+## 11. Advanced Application Protocols, CI/CD & Cloud Infrastructure (v3.5)
+
+| Rule ID | Title | Severity | Category | CWE ID | Detection Target & Logic |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `CR-HTTP-001` | HTTP Request Smuggling & Hop-by-Hop Injection | CRITICAL | SECURITY | CWE-444 | Detects ambiguous Transfer-Encoding / Content-Length headers and client-controlled hop-by-hop Connection header proxying. |
+| `CR-PROTO-001` | Server-Side Prototype Pollution | HIGH | SECURITY | CWE-1321 | Detects recursive Object.assign, lodash merge, or JSON revivers accepting `__proto__` / `constructor` properties, risking RCE. |
+| `CR-OAUTH-001` | OAuth2 Open Redirect & Missing PKCE | HIGH | SECURITY | CWE-601 | Detects OAuth2 authorization requests missing code_challenge (PKCE) or utilizing dynamic client-supplied redirect URIs. |
+| `CR-DESER-002` | Polyglot Insecure Deserialization (Python/Node) | CRITICAL | SECURITY | CWE-502 | Detects dangerous Python `pickle.loads` or `yaml.load` without SafeLoader, and Node.js `node-serialize` unserialize. |
+| `CR-CORS-002` | CORS Origin Reflection & Credential Leak | HIGH | SECURITY | CWE-942 | Detects CORS configurations reflecting arbitrary request Origin headers combined with `Allow-Credentials: true` or unanchored regexes. |
+| `CR-K8S-002` | Kubernetes Secrets in Environment Variables | MEDIUM | SECURITY | CWE-526 | Detects container manifests mapping secrets into environment variables via `secretKeyRef` or `secretRef`, risking subprocess exposure. |
+| `CR-IAC-009` | Dockerfile SUID Escalation & Sudo Installation | HIGH | SECURITY | CWE-250 | Detects container builds adding SUID/SGID bits (`chmod +s`, `4755`) or installing the `sudo` package inside images. |
+| `CR-IAC-010` | Terraform RDS Unencrypted & KMS Rotation Disabled | HIGH | SECURITY | CWE-311 | Detects Terraform `aws_db_instance` without `storage_encrypted = true`, publicly accessible RDS, or disabled KMS key rotation. |
+| `CR-IAC-011` | S3 Public Website & CloudFront Insecure Protocol | HIGH | SECURITY | CWE-319 | Detects CloudFront distributions allowing plain HTTP (`allow-all`) and public-read S3 bucket configurations. |
+| `CR-CICD-001` | CI/CD Pipeline Context Script Injection | CRITICAL | SECURITY | CWE-94 | Detects unescaped `${{ github.event... }}` context interpolations inside workflow `run:` shell steps. |
+| `CR-ARCH-002` | Architectural Layer Boundary Inversion | MEDIUM | QUALITY | CWE-1061 | Detects presentation Controllers bypassing domain Services to directly inject or invoke database Repositories/DAOs. |
+| `CR-THREAD-001` | ThreadLocal Context Leakage & Missing Cleanup | HIGH | SECURITY | CWE-404 | Detects ThreadLocal variables in thread-pooled web containers lacking guaranteed `.remove()` invocation inside finally blocks. |
+
 
