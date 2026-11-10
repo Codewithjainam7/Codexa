@@ -730,6 +730,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-IAC-011",
+    title: "S3 Public Website & Insecure CloudFront Viewer Protocol",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-319",
+    fileExtensions: [".tf", ".json", ".yaml"],
+    check: (line, lineNum) => {
+      if (/viewer_protocol_policy\s*=\s*["']allow-all["']/i.test(line) || /acl\s*=\s*["']public-read(?:-write)?["']/i.test(line)) {
+        return {
+          description: "CloudFront viewer protocol allows plain HTTP or S3 bucket is configured with public-read ACL.",
+          remediation: "Enforce viewer_protocol_policy = 'redirect-to-https' and private S3 ACL with Origin Access Control."
+        };
+      }
+      return null;
+    }
   }
 ];
 
