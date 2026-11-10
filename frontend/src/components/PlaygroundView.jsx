@@ -439,6 +439,129 @@ const server = new ApolloServer({
 server.listen().then(({ url }) => console.log(\`Server ready at \${url}\`));`
       }
     ]
+  },
+  {
+    id: 'http-smuggling',
+    title: 'HTTP Request Smuggling & Hop-by-Hop Injection',
+    language: 'javascript',
+    category: 'SECURITY',
+    code: `const express = require('express');
+const app = express();
+
+app.post('/proxy', (req, res) => {
+    // Vulnerable: Custom hop-by-hop forwarding with ambiguous Transfer-Encoding
+    const clientTe = req.headers['transfer-encoding'];
+    res.setHeader('Transfer-Encoding', clientTe);
+    res.setHeader('Connection', 'keep-alive, Transfer-Encoding');
+    res.send('proxied');
+});`,
+    findings: [
+      {
+        id: 'CR-HTTP-001',
+        title: 'HTTP Request Smuggling via Insecure Header Forwarding',
+        severity: 'CRITICAL',
+        line: 6,
+        cwe: 'CWE-444',
+        description: 'Directly reflecting Transfer-Encoding and manipulating hop-by-hop connection headers allows front-end/back-end request desync.',
+        fixSnippet: `const express = require('express');
+const app = express();
+
+app.post('/proxy', (req, res) => {
+    // Fixed: Strip hop-by-hop headers and enforce HTTP/2 standard proxies
+    const headers = { ...req.headers };
+    delete headers['transfer-encoding'];
+    delete headers['connection'];
+    res.send('proxied safely');
+});`
+      }
+    ]
+  },
+  {
+    id: 'prototype-pollution',
+    title: 'Server-Side Prototype Pollution (Object.assign)',
+    language: 'javascript',
+    category: 'SECURITY',
+    code: `function mergeDeep(target, source) {
+    // Vulnerable: Merging user properties without __proto__ / constructor filtering
+    for (const key of Object.keys(source)) {
+        if (source[key] instanceof Object) {
+            if (!target[key]) Object.assign(target, { [key]: {} });
+            mergeDeep(target[key], source[key]);
+        } else {
+            target[key] = source[key];
+        }
+    }
+    return target;
+}`,
+    findings: [
+      {
+        id: 'CR-PROTO-001',
+        title: 'Prototype Pollution via Unfiltered Property Recursion',
+        severity: 'HIGH',
+        line: 5,
+        cwe: 'CWE-1321',
+        description: 'Recursive object merger directly accesses __proto__ or constructor, permitting global JavaScript prototype pollution and RCE.',
+        fixSnippet: `function mergeDeep(target, source) {
+    // Fixed: Block dangerous prototype pollution keys
+    for (const key of Object.keys(source)) {
+        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+            continue;
+        }
+        if (source[key] instanceof Object && !Array.isArray(source[key])) {
+            if (!target[key]) target[key] = Object.create(null);
+            mergeDeep(target[key], source[key]);
+        } else {
+            target[key] = source[key];
+        }
+    }
+    return target;
+}`
+      }
+    ]
+  },
+  {
+    id: 'cicd-script-injection',
+    title: 'GitHub Actions Context Script Injection',
+    language: 'yaml',
+    category: 'SECURITY',
+    code: `name: Issue Triage
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Title
+        # Vulnerable: Inlining untrusted GitHub context into shell script
+        run: |
+          echo "Title: \${{ github.event.issue.title }}"`,
+    findings: [
+      {
+        id: 'CR-CICD-001',
+        title: 'CI/CD Pipeline Script Injection via Event Context',
+        severity: 'CRITICAL',
+        line: 13,
+        cwe: 'CWE-94',
+        description: 'Untrusted user input interpolated directly into bash run step allows arbitrary shell command execution.',
+        fixSnippet: `name: Issue Triage
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Title
+        # Fixed: Pass context value through environment variable
+        env:
+          ISSUE_TITLE: \${{ github.event.issue.title }}
+        run: |
+          echo "Title: $ISSUE_TITLE"`
+      }
+    ]
   }
 ];
 
