@@ -610,6 +610,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-PROTO-001",
+    title: "Server-Side Prototype Pollution via Dynamic Key Assignment",
+    category: "SECURITY",
+    severity: "CRITICAL",
+    cwe: "CWE-1321",
+    fileExtensions: [".js", ".ts"],
+    check: (line, lineNum) => {
+      if (/(?:\[['"]__proto__['"]\]|target\[k\]\s*=\s*source\[k\])/i.test(line) && !line.includes("hasOwn")) {
+        return {
+          description: "Unsanitized dynamic bracket property assignment allows prototype pollution into Object.prototype.",
+          remediation: "Filter out '__proto__' and 'constructor' keys before recursive assignment, or use Object.create(null)."
+        };
+      }
+      return null;
+    }
   }
 ];
 
