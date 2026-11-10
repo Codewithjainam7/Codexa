@@ -661,6 +661,24 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-CORS-002",
+    title: "Insecure CORS Policy & Credential Leakage",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-942",
+    fileExtensions: [".js", ".ts", ".java", ".py", ".go", ".cs"],
+    check: (line, lineNum) => {
+      if (/Access-Control-Allow-Origin["']\s*,\s*(?:req\.headers\[?['"]origin['"]?\]?|request\.getHeader\(['"]Origin['"]\))/i.test(line) ||
+          /(?:origin\.includes|origin\.indexOf|origin\.endsWith)\s*\(['"][a-zA-Z0-9.-]+\.[a-z]{2,}['"]\)/i.test(line)) {
+        return {
+          description: "CORS configuration reflects arbitrary Origin header or uses weak suffix matching, risking cross-origin credential theft.",
+          remediation: "Enforce strict domain allowlists with anchored exact-match regex or explicit set lookups."
+        };
+      }
+      return null;
+    }
   }
 ];
 
