@@ -293,3 +293,26 @@ test("TUI Renderer: should render interactive triage without throwing", () => {
     renderInteractiveTriage(findings, "HIGH");
   });
 });
+
+test("Suppression Engine: should filter out in-source inline suppressed findings", () => {
+  const { SuppressionEngine } = require("../src/suppression");
+  const engine = new SuppressionEngine(__dirname);
+
+  const fileContent = `
+    // codexa-ignore CR-SQL-001: Verified parameterized query in wrapper
+    const query = "SELECT * FROM users WHERE id = " + id;
+  `;
+
+  const findings = [
+    { ruleId: "CR-SQL-001", file: "test.js", line: 3 }
+  ];
+
+  const { activeFindings, suppressedFindings } = engine.processSuppressions(findings, {
+    "test.js": fileContent
+  });
+
+  assert.strictEqual(activeFindings.length, 0);
+  assert.strictEqual(suppressedFindings.length, 1);
+  assert.strictEqual(suppressedFindings[0].suppressions[0].kind, "inSource");
+  assert(suppressedFindings[0].suppressions[0].justification.includes("Verified parameterized"));
+});
