@@ -10,3 +10,4 @@
 | [ADR-0006](0006-monochromatic-luxury-ui.md) | Monochromatic UI Design | Accepted |
 | [ADR-0007](0007-openrouter-resilient-fallback.md) | AI Fallback Circuit Breaker | Accepted |
 | [ADR-0008](0008-content-addressable-ast-cache.md) | Content-Addressable AST Cache | Accepted |
+| [ADR-0009](0009-interprocedural-taint-and-call-graph.md) | Interprocedural Taint & Call Graph | Accepted |
