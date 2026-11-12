@@ -194,6 +194,11 @@ async function main() {
     case undefined:
       printHelp();
       break;
+    case "version":
+    case "--version":
+    case "-v":
+      console.log("Codexa Static Analysis & Security Auditing CLI v3.5.0 (AST & CycloneDX Engine)");
+      break;
     default:
       console.error(`Unknown command: '${cmd}'. Run 'codexa help' for available commands.`);
       process.exit(1);
