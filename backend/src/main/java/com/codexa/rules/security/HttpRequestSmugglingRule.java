@@ -79,6 +79,7 @@ public class HttpRequestSmugglingRule implements AnalysisRule {
             stream.filter(Files::isRegularFile).forEach(path -> {
                 String fileName = path.getFileName().toString().toLowerCase();
                 if (fileName.endsWith(".java") || fileName.endsWith(".js") || fileName.endsWith(".ts") ||
+                    fileName.endsWith(".go") || fileName.endsWith(".py") || fileName.endsWith(".rs") ||
                     fileName.endsWith(".conf") || fileName.contains("nginx")) {
                     try {
                         List<String> lines = Files.readAllLines(path);

@@ -600,7 +600,7 @@ const RULES = [
     category: "SECURITY",
     severity: "HIGH",
     cwe: "CWE-444",
-    fileExtensions: [".js", ".ts", ".java", ".conf"],
+    fileExtensions: [".js", ".ts", ".java", ".conf", ".go", ".py", ".rs"],
     check: (line, lineNum) => {
       if (/setHeader\s*\(\s*["'](?:Transfer-Encoding|Content-Length)["']/i.test(line) || /proxy_set_header\s+Connection\s+["']?\$http_connection/i.test(line)) {
         return {
