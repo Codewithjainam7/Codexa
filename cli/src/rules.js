@@ -619,7 +619,7 @@ const RULES = [
     cwe: "CWE-1321",
     fileExtensions: [".js", ".ts"],
     check: (line, lineNum) => {
-      if (/(?:\[['"]__proto__['"]\]|target\[k\]\s*=\s*source\[k\])/i.test(line) && !line.includes("hasOwn")) {
+      if (/(?:\[['"]__proto__['"]\]|target\[k(?:ey)?\]\s*=\s*source\[k(?:ey)?\]|target\[prop\]\s*=\s*source\[prop\])/i.test(line) && !line.includes("hasOwn")) {
         return {
           description: "Unsanitized dynamic bracket property assignment allows prototype pollution into Object.prototype.",
           remediation: "Filter out '__proto__' and 'constructor' keys before recursive assignment, or use Object.create(null)."

@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 public class ServerPrototypePollutionRule implements AnalysisRule {
 
     private static final Pattern PROTO_POLLUTION_PATTERN = Pattern.compile(
-            "(?i)\\[['\"](?:__proto__|prototype|constructor)['\"]\\]|\\[key\\]\\s*=\\s*val|target\\[k\\]\\s*=\\s*source\\[k\\]"
+            "(?i)\\[['\"](?:__proto__|prototype|constructor)['\"]\\]|\\[key\\]\\s*=\\s*val|target\\[k(?:ey)?\\]\\s*=\\s*source\\[k(?:ey)?\\]|target\\[prop\\]\\s*=\\s*source\\[prop\\]"
     );
 
     private static final Pattern UNSAFE_MERGE_PATTERN = Pattern.compile(
