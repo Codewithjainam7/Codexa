@@ -405,3 +405,22 @@ test("CSV Exporter: should serialize findings to RFC 4180 CSV and sanitize formu
   assert(csv.includes("Rule ID,Severity,Title,File,Line,CWE,Remediation"));
   assert(csv.includes("CR-SQL-001,CRITICAL,SQL Injection,User.java,42,CWE-89,Use PreparedStatement"));
 });
+
+test("Markdown Exporter: should generate valid pull request review comment markdown", () => {
+  const { generateMarkdownReport } = require("../src/markdownReport");
+
+  const result = {
+    target: "my-app",
+    metrics: { score: 92, grade: "A", status: "PRODUCTION_READY", breakdown: { critical: 0, high: 1, medium: 1, low: 0, total: 2 } },
+    findings: [
+      { ruleId: "CR-OAUTH-001", severity: "HIGH", title: "OAuth Open Redirect", file: "auth.js", line: 15, remediation: "Enforce PKCE" }
+    ]
+  };
+
+  const md = generateMarkdownReport(result);
+  assert(md.includes("## 🛡️ Codexa Security & Production Readiness Audit"));
+  assert(md.includes("🟢 **PRODUCTION READY**"));
+  assert(md.includes("CR-OAUTH-001"));
+  assert(md.includes("Enforce PKCE"));
+  assert(md.includes("<details>"));
+});
