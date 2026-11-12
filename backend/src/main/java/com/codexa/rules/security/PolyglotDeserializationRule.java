@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 public class PolyglotDeserializationRule implements AnalysisRule {
 
     private static final Pattern POLYGLOT_DESER_PATTERN = Pattern.compile(
-            "(?i)(?:pickle\\.loads?\\s*\\(|yaml\\.load\\s*\\([^,)]*\\)(?!.*SafeLoader)|serialize\\.unserialize\\s*\\(|jsonpickle\\.decode\\s*\\()"
+            "(?i)(?:pickle\\.loads?\\s*\\(|yaml\\.load\\s*\\([^,)]*\\)(?!.*SafeLoader)|serialize\\.unserialize\\s*\\(|jsonpickle\\.decode\\s*\\(|Marshal\\.load\\s*\\(|unserialize\\s*\\()"
     );
 
     @Override
@@ -74,7 +74,8 @@ public class PolyglotDeserializationRule implements AnalysisRule {
         try (Stream<Path> stream = Files.walk(stagingDir)) {
             stream.filter(Files::isRegularFile).forEach(path -> {
                 String fileName = path.getFileName().toString().toLowerCase();
-                if (fileName.endsWith(".py") || fileName.endsWith(".js") || fileName.endsWith(".ts")) {
+                if (fileName.endsWith(".py") || fileName.endsWith(".js") || fileName.endsWith(".ts") ||
+                    fileName.endsWith(".php") || fileName.endsWith(".rb")) {
                     try {
                         List<String> lines = Files.readAllLines(path);
                         String relPath = stagingDir.relativize(path).toString().replace('\\', '/');

@@ -647,16 +647,16 @@ const RULES = [
   },
   {
     id: "CR-DESER-002",
-    title: "Polyglot Insecure Deserialization (Python/Node)",
+    title: "Polyglot Insecure Deserialization (Python/Node/PHP/Ruby)",
     category: "SECURITY",
     severity: "CRITICAL",
     cwe: "CWE-502",
-    fileExtensions: [".py", ".js", ".ts"],
+    fileExtensions: [".py", ".js", ".ts", ".php", ".rb"],
     check: (line, lineNum) => {
-      if (/(?:pickle\.loads?|yaml\.load\s*\([^,)]*\)(?!.*SafeLoader)|serialize\.unserialize)/i.test(line)) {
+      if (/(?:pickle\.loads?|yaml\.load\s*\([^,)]*\)(?!.*SafeLoader)|serialize\.unserialize|Marshal\.load|unserialize\s*\()/i.test(line)) {
         return {
           description: "Insecure object deserialization allows arbitrary remote code execution via gadget chains.",
-          remediation: "Use safe data formats (JSON) or enforce yaml.safe_load."
+          remediation: "Use safe data formats (JSON) or enforce yaml.safe_load / json_decode."
         };
       }
       return null;
