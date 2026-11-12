@@ -4,6 +4,54 @@ All notable changes to the Codexa Code Security & Production Readiness Platform 
 
 ---
 
+## [3.5.0] - 2026-11-12
+
+### 🚀 Enterprise Engine & 65+ Static Rules Expansion
+- **65+ Production Rules Expansion**:
+  - Added HTTP Request Smuggling & Header Desync (`CR-HTTP-001`, CWE-444).
+  - Added Server-Side Prototype Pollution via JSON reviver & recursive merge (`CR-PROTO-001`, CWE-1321).
+  - Added OAuth2 Open Redirect & Missing PKCE code challenge (`CR-OAUTH-001`, CWE-601).
+  - Added Polyglot Insecure Deserialization in Python, Node.js, PHP, Ruby (`CR-DESER-002`, CWE-502).
+  - Added Insecure CORS Wildcard with Credentials & Origin Reflection (`CR-CORS-002`, CWE-942).
+  - Added Kubernetes Secrets Ingestion via Environment Variables (`CR-K8S-002`, CWE-526).
+  - Added Dockerfile SUID bit escalation & sudo utility installation (`CR-IAC-009`, CWE-250).
+  - Added Terraform RDS unencrypted storage & KMS key rotation disabled (`CR-IAC-010`, CWE-311).
+  - Added S3 Public Website Hosting & CloudFront unencrypted HTTP transport (`CR-IAC-011`, CWE-319).
+  - Added CI/CD pipeline script injection via untrusted event expressions (`CR-CICD-001`, CWE-94).
+  - Added Architectural Layer Boundary Inversion & Controller-to-DAO direct coupling (`CR-ARCH-002`, CWE-1061).
+  - Added ThreadLocal Context Leakage & Missing Cleanup in servlet pools (`CR-THREAD-001`, CWE-404).
+
+### 🔬 Deep Taint & Structural Metrics
+- **Taint Sanitizer & Guard Recognition Engine (`TaintSanitizerRecognizer`)**:
+  - Recognizes standard encoders, sanitizers, and type guards (`ESAPI`, `escapeHtml4`, `parseInt`, `matches()`) to neutralize false-positive taint propagation paths.
+- **Henry & Kafura Information Flow Complexity (`FanInFanOutCalculator`)**:
+  - Computes Fan-In, Fan-Out, and Structural Complexity ($IFC = LOC \times (FanIn \times FanOut)^2$) to detect structural architectural bottlenecks.
+- **Frontend Taint Flow Trace Visualizer (`TaintFlowTraceModal.jsx`)**:
+  - Interactive stepper timeline displaying source-to-sink data flow with keyboard shortcut accessibility (Escape).
+
+### ⚡ Autonomous Monorepo CLI Upgrades
+- **Multi-Threaded Worker Pool (`WorkerPoolScanner`)**:
+  - High-throughput parallel file analysis with ignore pattern support (`.gitignore`, `.npmignore`).
+- **OWASP CycloneDX v1.5 JSON SBOM Generator (`CycloneDxSbomGenerator`)**:
+  - Full component package URL (`purl`) mapping with vulnerability linkage.
+- **Open-Source Software License Auditor (`LicenseAuditor`)**:
+  - Categorizes dependencies into Permissive, Weak Copyleft, and Strong Copyleft (GPL/AGPL).
+- **Git Blame & Vulnerability Age Attribution (`BlameEngine`)**:
+  - Maps commit author, SHA, and age in days to every static finding.
+- **SARIF v2.1.0 Suppression Engine (`SuppressionEngine`)**:
+  - Supports inline `// codexa-ignore CR-RULE-ID: reason` comments and `.codexaignore` files.
+- **Multi-Format Reporting**:
+  - Added RFC 4180 CSV export (`--format csv`) with formula injection sanitization.
+  - Added GitHub PR review comment Markdown generator (`--format markdown`).
+
+### 📚 Compliance & Architecture Records
+- Authored **CIS Controls v8** Technical Safeguards Matrix (`docs/compliance/cis-controls-v8.md`).
+- Authored **ENISA Cloud Security / EUCS** Compliance Matrix (`docs/compliance/enisa-cloud-security.md`).
+- Authored **ADR-0009** for Summary-Based Interprocedural Taint Tracking (`docs/adr/0009-interprocedural-taint-and-call-graph.md`).
+- Green unit test suite: **21 passing tests in CLI suite**.
+
+---
+
 ## [1.3.0] - 2026-09-19
 
 ### 🏆 100.0/100 Self-Audit Milestone & Zero False-Positive Engine
