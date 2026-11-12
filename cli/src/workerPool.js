@@ -7,8 +7,16 @@ const { scanFile } = require("./scanner");
  * Distributes file evaluation across concurrent asynchronous worker lanes.
  */
 class WorkerPoolScanner {
-  constructor(concurrency = os.cpus().length || 4) {
+  constructor(concurrency = os.cpus().length || 4, options = {}) {
     this.concurrency = Math.max(1, concurrency);
+    this.ignoredPatterns = options.ignoredPatterns || [
+      "node_modules", ".git", "target", "dist", "build", ".next", ".idea", ".vscode"
+    ];
+  }
+
+  isIgnored(filePath) {
+    const normalized = filePath.replace(/\\/g, "/");
+    return this.ignoredPatterns.some(p => normalized.includes(`/${p}/`) || normalized.startsWith(`${p}/`));
   }
 
   /**
@@ -24,9 +32,10 @@ class WorkerPoolScanner {
     let linesScanned = 0;
     let completed = 0;
 
-    // Queue of files to process
-    const queue = [...files];
-    const total = files.length;
+    // Filter out ignored files and directories
+    const activeFiles = files.filter(f => !this.isIgnored(f));
+    const queue = [...activeFiles];
+    const total = activeFiles.length;
 
     const worker = async () => {
       while (queue.length > 0) {
