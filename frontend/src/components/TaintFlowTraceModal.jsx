@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { X, ArrowDown, ShieldAlert, CheckCircle2, AlertTriangle, Copy, Terminal, ExternalLink } from 'lucide-react';
 
 export default function TaintFlowTraceModal({ isOpen, onClose, finding }) {
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen || !finding) return null;
 
   const defaultTrace = [
