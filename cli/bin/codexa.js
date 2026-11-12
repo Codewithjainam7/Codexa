@@ -10,6 +10,7 @@ const { scanProject } = require("../src/scanner");
 const { renderScanSummary, renderTable, renderBanner } = require("../src/tui");
 const { generateSarif } = require("../src/sarif");
 const { generateCsvReport } = require("../src/csvExporter");
+const { generateMarkdownReport } = require("../src/markdownReport");
 const { runDoctor } = require("../src/doctor");
 const { startLspServer } = require("../src/lsp");
 const { RULES } = require("../src/rules");
@@ -31,7 +32,7 @@ function printHelp() {
   \x1b[38;2;16;185;129mhelp\x1b[0m                  Show this help manual
 
 \x1b[1mOPTIONS for 'scan':\x1b[0m
-  --format <fmt>        Output format: 'tui' (default), 'table', 'json', 'sarif', 'csv'
+  --format <fmt>        Output format: 'tui' (default), 'table', 'json', 'sarif', 'csv', 'markdown'
   --fail-on <severity>  Exit with code 1 if findings meet or exceed severity:
                         'critical', 'high', 'medium', 'low'
   --output <file>       Write raw output to specified file path
@@ -83,6 +84,9 @@ async function handleScan(scanArgs) {
     if (!outputFile) console.log(outputText);
   } else if (format === "csv") {
     outputText = generateCsvReport(result.findings);
+    if (!outputFile) console.log(outputText);
+  } else if (format === "markdown" || format === "md") {
+    outputText = generateMarkdownReport(result);
     if (!outputFile) console.log(outputText);
   } else if (format === "table") {
     renderTable(result.findings);
