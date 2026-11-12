@@ -381,3 +381,27 @@ test("CycloneDX SBOM Generator: should emit valid CycloneDX v1.5 JSON spec", () 
   assert.strictEqual(sbom.vulnerabilities.length, 1);
   assert.strictEqual(sbom.vulnerabilities[0].id, "CVE-2024-1234");
 });
+
+test("CSV Exporter: should serialize findings to RFC 4180 CSV and sanitize formulas", () => {
+  const { generateCsvReport, sanitizeCsvCell } = require("../src/csvExporter");
+  
+  // Formula injection check
+  assert.strictEqual(sanitizeCsvCell("=CMD('calc')"), "'=CMD('calc')");
+  assert.strictEqual(sanitizeCsvCell("+123"), "'+123");
+
+  const findings = [
+    {
+      ruleId: "CR-SQL-001",
+      severity: "CRITICAL",
+      title: "SQL Injection",
+      file: "User.java",
+      line: 42,
+      cwe: "CWE-89",
+      remediation: "Use PreparedStatement"
+    }
+  ];
+
+  const csv = generateCsvReport(findings);
+  assert(csv.includes("Rule ID,Severity,Title,File,Line,CWE,Remediation"));
+  assert(csv.includes("CR-SQL-001,CRITICAL,SQL Injection,User.java,42,CWE-89,Use PreparedStatement"));
+});
