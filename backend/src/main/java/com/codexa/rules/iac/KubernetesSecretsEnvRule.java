@@ -102,8 +102,11 @@ public class KubernetesSecretsEnvRule implements AnalysisRule {
 
             String[] lines = content.split("\\r?\\n");
             for (int i = 0; i < lines.length; i++) {
-                String line = lines[i];
-                if (line.contains("secretKeyRef:") || line.contains("secretRef:")) {
+                String line = lines[i].trim();
+                if (line.startsWith("#")) {
+                    continue;
+                }
+                if ((line.contains("secretKeyRef:") || line.contains("secretRef:")) && !line.contains("{{- if")) {
                     findings.add(RuleFinding.builder()
                             .ruleId(getRuleId())
                             .ruleName(getName())

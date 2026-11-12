@@ -688,7 +688,8 @@ const RULES = [
     cwe: "CWE-526",
     fileExtensions: [".yaml", ".yml"],
     check: (line, lineNum) => {
-      if (/(?:secretKeyRef|secretRef)\s*:/i.test(line)) {
+      if (line.trim().startsWith("#")) return null;
+      if (/(?:secretKeyRef|secretRef)\s*:/i.test(line) && !line.includes("{{- if")) {
         return {
           description: "Secret referenced in container environment variables, exposing secrets to child processes, crash dumps, and /proc.",
           remediation: "Mount sensitive credentials as read-only volume mounts (mode 0400) or use CSI Secret Store driver."
