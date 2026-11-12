@@ -28,7 +28,7 @@ public class OAuthSecurityRule implements AnalysisRule {
     );
 
     private static final Pattern MISSING_PKCE_PATTERN = Pattern.compile(
-            "(?i)redirect_uri\\s*=\\s*(?:req\\.(?:query|params)|request\\.(?:args|GET)|\"[^\"]*\\*\")"
+            "(?i)redirect_uri\\s*=\\s*(?:req\\.(?:query|params)|request\\.(?:args|GET)|searchParams\\.get\\(['\"]redirect_uri['\"]\\)|query\\.redirect_uri|\"[^\"]*\\*\")"
     );
 
     @Override

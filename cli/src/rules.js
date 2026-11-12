@@ -636,7 +636,7 @@ const RULES = [
     cwe: "CWE-601",
     fileExtensions: [".js", ".ts", ".java", ".py"],
     check: (line, lineNum) => {
-      if (/redirect_uri\s*=\s*(?:req\.(?:query|params)|request\.(?:args|GET)|["'][^"']*\*["'])/i.test(line)) {
+      if (/redirect_uri\s*=\s*(?:req\.(?:query|params)|request\.(?:args|GET)|searchParams\.get\(['"]redirect_uri['"]\)|query\.redirect_uri|["'][^"']*\*["'])/i.test(line)) {
         return {
           description: "OAuth2 redirect_uri dynamically resolved from untrusted input allows authorization code theft.",
           remediation: "Enforce exact string matching against pre-registered client redirect URIs and require PKCE."
