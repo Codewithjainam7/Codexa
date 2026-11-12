@@ -763,6 +763,12 @@ const RULES = [
           remediation: "Map the event expression to an intermediate environment variable (env:) and refer to it as $VAR."
         };
       }
+      if (/ref\s*:\s*\$\{\{\s*github\.event\.pull_request\.head\.(?:sha|ref)/i.test(line)) {
+        return {
+          description: "Checking out untrusted pull request code with elevated repository token permissions in pull_request_target.",
+          remediation: "Use standard 'pull_request' trigger or avoid checking out untrusted head commit with elevated token permissions."
+        };
+      }
       return null;
     }
   },

@@ -29,7 +29,7 @@ public class CicdSecurityRule implements AnalysisRule {
     );
 
     private static final Pattern INSECURE_PR_TARGET_CHECKOUT = Pattern.compile(
-            "(?i)ref\\s*:\\s*\\$\\{\\{\\s*github\\.event\\.pull_request\\.head\\.sha\\s*\\}\\}"
+            "(?i)ref\\s*:\\s*\\$\\{\\{\\s*github\\.event\\.pull_request\\.head\\.(?:sha|ref)\\s*\\}\\}"
     );
 
     @Override
