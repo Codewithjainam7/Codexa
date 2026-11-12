@@ -1,17 +1,26 @@
 {
   "name": "@codexa/cli",
-  "version": "1.0.0",
-  "description": "Autonomous Static Analysis, Security Auditing, SBOM & LSP CLI for Codexa",
+  "version": "3.5.0",
+  "description": "Autonomous Static Analysis, Security Auditing, CycloneDX SBOM, Taint Analysis & LSP CLI for Codexa",
   "main": "bin/codexa.js",
   "bin": {
     "codexa": "./bin/codexa.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Codewithjainam7/Codexa.git"
+  },
+  "homepage": "https://codexa-ye85.onrender.com",
   "keywords": [
     "security",
     "sast",
     "static-analysis",
     "sbom",
+    "cyclonedx",
     "cve",
+    "compliance",
+    "taint-analysis",
+    "devsecops",
     "lsp",
     "sarif",
     "code-quality",
