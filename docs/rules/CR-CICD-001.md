@@ -36,3 +36,21 @@ Pass untrusted expressions through environment variables. The shell receives the
   run: |
     echo "Issue title is: $TITLE"
 ```
+
+---
+
+## Least-Privilege GitHub Actions Permissions Matrix
+Always restrict default `GITHUB_TOKEN` permissions explicitly at the root of the workflow or per-job level:
+
+```yaml
+permissions:
+  contents: read
+  issues: read
+  pull-requests: write
+  id-token: none
+  packages: none
+```
+
+### Insecure `pull_request_target` Warning
+Never checkout the PR head branch (`github.event.pull_request.head.sha`) when using `on: pull_request_target`. That trigger gives the runner write access to repository secrets and release environments. If you must inspect untrusted PR code, run the checkout job in an unprivileged separate runner or use the standard `on: pull_request` trigger.
+
