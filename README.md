@@ -527,9 +527,20 @@ codexa sbom . --out bom.json
 codexa fix . --rule CR-RAND-001
 ```
 
+### CLI Quick Reference Cheat Sheet
+| Use Case | Command Example | Key Flags |
+| :--- | :--- | :--- |
+| **Local Pre-commit** | `codexa scan .` | `-q` (quiet), `--fail-on high` |
+| **CI SARIF Upload** | `codexa scan . --format sarif --output results.sarif` | `--format`, `--output` |
+| **GitHub PR Comment** | `codexa scan . --format markdown` | `--format markdown` |
+| **Audit Log Export** | `codexa scan . --format csv --output audit.csv` | `--format csv` |
+| **Interactive Triage**| `codexa triage .` | Arrow navigation, drill-down cards |
+| **SBOM Generation** | `codexa sbom .` | CycloneDX v1.5 JSON spec |
+| **OSS Compliance** | `codexa licenses .` | GPL/AGPL copyleft detection |
+
 ---
 
-## ⚙️ 11. Configuration & Environment Variables
+## ⚙️ 12. Configuration & Environment Variables
 
 All settings can be customized in [`backend/src/main/resources/application.yml`](backend/src/main/resources/application.yml) or overridden with environment variables:
 
