@@ -14,6 +14,8 @@ Modern enterprise engineering organizations are subject to mandatory regulatory 
 4. **OWASP Top 10:2021 & ASVS v4.0** (Web Application Security Risks & Verification).
 5. **CIS Controls v8** (Center for Internet Security Critical Security Controls IG1/IG2/IG3).
 6. **ENISA Cloud Security / EUCS** (European Union Agency for Cybersecurity Cloud Guidelines).
+7. **FedRAMP Moderate & High** (Federal Risk and Authorization Management Program System Security Plan).
+8. **NIST SP 800-171 Rev. 2** (Protecting Controlled Unclassified Information in Nonfederal Systems).
 
 ---
 
