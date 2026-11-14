@@ -40,3 +40,15 @@ RUN find / -perm /6000 -type f -exec chmod a-s {} + 2>/dev/null || true
 # Run as non-root
 USER 10001:10001
 ```
+
+---
+
+## Alternative: Privilege Step-Down with `gosu` / `su-exec`
+If an entrypoint script must initialize storage or volumes with root permissions before executing the daemon, do not install `sudo`. Instead, utilize `gosu` (Debian/Ubuntu) or `su-exec` (Alpine). Unlike `sudo`, these tools do not maintain background daemon processes or TTY allocations and execute `execvp` directly as the target unprivileged user:
+
+```dockerfile
+# Safe entrypoint step-down
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+# Inside entrypoint.sh: exec gosu appuser "$@"
+```
+
