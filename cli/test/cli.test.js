@@ -424,3 +424,19 @@ test("Markdown Exporter: should generate valid pull request review comment markd
   assert(md.includes("Enforce PKCE"));
   assert(md.includes("<details>"));
 });
+
+test("TUI Renderer: should support quiet flag to suppress banner", () => {
+  const { renderScanSummary } = require("../src/tui");
+  const result = {
+    target: "my-app",
+    filesScanned: 1,
+    linesScanned: 20,
+    durationMs: 5,
+    metrics: { score: 100, grade: "A+", status: "PRODUCTION_READY", breakdown: { critical: 0, high: 0, medium: 0, low: 0, total: 0 } },
+    findings: []
+  };
+
+  assert.doesNotThrow(() => {
+    renderScanSummary(result, { quiet: true });
+  });
+});
