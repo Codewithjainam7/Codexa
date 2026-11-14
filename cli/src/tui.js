@@ -69,8 +69,10 @@ function getSeverityBadge(severity) {
   }
 }
 
-function renderScanSummary(result) {
-  renderBanner();
+function renderScanSummary(result, options = {}) {
+  if (!options.quiet) {
+    renderBanner();
+  }
 
   const { target, filesScanned, linesScanned, durationMs, metrics, findings } = result;
   const { score, grade, status, breakdown } = metrics;

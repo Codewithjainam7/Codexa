@@ -52,6 +52,7 @@ async function handleScan(scanArgs) {
   let format = "tui";
   let failOn = null;
   let outputFile = null;
+  let quiet = false;
 
   for (let i = 0; i < scanArgs.length; i++) {
     const arg = scanArgs[i];
@@ -61,6 +62,8 @@ async function handleScan(scanArgs) {
       failOn = scanArgs[++i].toUpperCase();
     } else if (arg === "--output" && scanArgs[i + 1]) {
       outputFile = scanArgs[++i];
+    } else if (arg === "--quiet" || arg === "-q") {
+      quiet = true;
     } else if (!arg.startsWith("-")) {
       targetPath = arg;
     }
@@ -92,7 +95,7 @@ async function handleScan(scanArgs) {
     renderTable(result.findings);
   } else {
     // Default: TUI Dashboard
-    renderScanSummary(result);
+    renderScanSummary(result, { quiet });
   }
 
   if (outputFile && outputText) {
