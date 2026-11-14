@@ -404,6 +404,10 @@ test("CSV Exporter: should serialize findings to RFC 4180 CSV and sanitize formu
   const csv = generateCsvReport(findings);
   assert(csv.includes("Rule ID,Severity,Title,File,Line,CWE,Remediation"));
   assert(csv.includes("CR-SQL-001,CRITICAL,SQL Injection,User.java,42,CWE-89,Use PreparedStatement"));
+
+  const csvWithTimestamp = generateCsvReport(findings, { includeTimestamp: true, timestamp: "2026-11-14T00:00:00Z" });
+  assert(csvWithTimestamp.includes("Timestamp"));
+  assert(csvWithTimestamp.includes("2026-11-14T00:00:00Z"));
 });
 
 test("Markdown Exporter: should generate valid pull request review comment markdown", () => {
