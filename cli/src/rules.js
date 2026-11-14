@@ -706,7 +706,7 @@ const RULES = [
     cwe: "CWE-250",
     fileExtensions: ["dockerfile", ".dockerfile"],
     check: (line, lineNum) => {
-      if (/chmod\s+(?:[ug]\+s|[1-7]?[4-7][0-7]{2})/i.test(line) || /(?:apt-get|apk|yum)\s+.*install.*sudo/i.test(line)) {
+      if (/chmod\s+(?:[ug]\+s|[1-7]?[4-7][0-7]{2})/i.test(line) || /(?:apt-get|apk|yum)\s+.*install.*sudo/i.test(line) || /NOPASSWD\s*:\s*ALL/i.test(line)) {
         return {
           description: "Granting SUID bits or installing sudo inside container images violates least privilege and allows privilege escalation.",
           remediation: "Strip SUID permissions, remove sudo package, and switch to non-root USER."
