@@ -53,3 +53,9 @@ resource "aws_db_instance" "app_db" {
   publicly_accessible = false
 }
 ```
+
+---
+
+## KMS Key Deletion Window Safety Threshold
+Setting `deletion_window_in_days` to fewer than 7 days poses extreme operational risk. If an infrastructure automation script mistakenly flags a key for destruction, AWS enforces a mandatory waiting period (7 to 30 days) allowing engineers to cancel accidental key deletion and prevent irreversible database cryptoshredding. Always configure `deletion_window_in_days = 30`.
+
