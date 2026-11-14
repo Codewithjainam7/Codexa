@@ -823,6 +823,23 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-PARAM-003",
+    title: "Client/Server Open Redirect via Unvalidated Parameter",
+    category: "SECURITY",
+    severity: "MEDIUM",
+    cwe: "CWE-601",
+    fileExtensions: [".js", ".ts", ".jsx", ".tsx"],
+    check: (line, lineNum) => {
+      if (/(?:res\.redirect|window\.location\.(?:assign|replace))\s*\(\s*(?:req\.(?:query|params)|searchParams\.get)/i.test(line)) {
+        return {
+          description: "Unvalidated destination URL parameter used directly in HTTP or DOM redirect enables phishing attacks.",
+          remediation: "Enforce strict allowlists or relative path prefixes (/^\\/(?!\\/)/) for redirect destinations."
+        };
+      }
+      return null;
+    }
   }
 ];
 
