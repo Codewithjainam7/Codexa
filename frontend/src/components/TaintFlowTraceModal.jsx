@@ -129,7 +129,7 @@ export default function TaintFlowTraceModal({ isOpen, onClose, finding }) {
                   <div className={`relative z-10 w-9 h-9 rounded-xl flex items-center justify-center font-mono font-bold text-xs border ${badgeColor} bg-slate-950`}>
                     {step.step}
                   </div>
-                  <div className="flex-1 bg-slate-900/50 border border-slate-800/80 rounded-xl p-4 transition-colors hover:border-slate-700">
+                  <div className="flex-1 bg-slate-900/50 border border-slate-800/80 rounded-xl p-4 transition-all duration-150 hover:border-slate-600 hover:shadow-lg hover:shadow-black/40 hover:-translate-y-0.5">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-semibold text-slate-200">{step.label}</span>
