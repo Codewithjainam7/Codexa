@@ -805,6 +805,24 @@ const RULES = [
       }
       return null;
     }
+  },
+  {
+    id: "CR-PARAM-001",
+    title: "Mass Assignment / Over-Posting to Data Models",
+    category: "SECURITY",
+    severity: "HIGH",
+    cwe: "CWE-915",
+    fileExtensions: [".js", ".ts", ".py"],
+    check: (line, lineNum) => {
+      if (/Object\.assign\s*\(\s*(?:req\.user|user|session|account)\s*,\s*req\.body\)/i.test(line) ||
+          /(?:User|Account)\.(?:create|update)\s*\(\s*req\.body\s*\)/i.test(line)) {
+        return {
+          description: "Unfiltered request body passed directly into stateful entity, permitting privilege escalation via Mass Assignment.",
+          remediation: "Pick or validate explicit allowed fields using schema validation (Zod/Joi) or dedicated DTOs."
+        };
+      }
+      return null;
+    }
   }
 ];
 
