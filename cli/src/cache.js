@@ -13,6 +13,20 @@ function computeHash(content) {
   return crypto.createHash("sha256").update(content).digest("hex");
 }
 
+function computeFileHashFast(filePath) {
+  try {
+    const stat = fs.statSync(filePath);
+    const content = fs.readFileSync(filePath, "utf8");
+    return {
+      hash: computeHash(content),
+      size: stat.size,
+      mtimeMs: stat.mtimeMs
+    };
+  } catch {
+    return null;
+  }
+}
+
 function loadCache(projectDir) {
   const cachePath = path.join(projectDir, CACHE_FILE);
   if (fs.existsSync(cachePath)) {
@@ -37,6 +51,7 @@ function saveCache(projectDir, cacheData) {
 module.exports = {
   CACHE_FILE,
   computeHash,
+  computeFileHashFast,
   loadCache,
   saveCache
 };
