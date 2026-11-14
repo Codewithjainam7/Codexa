@@ -18,9 +18,13 @@ function sanitizeCsvCell(value) {
   return str;
 }
 
-function generateCsvReport(findings) {
+function generateCsvReport(findings, options = {}) {
   const headers = ["Rule ID", "Severity", "Title", "File", "Line", "CWE", "Remediation"];
+  if (options.includeTimestamp) {
+    headers.push("Timestamp");
+  }
   const rows = [headers.join(",")];
+  const now = options.timestamp || new Date().toISOString();
 
   if (Array.isArray(findings)) {
     for (const f of findings) {
@@ -33,6 +37,9 @@ function generateCsvReport(findings) {
         sanitizeCsvCell(f.cwe || "N/A"),
         sanitizeCsvCell(f.remediation || "")
       ];
+      if (options.includeTimestamp) {
+        row.push(sanitizeCsvCell(f.timestamp || now));
+      }
       rows.push(row.join(","));
     }
   }
