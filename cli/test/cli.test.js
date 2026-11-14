@@ -191,6 +191,15 @@ test("Cache Engine: should store and retrieve content hashes", () => {
   const loaded = loadCache(tmpDir);
   assert.strictEqual(loaded["test.js"].hash, hash1);
 
+  const testFile = path.join(tmpDir, "sample.js");
+  fs.writeFileSync(testFile, "const x = 1;\n");
+  const { computeFileHashFast } = require("../src/cache");
+  const fastInfo = computeFileHashFast(testFile);
+  assert(fastInfo !== null);
+  assert(typeof fastInfo.hash === "string");
+  assert(fastInfo.size > 0);
+  assert(typeof fastInfo.mtimeMs === "number");
+
   fs.rmSync(tmpDir, { recursive: true, force: true });
 });
 
