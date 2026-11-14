@@ -36,6 +36,10 @@ public class TerraformRdsEncryptionRule implements AnalysisRule {
             "(?i)enable_key_rotation\\s*=\\s*false"
     );
 
+    private static final Pattern SHORT_KMS_DELETION = Pattern.compile(
+            "(?i)deletion_window_in_days\\s*=\\s*[1-6]\\b"
+    );
+
     @Override
     public String getRuleId() {
         return "CR-IAC-010";
@@ -140,6 +144,19 @@ public class TerraformRdsEncryptionRule implements AnalysisRule {
                             .snippet(line.trim())
                             .message("AWS KMS Key has automatic key rotation disabled.")
                             .remediation("Set enable_key_rotation = true to ensure annual cryptographic key rotation.")
+                            .build());
+                } else if (SHORT_KMS_DELETION.matcher(line).find()) {
+                    findings.add(RuleFinding.builder()
+                            .ruleId(getRuleId())
+                            .ruleName(getName())
+                            .category(getCategory())
+                            .severity(Severity.MEDIUM)
+                            .confidence(Confidence.HIGH)
+                            .filePath(relPath)
+                            .lineNumber(i + 1)
+                            .snippet(line.trim())
+                            .message("AWS KMS Key deletion window is less than the 7-day safety threshold, risking accidental data loss.")
+                            .remediation("Set deletion_window_in_days to at least 7 days (recommended 30 days).")
                             .build());
                 }
             }

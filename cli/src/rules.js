@@ -723,10 +723,10 @@ const RULES = [
     cwe: "CWE-311",
     fileExtensions: [".tf", ".tfvars"],
     check: (line, lineNum) => {
-      if (/storage_encrypted\s*=\s*false/i.test(line) || /publicly_accessible\s*=\s*true/i.test(line) || /enable_key_rotation\s*=\s*false/i.test(line)) {
+      if (/storage_encrypted\s*=\s*false/i.test(line) || /publicly_accessible\s*=\s*true/i.test(line) || /enable_key_rotation\s*=\s*false/i.test(line) || /deletion_window_in_days\s*=\s*[1-6]\b/i.test(line)) {
         return {
-          description: "Terraform configuration disables database storage encryption, exposes RDS publicly, or disables KMS key rotation.",
-          remediation: "Enable storage_encrypted, set publicly_accessible = false, and enable KMS rotation."
+          description: "Terraform configuration disables database storage encryption, exposes RDS publicly, or sets KMS key deletion window below 7 days.",
+          remediation: "Enable storage_encrypted, set publicly_accessible = false, enable KMS rotation, and set deletion window >= 7 days."
         };
       }
       return null;
